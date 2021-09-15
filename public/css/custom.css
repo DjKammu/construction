@@ -1,0 +1,89 @@
+/***************************************
+ GLOBAL CHANGES 
+ ***************************************/
+/* making panel full height of page */
+body {
+  padding-right: 0 !important;
+}
+
+.main-panel {
+  min-height: 100vh;
+}
+
+/***************************************
+ TABLE SCROLLBAR CHANGES 
+ ***************************************/
+/* MAKING LOWER SCROLL BAR INVISIBLE */
+.table-responsive {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+/***************************************
+ TABLE CLICK CHANGES 
+ ***************************************/
+/* CSS FOR SELECTABLE TABLE ROWS */
+.selectable-table-item {
+  cursor: pointer;
+}
+
+/***************************************
+ AVATAR CHANGES 
+ ***************************************/
+/* CSS FOR AVATAR IMAGE */
+.card .avatar {
+  width: 60%;
+  height: auto;
+  box-shadow: 0 4px 8px 0 #f1f2f6d7, 0 6px 20px 0 #f1f2f6f3;
+}
+
+/***************************************
+ CARD TABLE CHANGES
+ ***************************************/
+.card-table tr {
+  display: inline-block;
+}
+
+.card-table-item {
+  height: 100%;
+  background-color: #f1f0f0a2;
+}
+
+.card-table-item:hover {
+  background-color: #f7f5f5;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card-body {
+  min-height: auto !important;
+}
+
+.project-image {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* PAGINATION FIXES */
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+  float: right;
+}
+
+.pagination .page-item.active > .page-link,
+.pagination .page-item.active > .page-link:focus,
+.pagination .page-item.active > .page-link:hover {
+  background-color: #ef8157;
+  border-color: #ef8157;
+  color: #ffffff;
+}
+
+.form-group input[type=file]{
+  opacity: 1 !important;
+}
+
+/* Medium devices (tablets, 768px and lower) */
+@media (max-width: 768px) {
+  div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    float: none;
+    justify-content: center;
+  }
+}
