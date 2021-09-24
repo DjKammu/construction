@@ -30,6 +30,8 @@
 
                          <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("categories.index") }}'">Categories
                         </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("trades.index") }}'">Trades
+                        </button>
                     </div>
                 </div>
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBussinessTypesTable extends Migration
+class CreateTradesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateBussinessTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('bussiness_types', function (Blueprint $table) {
+        Schema::create('trades', function (Blueprint $table) {
             $table->id();
-             $table->string('name')->reuired();
+            $table->string('name')->reuired();
             $table->string('slug')->reuired();
             $table->string('account_number')->unique()->nullable();
+            $table->bigInteger('category_id')->nullable();
+            $table->string('scope')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreateBussinessTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bussiness_types');
+        Schema::dropIfExists('trades');
     }
 }

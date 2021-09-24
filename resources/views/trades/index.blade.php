@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Bussiness Type')
+@section('title', 'Trades')
 
 @section('content')
       <!-- Start Main View -->
@@ -26,10 +26,10 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Bussiness Types List</h4>
+                        <h4 class="mt-0 text-left">Trades List</h4>
                     </div>
                     <div class="col-6 text-right">
-                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("bussiness-types.create")}}'">Add Bussiness Type
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("trades.create")}}'">Add Trade
                         </button>
                     </div>
                 </div>
@@ -39,31 +39,31 @@
                         <thead>
                         <tr class="text-danger">
                             <th>Acc. No.</th>
-                            <th>Bussiness Type</th>
+                            <th>Trade</th>
                             <!-- <th>Projects</th> -->
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
-                          @foreach($bussinessTypes as $type)
+                          @foreach($trades as $type)
                          <tr>
                            <td> {{ $type->account_number }}</td>
                            <td>{{ $type->name }}</td>
                            <td>        
-                            <button onclick="return window.location.href='bussiness-types/{{$type->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Bussiness Type" title="Edit Bussiness Type">            <i class="fa fa-edit text-success"></i>        </button> 
+                            <button onclick="return window.location.href='trades/{{$type->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Trade" title="Edit Trades">            <i class="fa fa-edit text-success"></i>        </button> 
                           </td>
                           <td>
                              <form 
                               method="post" 
-                              action="{{route('bussiness-types.destroy',$type->id)}}"> 
+                              action="{{route('trades.destroy',$type->id)}}"> 
                                @csrf
                               {{ method_field('DELETE') }}
 
                               <button 
                                 type="submit"
                                 onclick="return confirm('Are you sure?')"
-                                class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Bussiness Type" title="Delete Bussiness Type"><i class="fa fa-trash text-danger"></i> </button>
+                                class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Trade" title="Delete Bussiness Type"><i class="fa fa-trash text-danger"></i> </button>
                             </form>
                            </td>
                          </tr> 
@@ -72,7 +72,7 @@
                         </tbody>
                     </table>
                 </div>
-                 {!! $bussinessTypes->render() !!}
+                 {!! $trades->render() !!}
             </div>
         </div>
     </div>

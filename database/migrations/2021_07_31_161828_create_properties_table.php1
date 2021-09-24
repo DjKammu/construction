@@ -17,6 +17,7 @@ class CreatePropertiesTable extends Migration
             $table->id();
             $table->string('property_name')->reuired();
             $table->text('property_address')->nullable();
+            $table->bigInteger('proprty_type_id')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('country')->nullable();

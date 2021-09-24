@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ProprtyType;
-use App\Models\BussinessType;
+use App\Models\Category;
+use App\Models\Trade;
 use Gate;
 
 
-class BussinessTypeController extends Controller
+class TradeController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -31,11 +31,11 @@ class BussinessTypeController extends Controller
                return abort('401');
          } 
 
-         $bussinessTypes = BussinessType::orderBy('account_number');
+         $trades = Trade::orderBy('account_number');
 
-         $bussinessTypes = $bussinessTypes->paginate((new BussinessType())->perPage); 
+         $trades = $trades->paginate((new Trade())->perPage); 
          
-         return view('bussiness_types.index',compact('bussinessTypes'));
+         return view('trades.index',compact('trades'));
     }
 
     /**
@@ -49,7 +49,9 @@ class BussinessTypeController extends Controller
                return abort('401');
          } 
 
-        return view('bussiness_types.create');
+        $categories =  Category::all();
+
+        return view('trades.create',compact('categories'));
     }
 
     /**
@@ -67,15 +69,23 @@ class BussinessTypeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:bussiness_types',
-              'account_number' => 'required|unique:bussiness_types',
+              'name' => 'required|unique:trades',
+              'account_number' => 'required|unique:trades',
         ]);
 
         $data['slug'] = \Str::slug($request->name);
-            
-        BussinessType::create($data);
 
-        return redirect('bussiness-types')->with('message', 'Bussiness Type Created Successfully!');
+
+        if($request->hasFile('scope')){
+           $scope = $request->file('scope');
+           $scopeName = $data['slug'].'-'.time() . '.' . $scope->getClientOriginalExtension();
+           $data['scope']  = $request->file('scope')->storeAs(Trade::TRADES, 
+            $scopeName, 'public');
+        }
+            
+        Trade::create($data);
+
+        return redirect('trades')->with('message', 'Bussiness Type Created Successfully!');
     }
 
     /**
@@ -90,8 +100,10 @@ class BussinessTypeController extends Controller
                return abort('401');
           } 
 
-         $type = BussinessType::find($id);
-         return view('bussiness_types.edit',compact('type'));
+         $trade = Trade::find($id);
+         $categories =  Category::all();
+         
+         return view('trades.edit',compact('trade','categories'));
     }
 
     /**
@@ -121,21 +133,32 @@ class BussinessTypeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:bussiness_types,name,'.$id,
-              'account_number' => 'required|unique:bussiness_types,account_number,'.$id,
+              'name' => 'required|unique:trades,name,'.$id,
+              'account_number' => 'required|unique:trades,account_number,'.$id,
         ]);
 
         $data['slug'] = \Str::slug($request->name);
 
-        $type = BussinessType::find($id);
+        $trade = Trade::find($id);
+
+        if($request->hasFile('scope')){
+           $scope = $request->file('scope');
+           $scopeName = $data['slug'].'-'.time() . '.' . $scope->getClientOriginalExtension();
+           $data['scope']  = $request->file('scope')->storeAs(Trade::TRADES, 
+            $scopeName, 'public');
+
+            @unlink('storage/'.$trade->scope);
+        }
+            
+
         
-         if(!$type){
+         if(!$trade){
             return redirect()->back();
          }
           
-         $type->update($data);
+         $trade->update($data);
 
-        return redirect('bussiness-types')->with('message', 'Bussiness Type Updated Successfully!');
+        return redirect('trades')->with('message', 'Trade Updated Successfully!');
     }
 
     /**
@@ -149,9 +172,12 @@ class BussinessTypeController extends Controller
          if(Gate::denies('delete')) {
                return abort('401');
           } 
+         $trade = Trade::find($id);
 
-         BussinessType::find($id)->delete();
+         @unlink('storage/'.$trade->scope);
 
-        return redirect()->back()->with('message', 'Bussiness Type Delete Successfully!');
+         $trade->delete();
+
+        return redirect()->back()->with('message', 'Trade Delete Successfully!');
     }
 }

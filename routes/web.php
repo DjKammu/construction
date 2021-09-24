@@ -96,4 +96,4 @@ Route::get('files/{directory}/{property_type}/{property}/{doc_type}/{doc}',[App\
 
 Route::delete('files', [App\Http\Controllers\FileController::class,'destroy'])->name('files.destroy');
 
-Route::resource('bussiness-types', App\Http\Controllers\BussinessTypeController::class);
+Route::resource('trades', App\Http\Controllers\TradeController::class);

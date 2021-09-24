@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Bussiness Type')
+@section('title', 'Trade')
 
 @section('content')
 
@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Add Bussiness Type</h4>
+                        <h4 class="mt-0 text-left">Add Trade</h4>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('bussiness-types.store') }}">
+                              action="{{ route('trades.store') }}" enctype="multipart/form-data">
                                   @csrf
 
                                     <!-- Current Password -->
@@ -46,7 +46,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Name 
                                                 </label>
-                                                <input  name="name" value="{{ old('name')}}" type="text" class="form-control" placeholder="Bussiness Name" required="">
+                                                <input  name="name" value="{{ old('name')}}" type="text" class="form-control" placeholder="Name" required="">
                                             </div>
                                         </div>
                                     </div>
@@ -62,10 +62,38 @@
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Category
+                                                </label>
+                                                <select class="form-control" name="category_id"> 
+                                                  <option value=""> Select Category</option>
+                                                  @foreach($categories as $cat)
+                                                   <option value="{{ $cat->id }}" >{{ $cat->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">
+                                                  Scope
+                                                </label>
+                                               <input type="file" name="scope">
+                                            </div>
+                                        </div>
+                                    </div> 
+
+
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
-                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create Bussiness Type
+                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create Trade
                                         </button>
                                     </div>
 
@@ -77,18 +105,5 @@
         </div>
     </div>
 </div>
-
-@endsection
-
-@section('pagescript')
-
-<script type="text/javascript">
-  function deletePropertyType(id){
-
-    if(confirm('Are you sure to delete?')){
-      window.location.href = '{{ route("property-types.destroy",1)}}';
-    }
-  }
-</script>
 
 @endsection
