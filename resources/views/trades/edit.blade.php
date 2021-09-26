@@ -78,7 +78,16 @@
                                             </div>
                                         </div>
                                     </div> 
-
+                                   
+                                   <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                @if(!empty($trade->scope))
+                                                <img style="width: 200px;" src="{{ url(\Storage::url($trade->scope)) }}" />
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div> 
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -98,15 +107,7 @@
                                         <button id="change-password-button" type="submit" class="btn btn-danger">Update Trade
                                         </button>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-5 col-md-6 mx-auto">
-                                            <div class="form-group">
-                                                @if(!empty($trade->scope))
-                                                <img style="width: 200px;" src="{{ url(\Storage::url($trade->scope)) }}" />
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div> 
+                                    
 
                                 </form>
                             </div>
