@@ -135,7 +135,13 @@
                                                 </select>
                                             </div>
                                         </div>
-
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Image 
+                                                </label>
+                                                <input  name="image"  type="file">
+                                            </div>
+                                        </div>
                                          <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Notes 
@@ -154,13 +160,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-6 col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-dark" for="password">Image 
-                                                </label>
-                                                <input  name="image"  type="file">
-                                            </div>
-                                        </div>
+                                        
 
                                     </div>
 
