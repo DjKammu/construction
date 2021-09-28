@@ -20,6 +20,7 @@
 
     <link href="{{ asset('css/paper-dashboard.css?v=2.1.1') }}" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" />
+    <link href="{{ asset('css/select2.min.css') }}"  rel="stylesheet" />
 
     <!--   Core JS Files   -->
     <script src="{{ asset('js/core/jquery.min.js') }}"></script>
@@ -61,6 +62,7 @@
     <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('js/paper-dashboard.min.js?v=2.1.1') }}" type="text/javascript"></script>
     <script src="{{ asset('js/demo/demo.js') }}"></script>
+    <script src="{{ asset('js/plugins/select2.min.js') }}"></script>
 
 
 

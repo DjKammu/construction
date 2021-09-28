@@ -124,7 +124,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades 
                                                 </label>
-                                                <select class="form-control" name="trades[]" multiple=""> 
+                                                <select class="form-control" id="trades" name="trades[]" multiple=""> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                    </option>
@@ -169,5 +169,16 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('pagescript')
+  <script>
+
+  $("#trades").select2({
+      placeholder: "Select Trades",
+      allowClear: true,
+      maximumSelectionLength: 2
+  });
+</script>
 
 @endsection
