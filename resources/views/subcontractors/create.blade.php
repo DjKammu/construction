@@ -178,8 +178,7 @@
 
   $("#trades").select2({
       placeholder: "Select Trades",
-      allowClear: true,
-      maximumSelectionLength: 2
+      allowClear: true
   });
 </script>
 
