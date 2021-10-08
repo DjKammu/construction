@@ -100,7 +100,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Contact Name 
                                                 </label>
-                                                <input  name="contact_name"  value="{{ $vendor->contact_name }}" type="text" class="form-control" placeholder="Conatct Name" >
+                                                <input  name="contact_name"  value="{{ $vendor->contact_name }}" type="text" class="form-control" placeholder="Contact Name" >
                                             </div>
                                         </div>
                                        
