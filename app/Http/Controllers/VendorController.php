@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Subcontractor;
+use App\Models\Vendor;
 use App\Models\DocumentType;
 use App\Models\Trade;
 use Gate;
 
 
-class SubcontractorController extends Controller
+class VendorController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -32,11 +32,11 @@ class SubcontractorController extends Controller
                return abort('401');
          } 
 
-         $subcontractors = Subcontractor::orderBy('name');
+         $vendors = Vendor::orderBy('name');
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
-            $subcontractors->where('name', 'LIKE', "%{$searchTerm}%") 
+            $vendors->where('name', 'LIKE', "%{$searchTerm}%") 
             ->orWhere('office_phone', 'LIKE', "%{$searchTerm}%")
             ->orWhere('contact_name', 'LIKE', "%{$searchTerm}%")
             ->orWhere('email_1', 'LIKE', "%{$searchTerm}%")
@@ -49,13 +49,11 @@ class SubcontractorController extends Controller
             ->orWhere('notes', 'LIKE', "%{$searchTerm}%");
          }  
 
-         $perPage = request()->filled('per_page') ? request()->per_page : (new Subcontractor())->perPage;
+         $perPage = request()->filled('per_page') ? request()->per_page : (new Vendor())->perPage;
 
-         $subcontractors = $subcontractors->paginate($perPage);
+         $vendors = $vendors->paginate($perPage);
 
-         $trades = Trade::all();
-
-         return view('subcontractors.index',compact('subcontractors','trades'));
+         return view('vendors.index',compact('vendors'));
     }
 
     /**
@@ -69,9 +67,7 @@ class SubcontractorController extends Controller
                return abort('401');
          } 
 
-        $trades = Trade::all(); 
-
-        return view('subcontractors.create',compact('trades'));
+        return view('vendors.create');
     }
 
     /**
@@ -89,32 +85,14 @@ class SubcontractorController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:subcontractors'
+              'name' => 'required|unique:vendors'
         ]);
 
         $data['slug'] =  $slug =  \Str::slug($request->name);
 
-        $data['image'] = '';    
+        $vendor = Vendor::create($data);
 
-        if($request->hasFile('image')){
-               $image = $request->file('image');
-               $imageName = $slug.'-'.time() . '.' . $image->getClientOriginalExtension();
-              
-               $data['image']  = $request->file('image')->storeAs(Subcontractor::SUBCONTRACTORS, 
-                $imageName, 'public');
-        }
-
-        $subcontractor = Subcontractor::create($data);
-        
-        if($request->filled('trades')){            
-           $subcontractor->trades()->sync($request->trades);
-        } 
-
-
-        // $path = public_path().'/property/' . $proprty_type->slug.'/'.$slug;
-        // \File::makeDirectory($path, $mode = 0777, true, true);
-
-        return redirect('subcontractors')->with('message', 'Subcontractor Created Successfully!');
+        return redirect('vendors')->with('message', 'Vendor Created Successfully!');
     }
 
     /**
@@ -129,10 +107,9 @@ class SubcontractorController extends Controller
                return abort('401');
           } 
 
-         $subcontractor = Subcontractor::with('trades')->find($id);
-         $trades = Trade::all();   
+         $vendor = Vendor::find($id);
         
-         return view('subcontractors.edit',compact('subcontractor','trades'));
+         return view('vendors.edit',compact('vendor'));
     }
 
     /**
@@ -162,35 +139,20 @@ class SubcontractorController extends Controller
        $data = $request->except('_token');
 
        $request->validate([
-              'name' => 'required|unique:subcontractors,name,'.$id
+              'name' => 'required|unique:vendors,name,'.$id
        ]);
 
         $date['slug'] = $slug = \Str::slug($request->name);
          
-        $subcontractor = Subcontractor::find($id);
+        $vendor = Vendor::find($id);
        
-        if(!$subcontractor){
+        if(!$vendor){
             return redirect()->back();
         }
 
-        $data['image'] = $subcontractor->image;    
-
-
-        if($request->hasFile('image')){
-               $image = $request->file('image');
-               $imageName = $slug.'-'.time() . '.' . $image->getClientOriginalExtension();
-              
-               $data['image']  = $request->file('image')->storeAs(Subcontractor::SUBCONTRACTORS, 
-                $imageName, 'public');
-
-                @unlink('storage/'.$subcontractor->image);
-        }
-
-        $subcontractor->update($data);
-        
-        $subcontractor->trades()->sync($request->trades); 
+        $vendor->update($data);
  
-        return redirect('subcontractors')->with('message','Subcontractor Updated Successfully!');
+        return redirect('vendors')->with('message','Vendor Updated Successfully!');
     }
 
 
@@ -206,12 +168,10 @@ class SubcontractorController extends Controller
                return abort('401');
           } 
 
-        $subcontractor = Subcontractor::find($id);
+         $vendor = Vendor::find($id);
 
-         @unlink('storage/'.$subcontractor->image);
+         $vendor->delete();
 
-         $subcontractor->delete();
-
-        return redirect()->back()->with('message', 'Subcontractor Delete Successfully!');
+        return redirect()->back()->with('message', 'Vendor Delete Successfully!');
     }
 }

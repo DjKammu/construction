@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subcontractor;
 use Illuminate\Http\Request;
+use App\Models\DocumentType;
+use App\Models\ProjectType;
+use App\Models\Category;
+use App\Models\Vendor;
+use App\Models\Trade;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\ProjectType;
-use App\Models\DocumentType;
 use Auth;
 use App\Http\Controllers\FileController;
 
@@ -34,6 +38,10 @@ class HomeController extends Controller
         $users = User::count();
         $roles = Role::count();
         $documentTypes = DocumentType::count();
+        $vendors = Vendor::count();
+        $trades = Trade::count();
+        $subcontractors = Subcontractor::count();
+        $categories = Category::count();
 
         $files = \Storage::disk(FileController::DOC_UPLOAD)
                  ->allFiles(FileController::PROPERTY);
@@ -41,7 +49,8 @@ class HomeController extends Controller
         $files = @count($files);
 
         return view('home',compact('projectTypes','documentTypes',
-            'users','roles','files'));
+            'users','roles','files','vendors','trades','subcontractors',
+            'categories'));
     }
 
     /**
