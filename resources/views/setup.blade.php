@@ -35,6 +35,8 @@
 
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("subcontractors.index") }}'">Subcontractors
                         </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("vendors.index") }}'">Vendors
+                        </button>
                     </div>
                 </div>
 
