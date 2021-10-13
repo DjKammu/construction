@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Properties')
+@section('title', 'Projects')
 
 @section('content')
       <!-- Start Main View -->
@@ -26,10 +26,10 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Properties List</h4>
+                        <h4 class="mt-0 text-left">Projects List</h4>
                     </div>
                     <div class="col-6 text-right">
-                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='properties/create'">Add Property
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='projects/create'">Add Project
                         </button>
                     </div>
                 </div>
@@ -37,8 +37,8 @@
                 <div class="row mb-2">
                     <div class="col-6">
                        <select style="height: 26px;" onchange="return window.location.href = '?p='+this.value"> 
-                      <option>Select Property Type</option>
-                      @foreach($propertyTypes as $type)
+                      <option>Select Project Type</option>
+                      @foreach($projectTypes as $type)
                          <option value="{{ $type->slug }}" {{ (@request()->p == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach
                       </select>
@@ -66,14 +66,14 @@
                             </tr>
                          </thead>
                          <tbody class="row">
-                          @foreach($properties as $property)
+                          @foreach($projects as $project)
                             <tr class="text-center col-lg-4 col-sm-6 odd" style="display: flex; flex-wrap: wrap;" role="row">
                                <td>
-                                  <a style="text-decoration: none; position: relative;" href="properties/{{ $property->id }}">
+                                  <a style="text-decoration: none; position: relative;" href="projects/{{ $project->id }}">
                                     <span class="cross"> 
                                      <form 
                                         method="post" 
-                                        action="{{route('properties.destroy',$property->id)}}"> 
+                                        action="{{route('projects.destroy',$project->id)}}"> 
                                          @csrf
                                         {{ method_field('DELETE') }}
 
@@ -86,8 +86,8 @@
                                      <div class="card card-user card-table-item" style="width: 100%; height: 100%;">
                                         <div class="card-body pb-0">
                                            <div class="author mt-1">
-                                              <img class="avatar border-gray" src="{{ ($property->photo) ? url(\Storage::url($property->photo)) : asset('img/image_placeholder.png') }}">                        
-                                              <h5 class="title mb-0">{{ $property->property_name }}</h5>
+                                              <img class="avatar border-gray" src="{{ ($project->photo) ? url(\Storage::url($project->photo)) : asset('img/image_placeholder.png') }}">                        
+                                              <h5 class="title mb-0">{{ $project->name }}</h5>
                                            </div>
                                         </div>
                                      </div>
@@ -100,7 +100,7 @@
                       </table>
                 </div>
 
-                {!! $properties->render() !!}
+                {!! $projects->render() !!}
             </div>
         </div>
     </div>

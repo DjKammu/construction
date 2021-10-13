@@ -11,7 +11,7 @@ class Document extends Model
 
      CONST ARCHIEVED = 'archived';
      CONST PROJECT = 'project';
-     CONST PROPERTIES = 'properties';
+     CONST PROJECTS = 'projects';
      CONST DOCUMENTS = 'documents';
 
      protected $fillable = [

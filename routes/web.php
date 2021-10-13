@@ -57,13 +57,14 @@ Route::get('/setup', [App\Http\Controllers\HomeController::class, 'setup'])->nam
 
 Route::resource('project-types', App\Http\Controllers\ProjectTypeController::class);
 
-Route::resource('properties', App\Http\Controllers\PropertyController::class);
+Route::resource('projects', App\Http\Controllers\ProjectController::class);
 
 Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware('can:add_users');
 
 Route::resource('users', App\Http\Controllers\UserController::class)->middleware('can:add_users');
 
 Route::resource('document-types', App\Http\Controllers\DocumentTypeController::class);
+
 Route::resource('categories', App\Http\Controllers\CategoryController::class);
 
 
@@ -80,7 +81,6 @@ Route::post('properties/{id}/documents',[App\Http\Controllers\DocumentController
 ->name('properties.documents');
 
 Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::class,'destroyFile'])->name('documents.file.destroy');
-
 
 
 Route::get('files/{directory?}',[App\Http\Controllers\FileController::class,'index'])->name('files.index');

@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Edit Property')
+@section('title', 'Edit Project')
 
 @section('content')
 
@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Edit Property</h4>
+                        <h4 class="mt-0 text-left">Edit Project</h4>
                     </div>
                 </div>
 
@@ -46,10 +46,10 @@
                                                    aria-expanded="true">Details</a>
                                             </li>
 
-                                            <li class="nav-item">
+                                            <!-- <li class="nav-item">
                                                 <a class="nav-link text-dark" data-toggle="tab" href="#documents" role="tab"
                                                    aria-expanded="false">Documents</a>
-                                            </li>
+                                            </li> -->
 
                                         </ul>
                                     </div>
@@ -57,8 +57,7 @@
 
                                 <div id="my-tab-content" class="tab-content">
 
-                                    @include('properties.includes.details')
-                                    @include('properties.includes.documents')
+                                    @include('projects.includes.details')
                              
                               </div>
 
@@ -80,19 +79,24 @@
 
   $(document).ready(function(){
 
-  $('#search').click(function(){
-        var search = $('#inputSearch').val();
-        window.location.href = '?s='+search;
+    $('#search').click(function(){
+          var search = $('#inputSearch').val();
+          window.location.href = '?s='+search;
+    });
+
+    $(document).keyup(function(event) {
+      if (event.keyCode === 13) {
+          $("#search").click();
+      }
+    });
+
+
   });
 
-  $(document).keyup(function(event) {
-    if (event.keyCode === 13) {
-        $("#search").click();
-    }
+$('.date').datetimepicker({
+    format: 'Y-M-D'
 });
 
-
-  });
 
 </script>
 <style type="text/css">

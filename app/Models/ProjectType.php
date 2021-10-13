@@ -15,7 +15,7 @@ class ProjectType extends Model
      'name' , 'slug' ,'account_number'
     ];
 
-    public function properties(){
-    	return $this->hasMany(Property::class);
+    public function projects(){
+    	return $this->hasMany(Project::class);
     }
 }

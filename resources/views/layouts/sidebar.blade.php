@@ -9,7 +9,7 @@
             </div>
         </a>
         <a href="/" class="simple-text logo-normal">
-            DOC MANAGEMENT
+           QPM CONSTRUCTION
         </a>
     </div>
 
@@ -22,7 +22,7 @@
             <div class="info">
                 <a data-toggle="collapse" href="#sideBarCollapse" class="collapsed">
                     <span>
-                        DOC ADMIN  <b class="caret"></b>
+                        QPM ADMIN  <b class="caret"></b>
                     </span>
                 </a>
                 <div class="clearfix"></div>
@@ -69,13 +69,13 @@
               @can('view')
 
             <!-- Property Types -->
-             <!-- <li class="{{ Request::is('properties*') ? 'active' : '' }}">
-                <a href="{{ route('properties.index') }}">
-                    <i class="nc-icon nc-bank"></i>
+             <li class="{{ Request::is('projects*') ? 'active' : '' }}">
+                <a href="{{ route('projects.index') }}">
+                    <!-- <i class="nc-icon nc-bank"></i> -->
                     <i class="fa fa-building-o"></i>
-                    <p>Properties</p>
+                    <p>Projects</p>
                 </a>
-            </li> -->
+            </li>
 
             @endcan
 

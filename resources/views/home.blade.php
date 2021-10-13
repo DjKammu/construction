@@ -36,7 +36,7 @@
     </div>
 
     <!-- Trades Overview -->
-  <!--   <div class="col-lg-4 col-md-6 col-sm-6">
+    <div class="col-lg-4 col-md-6 col-sm-6">
         <div class="card card-stats">
             <div class="card-body ">
                 <div class="row">
@@ -47,8 +47,8 @@
                     </div>
                     <div class="col-7 col-md-8">
                         <div class="numbers">
-                            <p class="card-category">Properties</p>
-                            <p id="trades_count" class="card-title">{{ @$properties }}<p>
+                            <p class="card-category">Projects</p>
+                            <p id="trades_count" class="card-title">{{ @$projects }}<p>
                         </div>
                     </div>
                 </div>
@@ -56,11 +56,11 @@
             <div class="card-footer ">
                 <hr>
                 <div class="stats">
-                    <a href="{{ route('properties.index')}}" class="text-muted"><i class="fa fa-eye"></i> View All</a>
+                    <a href="{{ route('projects.index')}}" class="text-muted"><i class="fa fa-eye"></i> View All</a>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
      <!-- Files Overview -->
     <div class="col-lg-4 col-md-6 col-sm-6">
@@ -151,7 +151,8 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-warning">
-                            <i class="fa fa-copyright text-warning"></i>
+                            <img src="{{('images/icons/trade.png') }}">
+                            <!-- <i class="fa fa-copyright text-warning"></i> -->
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
@@ -178,7 +179,8 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-success">
-                            <i class="fa fa-address-book text-danger"></i>
+                             <img src="{{('images/icons/subcontactor.png') }}">
+                            <!-- <i class="fa fa-address-book text-danger"></i> -->
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
@@ -205,7 +207,8 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-success">
-                            <i class="fa fa-list-alt text-warning"></i>
+                            <img src="{{('images/icons/category.jpeg') }}">
+                            <!-- <i class="fa fa-list-alt text-warning"></i> -->
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
@@ -231,7 +234,8 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-success">
-                            <i class="fa fa-industry text-success"></i>
+                            <img src="{{('images/icons/vendor.jpeg') }}">
+                            <!-- <i class="fa fa-industry text-success"></i> -->
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
