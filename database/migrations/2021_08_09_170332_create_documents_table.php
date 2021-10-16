@@ -15,14 +15,16 @@ class CreateDocumentsTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('property_id');
-            $table->foreign('property_id')->references('id')->on('properties')->onDelete('cascade');
+            $table->unsignedBigInteger('project_id');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->unsignedBigInteger('document_type_id');
             $table->foreign('document_type_id')->references('id')->on('document_types')->onDelete('cascade');
             $table->string('name')->reuired();
             $table->string('slug')->reuired();
             $table->string('account_number')->nullable();
              $table->string('file')->nullable();
+             $table->unsignedBigInteger('vendor_id')->nullable();
+             $table->unsignedBigInteger('subcontractor_id')->nullable();
             $table->timestamps();
         });
     }

@@ -10,14 +10,15 @@ class Document extends Model
     use HasFactory;
 
      CONST ARCHIEVED = 'archived';
-     CONST PROJECT = 'project';
-     CONST PROJECTS = 'projects';
      CONST DOCUMENTS = 'documents';
+     CONST PROJECTS  = 'projects';
+     CONST PROJECT   = 'project';
 
      protected $fillable = [
      'name' , 'slug' ,'account_number',
      'file','property_id','tenant_id',
-     'document_type_id'
+     'document_type_id','vendor_id',
+     'subcontractor_id'
     ];
 
 
@@ -26,8 +27,8 @@ class Document extends Model
         return $this->belongsTo(DocumentType::class);
     }
 
-    public function property(){
-    	return $this->belongsTo(Property::class);
+    public function project(){
+    	return $this->belongsTo(Project::class);
     }
 
     public function files(){

@@ -72,13 +72,13 @@ Route::get('documents/search', [App\Http\Controllers\DocumentController::class,'
 
 Route::resource('documents', App\Http\Controllers\DocumentController::class);
 
-Route::get('properties/{id}/documents',[App\Http\Controllers\DocumentController::class,'create'])
-->name('properties.documents');
+Route::get('projects/{id}/documents',[App\Http\Controllers\DocumentController::class,'create'])
+->name('projects.documents');
 
-Route::get('properties/{id}/documents/{document}',[App\Http\Controllers\DocumentController::class,'show'])->name('properties.documents.show');
+Route::get('projects/{id}/documents/{document}',[App\Http\Controllers\DocumentController::class,'show'])->name('projects.documents.show');
 
-Route::post('properties/{id}/documents',[App\Http\Controllers\DocumentController::class,'store'])
-->name('properties.documents');
+Route::post('projects/{id}/documents',[App\Http\Controllers\DocumentController::class,'store'])
+->name('projects.documents');
 
 Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::class,'destroyFile'])->name('documents.file.destroy');
 

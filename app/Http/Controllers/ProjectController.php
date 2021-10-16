@@ -7,7 +7,8 @@ use App\Models\DocumentType;
 use App\Models\Document;
 use App\Models\ProjectType;
 use App\Models\Project;
-use App\Models\Tenant;
+use App\Models\Subcontractor;
+use App\Models\Vendor;
 use Gate;
 
 
@@ -137,6 +138,8 @@ class ProjectController extends Controller
          $projectTypes = ProjectType::all();
          $project = Project::find($id);
          $documentTypes = DocumentType::all();
+         $subcontractors = Subcontractor::all();
+         $vendors = Vendor::all();
          $documents = $project->documents();
          // $tenants = Tenant::all();
 
@@ -153,45 +156,50 @@ class ProjectController extends Controller
                 });
          }
 
-         // if(request()->filled('tenant')){
-         //        $tenant = request()->tenant;
-         //        $documents->where('tenant_id', $tenant);
-         // } 
+         if(request()->filled('vendor')){
+                $vendor = request()->vendor;
+                $documents->where('vendor_id', $vendor);
+         } 
+        
+        if(request()->filled('subcontractor')){
+                $subcontractor = request()->subcontractor;
+                $documents->where('subcontractor_id', $subcontractor);
+         } 
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
-        // $documents = $documents->with('document_type')
-        //             ->paginate($perPage);
+        $documents = $documents->with('document_type')
+                    ->paginate($perPage);
 
-        // $documents->filter(function($doc){
 
-        //     $property = $doc->property()->first(); 
+        $documents->filter(function($doc){
 
-        //     $property_slug = \Str::slug($property->property_name);
+            $project = @$doc->project;
 
-        //     $document_type = $doc->document_type()->pluck('slug')->first();
+            $project_slug = \Str::slug($project->name);
 
-        //     $property_type_slug = @ProprtyType::find($property->proprty_type_id)->slug;
+            $document_type = @$doc->document_type->slug;
 
-        //      $folderPath = Document::PROPERTY."/";
+            $project_type_slug = @$project->project_type->slug;
 
-        //     $property_type_slug = ($property_type_slug) ? $property_type_slug : Document::ARCHIEVED;
+            $folderPath = Document::PROJECT."/";
 
-        //     $folderPath .= "$property_type_slug/$property_slug/$document_type/";
+            $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
+
+            $folderPath .= "$project_type_slug/$project_slug/$document_type/";
             
-        //     $files = $doc->files();
+            $files = $doc->files();
 
-        //     $file =  ($files->count() == 1) ? $files->pluck('file')->first() : '';
+            $file =  ($files->count() == 1) ? $files->pluck('file')->first() : '';
 
-        //     $doc->file = ($file  ? asset($folderPath.$file) : '') ;
+            $doc->file = ($file  ? asset($folderPath.$file) : '') ;
 
-        //     return $doc->file;
+            return $doc->file;
            
-        //  });
+         });
 
 
-         return view('projects.edit',compact('projectTypes','project'));
-            // 'documentTypes','documents','tenants'));
+         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors'));
     }
 
     /**

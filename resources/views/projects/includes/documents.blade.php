@@ -5,7 +5,7 @@
             <h4 class="mt-0 text-left">Documents List </h4>
         </div>
         <div class="col-6 text-right">
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("properties.documents",['id' => request()->property ])  }}'">Add Document
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.documents",['id' => request()->project ])  }}'">Add Document
             </button>
         </div>
     </div>
@@ -29,13 +29,19 @@
             <select style="height: 26px;" name="document_type" > 
             <option value="">Select Documents Type</option>
             @foreach($documentTypes as $type)
-               <option value="{{ $type->slug }}" {{ (@request()->p == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
+               <option value="{{ $type->slug }}" {{ (@request()->document_type == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
             @endforeach
             </select>
-            <select style="height: 26px;" name="tenant"> 
-              <option value="">Select Tenant</option>
-              @foreach($tenants as $tenant)
-                 <option value="{{ $tenant->id }}" {{ (@request()->tenant == $tenant->id) ? 'selected' : ''}}> {{ $tenant->name }}</option>
+            <select style="height: 26px;" name="vendor"> 
+              <option value="">Select Vendor</option>
+              @foreach($vendors as $vendor)
+                 <option value="{{ $vendor->id }}" {{ (@request()->vendor == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
+              @endforeach
+            </select> 
+            <select style="height: 26px;" name="subcontractor"> 
+              <option value="">Select Subcontractor</option>
+              @foreach($subcontractors as $subcontractor)
+                 <option value="{{ $subcontractor->id }}" {{ (@request()->subcontractor == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
               @endforeach
             </select>
             <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >
@@ -96,10 +102,10 @@
                                   <span class="doc_type_m">
                                     {{ @$document->property->property_name }} 
                                   </span></br>
-                                 <a  href="{{ ($document->file) ? $document->file : route('properties.documents.show', ['id' => request()->property, 'document' => $document->id ]) }}" {{ ($document->file) ? 'target="_blank"' : '' }} >
+                                 <a  href="{{ ($document->file) ? $document->file : route('projects.documents.show', ['id' => request()->project, 'document' => $document->id ]) }}" {{ ($document->file) ? 'target="_blank"' : '' }} >
                                   <img class="avatar border-gray" src="{{ asset('img/'.$extension.'.png') }}">  
                                    </a>
-                                  <a href="{{ request()->property }}/documents/{{ $document->id }}">                     
+                                  <a href="{{ request()->project }}/documents/{{ $document->id }}">                     
                                   <h6 class="title mb-0">{{ @$document->name }}</h6>
                                    </a>
                                    <span class="doc-type"> 
@@ -122,74 +128,3 @@
     </div>
     {!! $documents->render() !!}
 </div>
-
-@section('pagescript')
-
-<script type="text/javascript">
-
-  
-  $(document).ready(function(){
-
-  $('#search').click(function(){
-        var search = $('#inputSearch').val();
-
-        if(!search){
-         // alert('Please enter to search');
-        }
-        window.location.href = '?s='+search;
-  });
-
-  $(document).keyup(function(event) {
-    if (event.keyCode === 13) {
-        $("#search").click();
-    }
-});
-  });
-  
-   function selectPerpage(perPage){
-       var fullUrl = window.location.href;
-       let isPerpage = '{{ Request::input("per_page")}}';
-
-       if(!isPerpage){
-         window.location.href = fullUrl+(fullUrl.includes('?')?'&':'?')+'per_page='+perPage;
-       }
-       else if(isPerpage != perPage){
-         window.location.href = fullUrl.replace(isPerpage, perPage)
-       }
-  } 
-
-
-</script>
-
-<style type="text/css">
-  
-span.cross{
-    position: absolute;
-    z-index: 10;
-    right: 30px;
-    display: none;
-}
-tr:hover span.cross{
-  display: block;
-}
-button.btn.btn-neutral.bg-transparent.btn-icon{
-  background-color: transparent !important;
-}
-td{
-  width: 100%;
-}
-
-span.doc-type{
- font-size: 12px;
- padding-top: 8px;
- display: block;
-}
-
-span.doc_type_m{
- font-size: 10px;
- padding-top: 3px;
- display: block;
-}
-
-</style>
-@endsection

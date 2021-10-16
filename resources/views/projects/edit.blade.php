@@ -42,14 +42,14 @@
                                         <ul id="tabs" class="nav nav-tabs" role="tablist">
 
                                             <li class="nav-item">
-                                                <a class="nav-link text-dark active" data-toggle="tab" href="#details" role="tab"
+                                                <a class="nav-link text-dark active"  data-toggle="tab" href="#details" role="tab"
                                                    aria-expanded="true">Details</a>
                                             </li>
 
-                                            <!-- <li class="nav-item">
-                                                <a class="nav-link text-dark" data-toggle="tab" href="#documents" role="tab"
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark"  data-toggle="tab" href="#documents" role="tab"
                                                    aria-expanded="false">Documents</a>
-                                            </li> -->
+                                            </li>
 
                                         </ul>
                                     </div>
@@ -58,6 +58,7 @@
                                 <div id="my-tab-content" class="tab-content">
 
                                     @include('projects.includes.details')
+                                    @include('projects.includes.documents')
                              
                               </div>
 
@@ -90,12 +91,53 @@
       }
     });
 
-
   });
 
 $('.date').datetimepicker({
     format: 'Y-M-D'
 });
+
+
+  function selectPerpage(perPage){
+       var fullUrl = window.location.href;
+       let isPerpage = '{{ Request::input("per_page")}}';
+
+       if(!isPerpage){
+          let url = fullUrl;
+         if(location.hash){
+          fullUrl = location.href.replace(location.hash,"");
+          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'per_page='+perPage+location.hash;
+         }else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'per_page='+perPage;
+         }
+         window.location.href = url;
+       }
+       else if(isPerpage != perPage){
+         window.location.href = fullUrl.replace(isPerpage, perPage)
+       }
+  } 
+
+  const loc = new URL(window.location.href) || null
+
+  if (loc !== null) {
+    if (loc.hash !== '') {
+      $('.nav-tabs li a').removeClass('active')
+      $(loc.hash).addClass('active')
+       $(`a[href="${ loc.hash }"]`).tab('show')
+    }
+  }
+
+  $('a[data-toggle="tab"]').on("click", function() {
+    let url = location.href.replace(/\/$/, "");
+    let newUrl;
+    const hash = $(this).attr("href");
+    if(hash == "#details") {
+      newUrl = url.split("#")[0];
+    } else {
+      newUrl = url.split("#")[0] + hash;
+    }
+    history.replaceState(null, null, newUrl);
+  });
 
 
 </script>
@@ -104,10 +146,10 @@ $('.date').datetimepicker({
 span.cross{
     position: absolute;
     z-index: 10;
-    left: 30px;
+    right: 30px;
     display: none;
 }
-tr a:hover span.cross{
+tr:hover span.cross{
   display: block;
 }
 button.btn.btn-neutral.bg-transparent.btn-icon{
@@ -116,5 +158,19 @@ button.btn.btn-neutral.bg-transparent.btn-icon{
 td{
   width: 100%;
 }
+
+span.doc-type{
+ font-size: 12px;
+ padding-top: 8px;
+ display: block;
+}
+
+span.doc_type_m{
+ font-size: 10px;
+ padding-top: 3px;
+ display: block;
+}
+
 </style>
+
 @endsection

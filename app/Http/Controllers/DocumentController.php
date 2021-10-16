@@ -7,10 +7,11 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
-use App\Models\ProprtyType;
-use App\Models\Property;
+use App\Models\ProjectType;
+use App\Models\Project;
+use App\Models\Subcontractor;
 use App\Models\Document;
-use App\Models\Tenant;
+use App\Models\Vendor;
 use Gate;
 
 
@@ -37,12 +38,12 @@ class DocumentController extends Controller
                return abort('401');
          } 
 
-         $properties = Property::query();
+         $projects = Project::query();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
-            $properties->where('property_name', 'LIKE', "%{$searchTerm}%") 
-            ->orWhere('property_address', 'LIKE', "%{$searchTerm}%")
+            $projects->where('name', 'LIKE', "%{$searchTerm}%") 
+            ->orWhere('address', 'LIKE', "%{$searchTerm}%")
             ->orWhere('city', 'LIKE', "%{$searchTerm}%")
             ->orWhere('state', 'LIKE', "%{$searchTerm}%")
             ->orWhere('country', 'LIKE', "%{$searchTerm}%")
@@ -52,16 +53,16 @@ class DocumentController extends Controller
 
          if(request()->filled('p')){
             $p = request()->p;
-            $properties->whereHas('proprty_type', function($q) use ($p){
+            $projects->whereHas('project_type', function($q) use ($p){
                 $q->where('slug', $p);
             });
          } 
          
-         $propertyTypes = ProprtyType::all(); 
+         $projectTypes = ProjectType::all(); 
 
-         $properties = $properties->paginate((new Property())->perPage);
+         $projects = $projects->paginate((new Project())->perPage);
 
-         return view('properties.index',compact('properties','propertyTypes'));
+         return view('projects.index',compact('projects','projectTypes'));
     }
 
     /**
@@ -78,10 +79,10 @@ class DocumentController extends Controller
          $id = request()->id;
 
         $documentsTypes = DocumentType::all(); 
+        $subcontractors = Subcontractor::all();
+        $vendors = Vendor::all();
 
-        $tenants = Property::find($id)->tenants()->get();
-
-        return view('properties.documents-create',compact('documentsTypes','tenants'));
+        return view('projects.documents-create',compact('documentsTypes','subcontractors','vendors'));
     }
 
     /**
@@ -102,47 +103,47 @@ class DocumentController extends Controller
               'name' => [
                     'required',
                      Rule::unique('documents')->where(function ($query) use($id) {
-                        return $query->where('property_id', $id);
+                        return $query->where('project_id', $id);
                     }),
                 ],
               'document_type_id' => 'required|exists:document_types,id',
               // 'file' => 'nullable|sometimes|mimes:pdf,doc,docx,jpeg,jpg,png,csv,xlsx,xls'
         ]);
 
-        $slug = \Str::slug($request->name);
+         $slug = \Str::slug($request->name);
 
-        $data['file'] = '';    
+         $data['file'] = '';    
        
-         $property = Property::with('proprty_type')->find($id);
+         $project = Project::find($id);
 
-         if(!$property){
+         if(!$project){
             return redirect()->back();
         }
         
         $document_type = DocumentType::find($request->document_type_id);
 
-        $propperty_slug = \Str::slug($property->property_name);
+        $project_slug = \Str::slug($project->name);
 
-        $proprty_type = @$property->proprty_type;
+        $project_type = @$project->project_type;
 
-        $proprty_type_slug = @$proprty_type->slug; 
+        $project_type_slug = @$project_type->slug; 
 
         $document_type_slug = $document_type->slug;
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::PROPERTY."/";
+        $folderPath = Document::PROJECT."/";
 
-        $proprty_type_slug = ($proprty_type_slug) ? $proprty_type_slug : Document::ARCHIEVED;
+        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
 
-        $folderPath .= $proprty_type_slug.'/'.$propperty_slug.'/'.$document_type_slug;
+        $folderPath .= $project_type_slug.'/'.$project_slug.'/'.$document_type_slug;
 
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
         $data['slug'] = $slug;
         
-        $document = $property->documents()->create($data);
+        $document = $project->documents()->create($data);
 
         if($request->hasFile('file')){
                $filesArr = [];
@@ -163,7 +164,7 @@ class DocumentController extends Controller
                 $document->files()->createMany($filesArr);
         }
 
-        return redirect(route('properties.show',['property' => $id]))->with('message', 'Document Created Successfully!');
+        return redirect(route('projects.show',['project' => $id]).'#documents')->with('message', 'Document Created Successfully!');
     }
 
     /**
@@ -182,23 +183,24 @@ class DocumentController extends Controller
 
         $documentsTypes = DocumentType::all(); 
 
-        $property = @$document->property()->first();
+        $project = @$document->project;
         
-        $tenants = $property->tenants()->get();
+        $subcontractors = Subcontractor::all();
+
+        $vendors = Vendor::all();
         
-        $property_slug = \Str::slug($property->property_name);
+        $project_slug = \Str::slug($project->name);
 
         $document_type = $document->document_type()->pluck('slug')->first();
 
-        $property_type_slug = @ProprtyType::find($property->proprty_type_id)->slug;
+        $project_type_slug = @$project->project_type->slug;
 
-        $folderPath = Document::PROPERTY."/";
+        $folderPath = Document::PROJECT."/";
 
-        $property_type_slug = ($property_type_slug) ? $property_type_slug : Document::ARCHIEVED;  
-        $folderPath .= "$property_type_slug/$property_slug/$document_type/";
+        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;  
+        $folderPath .= "$project_type_slug/$project_slug/$document_type/";
 
-
-       $document->files->filter(function($file) use ($folderPath){
+        $document->files->filter(function($file) use ($folderPath){
 
           $file->file = ($folderPath.$file->file);
 
@@ -206,8 +208,8 @@ class DocumentController extends Controller
          
        });
 
-      return view('properties.documents-edit',compact('documentsTypes','document',
-        'tenants'));
+      return view('projects.documents-edit',compact('documentsTypes','document',
+        'subcontractors','vendors'));
 
     }
 
@@ -252,15 +254,15 @@ class DocumentController extends Controller
             return redirect()->back();
         }
         
-        $property = $document->property()->with('proprty_type')->first(); 
+        $project = @$document->project; 
 
         $document_type = DocumentType::find($request->document_type_id);
 
-        $propperty_slug = \Str::slug($property->property_name);
+        $project_slug = \Str::slug($project->name);
 
-        $proprty_type = @$property->proprty_type;
+        $project_type = @$project->project_type;
 
-        $proprty_type_slug = @$proprty_type->slug; 
+        $project_type_slug = @$project_type->slug; 
 
         $document_type_slug = $document_type->slug;
 
@@ -268,15 +270,15 @@ class DocumentController extends Controller
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::PROPERTY."/";
+        $folderPath = Document::PROJECT."/";
 
-        $proprty_type_slug = ($proprty_type_slug) ? $proprty_type_slug : Document::ARCHIEVED;
+        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
 
-        $folderPath .= $proprty_type_slug.'/'.$propperty_slug.'/'.$document_type_slug;
+        $folderPath .= $project_type_slug.'/'.$project_slug.'/'.$document_type_slug;
         
         if(($old_document_type->id != $request->document_type_id)){
              
-               $oldFolderPath = Document::PROPERTY.'/'.$proprty_type_slug.'/'.$propperty_slug.'/'.$old_document_type->slug;   
+               $oldFolderPath = Document::PROJECT.'/'.$project_type_slug.'/'.$project_slug.'/'.$old_document_type->slug;   
 
                \File::copyDirectory($public_path.$oldFolderPath,$public_path.$folderPath); 
                \File::deleteDirectory($public_path.$oldFolderPath);
@@ -304,7 +306,7 @@ class DocumentController extends Controller
         }
 
 
-        return redirect("properties/$property->id")->with('message', 'Document Updated Successfully!');
+        return redirect("projects/$project->id#documents")->with('message', 'Document Updated Successfully!');
     }
 
 
@@ -322,29 +324,29 @@ class DocumentController extends Controller
 
          $document = Document::find($id);
 
-         $property = $document->property()->first(); 
+         $project = @$document->project; 
 
-         $property_slug = \Str::slug($property->property_name);
+         $project_slug = \Str::slug($project->name);
 
-         $document_type = $document->document_type()->pluck('slug')->first();
+         $document_type = @$document->document_type->slug;
 
-         $property_type_slug = @ProprtyType::find($property->proprty_type_id)->slug;
+         $project_type_slug = @ProjectType::find($project->project_type_id)->slug;
 
-        $folderPath = Document::PROPERTY."/";
+        $folderPath = Document::PROJECT."/";
 
-        $property_type_slug = ($property_type_slug) ? $property_type_slug : Document::ARCHIEVED;
+        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
 
-         $folderPath .= "$property_type_slug/$property_slug/$document_type/";
+         $folderPath .= "$project_type_slug/$project_slug/$document_type/";
 
          $path = @public_path().'/'.$folderPath;
 
          $files = $document->files()->get();
 
-         $aPath = public_path().'/'. Document::PROPERTY."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
+         $aPath = public_path().'/'. Document::PROJECT."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
          
          foreach (@$files as $key => $file) {
-            $proprty_type = ProprtyType::find($id);
+            $proprty_type = ProjectType::find($id);
             @\File::copy($path.$file->file, $aPath.'/'.$file->file);
             @unlink($path.$file->file);
          }
@@ -366,7 +368,7 @@ class DocumentController extends Controller
 
           $publicPath = public_path().'/';
 
-          $aPath = $publicPath.Document::PROPERTY."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
+          $aPath = $publicPath.Document::PROJECT."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
         
