@@ -110,9 +110,9 @@
                                    </a>
                                    <span class="doc-type"> 
                                     {{  @$document->document_type->name }}</span>
-                                    <span class="doc-type"> 
+                                    <span class="doc_type_m"> 
                                     {{  @$document->vendor->name }}</span>
-                                    <span class="doc-type"> 
+                                    <span class="doc_type_m"> 
                                     {{  @$document->subcontractor->name }}</span>
                                     <span class="doc_type_m">
                                       {{ (!$document->file) && $document->files()->exists() ? 'Multiple' : '' }}
