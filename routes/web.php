@@ -97,5 +97,14 @@ Route::get('files/{directory}/{property_type}/{property}/{doc_type}/{doc}',[App\
 Route::delete('files', [App\Http\Controllers\FileController::class,'destroy'])->name('files.destroy');
 
 Route::resource('trades', App\Http\Controllers\TradeController::class);
+
+Route::get('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'createProjectTrade'])
+->name('projects.trades');
+
+Route::post('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'storeProjectTrade'])
+->name('projects.trades');
+
+ Route::delete('projects/{project_id}/trades/{id}', [App\Http\Controllers\TradeController::class,'destroyProjectTrade'])->name('projects.trades.destroy');
+
 Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
 Route::resource('vendors', App\Http\Controllers\VendorController::class);

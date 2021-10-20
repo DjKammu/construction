@@ -51,6 +51,11 @@
                                                    aria-expanded="false">Documents</a>
                                             </li>
 
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark"  data-toggle="tab" href="#trades" role="tab"
+                                                   aria-expanded="false">Trades</a>
+                                            </li>
+
                                         </ul>
                                     </div>
                                </div>
@@ -59,6 +64,7 @@
 
                                     @include('projects.includes.details')
                                     @include('projects.includes.documents')
+                                    @include('projects.includes.trades')
                              
                               </div>
 
@@ -155,7 +161,7 @@ tr:hover span.cross{
 button.btn.btn-neutral.bg-transparent.btn-icon{
   background-color: transparent !important;
 }
-td{
+#documents td{
   width: 100%;
 }
 

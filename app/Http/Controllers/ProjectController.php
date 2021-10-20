@@ -141,7 +141,7 @@ class ProjectController extends Controller
          $subcontractors = Subcontractor::all();
          $vendors = Vendor::all();
          $documents = $project->documents();
-         // $tenants = Tenant::all();
+         $trades = $project->trades()->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -168,7 +168,7 @@ class ProjectController extends Controller
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
-        $documents = $documents->with('document_type')
+         $documents = $documents->with('document_type')
                     ->paginate($perPage);
 
 
@@ -199,7 +199,7 @@ class ProjectController extends Controller
          });
 
 
-         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors'));
+         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades'));
     }
 
     /**

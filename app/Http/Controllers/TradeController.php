@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Project;
 use App\Models\Trade;
 use Gate;
 
@@ -52,7 +53,9 @@ class TradeController extends Controller
         $categories =  Category::all();
 
         return view('trades.create',compact('categories'));
-    }
+    }  
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -179,5 +182,77 @@ class TradeController extends Controller
          $trade->delete();
 
         return redirect()->back()->with('message', 'Trade Delete Successfully!');
+    }
+
+
+
+      /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createProjectTrade($id)
+    {
+        if(Gate::denies('add')) {
+               return abort('401');
+         } 
+
+        $trades =  Trade::whereDoesntHave("projects", function($q) use($id){
+            $q->where("project_id",$id);
+          })->get();
+
+        return view('projects.includes.trades-create',compact('trades'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeProjectTrade(Request $request,$id)
+    {
+          if(Gate::denies('add')) {
+               return abort('401');
+        } 
+
+        $data = $request->except('_token');
+
+        $request->validate([
+              'trade_id' => 'required|exists:trades,id'
+        ]);
+            
+        $project = Project::find($id);
+
+        
+        if(!$project){
+            return redirect()->back();
+        }          
+        
+        $project->trades()->attach($request->trade_id); 
+
+        return redirect(route('projects.show',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
+    }
+
+
+      /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyProjectTrade($project_id, $id)
+    {
+         if(Gate::denies('delete')) {
+               return abort('401');
+          } 
+
+         $project = Project::find($project_id);
+
+          @$project->trades()
+                 ->where('trade_id',$id)
+                 ->delete();
+
+        return redirect(route('projects.show',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
     }
 }

@@ -82,7 +82,7 @@ class DocumentController extends Controller
         $subcontractors = Subcontractor::all();
         $vendors = Vendor::all();
 
-        return view('projects.documents-create',compact('documentsTypes','subcontractors','vendors'));
+        return view('projects.includes.documents-create',compact('documentsTypes','subcontractors','vendors'));
     }
 
     /**
@@ -208,7 +208,7 @@ class DocumentController extends Controller
          
        });
 
-      return view('projects.documents-edit',compact('documentsTypes','document',
+      return view('projects.includes.documents-edit',compact('documentsTypes','document',
         'subcontractors','vendors'));
 
     }

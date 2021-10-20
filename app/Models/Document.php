@@ -31,6 +31,14 @@ class Document extends Model
     	return $this->belongsTo(Project::class);
     }
 
+    public function vendor(){
+        return $this->belongsTo(Vendor::class);
+    }
+
+    public function subcontractor(){
+        return $this->belongsTo(Subcontractor::class);
+    }
+
     public function files(){
         return $this->hasMany(DocumentFile::class);
     }

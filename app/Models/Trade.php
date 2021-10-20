@@ -19,4 +19,10 @@ class Trade extends Model
      'category_id',
      'scope'
     ];
+
+
+    public function projects(){
+        return $this->belongsToMany(Project::class)->withTimestamps();
+    }
+
 }

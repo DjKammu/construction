@@ -22,7 +22,6 @@ class Subcontractor extends Model
 
 
     public function trades(){
-
     	return $this->belongsToMany(Trade::class)->withTimestamps();
     }
 }

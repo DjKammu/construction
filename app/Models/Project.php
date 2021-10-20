@@ -26,6 +26,10 @@ class Project extends Model
     	return $this->hasMany(Document::class);
     }
 
+    public function trades(){
+        return $this->belongsToMany(Trade::class)->withTimestamps();
+    }
+
     // public function tenants(){
     //     return $this->hasMany(Tenant::class);
     // }
