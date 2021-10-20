@@ -5,11 +5,27 @@
             <h4 class="mt-0 text-left">Trades List </h4>
         </div>
         <div class="col-6 text-right">
+
             <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.trades",['id' => request()->project ])  }}'">Add Trade
             </button>
         </div>
-    </div>
 
+    </div>
+  <div class="row mb-2">
+        <div class="col-12">
+            <form method="post" action="{{ route('projects.trades.multiple', [ 'id' => request()->project]) }}"> 
+              @csrf
+            <select style="height: 26px;"  name="project_id"> 
+              <option value=""> Select Project</option>
+              @foreach($projects as $project)
+               <option value="{{ $project->id }}" >{{ $project->name}}
+               </option>
+              @endforeach
+            </select>
+            <button >Assign Trades from other projects</button>
+          </form>
+        </div>
+    </div>
   
 
     <!-- Categories Table -->

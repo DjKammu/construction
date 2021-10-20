@@ -234,6 +234,39 @@ class TradeController extends Controller
         return redirect(route('projects.show',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeMultipleProjectTrade(Request $request,$id)
+    {
+          if(Gate::denies('add')) {
+               return abort('401');
+        } 
+
+        $data = $request->except('_token');
+
+        $request->validate([
+              'project_id' => 'required|exists:projects,id'
+        ]);
+            
+        $project = Project::find($id);
+        
+        if(!$project){
+            return redirect()->back();
+        }  
+
+        $selectedProject = Project::find($data['project_id']);
+
+        $selectedTrades = @$selectedProject->trades()->pluck('trade_id');
+   
+        @$project->trades()->sync($selectedTrades,false); 
+
+        return redirect(route('projects.show',['project' => $id]).'#trades')->with('message', 'Trades Assigned Successfully!');
+    }
+
 
       /**
      * Remove the specified resource from storage.
@@ -249,9 +282,11 @@ class TradeController extends Controller
 
          $project = Project::find($project_id);
 
-          @$project->trades()
-                 ->where('trade_id',$id)
-                 ->delete();
+         $trade = $project->trades()
+                  ->where('trade_id',$id)
+                  ->firstOrFail()->pivot;
+
+         @$trade->delete();
 
         return redirect(route('projects.show',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
     }

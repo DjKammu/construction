@@ -136,6 +136,7 @@ class ProjectController extends Controller
           } 
 
          $projectTypes = ProjectType::all();
+         $projects = Project::all()->except($id);
          $project = Project::find($id);
          $documentTypes = DocumentType::all();
          $subcontractors = Subcontractor::all();
@@ -199,7 +200,7 @@ class ProjectController extends Controller
          });
 
 
-         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades'));
+         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects'));
     }
 
     /**

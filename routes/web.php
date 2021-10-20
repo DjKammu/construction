@@ -104,6 +104,8 @@ Route::get('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'
 Route::post('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'storeProjectTrade'])
 ->name('projects.trades');
 
+Route::post('projects/{id}/trades/multiple',[App\Http\Controllers\TradeController::class,'storeMultipleProjectTrade'])->name('projects.trades.multiple');
+
  Route::delete('projects/{project_id}/trades/{id}', [App\Http\Controllers\TradeController::class,'destroyProjectTrade'])->name('projects.trades.destroy');
 
 Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
