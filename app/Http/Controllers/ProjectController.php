@@ -166,6 +166,15 @@ class ProjectController extends Controller
                 $subcontractor = request()->subcontractor;
                 $documents->where('subcontractor_id', $subcontractor);
          } 
+         $trade = @$trades->first()->id;
+        
+         if(request()->filled('trade')){
+                $trade = request()->trade;  
+         } 
+        
+         $awarded = @$project->proposals()->IsAwarded()->exists();
+
+         $proposals = @$project->proposals()->trade($trade)->get();
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -200,7 +209,41 @@ class ProjectController extends Controller
          });
 
 
-         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects'));
+          $proposals->filter(function($proposal){
+
+            $project = @$proposal->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($proposal->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $folderPath = Document::PROPOSALS."/";
+
+            $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
+
+            $folderPath .= "$project_type_slug/$project_slug/$trade_slug/";
+            
+            $files = $proposal->files;
+
+            $files = @array_filter(explode(',',$files));
+
+            $filesArr = [];
+            
+            if(!empty($files)){
+               foreach (@$files as $key => $file) {
+                   $filesArr[] = asset($folderPath.$file);
+                }  
+            } 
+
+            $proposal->files = @($filesArr) ? @implode(',',$filesArr) : '' ;
+
+            return $proposal->files;
+           
+         });
+
+         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded'));
     }
 
     /**

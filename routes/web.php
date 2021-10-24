@@ -98,15 +98,27 @@ Route::delete('files', [App\Http\Controllers\FileController::class,'destroy'])->
 
 Route::resource('trades', App\Http\Controllers\TradeController::class);
 
-Route::get('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'createProjectTrade'])
-->name('projects.trades');
+Route::get('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'createProjectTrade'])->name('projects.trades');
 
-Route::post('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'storeProjectTrade'])
-->name('projects.trades');
+Route::post('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'storeProjectTrade'])->name('projects.trades');
 
 Route::post('projects/{id}/trades/multiple',[App\Http\Controllers\TradeController::class,'storeMultipleProjectTrade'])->name('projects.trades.multiple');
 
  Route::delete('projects/{project_id}/trades/{id}', [App\Http\Controllers\TradeController::class,'destroyProjectTrade'])->name('projects.trades.destroy');
+
+ Route::get('projects/{id}/proposals/{trade}',[App\Http\Controllers\ProposalController::class,'create'])->name('projects.proposals');
+
+Route::post('projects/{id}/proposals/{trade}',[App\Http\Controllers\ProposalController::class,'store'])->name('projects.proposals');
+
+Route::get('projects/proposals/{id}',[App\Http\Controllers\ProposalController::class,'show'])->name('projects.proposals.edit');
+
+Route::get('projects/proposals/award/{id}/{status}',[App\Http\Controllers\ProposalController::class,'award'])->name('projects.proposals.award');
+
+Route::post('projects/proposals/{id}',[App\Http\Controllers\ProposalController::class,'update'])->name('projects.proposals.update');
+
+Route::post('projects/proposals/{id}/upload',[App\Http\Controllers\ProposalController::class,'upload'])->name('projects.proposals.upload');
+
+ Route::delete('projects/proposals/{id}', [App\Http\Controllers\ProposalController::class,'destroy'])->name('projects.proposals.destroy');
 
 Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
 Route::resource('vendors', App\Http\Controllers\VendorController::class);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Subcontractor;
 use App\Models\DocumentType;
+use App\Models\Proposal;
 use App\Models\Trade;
 use Gate;
 
@@ -189,6 +190,10 @@ class SubcontractorController extends Controller
         $subcontractor->update($data);
         
         $subcontractor->trades()->sync($request->trades); 
+
+        Proposal::where('subcontractor_id', $id)
+                 ->whereNotIn('trade_id',$request->trades)
+                 ->delete();    
  
         return redirect('subcontractors')->with('message','Subcontractor Updated Successfully!');
     }

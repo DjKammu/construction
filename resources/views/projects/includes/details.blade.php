@@ -1,6 +1,13 @@
  <!-- Category Details -->
 <div class="tab-pane active" id="details" role="tabpanel" 
 aria-expanded="true">
+
+<div class="row mb-2">
+    <div class="col-6">
+        <h4 class="mt-0 text-left">Project Detail</h4>
+    </div>
+</div>
+
  <form   method="post" 
           action="{{ route('projects.update',$project->id) }}" enctype="multipart/form-data">
           <input type="hidden" name="_method" value="PUT">

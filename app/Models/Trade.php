@@ -25,4 +25,8 @@ class Trade extends Model
         return $this->belongsToMany(Project::class)->withTimestamps();
     }
 
+    public function subcontractors(){
+        return $this->belongsToMany(Subcontractor::class)->withTimestamps();
+    }
+
 }

@@ -27,12 +27,6 @@
 
 
             <div class="card-body">
-              <div class="row mb-2">
-                    <div class="col-6">
-                        <h4 class="mt-0 text-left">Edit Project</h4>
-                    </div>
-                </div>
-
                <div class="row">
                         <div class="col-md-12">
                             <div class="card-body">
@@ -54,8 +48,13 @@
                                             <li class="nav-item">
                                                 <a class="nav-link text-dark"  data-toggle="tab" href="#trades" role="tab"
                                                    aria-expanded="false">Trades</a>
-                                            </li>
-
+                                            </li> 
+                                             @if($trade)
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#proposals" role="tab"
+                                                     aria-expanded="false">Proposals</a>
+                                              </li>
+                                              @endif
                                         </ul>
                                     </div>
                                </div>
@@ -65,7 +64,9 @@
                                     @include('projects.includes.details')
                                     @include('projects.includes.documents')
                                     @include('projects.includes.trades')
-                             
+                                    @if($trade)
+                                    @include('projects.includes.proposals')
+                                    @endif
                               </div>
 
                             </div>
@@ -145,6 +146,14 @@ $('.date').datetimepicker({
     history.replaceState(null, null, newUrl);
   });
 
+ $('.add_file').click(function(){
+   $(this).siblings('.uploadImage').click();
+ });
+
+ $(".uploadImage").change(function() {
+    $(this).parent('.file_form').submit();
+  });
+
 
 </script>
 <style type="text/css">
@@ -175,6 +184,17 @@ span.doc_type_m{
  font-size: 10px;
  padding-top: 3px;
  display: block;
+}
+
+.btn-group-sm .btn{
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+.avatar.proposal_file{
+    width: 30px;
+    height: 30px;
 }
 
 </style>

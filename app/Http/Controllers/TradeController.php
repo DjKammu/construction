@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Project;
+use App\Models\Proposal;
 use App\Models\Trade;
 use Gate;
 
@@ -284,9 +285,14 @@ class TradeController extends Controller
 
          $trade = $project->trades()
                   ->where('trade_id',$id)
-                  ->firstOrFail()->pivot;
+                  ->firstOrFail()->pivot;     
 
          @$trade->delete();
+         
+         Proposal::where([
+          ['project_id', $project_id],
+          ['trade_id' , $id]
+         ])->delete();    
 
         return redirect(route('projects.show',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
     }
