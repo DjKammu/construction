@@ -221,9 +221,7 @@ class ProjectController extends Controller
 
             $folderPath = Document::PROPOSALS."/";
 
-            $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
-
-            $folderPath .= "$project_type_slug/$project_slug/$trade_slug/";
+            $folderPath .= "$project_slug/$trade_slug/";
             
             $files = $proposal->files;
 

@@ -1,7 +1,8 @@
 /node_modules
 /public/hot
 /public/image/*
-/public/property/*
+/public/project/*
+/public/proposals/*
 /public/storage
 /storage/*.key
 /vendor

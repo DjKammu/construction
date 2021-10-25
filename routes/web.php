@@ -120,5 +120,7 @@ Route::post('projects/proposals/{id}/upload',[App\Http\Controllers\ProposalContr
 
  Route::delete('projects/proposals/{id}', [App\Http\Controllers\ProposalController::class,'destroy'])->name('projects.proposals.destroy');
 
+ Route::delete('projects/proposals/{id}/file', [App\Http\Controllers\ProposalController::class,'destroyFile'])->name('projects.proposals.file.destroy');
+
 Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
 Route::resource('vendors', App\Http\Controllers\VendorController::class);

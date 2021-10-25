@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Trade;
 use App\Models\Document;
 use App\Models\Proposal;
+use App\Models\Subcontractor;
 use Gate;
 
 
@@ -97,14 +98,55 @@ class ProposalController extends Controller
         $request->validate([
               'subcontractor_id' => ['required',
               'exists:subcontractors,id'],
-              'labour_cost' => 'required',
-              'material' => 'required',
-              'subcontractor_price' => 'required'
+              // 'labour_cost' => 'required',
+              // 'material' => 'required',
+              // 'subcontractor_price' => 'required'
           ]
       );
 
+        $data['labour_cost'] = $data['labour_cost'] ?? 0;
+        $data['material']    = $data['material'] ?? 0;
+        $data['subcontractor_price'] = $data['subcontractor_price'] ?? 0;
+
         $data['project_id'] = $id;
         $data['trade_id'] = $trade_id;
+ 
+        $project = Project::find($id);
+
+        $project_slug = \Str::slug($project->name);
+
+        $trade = Trade::find($trade_id);
+
+        $trade_slug = @$trade->slug;
+
+        $subcontractor = Subcontractor::find($request->subcontractor_id);
+
+        $subcontractor_slug = $subcontractor->slug;
+
+        $public_path = public_path().'/';
+
+        $folderPath = Document::PROPOSALS."/";
+
+        $folderPath .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+
+        $data['files'] = '';
+
+        if($request->hasFile('files')){
+             $filesArr = [];
+            $files = $request->file('files');
+
+             foreach ($files as $key => $file) {
+
+                   $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+                    $file->storeAs($folderPath, $fileName, 'doc_upload');
+
+                 $filesArr[] = $fileName; 
+               }
+
+            $data['files'] = implode(',',$filesArr);
+        }
 
         Proposal::create($data);
 
@@ -124,6 +166,29 @@ class ProposalController extends Controller
         } 
         $proposal = Proposal::find($id);  
         $subcontractor = @$proposal->subcontractor;
+
+        $filesCollection = ($proposal->files) ? @explode(',',$proposal->files) : [];
+
+        $proposal->files = @collect($filesCollection)->map(function($file) use ($proposal){
+
+            $project = @$proposal->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($proposal->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $folderPath = Document::PROPOSALS."/";
+
+            $folderPath .= "$project_slug/$trade_slug/";
+            
+            $file = @($file) ? $folderPath.$file : '' ;
+
+            return $file;
+           
+         })->implode(',');
+
         return view('projects.includes.proposals-edit',compact('subcontractor','proposal'));
     }
 
@@ -154,13 +219,48 @@ class ProposalController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'labour_cost' => 'required',
-              'material' => 'required',
-              'subcontractor_price' => 'required'
+              // 'labour_cost' => 'required',
+              // 'material' => 'required',
+              // 'subcontractor_price' => 'required'
           ]
        );
+        
+        $data['labour_cost'] = $data['labour_cost'] ?? 0;
+        $data['material']    = $data['material'] ?? 0;
+        $data['subcontractor_price'] = $data['subcontractor_price'] ?? 0;
 
         $proposal = Proposal::find($id);
+
+        $project = @$proposal->project;
+
+        $project_slug = \Str::slug($project->name);
+
+        $trade_slug = @$proposal->trade->slug;
+
+        $subcontractor_slug = @$proposal->subcontractor->slug;
+
+        $public_path = public_path().'/';
+
+        $folderPath = Document::PROPOSALS."/";
+
+        $folderPath .= $project_slug.'/'.$trade_slug;
+        
+        \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+
+        if($request->hasFile('files')){
+             $filesArr = @array_filter(explode(',',$proposal->files));
+             
+             $files = $request->file('files');
+
+             foreach ($files as $key => $file) {
+
+                   $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+                    $file->storeAs($folderPath, $fileName, 'doc_upload');
+                     $filesArr[] = $fileName; 
+               }
+
+            $data['files'] = implode(',',$filesArr);
+        }
 
         $proposal->update($data);
 
@@ -183,31 +283,25 @@ class ProposalController extends Controller
 
          $project = @$proposal->project;
 
-        $project_slug = \Str::slug($project->name);
+         $project_slug = \Str::slug($project->name);
 
-        $project_type = @$project->project_type;
+         $trade_slug = @\Str::slug($proposal->trade->name);
 
-        $project_type_slug = @$project_type->slug; 
+         $public_path = public_path().'/';
 
-        $trade_slug = @\Str::slug($proposal->trade->name);
+         $folderPath = Document::PROPOSALS."/";
 
-        $public_path = public_path().'/';
-
-        $folderPath = Document::PROPOSALS."/";
-
-        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
-
-         $folderPath .= "$project_type_slug/$project_slug/$trade_slug/";
+         $folderPath .= "$project_slug/$trade_slug/";
 
          $path = @public_path().'/'.$folderPath;
 
          $files = @explode(',',$proposal->files);
 
-         // $aPath = public_path().'/'. Document::PROPOSALS."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
-         // \File::makeDirectory($aPath, $mode = 0777, true, true);
+         $aPath = public_path().'/'. Document::PROPOSALS."/".Document::ARCHIEVED; 
+         \File::makeDirectory($aPath, $mode = 0777, true, true);
          
          foreach (@$files as $key => $file) {
-            // @\File::copy($path.$file->file, $aPath.'/'.$file->file);
+            @\File::copy($path.$file, $aPath.'/'.$file);
             @unlink($path.$file);
          }
 
@@ -268,28 +362,23 @@ class ProposalController extends Controller
 
         $project_slug = \Str::slug($project->name);
 
-        $project_type = @$project->project_type;
-
-        $project_type_slug = @$project_type->slug; 
-
         $trade_slug = @\Str::slug($proposal->trade->name);
+
+        $subcontractor_slug = @\Str::slug($proposal->subcontractor->name);
 
         $public_path = public_path().'/';
 
         $folderPath = Document::PROPOSALS."/";
 
-        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
-
-        $folderPath .= $project_type_slug.'/'.$project_slug.'/'.$trade_slug;
+        $folderPath .= $project_slug.'/'.$trade_slug;
         
-
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
         if($request->hasFile('file')){
              $filesArr = @array_filter(explode(',',$proposal->files));
 
              $file = $request->file('file');
-             $fileName = $trade_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
               $file->storeAs($folderPath, $fileName, 'doc_upload');
 
             $filesArr[] = $fileName; 
@@ -300,5 +389,41 @@ class ProposalController extends Controller
 
         return redirect(route('projects.show',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'File added Successfully!');
     }
+    
 
+
+     public function destroyFile($id)
+    {
+         if(Gate::denies('delete')) {
+               return abort('401');
+          } 
+
+          $path = request()->path;
+
+          $proposal = Proposal::find($id);
+
+          $file = @end(explode('/', $path));
+
+          $publicPath = public_path().'/';
+
+          $aPath = $publicPath.Document::PROPOSALS."/".Document::ARCHIEVED; 
+
+          @\File::makeDirectory($aPath, $mode = 0777, true, true);
+
+          @\File::copy($publicPath.$path, $aPath.'/'.$file);
+
+          $files = @array_filter(explode(',',$proposal->files));
+
+          if (($key = array_search($file, $files)) !== false) {
+              unset($files[$key]);
+          }
+
+          $files = implode(',', $files); 
+
+          $proposal->update(['files' => $files]);
+
+          @unlink($path);
+
+         return redirect()->back()->with('message', 'File Delete Successfully!');
+    }
 }
