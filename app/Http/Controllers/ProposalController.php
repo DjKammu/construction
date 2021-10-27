@@ -10,6 +10,7 @@ use App\Models\Trade;
 use App\Models\Document;
 use App\Models\Proposal;
 use App\Models\Subcontractor;
+use App\Models\DocumentType;
 use Gate;
 
 
@@ -133,22 +134,49 @@ class ProposalController extends Controller
 
         $data['files'] = '';
 
+        $proposal = Proposal::create($data);
+
+        $document_type = DocumentType::where('name', DocumentType::BID)
+                         ->first();
+
+        $name = @$proposal->trade->name.' '.$proposal->subcontractor->name;                 
+        $slug = @\Str::slug($name);                
+
+        $document = $project->documents()
+                    ->firstOrCreate(['proposal_id' => $id],
+                       ['name' => $name, 'slug' => $slug,
+                       'proposal_id'      => $id,
+                       'document_type_id' => $document_type->id,
+                       'subcontractor_id' => @$proposal->subcontractor->id
+                       ]
+                   );
+
+
         if($request->hasFile('files')){
              $filesArr = [];
-            $files = $request->file('files');
+             $files = $request->file('files');
+             $date  = date('d');
+             $month = date('m');
+             $year  = date('Y');
 
              foreach ($files as $key => $file) {
 
                    $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
+                     $filesArr[] = $fileName; 
 
-                 $filesArr[] = $fileName; 
+                     $fileArr[] = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
                }
-
-            $data['files'] = implode(',',$filesArr);
+            $document->files()->createMany($fileArr);
+            $proposal->update(['files' => implode(',',$filesArr)]);
         }
 
-        Proposal::create($data);
+        
 
         return redirect(route('projects.show',['project' => $id]).'?trade='.$trade_id.'#proposals')->with('message', 'Proposal Created Successfully!');
     }
@@ -246,19 +274,44 @@ class ProposalController extends Controller
         $folderPath .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+         $document_type = DocumentType::where('name', DocumentType::BID)
+                         ->first();
+
+        $name = @$proposal->trade->name.' '.$proposal->subcontractor->name;                 
+        $slug = @\Str::slug($name);                
+
+        $document = $project->documents()
+                    ->firstOrCreate(['proposal_id' => $id],
+                       ['name' => $name, 'slug' => $slug,
+                       'proposal_id'      => $id,
+                       'document_type_id' => $document_type->id,
+                       'subcontractor_id' => @$proposal->subcontractor->id
+                       ]
+                   );
+
 
         if($request->hasFile('files')){
              $filesArr = @array_filter(explode(',',$proposal->files));
              
              $files = $request->file('files');
+             $date  = date('d');
+             $month = date('m');
+             $year  = date('Y');
 
              foreach ($files as $key => $file) {
 
                    $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
                      $filesArr[] = $fileName; 
-               }
 
+                     $fileArr[] = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+               }
+            $document->files()->createMany($fileArr);
             $data['files'] = implode(',',$filesArr);
         }
 
@@ -304,6 +357,9 @@ class ProposalController extends Controller
             @\File::copy($path.$file, $aPath.'/'.$file);
             @unlink($path.$file);
          }
+
+         $project->documents()
+                    ->where(['proposal_id' => $id])->delete();
 
          $proposal->delete();
 
@@ -374,18 +430,45 @@ class ProposalController extends Controller
         
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
+        $document_type = DocumentType::where('name', DocumentType::BID)
+                         ->first();
+
+        $name = @$proposal->trade->name.' '.$proposal->subcontractor->name;                 
+        $slug = @\Str::slug($name);                
+
+        $document = $project->documents()
+                    ->firstOrCreate(['proposal_id' => $id],
+                       ['name' => $name, 'slug' => $slug,
+                       'proposal_id'      => $id,
+                       'document_type_id' => $document_type->id,
+                       'subcontractor_id' => @$proposal->subcontractor->id
+                       ]
+                   );
+
         if($request->hasFile('file')){
-             $filesArr = @array_filter(explode(',',$proposal->files));
+              $filesArr = @array_filter(explode(',',$proposal->files));
+              $file = $request->file('file');
 
-             $file = $request->file('file');
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
              $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
-              $file->storeAs($folderPath, $fileName, 'doc_upload');
+             $file->storeAs($folderPath, $fileName, 'doc_upload');
 
-            $filesArr[] = $fileName; 
-        
+             $filesArr[] = $fileName; 
+            
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
             $proposal->update(['files' => implode(',',$filesArr)]);
-        }
 
+            $document->files()->create($fileArr);
+        }
+        
 
         return redirect(route('projects.show',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'File added Successfully!');
     }
@@ -419,6 +502,10 @@ class ProposalController extends Controller
           }
 
           $files = implode(',', $files); 
+
+          $documents = @$proposal->project->documents()
+                       ->where('proposal_id',$id)->first();
+          $docFiles = @$documents->files()->whereFile($file)->delete();             
 
           $proposal->update(['files' => $files]);
 

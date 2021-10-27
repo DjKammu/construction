@@ -150,7 +150,13 @@ class DocumentTypeController extends Controller
                return abort('401');
           } 
 
-         DocumentType::find($id)->delete();
+         $type = DocumentType::find($id);
+
+        if($type->name == DocumentType::BID){
+              return redirect()->back()->withErrors('Document Type '.DocumentType::BID.' Can`t be Deleted!');
+        }
+
+         $type->delete();
 
         return redirect()->back()->with('message', 'Document Type Delete Successfully!');
     }

@@ -19,7 +19,7 @@ class Document extends Model
      'name' , 'slug' ,'account_number',
      'file','property_id','tenant_id',
      'document_type_id','vendor_id',
-     'subcontractor_id'
+     'subcontractor_id', 'proposal_id'
     ];
 
 
@@ -39,6 +39,10 @@ class Document extends Model
     public function subcontractor(){
         return $this->belongsTo(Subcontractor::class);
     }
+    
+    public function proposal(){
+        return $this->belongsTo(Proposal::class);
+    }
 
     public function files(){
         return $this->hasMany(DocumentFile::class);
@@ -46,5 +50,9 @@ class Document extends Model
 
     public function scopePropertyIds($query,$ids){
          return $query->whereIn('property_id',$ids);
+    }
+
+    public function scopeIsProposal($query,$id){
+         return $query->where('proposal_id',$id);
     }
 }

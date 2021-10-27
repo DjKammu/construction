@@ -9,6 +9,8 @@ class DocumentType extends Model
 {
     use HasFactory;
 
+    CONST BID = 'Bid';
+
     protected $perPage = 20;
 
     protected $fillable = [

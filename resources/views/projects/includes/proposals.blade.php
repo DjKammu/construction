@@ -32,7 +32,7 @@
       <div class="card card-user card-table-item" style="width: 100%; height: 100%;">
          <div class="card-header text-center">
             <div class="author mt-1">
-               <img class="avatar border-success" src="{{ asset('img/image_placeholder.png')  }}">             
+               <img class="avatar border-success" src="{{ ($proposal->subcontractor->image) ? url(\Storage::url($proposal->subcontractor->image)) : asset('img/image_placeholder.png')  }}">             
                <h5 class="card-title">{{ @$proposal->subcontractor->name}}</h5>
             </div>
          </div>
