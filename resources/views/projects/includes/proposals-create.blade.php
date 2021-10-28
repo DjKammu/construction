@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">  Create Proposal</h4>
+                        <h4 class="mt-0 text-left"> {{ @$project->name }} -  Create Proposal</h4>
                     </div>
                 </div>
 

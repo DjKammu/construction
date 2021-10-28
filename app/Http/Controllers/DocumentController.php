@@ -11,6 +11,7 @@ use App\Models\ProjectType;
 use App\Models\Project;
 use App\Models\Subcontractor;
 use App\Models\Document;
+use App\Models\Proposal;
 use App\Models\Vendor;
 use Gate;
 
@@ -77,12 +78,13 @@ class DocumentController extends Controller
          } 
 
          $id = request()->id;
-
+        
+        $project = Project::find($id); 
         $documentsTypes = DocumentType::all(); 
         $subcontractors = Subcontractor::all();
         $vendors = Vendor::all();
 
-        return view('projects.includes.documents-create',compact('documentsTypes','subcontractors','vendors'));
+        return view('projects.includes.documents-create',compact('project','documentsTypes','subcontractors','vendors'));
     }
 
     /**
@@ -199,6 +201,13 @@ class DocumentController extends Controller
 
         $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;  
         $folderPath .= "$project_type_slug/$project_slug/$document_type/";
+
+        if($document->proposal_id){
+               $proposal = Proposal::find($document->proposal_id);
+               $trade_slug = @\Str::slug($proposal->trade->name);
+               $folderPath = Document::PROPOSALS."/";
+               $folderPath .= "$project_slug/$trade_slug/";
+          }
 
         $document->files->filter(function($file) use ($folderPath){
 
@@ -332,17 +341,37 @@ class DocumentController extends Controller
 
          $project_type_slug = @ProjectType::find($project->project_type_id)->slug;
 
-        $folderPath = Document::PROJECT."/";
+         $folderPath = Document::PROJECT."/";
 
-        $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
+         $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;
 
          $folderPath .= "$project_type_slug/$project_slug/$document_type/";
 
-         $path = @public_path().'/'.$folderPath;
-
          $files = $document->files()->get();
 
-         $aPath = public_path().'/'. Document::PROJECT."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
+         $publicPath = public_path().'/';
+
+         if(@$document->proposal_id){
+           
+           $proposal = Proposal::find($document->proposal_id);
+
+           $proposal->update(['files' => '']);
+
+           $aPath = $publicPath.Document::PROPOSALS."/".Document::ARCHIEVED;
+
+           $trade_slug = @\Str::slug($proposal->trade->name);
+           $folderPath = Document::PROPOSALS."/";
+           $folderPath .= "$project_slug/$trade_slug/";
+
+          } else {
+
+          $aPath = $publicPath.Document::PROJECT."/".Document::ARCHIEVED.'/'. 
+          Document::DOCUMENTS; 
+
+          }
+
+          $path = @public_path().'/'.$folderPath;
+
          \File::makeDirectory($aPath, $mode = 0777, true, true);
          
          foreach (@$files as $key => $file) {
@@ -365,14 +394,36 @@ class DocumentController extends Controller
           $path = request()->path;
 
           $file = DocumentFile::find($id);
-
+         
           $publicPath = public_path().'/';
 
-          $aPath = $publicPath.Document::PROJECT."/".Document::ARCHIEVED.'/'. Document::DOCUMENTS; 
+          if(@$file->document->proposal_id){
+           
+           $proposal = Proposal::find($file->document->proposal_id);
+
+           $files = @array_filter(explode(',',$proposal->files));
+
+          if (($key = array_search($file->file, $files)) !== false) {
+              unset($files[$key]);
+          }
+
+           $files = implode(',', $files);          
+
+           $proposal->update(['files' => $files]);
+
+           $aPath = $publicPath.Document::PROPOSALS."/".Document::ARCHIEVED;
+
+          } else {
+
+          $aPath = $publicPath.Document::PROJECT."/".Document::ARCHIEVED.'/'. 
+          Document::DOCUMENTS; 
+
+          }
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
         
-          @\File::copy($publicPath.$path, $aPath.'/'.$file->file);
+          @\File::copy($publicPath.$path, $aPath.'/'.$file->file); 
+          
 
           @unlink($path);
 

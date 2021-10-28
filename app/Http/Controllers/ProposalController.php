@@ -59,7 +59,7 @@ class ProposalController extends Controller
                     $q->where("trade_id",$trade_id);
                   })->get();
 
-        return view('projects.includes.proposals-create',compact('subcontractors'));
+        return view('projects.includes.proposals-create',compact('project','subcontractors'));
     }  
 
 
@@ -139,7 +139,7 @@ class ProposalController extends Controller
         $document_type = DocumentType::where('name', DocumentType::BID)
                          ->first();
 
-        $name = @$proposal->trade->name.' '.$proposal->subcontractor->name;                 
+        $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
@@ -217,6 +217,9 @@ class ProposalController extends Controller
            
          })->implode(',');
 
+         
+         session()->flash('url', route('projects.show',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals'); 
+
         return view('projects.includes.proposals-edit',compact('subcontractor','proposal'));
     }
 
@@ -277,7 +280,7 @@ class ProposalController extends Controller
          $document_type = DocumentType::where('name', DocumentType::BID)
                          ->first();
 
-        $name = @$proposal->trade->name.' '.$proposal->subcontractor->name;                 
+        $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                 
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
@@ -433,7 +436,7 @@ class ProposalController extends Controller
         $document_type = DocumentType::where('name', DocumentType::BID)
                          ->first();
 
-        $name = @$proposal->trade->name.' '.$proposal->subcontractor->name;                 
+        $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()

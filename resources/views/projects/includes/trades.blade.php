@@ -2,7 +2,7 @@
                            
     <div class="row mb-2">
         <div class="col-6">
-            <h4 class="mt-0 text-left">Trades List </h4>
+            <h4 class="mt-0 text-left">{{ @$project->name }} - Trades List </h4>
         </div>
         <div class="col-6 text-right">
 

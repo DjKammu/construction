@@ -8,6 +8,7 @@ use App\Models\Document;
 use App\Models\ProjectType;
 use App\Models\Project;
 use App\Models\Subcontractor;
+use App\Models\Proposal;
 use App\Models\Vendor;
 use Gate;
 
@@ -166,6 +167,8 @@ class ProjectController extends Controller
                 $subcontractor = request()->subcontractor;
                 $documents->where('subcontractor_id', $subcontractor);
          } 
+
+        
          $trade = @$trades->first()->id;
         
          if(request()->filled('trade')){
@@ -174,7 +177,15 @@ class ProjectController extends Controller
         
          $awarded = @$project->proposals()->IsAwarded()->exists();
 
-         $proposals = @$project->proposals()->trade($trade)->get();
+         $proposals = @$project->proposals();
+
+         if(request()->filled('proposal_trade')){
+                $proposal_trade = request()->proposal_trade;
+                $proposalsIds = @$proposals->trade($proposal_trade)->pluck('id');
+                $documents->whereIn('proposal_id', $proposalsIds);
+         }
+
+         $proposals = $proposals->trade($trade)->get();
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -198,6 +209,13 @@ class ProjectController extends Controller
 
             $folderPath .= "$project_type_slug/$project_slug/$document_type/";
             
+            if($doc->proposal_id){
+                 $proposal = Proposal::find($doc->proposal_id);
+                 $trade_slug = @\Str::slug($proposal->trade->name);
+                 $folderPath = Document::PROPOSALS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
             $files = $doc->files();
 
             $file =  ($files->count() == 1) ? $files->pluck('file')->first() : '';

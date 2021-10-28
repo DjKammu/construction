@@ -2,7 +2,7 @@
                            
     <div class="row mb-2">
         <div class="col-6">
-            <h4 class="mt-0 text-left">Documents List </h4>
+            <h4 class="mt-0 text-left">{{ @$project->name }} - Documents List </h4>
         </div>
         <div class="col-6 text-right">
             <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.documents",['id' => request()->project ])  }}'">Add Document
@@ -42,6 +42,13 @@
               <option value="">Select Subcontractor</option>
               @foreach($subcontractors as $subcontractor)
                  <option value="{{ $subcontractor->id }}" {{ (@request()->subcontractor == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
+              @endforeach
+            </select>
+
+            <select style="height: 26px;" name="proposal_trade"> 
+              <option value="">Select Trade</option>
+              @foreach($trades as $trade)
+                 <option value="{{ $trade->id }}" {{ (@request()->proposal_trade == $trade->id) ? 'selected' : ''}}> {{ $trade->name }}</option>
               @endforeach
             </select>
             <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >
@@ -86,7 +93,7 @@
                         <span class="cross">
                           <form 
                             method="post" 
-                            action="{{route('documents.destroy',$document->id)}}"> 
+                            action="{{route('documents.destroy',$document->id).'#documents'}}"> 
                              @csrf
                             {{ method_field('DELETE') }}
 

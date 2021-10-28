@@ -4,7 +4,7 @@ aria-expanded="true">
 
 <div class="row mb-2">
     <div class="col-6">
-        <h4 class="mt-0 text-left">Project Detail</h4>
+        <h4 class="mt-0 text-left"> {{ @$project->name }} - Project Detail</h4>
     </div>
 </div>
 
