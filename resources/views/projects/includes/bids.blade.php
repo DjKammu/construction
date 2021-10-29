@@ -1,6 +1,6 @@
  <div class="tab-pane" id="bids" role="tabpanel" aria-expanded="true">
    <div class="row mb-2">
-        <div class="col-6">
+        <div class="col-12">
             <h4 class="mt-0 text-left">{{ @$project->name }} - Bid Tabulation List </h4>
         </div>
       
@@ -43,17 +43,13 @@
                            ->where('subcontractor_id', $subc->id)->first();         
                   $bidTotal =  (int) @$bid->material + (int) @$bid->labour_cost + (int) @$bid->subcontractor_price ;       
                 @endphp
-                <span class="text-center">{{ $subc->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
+                <span  class="text-center {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $subc->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
                   : "No Bid" }} </b></span>
               @endforeach
-
 
               @for($i=0; $i < $noBids; $i++)
                 <span class="text-center"> <b> No Bid</b> </span>
               @endfor 
-
-
-
 
              </li>
          @endforeach

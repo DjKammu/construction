@@ -56,7 +56,7 @@
                                               </li>
                                               @endif
 
-                                              @if($proposals)
+                                              @if($proposals->count() > 0)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bids" role="tab"
                                                      aria-expanded="false">Bids Tabulation</a>
@@ -74,8 +74,7 @@
                                     @if($trade)
                                     @include('projects.includes.proposals')
                                     @endif
-
-                                    @if($proposals)
+                                    @if($proposals->count() > 0)
                                     @include('projects.includes.bids')
                                     @endif
                               </div>
@@ -267,6 +266,10 @@ span.doc_type_m{
  display: table-caption;
 }
 
+span.awarded-green{
+    background: #0aab0a;
+    color: #fffdfa;
+}
 
 </style>
 
