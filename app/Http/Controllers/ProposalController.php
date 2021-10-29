@@ -55,8 +55,9 @@ class ProposalController extends Controller
         }
 
         $subcontractors = @$trade->subcontractors()
-                  ->whereDoesntHave('proposals', function($q) use($trade_id){
+                  ->whereDoesntHave('proposals', function($q) use($trade_id,$id){
                     $q->where("trade_id",$trade_id);
+                    $q->where("project_id",$id);
                   })->get();
 
         return view('projects.includes.proposals-create',compact('project','subcontractors'));
