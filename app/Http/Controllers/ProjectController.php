@@ -269,11 +269,6 @@ class ProjectController extends Controller
                                  ->orderBy('subcontractor_count', DESC)
                                   ->pluck('subcontractor_count')->max(); 
 
-// $sql = \Str::replaceArray('?', $subcontractorsCount->getBindings(), $subcontractorsCount->toSql());
-
-// // print
-// dd($sql);
-
                                  
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount'));
