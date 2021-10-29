@@ -27,7 +27,7 @@
 
             <li class="multi-line">
                 <span style="width: 50px;"></span>
-                <span><b>{{ $trd->name  }}</b></span>
+                <span style="width: 120px;"><b>{{ $trd->name  }}</b></span>
               @php
                   $bids = @$project->proposals()->trade($trd->id)->get();
                   $bidCount = @$bids->count();
