@@ -21,29 +21,25 @@
                <p><b>{{ $cat->name }}</b></p>
             </li>
 
+
+
          @foreach($catTrades as $trd)
 
             <li class="multi-line">
-                <span></span>
+                <span style="width: 50px;"></span>
                 <span><b>{{ $trd->name  }}</b></span>
               @php
-                
-                 $subcontractorsBids = \App\Models\Subcontractor::whereHas('trades', function($q) use ($trd){
-                      $q->where('trade_id', $trd->id);
-                  })->get();
-                 
-                  $bidCount = @$subcontractorsBids->count();
+                  $bids = @$project->proposals()->trade($trd->id)->get();
+                  $bidCount = @$bids->count();
                   $noBids  = $subcontractorsCount - $bidCount;
 
               @endphp
              
-              @foreach($subcontractorsBids as $subc)
-                @php
-                  $bid = @$project->proposals()->trade($trd->id)
-                           ->where('subcontractor_id', $subc->id)->first();         
+              @foreach($bids as $bid)
+                @php    
                   $bidTotal =  (int) @$bid->material + (int) @$bid->labour_cost + (int) @$bid->subcontractor_price ;       
                 @endphp
-                <span  class="text-center {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $subc->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
+                <span  class="text-center {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
                   : "No Bid" }} </b></span>
               @endforeach
 
@@ -53,6 +49,8 @@
 
              </li>
          @endforeach
+
+
 
         @endforeach
 

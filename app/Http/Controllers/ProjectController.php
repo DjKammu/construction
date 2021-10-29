@@ -267,7 +267,9 @@ class ProjectController extends Controller
          $subcontractorsCount = @$project->trades()
                                   ->withCount('subcontractors')
                                  ->orderBy('subcontractors_count', DESC) 
-                                 ->pluck('subcontractors_count')->max();                      
+                                 ->pluck('subcontractors_count')->max();    
+                                 
+         //dd($categories);                                          
 
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount'));

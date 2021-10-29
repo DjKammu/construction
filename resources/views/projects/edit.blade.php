@@ -242,13 +242,12 @@ span.doc_type_m{
     border-right: 1px solid #dee2e6;   
 }
 
-
 .list {
     
     list-style: none;
     margin: 0;
     padding: 0;
-    display: table;
+    display: grid;
     white-space: nowrap;
     width: 100%;
     
@@ -259,11 +258,11 @@ span.doc_type_m{
 }
 
 .list li.multi-line{
- display: table-row;
+ display: inline-table;
 }
 
 .list li.single-line{
- display: table-caption;
+ /*display: table-caption;*/
 }
 
 span.awarded-green{
