@@ -75,6 +75,7 @@ class TradeController extends Controller
         $request->validate([
               'name' => 'required|unique:trades',
               'account_number' => 'required|unique:trades',
+              'category_id'    => 'required|exists:categories,id'
         ]);
 
         $data['slug'] = \Str::slug($request->name);
@@ -139,6 +140,7 @@ class TradeController extends Controller
         $request->validate([
               'name' => 'required|unique:trades,name,'.$id,
               'account_number' => 'required|unique:trades,account_number,'.$id,
+              'category_id'    => 'required|exists:categories,id'
         ]);
 
         $data['slug'] = \Str::slug($request->name);

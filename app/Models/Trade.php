@@ -29,4 +29,8 @@ class Trade extends Model
         return $this->belongsToMany(Subcontractor::class)->withTimestamps();
     }
 
+    public function category(){
+        return $this->hasOne(Category::class);
+    }
+
 }

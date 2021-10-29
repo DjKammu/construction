@@ -55,6 +55,13 @@
                                                      aria-expanded="false">Proposals</a>
                                               </li>
                                               @endif
+
+                                              @if($proposals)
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#bids" role="tab"
+                                                     aria-expanded="false">Bids Tabulation</a>
+                                              </li>
+                                              @endif
                                         </ul>
                                     </div>
                                </div>
@@ -66,6 +73,10 @@
                                     @include('projects.includes.trades')
                                     @if($trade)
                                     @include('projects.includes.proposals')
+                                    @endif
+
+                                    @if($proposals)
+                                    @include('projects.includes.bids')
                                     @endif
                               </div>
 
@@ -196,6 +207,66 @@ span.doc_type_m{
     width: 30px;
     height: 30px;
 }
+
+
+.list span {
+    
+    text-align: left;
+    display: table-cell;
+    padding: 6px;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    
+}
+
+.list li span:last-child {    
+    border-right: 1px solid #dee2e6;   
+}
+
+.list p {
+    font-size: 16px;
+    padding: 12px 7px;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    margin: 0 !important;
+    
+}
+
+.list .h6 {
+    margin-bottom: 0;  
+}
+
+.list li p:last-child {    
+    border-right: 1px solid #dee2e6;   
+}
+
+
+.list {
+    
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: table;
+    white-space: nowrap;
+    width: 100%;
+    
+}
+
+.list li {  
+    color: #5c5c5c;
+}
+
+.list li.multi-line{
+ display: table-row;
+}
+
+.list li.single-line{
+ display: table-caption;
+}
+
 
 </style>
 

@@ -9,6 +9,7 @@ use App\Models\ProjectType;
 use App\Models\Project;
 use App\Models\Subcontractor;
 use App\Models\Proposal;
+use App\Models\Category;
 use App\Models\Vendor;
 use Gate;
 
@@ -177,15 +178,15 @@ class ProjectController extends Controller
         
          $awarded = @$project->proposals()->IsAwarded()->exists();
 
-         $proposals = @$project->proposals();
+         $allProposals = @$project->proposals();
 
          if(request()->filled('proposal_trade')){
                 $proposal_trade = request()->proposal_trade;
-                $proposalsIds = @$proposals->trade($proposal_trade)->pluck('id');
+                $proposalsIds = @$allProposals->trade($proposal_trade)->pluck('id');
                 $documents->whereIn('proposal_id', $proposalsIds);
          }
 
-         $proposals = $proposals->trade($trade)->get();
+         $proposals = $allProposals->trade($trade)->get();
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -259,7 +260,17 @@ class ProjectController extends Controller
            
          });
 
-         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded'));
+         $catids = @($trades->pluck('category_id'))->unique();
+
+         $categories = Category::whereIn('id',$catids)->get(); 
+
+         $subcontractorsCount = @$project->trades()
+                                  ->withCount('subcontractors')
+                                 ->orderBy('subcontractors_count', DESC) 
+                                 ->pluck('subcontractors_count')->max();
+
+         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
+            'categories','subcontractorsCount'));
     }
 
     /**
