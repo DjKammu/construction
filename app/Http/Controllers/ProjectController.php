@@ -264,13 +264,17 @@ class ProjectController extends Controller
 
          $categories = Category::whereIn('id',$catids)->get(); 
 
-         $subcontractorsCount = @$project->trades()
-                                  ->withCount('subcontractors')
-                                 ->orderBy('subcontractors_count', DESC) 
-                                 ->pluck('subcontractors_count')->max();    
-                                 
-         //dd($categories);                                          
+         $subcontractorsCount = @$project->proposals()
+                                  ->withCount('subcontractor')
+                                 ->orderBy('subcontractor_count', DESC)
+                                  ->pluck('subcontractor_count')->max(); 
 
+// $sql = \Str::replaceArray('?', $subcontractorsCount->getBindings(), $subcontractorsCount->toSql());
+
+// // print
+// dd($sql);
+
+                                 
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount'));
     }
