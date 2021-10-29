@@ -99,7 +99,12 @@
             </div>
          </div>
          <div class="card-footer text-center">
-            <div class="btn-group-sm" role="group" aria-label="Basic example"> 
+            <div class="btn-group-sm" role="group" aria-label="Basic example">
+
+              @php  
+                 $awarded = @$project->proposals()->whereTradeId($proposal->trade_id)
+                            ->IsAwarded()->exists();
+              @endphp
             <button onclick="return window.location.href='{{ route("projects.proposals.award",
             ['id' => $proposal->id, 'status' => $proposal->awarded ])  }}'" type="button" class="btn btn-success"  {{ ($proposal->awarded == 0 && $awarded == 1 ) ? 'disabled' : '' }}>
             {{ ($proposal->awarded == 1) ? 'Retract' : 'Award'  }}
