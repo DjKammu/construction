@@ -267,7 +267,7 @@ span.doc_type_m{
 }
 
 span.awarded-green{
-    background: #0aab0a;
+    background: #38ef38;
     color: #fffdfa;
 }
 
