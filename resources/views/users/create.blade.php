@@ -115,16 +115,3 @@
 </div>
 
 @endsection
-
-@section('pagescript')
-
-<script type="text/javascript">
-  function deletePropertyType(id){
-
-    if(confirm('Are you sure to delete?')){
-      window.location.href = '{{ route("property-types.destroy",1)}}';
-    }
-  }
-</script>
-
-@endsection
