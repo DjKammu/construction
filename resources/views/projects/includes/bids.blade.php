@@ -35,9 +35,15 @@
               @foreach($bids as $bid)
                 @php    
                   $bidTotal =  (int) @$bid->material + (int) @$bid->labour_cost + (int) @$bid->subcontractor_price;   
-
+  
                      foreach(@$bid->changeOrders as $k => $order){
-                       $bidTotal += $order->subcontractor_price;
+                       if($order->type == \App\Models\ChangeOrder::ADD ){
+                         $bidTotal += $order->subcontractor_price;
+                       }
+                       else{
+                         $bidTotal -= $order->subcontractor_price;
+                       }
+
                      }
                 @endphp
                 <span  style="width:{{$spanWidth}}%;" class="text-center bid-text {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
