@@ -321,6 +321,24 @@ class ProposalController extends Controller
 
         $proposal->update($data);
 
+        $changeOrders = $request->change_orders;
+        $typesArr = @$changeOrders['type'];
+        $priceArr = @$changeOrders['subcontractor_price'];
+        $notesArr = @$changeOrders['notes'];
+        $idArr    = @$changeOrders['id'];
+        
+        foreach (@$priceArr as $key => $price) {
+           $id = @$idArr[$key] ?? 0; 
+           $proposal->changeOrders()->updateOrCreate(
+            ['id' => $id],
+            [ 'subcontractor_price' => $price,
+              'type' => $typesArr[$key],
+              'notes'=> $notesArr[$key]
+             ]
+           );
+        }
+
+      
         return redirect(route('projects.show',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'Proposal Updated Successfully!');
     }
 

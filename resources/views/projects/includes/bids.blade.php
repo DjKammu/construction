@@ -20,31 +20,32 @@
             <li class="text-danger h6 text-center single-line">
                <p><b>{{ $cat->name }}</b></p>
             </li>
-
-
-
          @foreach($catTrades as $trd)
 
             <li class="multi-line">
-                <span style="width: 50px;"></span>
-                <span style="width: 150px;"><b>{{ $trd->name  }}</b></span>
+                <span style="width:5%;"></span>
+                <span class="text-center" style="width: 15%;"><b>{{ $trd->name  }}</b></span>
               @php
                   $bids = @$project->proposals()->trade($trd->id)->get();
                   $bidCount = @$bids->count();
                   $noBids  = $subcontractorsCount - $bidCount;
-
+                  $spanWidth = 80/(($bidCount) ? $bidCount : 1) ;
               @endphp
              
               @foreach($bids as $bid)
                 @php    
-                  $bidTotal =  (int) @$bid->material + (int) @$bid->labour_cost + (int) @$bid->subcontractor_price ;       
+                  $bidTotal =  (int) @$bid->material + (int) @$bid->labour_cost + (int) @$bid->subcontractor_price;   
+
+                     foreach(@$bid->changeOrders as $k => $order){
+                       $bidTotal += $order->subcontractor_price;
+                     }
                 @endphp
-                <span  class="text-center {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
+                <span  style="width:{{$spanWidth}}%;" class="text-center bid-text {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
                   : "No Bid" }} </b></span>
               @endforeach
 
               @for($i=0; $i < $noBids; $i++)
-                <span class="text-center"> <b> No Bid</b> </span>
+                <span class="text-center bid-text"> <b> No Bid</b> </span>
               @endfor 
 
              </li>

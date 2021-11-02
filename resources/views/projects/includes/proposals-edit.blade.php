@@ -108,7 +108,49 @@
                                         </div>
                                     </div>
 
+                                   <div class="row">
+                                      <div class="col-lg-5 col-md-6 mx-auto">
+                                            <h6>Change Orders</h6>
+                                        </div>
+                                   </div>
+                                  
+                                   @if($proposal->changeOrders)
 
+                                     @foreach($proposal->changeOrders as $k => $order )
+                                    
+                                     <a href="javascript:void(0);" class="remove_button_2">X</a>  
+                                     <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                           <p> Change Order {{ $k+1}} </p>
+                                           <div class="form-group">
+                                              <label class="text-dark" for="password"> Type </label>
+                                              <select class="form-control" name="change_orders[type][]">
+                                                 <option value="add" {{ $order->type == \App\Models\ChangeOrder::ADD ? 'selected' : '' }}>ADD (+)</option>
+                                                 <option value="sub" {{ $order->type == \App\Models\ChangeOrder::SUB ? 'selected' : '' }}>MINUS (-)</option>
+                                              </select>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                           <div class="form-group"> <label class="text-dark" for="password">Price </label> <input class="form-control" name="change_orders[subcontractor_price][]" 
+                                            value="{{ $order->subcontractor_price }}" type="number" required=""> </div>
+                                        </div>
+                                     </div>
+                                     <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                           <div class="form-group"> <label class="text-dark" for="password">Notes </label> <textarea class="form-control" name="change_orders[notes][]">{{ $order->notes }}</textarea> </div>
+                                        </div>
+                                        <input type="hidden"  value="{{ $order->id }}" name="change_orders[id][]">
+                                     </div>
+                                     @endforeach
+                                   @endif
+                                
+                                   <div class="row" id="add_button">
+                                       <div class="col-lg-5 col-md-6 mx-auto">
+                                       <a href="javascript:void(0);" class="add_button" title="Add field">+</a>
+                                     </div>
+                                    </div>
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
@@ -197,6 +239,30 @@
 
 
 @section('pagescript')
+<script type="text/javascript">
+$(document).ready(function(){
+    var addButton = $('.add_button'); //Add button selector
+    var wrapper = $('#add_button'); //Input field wrapper
+    var fieldHTML = '<div style="position:relative;"> <a href="javascript:void(0);" class="remove_button">X</a>  <div class="row"> <div class="col-lg-5 col-md-6 mx-auto"> <div class="form-group"> <label class="text-dark" for="password"> Type </label><select class="form-control" name="change_orders[type][]"><option value="add">ADD (+)</option><option value="sub">MINUS (-)</option></select></div> </div> </div> <div class="row"> <div class="col-lg-5 col-md-6 mx-auto"> <div class="form-group"> <label class="text-dark" for="password">Price </label> <input class="form-control" name="change_orders[subcontractor_price][]" type="number" required=""> </div> </div> </div><div class="row"> <div class="col-lg-5 col-md-6 mx-auto"> <div class="form-group"> <label class="text-dark" for="password">Notes </label> <textarea class="form-control" name="change_orders[notes][]"></textarea> </div> </div> </div></div>'; //New input field html 
+    var x = 1; //Initial field counter is 1
+    
+    //Once add button is clicked
+    $(addButton).click(function(){
+        //Check maximum number of input fields
+            x++; //Increment field counter
+            $(wrapper).before(fieldHTML); //Add field html
+    });
+    
+    //Once remove button is clicked
+    $(document).on('click', '.remove_button', function(e){
+        e.preventDefault();
+        $(this).parent('div').remove(); //Remove field html
+        x--; //Decrement field counter
+    });
+
+
+});
+</script>
 <style type="text/css">
   
 span.cross{
@@ -236,6 +302,16 @@ span.doc_type_m{
     font-weight: 900;
 }
 .remove_button{
+    position: absolute;
+    right: 49px;
+    font-weight: 900;
+    height: 20px;
+    width: 20px;
+    border: 1px solid;
+    text-align: center;
+}
+
+.remove_button_2{
     position: absolute;
     right: 49px;
     font-weight: 900;

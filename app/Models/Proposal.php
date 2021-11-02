@@ -57,4 +57,8 @@ class Proposal extends Model
         return $this->belongsTo(Trade::class);
     }
 
+    public function changeOrders(){
+        return $this->hasMany(ChangeOrder::class);
+    }
+
 }

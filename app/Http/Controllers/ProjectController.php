@@ -178,15 +178,15 @@ class ProjectController extends Controller
         
          $awarded = @$project->proposals()->IsAwarded()->exists();
 
-         $allProposals = @$project->proposals();
+         $proposalQuery = @$project->proposals();
 
          if(request()->filled('proposal_trade')){
                 $proposal_trade = request()->proposal_trade;
                 $proposalsIds = @$allProposals->trade($proposal_trade)->pluck('id');
                 $documents->whereIn('proposal_id', $proposalsIds);
          }
-
-         $proposals = $allProposals->trade($trade)->get();
+         $allProposals = $proposalQuery->get();
+         $proposals = $proposalQuery->trade($trade)->get();
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -271,7 +271,7 @@ class ProjectController extends Controller
 
                                  
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
-            'categories','subcontractorsCount'));
+            'categories','subcontractorsCount','allProposals'));
     }
 
     /**

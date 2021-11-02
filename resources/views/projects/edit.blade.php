@@ -56,7 +56,7 @@
                                               </li>
                                               @endif
 
-                                              @if($proposals->count() > 0)
+                                              @if($allProposals->count() > 0)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bids" role="tab"
                                                      aria-expanded="false">Bids Tabulation</a>
@@ -74,7 +74,7 @@
                                     @if($trade)
                                     @include('projects.includes.proposals')
                                     @endif
-                                    @if($proposals->count() > 0)
+                                    @if($allProposals->count() > 0)
                                     @include('projects.includes.bids')
                                     @endif
                               </div>
@@ -164,6 +164,10 @@ $('.date').datetimepicker({
     $(this).parent('.file_form').submit();
   });
 
+ $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+    $(".alert").slideUp(500);
+});
+
 
 </script>
 <style type="text/css">
@@ -212,7 +216,6 @@ span.doc_type_m{
     
     text-align: left;
     display: table-cell;
-    padding: 6px;
     vertical-align: middle;
     border-bottom: 1px solid #dee2e6;
     border-top: 1px solid #dee2e6;
@@ -269,6 +272,11 @@ span.awarded-green{
     background: #38ef38;
     color: #fffdfa;
 }
+
+.list li span.bid-text{
+      font-size: 12px;
+      padding: 4px 0px;
+} 
 
 </style>
 

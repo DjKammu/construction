@@ -40,8 +40,14 @@
             <p class="mb-1">Materials: ${{ $proposal->material}}</p>
             <p class="mb-1">Labor Cost: ${{ $proposal->labour_cost}}</p>
             <p class="mb-1">Subcontractor Price: ${{ $proposal->subcontractor_price}}</p>
-            <p class="mb-1">Total: <b>${{ (int) $proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price  }}</b></p>
+            <p class="mb-1">Original Bid Total: <b>${{ $bidTotal = (int) $proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price  }}</b></p>
             <p class="card-text">Notes: {{ $proposal->notes}}</p>
+            @foreach($proposal->changeOrders as $k => $order)
+              @php $bidTotal += $order->subcontractor_price; @endphp
+              <p class="mb-1">Change Order {{ $k+1}} : ${{ $order->subcontractor_price}}</p>
+               <p class="card-text">Notes: {{ $order->notes}}</p>
+            @endforeach
+             <p class="mb-1">Grand Total: <b>${{ $bidTotal }}</b></p>
             <div class="row">
                <div class="col-6">
                   <p class="card-text">Files</p>
