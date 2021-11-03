@@ -146,6 +146,10 @@ class ProjectController extends Controller
          $documents = $project->documents();
          $trades = $project->trades()->get();
 
+         $payments = $project->payments();
+
+         $payments = $payments->get();
+
          if(request()->filled('s')){
             $searchTerm = request()->s;
             $documents->where('name', 'LIKE', "%{$searchTerm}%") 
@@ -213,7 +217,7 @@ class ProjectController extends Controller
             if($doc->proposal_id){
                  $proposal = Proposal::find($doc->proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
-                 $folderPath = Document::PROPOSALS."/";
+                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
                  $folderPath .= "$project_slug/$trade_slug/";
             }
 
@@ -271,7 +275,7 @@ class ProjectController extends Controller
 
                                  
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
-            'categories','subcontractorsCount','allProposals'));
+            'categories','subcontractorsCount','allProposals','payments'));
     }
 
     /**

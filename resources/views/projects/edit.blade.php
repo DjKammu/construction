@@ -61,6 +61,13 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bids" role="tab"
                                                      aria-expanded="false">Bids Tabulation</a>
                                               </li>
+                                              @endif 
+
+                                              @if($awarded)
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
+                                                     aria-expanded="false">Payments</a>
+                                              </li>
                                               @endif
                                         </ul>
                                     </div>
@@ -76,6 +83,9 @@
                                     @endif
                                     @if($allProposals->count() > 0)
                                     @include('projects.includes.bids')
+                                    @endif 
+                                    @if($awarded)
+                                    @include('projects.includes.payments')
                                     @endif
                               </div>
 

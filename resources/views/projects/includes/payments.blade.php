@@ -1,58 +1,62 @@
-<div class="table-responsive">
-   <table id="budgetTable" class="table table-bordered">
-      <thead>
-         <tr class="border-top border-bottom">
-            <td class="text-center">Item No.</td>
-            <td class="text-center">Category</td>
-            <td class="text-center">Original Amount</td>
-         </tr>
-      </thead>
-      <tbody>
-         <tr style="backgorund-color: #dcdde1;">
-            <td class="text-danger h6 text-center"><b>100</b></td>
-            <td class="text-danger h6"><b>General Conditions</b></td>
-            <td></td>
-         </tr>
-         <tr>
-            <td class="text-center">106</td>
-            <td>Stucco</td>
-            <td class="text-right">$12,012.00</td>
-         </tr>
-         <tr class="border-top border-bottom">
-            <td></td>
-            <td><b>Total General Conditions</b></td>
-            <td class="text-right"><b>$12,012.00</b></td>
-         </tr>
-         <tr style="backgorund-color: #dcdde1;">
-            <td class="text-danger h6 text-center"><b>400</b></td>
-            <td class="text-danger h6"><b>Mechanical Electrical Plumbing</b></td>
-            <td></td>
-         </tr>
-         <tr>
-            <td class="text-center">105</td>
-            <td>Plumbing</td>
-            <td class="text-right">$50,000.00</td>
-         </tr>
-         <tr>
-            <td class="text-center">200</td>
-            <td>AC </td>
-            <td class="text-right">-$0.02</td>
-         </tr>
-         <tr>
-            <td class="text-center">112</td>
-            <td>Electrical</td>
-            <td class="text-right">$8,554.00</td>
-         </tr>
-         <tr class="border-top border-bottom">
-            <td></td>
-            <td><b>Total Mechanical Electrical Plumbing</b></td>
-            <td class="text-right"><b>$58,553.98</b></td>
-         </tr>
-         <tr class="border-top border-bottom" style="background-color: #f1f2f6;">
-            <td></td>
-            <td class="text-danger"><b>Total for All</b></td>
-            <td class="text-right"><b>$70,565.98</b></td>
-         </tr>
-      </tbody>
-   </table>
+<div class="tab-pane" id="payments" role="tabpanel" aria-expanded="true">
+   <div class="row mb-2">
+         <div class="col-6">
+            <h4 class="mt-0 text-left">{{ @$project->name }} - Payments List </h4>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.payments",['id' => request()->project ])  }}'">Add Payment
+            </button>
+        </div>
+
+    </div>
+
+
+ <div class="table-responsive">
+
+       <table id="project-types-table" class="table table-hover text-center">
+            <thead>
+            <tr class="text-danger">
+                <th>Trade</th>
+                <th>Subcontractor</th>
+                <th>Amount Paid</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+              @foreach($payments as $payment)
+             <tr>
+               <td> {{ @$payment->trade->name }}</td>
+               <td> {{ @$payment->subcontractor->name }}</td>
+               <td> {{ $payment->payment_amount }}</td>
+               <td>{{ $payment->total_amount }}</td>
+               <td>{{ @\App\Models\Payment::$statusArr[$payment->status] }}</td>
+                  <td>        
+                    <button onclick="return window.location.href='payments/{{$payment->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
+                    </button> 
+                  </td>
+              <td>
+                 <form 
+                  method="post" 
+                  action="{{route('projects.payments.destroy',['id' => $payment->id]).'#payments'}}"> 
+                   @csrf
+                  {{ method_field('DELETE') }}
+
+                  <button 
+                    type="submit"
+                    onclick="return confirm('Are you sure?')"
+                    class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Trade" title="Delete Bussiness Type"><i class="fa fa-trash text-danger"></i> </button>
+                </form>
+               </td>
+             </tr> 
+             @endforeach
+            <!-- Project Types Go Here -->
+            </tbody>
+        </table>
+
 </div>
+</div>
+
+

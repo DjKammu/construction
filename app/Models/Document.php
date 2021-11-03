@@ -13,13 +13,15 @@ class Document extends Model
      CONST DOCUMENTS = 'documents';
      CONST PROJECTS  = 'projects';
      CONST PROPOSALS = 'proposals';
+     CONST INVOICES  = 'invoices';
      CONST PROJECT   = 'project';
 
      protected $fillable = [
      'name' , 'slug' ,'account_number',
      'file','property_id','tenant_id',
      'document_type_id','vendor_id',
-     'subcontractor_id', 'proposal_id'
+     'subcontractor_id', 'proposal_id',
+     'payment_id'
     ];
 
 

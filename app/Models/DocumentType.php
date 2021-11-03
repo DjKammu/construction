@@ -10,6 +10,7 @@ class DocumentType extends Model
     use HasFactory;
 
     CONST BID = 'Bid';
+    CONST INVOICE = 'Invoice';
 
     protected $perPage = 20;
 

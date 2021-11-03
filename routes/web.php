@@ -122,5 +122,17 @@ Route::post('projects/proposals/{id}/upload',[App\Http\Controllers\ProposalContr
 
  Route::delete('projects/proposals/{id}/file', [App\Http\Controllers\ProposalController::class,'destroyFile'])->name('projects.proposals.file.destroy');
 
+Route::get('projects/{id}/payments',[App\Http\Controllers\PaymentController::class,'create'])->name('projects.payments');
+
+Route::post('projects/{id}/payments',[App\Http\Controllers\PaymentController::class,'store'])->name('projects.payments');
+
+Route::get('projects/payments/{id}',[App\Http\Controllers\PaymentController::class,'show'])->name('projects.payments.edit');
+
+Route::post('projects/payments/{id}',[App\Http\Controllers\PaymentController::class,'update'])->name('projects.payments.update');
+
+ Route::delete('projects/payments/{id}', [App\Http\Controllers\PaymentController::class,'destroy'])->name('projects.payments.destroy');
+
+ Route::delete('projects/payments/{id}/file', [App\Http\Controllers\PaymentController::class,'destroyFile'])->name('projects.payments.file.destroy');
+
 Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
 Route::resource('vendors', App\Http\Controllers\VendorController::class);

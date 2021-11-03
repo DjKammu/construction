@@ -152,8 +152,8 @@ class DocumentTypeController extends Controller
 
          $type = DocumentType::find($id);
 
-        if($type->name == DocumentType::BID){
-              return redirect()->back()->withErrors('Document Type '.DocumentType::BID.' Can`t be Deleted!');
+        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE])){
+              return redirect()->back()->withErrors('Document Type '.$type->name.' Can`t be Deleted!');
         }
 
          $type->delete();

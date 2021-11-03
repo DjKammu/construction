@@ -144,9 +144,9 @@ class ProposalController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                    ->firstOrCreate(['proposal_id' => $id],
+                    ->firstOrCreate(['proposal_id' => $proposal->id],
                        ['name' => $name, 'slug' => $slug,
-                       'proposal_id'      => $id,
+                       'proposal_id'      => $proposal->id,
                        'document_type_id' => $document_type->id,
                        'subcontractor_id' => @$proposal->subcontractor->id
                        ]
