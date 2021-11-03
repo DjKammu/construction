@@ -3,6 +3,7 @@
 /public/image/*
 /public/project/*
 /public/proposals/*
+/public/invoices/*
 /public/storage
 /storage/*.key
 /vendor

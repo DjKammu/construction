@@ -205,7 +205,7 @@ class DocumentController extends Controller
         if($document->proposal_id){
                $proposal = Proposal::find($document->proposal_id);
                $trade_slug = @\Str::slug($proposal->trade->name);
-               $folderPath = Document::PROPOSALS."/";
+               $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
                $folderPath .= "$project_slug/$trade_slug/";
           }
 
