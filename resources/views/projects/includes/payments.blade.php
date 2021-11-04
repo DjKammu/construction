@@ -19,19 +19,42 @@
                 <th>Trade</th>
                 <th>Subcontractor</th>
                 <th>Amount Paid</th>
-                <th>Total Amount</th>
+                <th>Contract Amount </th>
+                <th>Remaining Amount </th>
                 <th>Status</th>
+                <th>Icon</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
             </thead>
             <tbody>
               @foreach($payments as $payment)
+
+               @if($payment->file)
+               @php
+                 $fileInfo = pathinfo($payment->file);
+                 $extension = @$fileInfo['extension'];
+                
+              if(in_array($extension,['doc','docx','docm','dot',
+              'dotm','dotx'])){
+                  $extension = 'word'; 
+               }
+               else if(in_array($extension,['csv','dbf','dif','xla',
+              'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                  $extension = 'excel'; 
+               }
+               @endphp
+             @endif
              <tr>
                <td> {{ @$payment->trade->name }}</td>
                <td> {{ @$payment->subcontractor->name }}</td>
-               <td> {{ $payment->payment_amount }}</td>
-               <td>{{ $payment->total_amount }}</td>
+               <td> ${{ $payment->payment_amount }}</td>
+               <td>${{ $payment->total_amount }}</td>
+               <td>${{ $payment->total_amount - $payment->payment_amount  }}</td>
+               <td><a href="{{ asset($payment->file) }}" target="_blank">
+              <p> {{ @$file->name }} </p>
+              <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+              </a> </td>
                <td>{{ @\App\Models\Payment::$statusArr[$payment->status] }}</td>
                   <td>        
                     <button onclick="return window.location.href='payments/{{$payment->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        

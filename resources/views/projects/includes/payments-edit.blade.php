@@ -85,7 +85,7 @@
                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Total Payment
+                                                <label class="text-dark" for="password">Contract Amount 
                                                 </label>
                                                  <input   value="${{ $totalAmount }}"class="form-control" readonly="">
                                             </div>

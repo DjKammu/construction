@@ -68,6 +68,10 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
                                               </li>
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
+                                                     aria-expanded="false">Budget</a>
+                                              </li>
                                               @endif
                                         </ul>
                                     </div>
@@ -86,6 +90,7 @@
                                     @endif 
                                     @if($awarded)
                                     @include('projects.includes.payments')
+                                    @include('projects.includes.budget')
                                     @endif
                               </div>
 

@@ -264,6 +264,27 @@ class ProjectController extends Controller
            
          });
 
+
+          $payments->filter(function($payment){
+
+            $project = @$payment->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($payment->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $folderPath = Document::INVOICES."/";
+
+            $folderPath .= "$project_slug/$trade_slug/";
+        
+            $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
+
+            return $payment->file;
+           
+         });
+
          $catids = @($trades->pluck('category_id'))->unique();
 
          $categories = Category::whereIn('id',$catids)->get(); 
