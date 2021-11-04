@@ -10,6 +10,38 @@
 
     </div>
 
+     <div class="row mb-2">
+        <div class="col-12">
+            <form>
+            <select style="height: 26px;" name="payment_vendor" onchange="return window.location.href = '?payment_vendor='+this.value+'#payments'"> 
+              <option value="">Select Vendor</option>
+              @foreach($vendors as $vendor)
+                 <option value="{{ $vendor->id }}" {{ (@request()->payment_vendor == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
+              @endforeach
+            </select> 
+            <select style="height: 26px;" name="payment_subcontractor" onchange="return window.location.href = '?payment_subcontractor='+this.value+'#payments'"> 
+              <option value="">Select Subcontractor</option>
+              @foreach($paymentSubcontractors as $subcontractor)
+                 <option value="{{ $subcontractor->id }}" {{ (@request()->payment_subcontractor == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
+              @endforeach
+            </select>
+            <select style="height: 26px;" name="payment_trade" onchange="return window.location.href = '?payment_trade='+this.value+'#payments'"> 
+              <option value="">Select Trade</option>
+              @foreach($paymentTrades as $trade)
+                 <option value="{{ $trade->id }}" {{ (@request()->payment_trade == $trade->id) ? 'selected' : ''}}> {{ $trade->name }}</option>
+              @endforeach
+            </select>
+            <select style="height: 26px;"  name="payment_status" onchange="return window.location.href = '?payment_status='+this.value+'#payments'"> 
+              <option value="">Select Status</option>
+              <option value="{{\App\Models\Payment::DEPOSIT_PAID_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::DEPOSIT_PAID_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::DEPOSIT_PAID_TEXT  }}</option>
+              <option value="{{ \App\Models\Payment::PROGRESS_PAYMENT_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::PROGRESS_PAYMENT_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::PROGRESS_PAYMENT_TEXT  }}</option>
+              <option value="{{ \App\Models\Payment::RETAINAGE_PAID_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::RETAINAGE_PAID_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::RETAINAGE_PAID_TEXT  }}</option>
+              <option value="{{ \App\Models\Payment::FINAL_PAYMENT_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::FINAL_PAYMENT_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::FINAL_PAYMENT_TEXT  }}</option>
+            </select>
+          </form>
+        </div>
+    </div>
+
 
  <div class="table-responsive">
 

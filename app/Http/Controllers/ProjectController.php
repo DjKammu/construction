@@ -148,6 +148,26 @@ class ProjectController extends Controller
 
          $payments = $project->payments();
 
+          if(request()->filled('payment_subcontractor')){
+                $subcontractor = request()->payment_subcontractor;
+                $payments->where('subcontractor_id', $subcontractor);
+         } 
+
+         if(request()->filled('payment_vendor')){
+                $payment_vendor = request()->payment_vendor;
+                $payments->where('vendor_id', $payment_vendor);
+         } 
+
+         if(request()->filled('payment_trade')){
+                $payment_trade = request()->payment_trade;
+                $payments->where('trade_id', $payment_trade);
+         } 
+
+         if(request()->filled('payment_status')){
+                $payment_status = request()->payment_status;
+                $payments->where('status', $payment_status);
+         } 
+
          $payments = $payments->get();
 
          if(request()->filled('s')){
@@ -168,7 +188,8 @@ class ProjectController extends Controller
                 $documents->where('vendor_id', $vendor);
          } 
         
-        if(request()->filled('subcontractor')){
+    
+          if(request()->filled('subcontractor')){
                 $subcontractor = request()->subcontractor;
                 $documents->where('subcontractor_id', $subcontractor);
          } 
@@ -184,6 +205,16 @@ class ProjectController extends Controller
 
          $proposalQuery = @$project->proposals();
 
+         $awardedProposals = $proposalQuery->IsAwarded()->get();
+
+         $paymentTrades = @$awardedProposals->map(function($prpsl){
+                 return $prpsl->trade;
+         })->unique();
+
+         $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
+                 return $prpsl->subcontractor;
+         })->unique();
+         
          if(request()->filled('proposal_trade')){
                 $proposal_trade = request()->proposal_trade;
                 $proposalsIds = @$allProposals->trade($proposal_trade)->pluck('id');
@@ -296,7 +327,8 @@ class ProjectController extends Controller
 
                                  
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
-            'categories','subcontractorsCount','allProposals','payments'));
+            'categories','subcontractorsCount','allProposals','payments','paymentTrades',
+            'paymentSubcontractors'));
     }
 
     /**
