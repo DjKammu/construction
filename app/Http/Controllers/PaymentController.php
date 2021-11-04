@@ -68,7 +68,11 @@ class PaymentController extends Controller
              return $prpsl->trade;
         });
 
-        return view('projects.includes.payments-create',compact('proposal','vendors','trades'));
+        $totalAmount = $this->proposalTotalAmount($proposal);
+        $dueAmount = $this->proposalDueAmount($proposal);
+
+        return view('projects.includes.payments-create',compact('proposal','vendors','trades',
+          'totalAmount','dueAmount'));
     }  
 
 
@@ -105,6 +109,7 @@ class PaymentController extends Controller
         $project_id = @$proposal->project->id;
         $data['project_id']  = $project_id;
         $data['proposal_id'] = $id;
+        $data['date'] = ($request->filled('date')) ? $request->date : date('Y-m-d');
         
         $data['total_amount'] = $this->proposalTotalAmount($proposal);
 
@@ -191,6 +196,17 @@ class PaymentController extends Controller
 
          return $total;
     } 
+
+    public function proposalDueAmount($proposal){
+
+         $total =  $this->proposalTotalAmount($proposal);  
+     
+         $payments = Payment::whereProposalId($proposal->id)->sum('payment_amount');
+
+         $due = (int) $total - (int) $payments;
+
+         return $due;
+    } 
     /**
      * Display the specified resource.
      *
@@ -220,10 +236,13 @@ class PaymentController extends Controller
         $payment->file = @($payment->file) ? $folderPath.$payment->file : '' ;
 
         $vendors = Vendor::all(); 
+
+        $totalAmount = $this->proposalTotalAmount($payment->proposal);
+        $dueAmount = $this->proposalDueAmount($payment->proposal);
          
          session()->flash('url', route('projects.show',['project' => $payment->project_id]).'?#payments'); 
 
-        return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors'));
+        return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors','totalAmount','dueAmount'));
     }
 
     /**

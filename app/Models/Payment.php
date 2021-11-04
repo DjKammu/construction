@@ -45,6 +45,10 @@ class Payment extends Model
         return $this->belongsTo(Trade::class);
     }
 
+    public function proposal(){
+        return $this->belongsTo(Proposal::class);
+    }
+
 
 
 }

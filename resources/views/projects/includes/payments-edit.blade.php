@@ -82,7 +82,25 @@
                                             </div>
                                         </div>
                                     </div> 
-                                    
+                                     <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Total Payment
+                                                </label>
+                                                 <input   value="${{ $totalAmount }}"class="form-control" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>  
+
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password"> Due Payment
+                                                </label>
+                                                 <input   value="${{ $dueAmount }}"class="form-control" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
 
