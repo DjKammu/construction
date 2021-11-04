@@ -50,6 +50,13 @@ class SubcontractorController extends Controller
             ->orWhere('notes', 'LIKE', "%{$searchTerm}%");
          }  
 
+        if(request()->filled('t')){
+            $t = request()->t;
+            $subcontractors->whereHas('trades', function($q) use ($t){
+                $q->where('slug', $t);
+            });
+         } 
+
          $perPage = request()->filled('per_page') ? request()->per_page : (new Subcontractor())->perPage;
 
          $subcontractors = $subcontractors->paginate($perPage);
