@@ -322,7 +322,7 @@ class ProjectController extends Controller
 
          $subcontractorsCount = @$project->proposals()
                                   ->withCount('subcontractor')
-                                 ->orderBy('subcontractor_count', DESC)
+                                 ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
 
                                  
