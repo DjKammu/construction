@@ -217,11 +217,12 @@ class ProjectController extends Controller
          
          if(request()->filled('proposal_trade')){
                 $proposal_trade = request()->proposal_trade;
-                $proposalsIds = @$allProposals->trade($proposal_trade)->pluck('id');
+                $proposalsIds = @$project->proposals()->trade($proposal_trade)->pluck('id');
                 $documents->whereIn('proposal_id', $proposalsIds);
          }
-         $allProposals = $proposalQuery->get();
-         $proposals = $proposalQuery->trade($trade)->get();
+    
+         $allProposals = @$project->proposals()->get();
+         $proposals = @$project->proposals()->trade($trade)->get();
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -261,7 +262,7 @@ class ProjectController extends Controller
             return $doc->file;
            
          });
-
+       
 
           $proposals->filter(function($proposal){
 

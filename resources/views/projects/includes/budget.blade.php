@@ -48,15 +48,22 @@
             </tr>
          @foreach($catTrades as $trd)
 
+              @php
+                  $catGrandTotal = 0;
+                  $catPaidTotal = 0;
+                  $catDueTotal = 0;
+                  $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
+                         ->has('payment')->get();
+                   if($bids->count() == 0){
+                     continue;
+                   }      
+              @endphp
+
             <tr >
               <td>{{ $trd->account_number }}</td>
               <td >
                  <span class="text-center" style="width: 15%;">{{ $trd->name  }}</span>
               </td>
-             
-              @php
-                  $bids = @$project->proposals()->trade($trd->id)->IsAwarded()->get();
-              @endphp
              
               @foreach($bids as $bid)
                 @php    
@@ -71,12 +78,19 @@
                      }
                       $paid =  (int) @$bid->payment()->sum('payment_amount');
                       $due =  (int) @$bidTotal  - (int) $paid;
+
                       $materialTotal = (int) @$bid->material + $materialTotal;
                       $labourTotal = (int) @$bid->labour_cost + $labourTotal;
                       $subcontractorTotal = (int) @$bid->subcontractor_price + $subcontractorTotal;
                       $grandTotal = (int) @$bidTotal + $grandTotal;
                       $paidTotal = (int) @$paid + $paidTotal;
                       $dueTotal = (int) @$due + $dueTotal;
+
+                      $catGrandTotal = (int) @$bidTotal + $catGrandTotal;
+                      $catPaidTotal = (int) @$paid + $catPaidTotal;
+                      $catDueTotal = (int) @$due + $catDueTotal;
+
+
                 @endphp
 
                   <td>${{ (int) @$bid->material  }}</td>
@@ -87,11 +101,39 @@
                   <td>${{ $due }} </td> 
                 </tr>
 
+
               @endforeach
 
          @endforeach
 
+            <tr>
+                 <td class="text-danger h6 text-center" colspan="2">
+                 <b>{{ $cat->name }} Total </b>
+                 </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>${{ (int) @$catGrandTotal  }}</td>
+                  <td>${{ $catPaidTotal }}</td>
+                  <td>${{ $catDueTotal }} </td> 
+           </tr>
+
+           <tr>
+            <td colspan="8" style="padding:20px;"></td>
+           </tr>
+
         @endforeach
+
+           <tr>
+               <td>Total</td>
+               <td></td>
+               <td> Material</td>
+               <td> Labour</td>
+               <td> Subcontractor</td>
+               <td></td>
+               <td></td>
+               <td></td>
+           </tr>
 
            <tr>
                <td><b>Project Total</b></td>

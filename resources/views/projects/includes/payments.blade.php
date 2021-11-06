@@ -53,8 +53,8 @@
                 <th>Amount Paid</th>
                 <th>Contract Amount </th>
                 <th>Remaining Amount </th>
-                <th>Status</th>
                 <th>Icon</th>
+                <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
