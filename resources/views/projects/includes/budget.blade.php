@@ -37,6 +37,11 @@
         @foreach($categories as $cat)
 
          @php   
+
+          $catGrandTotal = 0;
+          $catPaidTotal = 0;
+          $catDueTotal = 0;
+          
          $catTrades = @$trades->where('category_id', $cat->id);
          @endphp
             <tr >
@@ -49,9 +54,6 @@
          @foreach($catTrades as $trd)
 
               @php
-                  $catGrandTotal = 0;
-                  $catPaidTotal = 0;
-                  $catDueTotal = 0;
                   $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
                          ->has('payment')->get();
                    if($bids->count() == 0){
