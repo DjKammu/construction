@@ -13,7 +13,7 @@ use App\Models\Vendor;
 use App\Models\DocumentType;
 use App\Models\Subcontractor;
 use Gate;
-
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -109,7 +109,8 @@ class PaymentController extends Controller
         $project_id = @$proposal->project->id;
         $data['project_id']  = $project_id;
         $data['proposal_id'] = $id;
-        $data['date'] = ($request->filled('date')) ? $request->date : date('Y-m-d');
+
+        $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
         
         $data['total_amount'] = $this->proposalTotalAmount($proposal);
 
@@ -233,7 +234,9 @@ class PaymentController extends Controller
 
         $folderPath .= "$project_slug/$trade_slug/";
         
-        $payment->file = @($payment->file) ? $folderPath.$payment->file : '' ;
+        $payment->file = @($payment->file) ? $folderPath.$payment->file : '';
+
+        $payment->date = @($payment->date) ? Carbon::parse($payment->date)->format('m-d-Y') : '' ;
 
         $vendors = Vendor::all(); 
 
@@ -280,6 +283,7 @@ class PaymentController extends Controller
           ]
       );
         
+         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
 
         $payment = Payment::find($id);
 

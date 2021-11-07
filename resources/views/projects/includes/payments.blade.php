@@ -45,15 +45,16 @@
 
  <div class="table-responsive">
 
-       <table id="project-types-table" class="table table-hover text-center">
+       <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
+                <th>Date</th>
                 <th>Trade</th>
                 <th>Subcontractor</th>
                 <th>Amount Paid</th>
                 <th>Contract Amount </th>
                 <th>Remaining Amount </th>
-                <th>Icon</th>
+                <th>Attachment</th>
                 <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -78,11 +79,12 @@
                @endphp
              @endif
              <tr>
+               <td> {{ @$payment->date }}</td>
                <td> {{ @$payment->trade->name }}</td>
                <td> {{ @$payment->subcontractor->name }}</td>
                <td> ${{ $payment->payment_amount }}</td>
                <td>${{ $payment->total_amount }}</td>
-               <td>${{ $payment->total_amount - $payment->payment_amount  }}</td>
+               <td>${{ $payment->remaining }}</td>
                <td><a href="{{ asset($payment->file) }}" target="_blank">
               <p> {{ @$file->name }} </p>
               <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">

@@ -179,11 +179,6 @@ $('.date').datetimepicker({
     $(this).parent('.file_form').submit();
   });
 
- $(".alert").fadeTo(2000, 500).slideUp(500, function(){
-    $(".alert").slideUp(500);
-});
-
-
 </script>
 <style type="text/css">
   
@@ -292,6 +287,12 @@ span.awarded-green{
       font-size: 12px;
       padding: 4px 0px;
 } 
+
+
+table.payments-table{
+      font-size: 12px;
+      font-family: Arial;
+}
 
 </style>
 

@@ -17,7 +17,7 @@
                 <th>Item No.</th>
                 <th>Category & Trade</th>
                 <th>Material</th>
-                <th>Labour</th>
+                <th>Labor</th>
                 <th>Subcontractor</th>
                 <th>Total </th>
                 <th>Total Paid</th>
@@ -130,7 +130,7 @@
                <td>Total</td>
                <td></td>
                <td> Material</td>
-               <td> Labour</td>
+               <td> Labor</td>
                <td> Subcontractor</td>
                <td></td>
                <td></td>

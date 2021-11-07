@@ -64,9 +64,6 @@
     <script src="{{ asset('js/demo/demo.js') }}"></script>
     <script src="{{ asset('js/plugins/select2.min.js') }}"></script>
 
-
-
-
   </head>
 
   <body >
@@ -86,6 +83,13 @@
   </body>
 
 @yield('pagescript')
-                    
+   
+    <script type="text/javascript">
+    $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+        $(".alert").slideUp(500);
+    });
+
+   </script>
+                 
   </html>
 

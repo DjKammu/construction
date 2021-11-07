@@ -234,7 +234,7 @@
 <script type="text/javascript">
 
 $('.date').datetimepicker({
-    format: 'Y-M-D'
+     format: 'M-D-Y'
 });
 
 </script>

@@ -313,10 +313,12 @@ class ProjectController extends Controller
         
             $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
 
+            $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal);
+
             return $payment->file;
            
          });
-
+          
          $catids = @($trades->pluck('category_id'))->unique();
 
          $categories = Category::whereIn('id',$catids)->get(); 
