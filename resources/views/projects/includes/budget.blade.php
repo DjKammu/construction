@@ -102,7 +102,7 @@
                   <td>${{ (int) @$bidTotal  }}</td>
                   <td>${{ $paid }}</td>
                   <td>${{ $due }} </td> 
-                  <td>{{ $paid /@$bidTotal * 100}} % </td> 
+                  <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
                 </tr>
 
 
