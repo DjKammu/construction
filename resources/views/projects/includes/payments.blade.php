@@ -49,6 +49,7 @@
             <thead>
             <tr class="text-danger">
                 <th>Date</th>
+                <th>Invoice Number</th>
                 <th>Trade</th>
                 <th>Subcontractor</th>
                 <th>Amount Paid</th>
@@ -80,6 +81,7 @@
              @endif
              <tr>
                <td> {{ @$payment->date }}</td>
+               <td> {{ @$payment->invoice_number }}</td>
                <td> {{ @$payment->trade->name }}</td>
                <td> {{ @$payment->subcontractor->name }}</td>
                <td> ${{ $payment->payment_amount }}</td>

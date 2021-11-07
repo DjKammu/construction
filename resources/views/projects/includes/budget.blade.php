@@ -22,6 +22,7 @@
                 <th>Total </th>
                 <th>Total Paid</th>
                 <th>Remaining Payment </th>
+                <th> % Complete </th>
             </tr>
             </thead>
             <tbody>
@@ -41,7 +42,7 @@
           $catGrandTotal = 0;
           $catPaidTotal = 0;
           $catDueTotal = 0;
-          
+
          $catTrades = @$trades->where('category_id', $cat->id);
          @endphp
             <tr >
@@ -101,6 +102,7 @@
                   <td>${{ (int) @$bidTotal  }}</td>
                   <td>${{ $paid }}</td>
                   <td>${{ $due }} </td> 
+                  <td>{{ $paid /@$bidTotal * 100}} % </td> 
                 </tr>
 
 

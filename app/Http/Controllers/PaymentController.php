@@ -102,6 +102,7 @@ class PaymentController extends Controller
               'exists:subcontractors,id'],
               'trade_id' => 'required|exists:trades,id',
               'payment_amount' => 'required',
+              'invoice_number' => 'required',
               'status' => 'required'
           ]
       );
@@ -279,6 +280,7 @@ class PaymentController extends Controller
               'exists:subcontractors,id'],
               'trade_id' => 'required|exists:trades,id',
               'payment_amount' => 'required',
+              'invoice_number' => 'required',
               'status' => 'required'
           ]
       );

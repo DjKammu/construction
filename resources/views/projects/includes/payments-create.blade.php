@@ -107,6 +107,17 @@
                                          <div class="col-lg-5 col-md-6 mx-auto">
 
                                            <div class="form-group">
+                                                <label class="text-dark" for="password"> Invoice Number
+                                                </label>
+                                                <input  name="invoice_number" value="{{ old('invoice_number')}}" type="number" class="form-control" placeholder="Invoice Number" >
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
                                                 <label class="text-dark" for="password"> Payment
                                                 </label>
                                                 <input  name="payment_amount" value="{{ old('payment_amount')}}" type="number" class="form-control" placeholder="Payment Amount" >
