@@ -40,7 +40,7 @@
             <p class="mb-1">Materials: ${{ \App\Models\Payment::format($proposal->material)}}</p>
             <p class="mb-1">Labor Cost: ${{ \App\Models\Payment::format($proposal->labour_cost)}}</p>
             <p class="mb-1">Subcontractor Price: ${{ \App\Models\Payment::format($proposal->subcontractor_price)}}</p>
-            <p class="mb-1">Original Bid Total: <b>${{ $bidTotal = (int) \App\Models\Payment::format($proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price) }}</b></p>
+            <p class="mb-1">Original Bid Total: <b>${{ $bidTotal = (int) $proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price }}</b></p>
             <p class="card-text">Notes: {{ $proposal->notes}}</p>
             @foreach($proposal->changeOrders as $k => $order)
               @php 
