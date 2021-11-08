@@ -167,8 +167,19 @@ class ProjectController extends Controller
                 $payment_status = request()->payment_status;
                 $payments->where('status', $payment_status);
          } 
+        
+         $orderBy = 'date';  
+         $order ='DESC' ;
+                    
+        if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['date','invoice_number'] ) ? 'date' : request()->orderby ) : 'date';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
 
-         $payments = $payments->get();
+         $payments = $payments->orderBy($orderBy, $order)->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -318,7 +329,7 @@ class ProjectController extends Controller
             return $payment->file;
            
          });
-          
+
          $catids = @($trades->pluck('category_id'))->unique();
 
          $categories = Category::whereIn('id',$catids)->get(); 

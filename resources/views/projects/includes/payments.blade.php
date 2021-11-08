@@ -48,8 +48,18 @@
        <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
-                <th>Date</th>
-                <th>Invoice Number</th>
+                <th >Date 
+                  <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderBy('date', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('date', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
+                </span></th>
+                <th >Invoice Number <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderBy('invoice_number', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('invoice_number', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span></th>
+
                 <th>Trade</th>
                 <th>Subcontractor</th>
                 <th>Amount Paid</th>

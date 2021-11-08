@@ -179,6 +179,41 @@ $('.date').datetimepicker({
     $(this).parent('.file_form').submit();
   });
 
+
+  function sortOrderBy(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderby') ;
+      let isSort = fullUrl.includes('order') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderby',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'order',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderby='+orderBy+'&order='+order
+      }
+       url = url+'#payments';
+       window.location.href = url;
+
+ }
+
+
+  function replaceUrlParam(url, paramName, paramValue)
+    {
+        if (paramValue == null) {
+            paramValue = '';
+        }
+        var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
+        if (url.search(pattern)>=0) {
+            return url.replace(pattern,'$1' + paramValue + '$2');
+        }
+        url = url.replace(/[?#]$/,'');
+        return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
+    }
+
 </script>
 <style type="text/css">
   
@@ -292,6 +327,26 @@ span.awarded-green{
 table.payments-table{
       font-size: 12px;
       font-family: Arial;
+}
+
+i.fa.fa-sort-desc {
+    position: relative;
+    left: -8px;
+    cursor: pointer;
+    top: 1px;
+}
+i.fa.fa-sort-asc{
+  position: relative;
+    left: 4px;
+    cursor: pointer;
+    top: -2px;
+}
+.sorting-outer{
+  position: absolute;
+}
+
+.sorting-outer a{
+  color: #ef8157 ;
 }
 
 </style>
