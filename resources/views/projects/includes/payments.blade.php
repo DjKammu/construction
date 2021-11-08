@@ -61,7 +61,7 @@
                 </span></th>
 
                 <th>Trade</th>
-                <th>Subcontractor</th>
+                <th>Subcontractor/Vendor</th>
                 <th>Amount Paid</th>
                 <th>Contract Amount </th>
                 <th>Remaining Amount </th>
@@ -93,7 +93,7 @@
                <td> {{ @$payment->date }}</td>
                <td> {{ @$payment->invoice_number }}</td>
                <td> {{ @$payment->trade->name }}</td>
-               <td> {{ @$payment->subcontractor->name }}</td>
+               <td> {{ @$payment->subcontractor->name}} {{ (@$payment->vendor ) ? '/'.@$payment->vendor->name : '' }}</td>
                <td> ${{ \App\Models\Payment::format($payment->payment_amount) }}</td>
                <td>${{ \App\Models\Payment::format($payment->total_amount) }}</td>
                <td>${{ \App\Models\Payment::format($payment->remaining) }}</td>

@@ -48,6 +48,10 @@ class Payment extends Model
     public function proposal(){
         return $this->belongsTo(Proposal::class);
     }
+
+    public function vendor(){
+        return $this->belongsTo(Vendor::class);
+    }
     
     public static function format($num){
         return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $num);

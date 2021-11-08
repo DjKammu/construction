@@ -114,6 +114,7 @@ class PaymentController extends Controller
         
         $data['total_amount'] = $this->proposalTotalAmount($proposal);
 
+
         $project = Project::find($project_id);
 
         $project_slug = \Str::slug($project->name);

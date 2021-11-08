@@ -11,7 +11,7 @@
 
 	<div class="table-responsive">
 
-    <table id="project-types-table" class="table table-hover text-center">
+    <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
                 <th>Item No.</th>
@@ -50,7 +50,7 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="6"></td>
+              <td  colspan="7"></td>
             </tr>
          @foreach($catTrades as $trd)
 
@@ -79,6 +79,13 @@
                          $bidTotal -= $order->subcontractor_price;
                        }
                      }
+                     
+                       $bidPayments =   $bid->payment;
+
+                       $payment_vendors = @collect($bidPayments)->map(function($p){
+                           return $p->vendor->name;
+                       })->unique()->join(',');
+                        
                       $paid =  (int) @$bid->payment()->sum('payment_amount');
                       $due =  (int) @$bidTotal  - (int) $paid;
 
@@ -93,7 +100,6 @@
                       $catPaidTotal = (int) @$paid + $catPaidTotal;
                       $catDueTotal = (int) @$due + $catDueTotal;
 
-
                 @endphp
 
                   <td>${{ (int) @$bid->material  }}</td>
@@ -103,6 +109,14 @@
                   <td>${{ $paid }}</td>
                   <td>${{ $due }} </td> 
                   <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
+                </tr>
+
+                <tr>
+                  <td colspan="2" style="padding:20px;"></td>
+                  <td><span class="doc_type_m">{{ @$payment_vendors }}</span></td>
+                  <td></td>
+                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
+                  <td colspan="4" style="padding:20px;"></td>
                 </tr>
 
 
@@ -120,10 +134,11 @@
                   <td>${{ (int) @$catGrandTotal  }}</td>
                   <td>${{ $catPaidTotal }}</td>
                   <td>${{ $catDueTotal }} </td> 
+                  <td colspan="2" style="padding:20px;"></td>
            </tr>
 
            <tr>
-            <td colspan="8" style="padding:20px;"></td>
+            <td colspan="9" style="padding:20px;"></td>
            </tr>
 
         @endforeach
@@ -134,6 +149,7 @@
                <td> Material</td>
                <td> Labor</td>
                <td> Subcontractor</td>
+               <td></td>
                <td></td>
                <td></td>
                <td></td>
@@ -148,6 +164,7 @@
                <td><b>${{ $grandTotal }}</b></td>
                <td><b>${{ $paidTotal }}</b></td>
                <td><b>${{ $dueTotal }}</b></td>
+               <td></td>
            </tr>
 
             </tbody>
