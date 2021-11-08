@@ -324,7 +324,7 @@ class ProjectController extends Controller
         
             $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
 
-            $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal);
+            $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
 
             return $payment->file;
            

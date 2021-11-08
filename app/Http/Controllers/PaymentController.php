@@ -69,7 +69,7 @@ class PaymentController extends Controller
         });
 
         $totalAmount = $this->proposalTotalAmount($proposal);
-        $dueAmount = $this->proposalDueAmount($proposal);
+        $dueAmount = $this->proposalDueTotalAmount($proposal);
 
         return view('projects.includes.payments-create',compact('proposal','vendors','trades',
           'totalAmount','dueAmount'));
@@ -198,11 +198,23 @@ class PaymentController extends Controller
          return $total;
     } 
 
-    public function proposalDueAmount($proposal){
+    public function proposalDueTotalAmount($proposal){
 
          $total =  $this->proposalTotalAmount($proposal);  
      
          $payments = Payment::whereProposalId($proposal->id)->sum('payment_amount');
+
+         $due = (int) $total - (int) $payments;
+
+         return $due;
+    } 
+
+    public function proposalDueAmount($proposal,$payment_id){
+
+         $total =  $this->proposalTotalAmount($proposal);  
+     
+         $payments = Payment::whereProposalId($proposal->id)
+                     ->where('id','<=', $payment_id)->sum('payment_amount');
 
          $due = (int) $total - (int) $payments;
 
@@ -241,7 +253,7 @@ class PaymentController extends Controller
         $vendors = Vendor::all(); 
 
         $totalAmount = $this->proposalTotalAmount($payment->proposal);
-        $dueAmount = $this->proposalDueAmount($payment->proposal);
+        $dueAmount = $this->proposalDueTotalAmount($payment->proposal);
          
          session()->flash('url', route('projects.show',['project' => $payment->project_id]).'?#payments'); 
 
