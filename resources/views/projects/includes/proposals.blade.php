@@ -28,6 +28,9 @@
     
 <div id="proposals-list" class="row py-3">
    @foreach($proposals as $proposal)
+   @php
+     $bidTotal = (int) $proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price
+   @endphp
    <div class="col-lg-4 col-sm-6 mb-4" style="display: flex; flex-wrap: wrap;">
       <div class="card card-user card-table-item" style="width: 100%; height: 100%;">
          <div class="card-header text-center">
@@ -40,7 +43,7 @@
             <p class="mb-1">Materials: ${{ \App\Models\Payment::format($proposal->material)}}</p>
             <p class="mb-1">Labor Cost: ${{ \App\Models\Payment::format($proposal->labour_cost)}}</p>
             <p class="mb-1">Subcontractor Price: ${{ \App\Models\Payment::format($proposal->subcontractor_price)}}</p>
-            <p class="mb-1">Original Bid Total: <b>${{ $bidTotal = (int) $proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price }}</b></p>
+            <p class="mb-1">Original Bid Total: <b>${{ \App\Models\Payment::format( $bidTotal )}}</b></p>
             <p class="card-text">Notes: {{ $proposal->notes}}</p>
             @foreach($proposal->changeOrders as $k => $order)
               @php 
