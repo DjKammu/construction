@@ -87,7 +87,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Contract Amount 
                                                 </label>
-                                                 <input   value="${{ $totalAmount }}"class="form-control" readonly="">
+                                                 <input   value="${{ \App\Models\Payment::format($totalAmount) }}"class="form-control" readonly="">
                                             </div>
                                         </div>
                                     </div>  
@@ -97,7 +97,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password"> Due Payment
                                                 </label>
-                                                 <input   value="${{ $dueAmount }}"class="form-control" readonly="">
+                                                 <input   value="${{ \App\Models\Payment::format($dueAmount) }}"class="form-control" readonly="">
                                             </div>
                                         </div>
                                     </div>

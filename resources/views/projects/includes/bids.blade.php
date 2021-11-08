@@ -46,7 +46,7 @@
 
                      }
                 @endphp
-                <span  style="width:{{$spanWidth}}%;" class="text-center bid-text {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.$bidTotal 
+                <span  style="width:{{$spanWidth}}%;" class="text-center bid-text {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.\App\Models\Payment::format($bidTotal)
                   : "No Bid" }} </b></span>
               @endforeach
 
