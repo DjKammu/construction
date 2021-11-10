@@ -118,7 +118,7 @@
                                            <div class="form-group">
                                                 <label class="text-dark" for="password"> Payment
                                                 </label>
-                                                <input  name="payment_amount" value="{{ $payment->payment_amount }}" type="number" class="form-control" placeholder="Payment Amount" >
+                                                <input  name="payment_amount" value="{{ $payment->payment_amount }}" type="number" class="form-control" placeholder="Payment Amount" step="any">
                                             </div>
                                         </div>
                                     </div> 
@@ -149,7 +149,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Notes
+                                                </label>
+                                                <textarea  name="notes"  type="text" class="form-control" placeholder="Notes" >
+                                                 {{ $payment->notes }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div> 
 
+    
                                    <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">

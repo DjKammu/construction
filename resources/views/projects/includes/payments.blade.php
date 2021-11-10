@@ -53,6 +53,12 @@
                   <a href="javascript:void(0)" onclick="sortOrderBy('date', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
                   <a href="javascript:void(0)" onclick="sortOrderBy('date', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
                 </span></th>
+
+                <th >Inserted 
+                  <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderBy('updated_at', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('updated_at', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
+                </span></th>
                 <th >Invoice Number <span class="sorting-outer">
                   <a href="javascript:void(0)" onclick="sortOrderBy('invoice_number', 'ASC')">
                     <i class="fa fa-sort-asc" o ></i></a>
@@ -91,6 +97,7 @@
              @endif
              <tr>
                <td> {{ @$payment->date }}</td>
+               <td> {{ @$payment->updated_at }}</td>
                <td> {{ @$payment->invoice_number }}</td>
                <td> {{ @$payment->trade->name }}</td>
                <td> {{ @$payment->subcontractor->name}} {{ (@$payment->vendor ) ? '/'.@$payment->vendor->name : '' }}</td>

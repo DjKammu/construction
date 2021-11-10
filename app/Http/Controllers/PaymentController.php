@@ -95,14 +95,16 @@ class PaymentController extends Controller
             return redirect('/');
         }
 
+        $totalDueMount =  $this->proposalDueTotalAmount($proposal);
+
         $data = $request->except('_token');
 
         $request->validate([
               'subcontractor_id' => ['required',
               'exists:subcontractors,id'],
               'trade_id' => 'required|exists:trades,id',
-              'payment_amount' => 'required',
-              'status' => 'required'
+              'payment_amount' => 'required|lte:'.$totalDueMount,
+              // 'status' => 'required'
           ]
       );
 
@@ -185,7 +187,7 @@ class PaymentController extends Controller
      
     public function proposalTotalAmount($proposal){
 
-       $total =  (int) @$proposal->material + (int) @$proposal->labour_cost + (int) @$proposal->subcontractor_price;  
+       $total =  (float) @$proposal->material + (float) @$proposal->labour_cost + (float) @$proposal->subcontractor_price;  
   
          foreach(@$proposal->changeOrders as $k => $order){
            if($order->type == \App\Models\ChangeOrder::ADD ){
@@ -205,7 +207,7 @@ class PaymentController extends Controller
      
          $payments = Payment::whereProposalId($proposal->id)->sum('payment_amount');
 
-         $due = (int) $total - (int) $payments;
+         $due = (float) $total - (float) $payments;
 
          return $due;
     } 
@@ -217,7 +219,7 @@ class PaymentController extends Controller
          $payments = Payment::whereProposalId($proposal->id)
                      ->where('id','<=', $payment_id)->sum('payment_amount');
 
-         $due = (int) $total - (int) $payments;
+         $due = (float) $total - (float) $payments;
 
          return $due;
     } 
@@ -286,19 +288,26 @@ class PaymentController extends Controller
         } 
 
         $data = $request->except('_token');
-        
+
+        $payment = Payment::find($id);
+
+        $totalDueMount =  $this->proposalDueTotalAmount($payment->proposal);
+
+        $data = $request->except('_token');
+
         $request->validate([
               'subcontractor_id' => ['required',
               'exists:subcontractors,id'],
               'trade_id' => 'required|exists:trades,id',
-              'payment_amount' => 'required',
-              'status' => 'required'
+              'payment_amount' => 'required|lte:'.((int) $totalDueMount + $payment->payment_amount),
+              // 'status' => 'required'
+          // ],[
+          //   'payment_amount.lte' => 'The payment amount must be less than or equal '.$totalDueMount.'.'
           ]
       );
-        
-         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
 
-        $payment = Payment::find($id);
+        $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
+
 
         $project = @$payment->project;
 
@@ -387,15 +396,13 @@ class PaymentController extends Controller
 
          $path = @public_path().'/'.$folderPath;
 
-         $files = @explode(',',$proposal->files);
-
+         $file = @$payment->file;
+         
          $aPath = public_path().'/'. Document::INVOICES."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
-         
-         foreach (@$files as $key => $file) {
-            @\File::copy($path.$file, $aPath.'/'.$file);
-            @unlink($path.$file);
-         }
+        
+          @\File::copy($path.$file, $aPath.'/'.$file);
+          @unlink($path.$file);
 
          $project->documents()
                     ->where(['payment_id' => $id])->delete();
