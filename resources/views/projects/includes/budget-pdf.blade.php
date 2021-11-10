@@ -115,7 +115,7 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
-                  <td><span class="doc_type_m">{{ @implode($vendors_amount,',') }}</span></td>
+                   <td><span class="doc_type_m">{{ (is_array($vendors_amount)) ? @implode($vendors_amount,',') : '' }}</span></td>
                   <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
