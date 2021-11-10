@@ -134,5 +134,7 @@ Route::post('projects/payments/{id}',[App\Http\Controllers\PaymentController::cl
 
  Route::delete('projects/payments/{id}/file', [App\Http\Controllers\PaymentController::class,'destroyFile'])->name('projects.payments.file.destroy');
 
+ Route::get('projects/{id}/download', [App\Http\Controllers\PaymentController::class,'downloadPDF'])->name('projects.download');
+
 Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
 Route::resource('vendors', App\Http\Controllers\VendorController::class);

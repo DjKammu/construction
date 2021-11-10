@@ -1,33 +1,19 @@
- <div class="tab-pane" id="budget" role="tabpanel" aria-expanded="true">
-   <div class="row mb-2">
-        <div class="col-6">
-            <h4 class="mt-0 text-left">{{ @$project->name }} - Budget </h4>
-        </div>
-      
-         <div class="col-6 text-right">
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ @$project->id }}/download'">Download
-            </button>
-        </div>
-    </div>
-
-<div id="proposals-list" class="row py-3">
-
-	<div class="table-responsive">
+<div class="table-responsive">
 
     <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
                 <th>Item No.</th>
-                <th>Category & Trade</th>
+                <th >Category&Trade</th>
                 <th>Material</th>
                 <th>Labor</th>
                 <th>Subcontractor</th>
                 <th>Vendors</th>
                 <th>Total </th>
-                <th>Total Paid</th>
-                <th>Remaining Payment </th>
-                <th> % Complete </th>
-                <th> Notes </th>
+                <th>Paid</th>
+                <th >Remaining  </th>
+                <th> %Complete </th>
+                <!-- <th> Notes </th> -->
             </tr>
             </thead>
             <tbody>
@@ -55,7 +41,7 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="9"></td>
+              <td  colspan="8"></td>
             </tr>
          @foreach($catTrades as $trd)
 
@@ -128,17 +114,17 @@
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
                   <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
-                  <td>{{ trim(@$notes) }}</td> 
+                  <!-- <td>{{ trim(@$notes) }}</td>  -->
                 </tr>
 
                 <tr>
-                  <td colspan="2" style="padding:20px;"></td>
+                  <td colspan="2" style="padding:10px;"></td>
                   <td></td>
                   <td></td>
                   <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
                   <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td>
-                  <td colspan="4" style="padding:20px;"></td>
-                  <td colspan="4" style="padding:20px;"></td>
+                  <td colspan="4" style="padding:10px;"></td>
+                  <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
 
 
@@ -158,11 +144,11 @@
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
                   <td><b>{{ ($catGrandTotal && $catPaidTotal) ? sprintf('%0.2f', @$catPaidTotal / @$catGrandTotal * 100) : 0 }} % </b></td>
-                  <td></td>
+                  <!-- <td></td> -->
            </tr>
 
            <tr>
-            <td colspan="11" style="padding:20px;"></td>
+            <td colspan="11" style="padding:10px;"></td>
            </tr>
 
         @endforeach
@@ -178,7 +164,7 @@
                <td></td>
                <td></td>
                <td></td>
-               <td></td>
+               <!-- <td></td> -->
            </tr>
 
            <tr>
@@ -192,7 +178,7 @@
                <td><b>${{ \App\Models\Payment::format($paidTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
                <td><b>{{ ($paidTotal && $grandTotal) ? sprintf('%0.2f', @$paidTotal / @$grandTotal * 100) : 0 }} % </b></td>
-               <td></td>
+               <!-- <td ></td> -->
             
            </tr>
 
@@ -200,5 +186,35 @@
         </table>
 </div>
 
-</div>
-</div>
+
+<style type="text/css">
+  
+table.payments-table{
+      font-size: 12px;
+      font-family: Arial;
+      border-bottom: 1px solid #dee2e6;
+      border-right: 1px solid #dee2e6;
+      border-left: 1px solid #dee2e6;
+}
+
+table.payments-table thead>tr>th{
+   font-size: 12px;
+}
+.text-center {
+    text-align: center!important;
+}
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+.table td, .table th {
+    padding: 5px;
+    border-top: 1px solid #dee2e6;
+}
+
+b, strong {
+    font-weight: bolder;
+}
+
+</style>

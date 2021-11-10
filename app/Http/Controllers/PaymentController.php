@@ -10,10 +10,12 @@ use App\Models\Document;
 use App\Models\Proposal;
 use App\Models\Payment;
 use App\Models\Vendor;
+use App\Models\Category;
 use App\Models\DocumentType;
 use App\Models\Subcontractor;
 use Gate;
 use Carbon\Carbon;
+use PDF;
 
 class PaymentController extends Controller
 {
@@ -444,5 +446,21 @@ class PaymentController extends Controller
           @unlink($path);
 
          return redirect()->back()->with('message', 'File Delete Successfully!');
+    }
+
+    public function downloadPDF($id){
+
+        $project = Project::find($id); 
+        $trades = $project->trades()->get();
+        $catids = @($trades->pluck('category_id'))->unique();
+        $categories = Category::whereIn('id',$catids)->get(); 
+
+        $pdf = PDF::loadView('projects.includes.budget-pdf',
+          ['categories' => $categories,
+          'trades' => $trades,'project' => $project]
+        );
+
+        return $pdf->stream('project_'.$id.'_pdf.pdf');
+
     }
 }
