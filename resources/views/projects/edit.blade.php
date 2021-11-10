@@ -329,6 +329,9 @@ table.payments-table{
       font-family: Arial;
 }
 
+table.payments-table thead>tr>th{
+   font-size: 12px;
+}
 i.fa.fa-sort-desc {
     position: relative;
     left: -8px;
@@ -348,7 +351,9 @@ i.fa.fa-sort-asc{
 .sorting-outer a{
   color: #ef8157 ;
 }
-
+.table-responsive.table-payments{
+  overflow: auto;
+}
 </style>
 
 @endsection

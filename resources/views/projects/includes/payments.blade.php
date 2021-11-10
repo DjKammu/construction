@@ -43,7 +43,7 @@
     </div>
 
 
- <div class="table-responsive">
+ <div class="table-responsive table-payments">
 
        <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
