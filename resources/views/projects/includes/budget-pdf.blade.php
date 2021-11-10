@@ -1,5 +1,5 @@
 <div class="table-responsive">
-   <h4 class="mt-0 text-center">Project {{ @$project->name }} </h4>
+   <h4 class="mt-0 text-center"> {{ @$project->name }} </h4>
     <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
@@ -115,7 +115,7 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
-                   <td><span class="doc_type_m">{{ (is_array($vendors_amount)) ? @implode($vendors_amount,',') : '' }}</span></td>
+                  <td><span class="doc_type_m">{{  @implode(',',$vendors_amount) }}</span></td>
                   <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
@@ -214,8 +214,11 @@ table.payments-table thead>tr>th{
 
 .footer-text {
     width: 100%;
-    font-size: 10px;
+    font-size: 12px;
     text-align: right!important;
+     position:absolute;
+     bottom:0;
+     right:0;
 }
 .table {
     width: 100%;
