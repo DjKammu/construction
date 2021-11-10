@@ -75,7 +75,7 @@
                                                 <select class="form-control" name="vendor_id"> 
                                                   <option value="">Select Vendor</option>
                                                   @foreach(@$vendors as $vendor)
-                                                   <option value="{{ $vendor->id }}" >{{ $vendor->name}}
+                                                   <option value="{{ $vendor->id }}" {{ ($payment->vendor_id == $vendor->id ) ? 'selected' : ''}}>{{ $vendor->name}}
                                                    </option>
                                                   @endforeach
                                                 </select>

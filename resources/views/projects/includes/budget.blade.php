@@ -87,7 +87,7 @@
                      
                        $bidPayments =   $bid->payment;
 
-                       $payment_vendors = $vendors_amount = '';
+                       $payment_vendors = $vendors_amount = [];
 
                        $payment_vendors = @collect($bidPayments)->map(function($p) {
                               if($p->vendor){
@@ -95,12 +95,18 @@
                               }
                        })->unique()->join(',');
 
-                      $vendors_amount = @collect($bidPayments)->map(function($p) {
-                              if($p->vendor){
-                                return \App\Models\Payment::format($p->payment_amount);
+                       @collect($bidPayments)->each(function($p) use (&$vendors_amount){
+                           if($p->vendor){
+                              $amount = (double) \App\Models\Payment::format($p->payment_amount);
+                              if(isset( $vendors_amount[$p->vendor->name])){
+                                   $amount = $vendors_amount[$p->vendor->name] +
+                                     \App\Models\Payment::format($p->payment_amount);   
                               }
-                       })->unique()->join(',');
-
+                              $vendors_amount[$p->vendor->name] = (double) $amount;  
+                             }
+                       });
+                        
+                          
                        $notes = @$bid->payment()->whereNotNull('notes')->pluck('notes')->join(',');
                       
                         
@@ -123,7 +129,7 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
-                  <td><span class="doc_type_m">{{ @trim($vendors_amount,',') }}</span></td>
+                  <td><span class="doc_type_m">{{ @implode($vendors_amount,',') }}</span></td>
                   <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
