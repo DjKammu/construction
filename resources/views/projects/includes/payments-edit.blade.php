@@ -108,7 +108,7 @@
                                            <div class="form-group">
                                                 <label class="text-dark" for="password"> Invoice Number
                                                 </label>
-                                                <input  name="invoice_number" value="{{ @$payment->invoice_number }}" type="number" class="form-control" placeholder="Invoice Number" >
+                                                <input  name="invoice_number" value="{{ @$payment->invoice_number }}" type="text" class="form-control" placeholder="Invoice Number" >
                                             </div>
                                         </div>
                                     </div> 

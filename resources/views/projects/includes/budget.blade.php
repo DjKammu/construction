@@ -27,7 +27,7 @@
                 <th>Total Paid</th>
                 <th>Remaining Payment </th>
                 <th> % Complete </th>
-                <th> Notes </th>
+                <!-- <th> Notes </th> -->
             </tr>
             </thead>
             <tbody>
@@ -55,7 +55,7 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="9"></td>
+              <td  colspan="8"></td>
             </tr>
          @foreach($catTrades as $trd)
 
@@ -144,7 +144,7 @@
                   <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
                   <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td>
                   <td colspan="4" style="padding:20px;"></td>
-                  <td colspan="4" style="padding:20px;"></td>
+                  <!-- <td colspan="4" style="padding:20px;"></td> -->
                 </tr>
 
 
@@ -184,7 +184,7 @@
                <td></td>
                <td></td>
                <td></td>
-               <td></td>
+               <!-- <td></td> -->
            </tr>
 
            <tr>
@@ -198,7 +198,7 @@
                <td><b>${{ \App\Models\Payment::format($paidTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
                <td><b>{{ ($paidTotal && $grandTotal) ? sprintf('%0.2f', @$paidTotal / @$grandTotal * 100) : 0 }} % </b></td>
-               <td></td>
+               <!-- <td></td> -->
             
            </tr>
 
