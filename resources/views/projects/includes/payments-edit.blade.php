@@ -55,6 +55,7 @@
                                             </div>
                                         </div>
                                     </div> 
+                                    @if(!$payment->vendor_id)
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -67,6 +68,8 @@
                                             </div>
                                         </div>
                                     </div> 
+                                    @endif
+                                    @if($payment->vendor_id)
                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -82,6 +85,7 @@
                                             </div>
                                         </div>
                                     </div> 
+                                    @endif
                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">

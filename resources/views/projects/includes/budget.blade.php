@@ -22,7 +22,7 @@
                 <th>Material</th>
                 <th>Labor</th>
                 <th>Subcontractor</th>
-                <th>Vendors</th>
+                <!-- <th>Vendors</th> -->
                 <th>Total </th>
                 <th>Total Paid</th>
                 <th>Remaining Payment </th>
@@ -38,6 +38,7 @@
          $grandTotal = 0;
          $paidTotal = 0;
          $dueTotal = 0;
+         $vendors = [];
          @endphp
 
         @foreach($categories as $cat)
@@ -55,13 +56,13 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="8"></td>
+              <td  colspan="7"></td>
             </tr>
          @foreach($catTrades as $trd)
 
               @php
                   $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
-                         ->has('payment')->get();
+                         ->get();
                    if($bids->count() == 0){
                      continue;
                    }      
@@ -87,7 +88,7 @@
                      
                        $bidPayments =   $bid->payment;
 
-                       $payment_vendors = $vendors_amount = [];
+                       $payment_vendors  = [];
 
                        $payment_vendors = @collect($bidPayments)->map(function($p) {
                               if($p->vendor){
@@ -95,14 +96,14 @@
                               }
                        })->unique()->join(',');
 
-                       @collect($bidPayments)->each(function($p) use (&$vendors_amount){
+                       @collect($bidPayments)->each(function($p) use (&$vendors){
                            if($p->vendor){
                               $amount = (double) \App\Models\Payment::format($p->payment_amount);
-                              if(isset( $vendors_amount[$p->vendor->name])){
-                                   $amount = $vendors_amount[$p->vendor->name] +
+                              if(isset( $vendors[$p->vendor->name])){
+                                   $amount = $vendors[$p->vendor->name] +
                                      \App\Models\Payment::format($p->payment_amount);   
                               }
-                              $vendors_amount[$p->vendor->name] = (double) $amount;  
+                              $vendors[$p->vendor->name] = (double) $amount;  
                              }
                        });
                         
@@ -110,7 +111,7 @@
                        $notes = @$bid->payment()->whereNotNull('notes')->pluck('notes')->join(',');
                       
                         
-                      $paid =  (float) @$bid->payment()->sum('payment_amount');
+                      $paid =  (float) @$bid->payment()->whereNull('vendor_id')->sum('payment_amount');
                       $due =  (float) @$bidTotal  - (float) $paid;
 
                       $materialTotal = (float) @$bid->material + $materialTotal;
@@ -129,12 +130,12 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
-                  <td><span class="doc_type_m">{{  @implode(',',$vendors_amount) }}</span></td>
+                  <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
                   <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
-                  <td>{{ trim(@$notes) }}</td> 
+                  <!-- <td>{{ trim(@$notes) }}</td>  -->
                 </tr>
 
                 <tr>
@@ -142,11 +143,10 @@
                   <td></td>
                   <td></td>
                   <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
-                  <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td>
+                  <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="4" style="padding:20px;"></td>
                   <!-- <td colspan="4" style="padding:20px;"></td> -->
                 </tr>
-
 
               @endforeach
 
@@ -159,21 +159,61 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <!-- <td></td> -->
                   <td><b>${{ (float) @\App\Models\Payment::format($catGrandTotal ) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
                   <td><b>{{ ($catGrandTotal && $catPaidTotal) ? sprintf('%0.2f', @$catPaidTotal / @$catGrandTotal * 100) : 0 }} % </b></td>
-                  <td></td>
+                  <!-- <td></td> -->
            </tr>
 
            <tr>
-            <td colspan="11" style="padding:20px;"></td>
+            <td colspan="10" style="padding:20px;"></td>
            </tr>
 
         @endforeach
+          
+         @if($vendors) 
 
+         @php
+         $extraTotal = 0;
+         @endphp
+          
            <tr>
+               <td colspan="2"><b>Extra</b></td>
+               <td colspan="8" style="padding:20px;"></td>
+               <!-- <td></td> -->
+               <!-- <td></td> -->
+           </tr>
+
+           @foreach($vendors as $k => $vndr)
+              @php
+                $extraTotal = $extraTotal + $vndr;
+              @endphp
+            <tr>
+               <td></td>
+               <td>{{ $k}}</td>
+               <td>${{ (float) @\App\Models\Payment::format($vndr)}}</td>
+               <td colspan="7" style="padding:20px;"></td>
+           </tr>
+
+           @endforeach
+         
+         <tr>
+               <td class="text-danger h6 text-center" colspan="2">
+               <b>Extra Total </b>
+               </td>
+               <td><b>${{ \App\Models\Payment::format($extraTotal )}}</b></td>
+               <td colspan="7" style="padding:20px;"></td>
+         </tr>
+
+         <tr>
+            <td colspan="10" style="padding:20px;"></td>
+           </tr>
+
+         @endif
+
+            <tr>
                <td>Total</td>
                <td></td>
                <td> Material</td>
@@ -183,7 +223,7 @@
                <td></td>
                <td></td>
                <td></td>
-               <td></td>
+               <!-- <td></td> -->
                <!-- <td></td> -->
            </tr>
 
@@ -193,7 +233,7 @@
                <td><b>${{ \App\Models\Payment::format($materialTotal )}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
-               <td></td>
+               <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($grandTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($paidTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>

@@ -100,7 +100,8 @@
                <td> {{ @$payment->updated_at }}</td>
                <td> {{ @$payment->invoice_number }}</td>
                <td> {{ @$payment->trade->name }}</td>
-               <td> {{ (@$payment->vendor ) ? @$payment->vendor->name :  @$payment->subcontractor->name }}</td>
+               <td> {{ (@$payment->vendor ) ? @$payment->vendor->name. 
+                ' (Vendor)' :  @$payment->subcontractor->name }}</td>
                <td> ${{ \App\Models\Payment::format($payment->payment_amount) }}</td>
                <td>${{ \App\Models\Payment::format($payment->total_amount) }}</td>
                <td>${{ \App\Models\Payment::format($payment->remaining) }}</td>

@@ -1,5 +1,83 @@
+<html>
+    <head>
+        <style>
+            /** Define the margins of your page **/
+            @page {
+                margin: 100px 25px;
+            }
+
+            header {
+                position: fixed;
+                top: -60px;
+                left: 0px;
+                right: 0px;
+                height: 50px;
+
+
+                /** Extra personal styles **/
+                text-align: center;
+                line-height: 35px;
+            }
+
+            footer {
+                position: absolute; 
+                bottom:0;
+                right:0;
+            }
+
+            table.payments-table{
+                  font-size: 12px;
+                  font-family: Arial;
+                  border-bottom: 1px solid #dee2e6;
+                  border-right: 1px solid #dee2e6;
+                  border-left: 1px solid #dee2e6;
+            }
+
+            table.payments-table thead>tr>th{
+               font-size: 12px;
+            }
+            .text-center {
+                text-align: center!important;
+            }
+
+            .footer-text {
+                 width: 100%;
+                 font-size: 12px;
+                 text-align: right!important;
+                 position:absolute;
+                 bottom:0;
+                 right:0;
+            }
+            .table {
+                width: 100%;
+                margin-bottom: 1rem;
+                color: #212529;
+            }
+            .table td, .table th {
+                padding: 5px;
+                border-top: 1px solid #dee2e6;
+            }
+
+            b, strong {
+                font-weight: bolder;
+            }
+
+
+        </style>
+    </head>
+    <body>
+        <!-- Define header and footer blocks before your content -->
+        <header>
+            <h4>{{ @$project->name }}</h4>
+        </header>
+
+        <footer>
+            {{ \Carbon\Carbon::now()->format('m-d-Y H:i:s') }}
+        </footer>
+        <main>
+
 <div class="table-responsive">
-   <h4 class="mt-0 text-center"> {{ @$project->name }} </h4>
+   <!-- <h4 class="mt-0 text-center">  </h4> -->
     <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
@@ -8,7 +86,7 @@
                 <th>Material</th>
                 <th>Labor</th>
                 <th>Subcontractor</th>
-                <th>Vendors</th>
+                <!-- <th>Vendors</th> -->
                 <th>Total </th>
                 <th>Paid</th>
                 <th >Remaining  </th>
@@ -24,6 +102,7 @@
          $grandTotal = 0;
          $paidTotal = 0;
          $dueTotal = 0;
+          $vendors = [];
          @endphp
 
         @foreach($categories as $cat)
@@ -41,13 +120,13 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="8"></td>
+              <td  colspan="7"></td>
             </tr>
          @foreach($catTrades as $trd)
 
               @php
                   $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
-                         ->has('payment')->get();
+                         ->get();
                    if($bids->count() == 0){
                      continue;
                    }      
@@ -73,7 +152,7 @@
                      
                        $bidPayments =   $bid->payment;
 
-                       $payment_vendors = $vendors_amount = [];
+                       $payment_vendors = [];
 
                        $payment_vendors = @collect($bidPayments)->map(function($p) {
                               if($p->vendor){
@@ -81,14 +160,14 @@
                               }
                        })->unique()->join(',');
 
-                       @collect($bidPayments)->each(function($p) use (&$vendors_amount){
+                       @collect($bidPayments)->each(function($p) use (&$vendors){
                            if($p->vendor){
                               $amount = (double) \App\Models\Payment::format($p->payment_amount);
-                              if(isset( $vendors_amount[$p->vendor->name])){
-                                   $amount = $vendors_amount[$p->vendor->name] +
+                              if(isset( $vendors[$p->vendor->name])){
+                                   $amount = $vendors[$p->vendor->name] +
                                      \App\Models\Payment::format($p->payment_amount);   
                               }
-                              $vendors_amount[$p->vendor->name] = (double) $amount;  
+                              $vendors[$p->vendor->name] = (double) $amount;  
                              }
                        });
                         
@@ -96,7 +175,7 @@
                        $notes = @$bid->payment()->whereNotNull('notes')->pluck('notes')->join(',');
                       
                         
-                      $paid =  (float) @$bid->payment()->sum('payment_amount');
+                      $paid =  (float) @$bid->payment()->whereNull('vendor_id')->sum('payment_amount');
                       $due =  (float) @$bidTotal  - (float) $paid;
 
                       $materialTotal = (float) @$bid->material + $materialTotal;
@@ -115,7 +194,7 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
-                  <td><span class="doc_type_m">{{  @implode(',',$vendors_amount) }}</span></td>
+                  <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
@@ -128,7 +207,7 @@
                   <td></td>
                   <td></td>
                   <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
-                  <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td>
+                  <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="4" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
@@ -145,7 +224,7 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <!-- <td></td> -->
                   <td><b>${{ (float) @\App\Models\Payment::format($catGrandTotal ) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
@@ -154,10 +233,50 @@
            </tr>
 
            <tr>
-            <td colspan="11" style="padding:10px;"></td>
+            <td colspan="10" style="padding:10px;"></td>
            </tr>
 
         @endforeach
+
+        @if($vendors) 
+
+         @php
+         $extraTotal = 0;
+         @endphp
+          
+           <tr>
+               <td colspan="2"><b>Extra</b></td>
+               <td colspan="8" style="padding:10px;"></td>
+               <!-- <td></td> -->
+               <!-- <td></td> -->
+           </tr>
+
+           @foreach($vendors as $k => $vndr)
+              @php
+                $extraTotal = $extraTotal + $vndr;
+              @endphp
+            <tr>
+               <td></td>
+               <td>{{ $k}}</td>
+               <td>${{ (float) @\App\Models\Payment::format($vndr)}}</td>
+               <td colspan="7" style="padding:10px;"></td>
+           </tr>
+
+           @endforeach
+         
+         <tr>
+               <td class="text-danger h6 text-center" colspan="2">
+               <b>Extra Total </b>
+               </td>
+               <td><b>${{ \App\Models\Payment::format($extraTotal )}}</b></td>
+               <td colspan="7" style="padding:10px;"></td>
+         </tr>
+
+         <tr>
+            <td colspan="10" style="padding:20px;"></td>
+           </tr>
+
+         @endif
 
            <tr>
                <td>Total</td>
@@ -169,7 +288,7 @@
                <td></td>
                <td></td>
                <td></td>
-               <td></td>
+               <!-- <td></td> -->
                <!-- <td></td> -->
            </tr>
 
@@ -179,7 +298,7 @@
                <td><b>${{ \App\Models\Payment::format($materialTotal )}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
-               <td></td>
+               <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($grandTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($paidTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
@@ -190,48 +309,8 @@
 
             </tbody>
         </table>
-
-        <p class="footer-text"> Date - {{ \Carbon\Carbon::now() }}</p>
 </div>
 
-
-<style type="text/css">
-  
-table.payments-table{
-      font-size: 12px;
-      font-family: Arial;
-      border-bottom: 1px solid #dee2e6;
-      border-right: 1px solid #dee2e6;
-      border-left: 1px solid #dee2e6;
-}
-
-table.payments-table thead>tr>th{
-   font-size: 12px;
-}
-.text-center {
-    text-align: center!important;
-}
-
-.footer-text {
-    width: 100%;
-    font-size: 12px;
-    text-align: right!important;
-     position:absolute;
-     bottom:0;
-     right:0;
-}
-.table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-}
-.table td, .table th {
-    padding: 5px;
-    border-top: 1px solid #dee2e6;
-}
-
-b, strong {
-    font-weight: bolder;
-}
-
-</style>
+ </main>
+    </body>
+</html>

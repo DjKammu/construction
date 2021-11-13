@@ -102,13 +102,19 @@ class PaymentController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'subcontractor_id' => ['required',
-              'exists:subcontractors,id'],
-              'trade_id' => 'required|exists:trades,id',
-              'payment_amount' => 'required|lte:'.$totalDueMount,
-              // 'status' => 'required'
-          ]
-      );
+                'subcontractor_id' => ['required',
+                'exists:subcontractors,id'],
+                'trade_id' => 'required|exists:trades,id',
+                 'payment_amount' => ['required',
+                      function ($attribute, $value, $fail) use ($totalDueMount){
+                        if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
+                            $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                        }
+                    }
+                  ]
+                // 'status' => 'required'
+            ]
+        );
 
         $project_id = @$proposal->project->id;
         $data['project_id']  = $project_id;
@@ -207,7 +213,8 @@ class PaymentController extends Controller
 
          $total =  $this->proposalTotalAmount($proposal);  
      
-         $payments = Payment::whereProposalId($proposal->id)->sum('payment_amount');
+         $payments = Payment::whereProposalId($proposal->id)
+                    ->whereNull('vendor_id')->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
 
@@ -219,7 +226,8 @@ class PaymentController extends Controller
          $total =  $this->proposalTotalAmount($proposal);  
      
          $payments = Payment::whereProposalId($proposal->id)
-                     ->where('id','<=', $payment_id)->sum('payment_amount');
+         ->whereNull('vendor_id')                   
+         ->where('id','<=', $payment_id)->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
 
@@ -277,7 +285,7 @@ class PaymentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     jmmmmmjjjjjjj* Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -301,7 +309,14 @@ class PaymentController extends Controller
               'subcontractor_id' => ['required',
               'exists:subcontractors,id'],
               'trade_id' => 'required|exists:trades,id',
-              'payment_amount' => 'required|lte:'.((int) $totalDueMount + $payment->payment_amount),
+              'payment_amount' => ['required',
+                    function ($attribute, $value, $fail) use ($totalDueMount,$payment){
+                      if (!request()->filled('vendor_id') && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
+                          $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                      }
+                  }
+                ]
+              //'payment_amount' => 'required|lte:'.((int) $totalDueMount + $payment->payment_amount),
               // 'status' => 'required'
           // ],[
           //   'payment_amount.lte' => 'The payment amount must be less than or equal '.$totalDueMount.'.'

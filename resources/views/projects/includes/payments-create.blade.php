@@ -59,6 +59,21 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
+                                              <input type="radio" name="type" checked="checked" value="subcontractor"  />
+                                              <label class="text-dark" for="password">Subcontractor
+                                              </label>
+                                              
+                                              <input type="radio" name="type" value="venodr" />
+                                              <label class="text-dark" for="password">Venodr
+                                              </label>
+                                              
+                                         </div>
+                                         </div>
+                                        </div>
+                                    </div> 
+                                    <div class="row subcontractor-vendor" id="subcontractor">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
                                                 <label class="text-dark" for="password">Subcontractor
                                                 </label>
                                                 <select class="form-control" name="subcontractor_id"> 
@@ -68,7 +83,7 @@
                                             </div>
                                         </div>
                                     </div> 
-                                     <div class="row">
+                                     <div class="row subcontractor-vendor" id="venodr" style="display: none;">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Vendor
@@ -195,6 +210,13 @@
 $('.date').datetimepicker({
     format: 'M-D-Y'
 });
+
+$("input[name$='type']").click(function() {
+      var id = $(this).val();
+
+      $(".subcontractor-vendor").hide();
+      $("#" + id).show();
+  });
 
 </script>
 @endsection
