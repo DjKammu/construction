@@ -168,12 +168,12 @@ class ProjectController extends Controller
                 $payments->where('status', $payment_status);
          } 
         
-         $orderBy = 'updated_at';  
+         $orderBy = 'created_at';  
          $order ='DESC' ;
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
-                ['date','invoice_number','updated_at'] ) ? 'updated_at' : request()->orderby ) : 'updated_at';
+                ['date','invoice_number','created_at'] ) ? 'created_at' : request()->orderby ) : 'created_at';
             
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
              : request()->order;

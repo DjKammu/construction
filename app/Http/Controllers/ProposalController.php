@@ -323,10 +323,10 @@ class ProposalController extends Controller
 
         $changeOrders = $request->change_orders;
         $typesArr = @$changeOrders['type'];
-        $priceArr = @$changeOrders['subcontractor_price'];
+        $priceArr = @$changeOrders['subcontractor_price'] ?? [];
         $notesArr = @$changeOrders['notes'];
         $idArr    = @$changeOrders['id'];
-        
+         
         foreach (@$priceArr as $key => $price) {
            $id = @$idArr[$key] ?? 0; 
            $proposal->changeOrders()->updateOrCreate(

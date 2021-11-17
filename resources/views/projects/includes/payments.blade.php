@@ -56,8 +56,8 @@
 
                 <th >Inserted 
                   <span class="sorting-outer">
-                  <a href="javascript:void(0)" onclick="sortOrderBy('updated_at', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
-                  <a href="javascript:void(0)" onclick="sortOrderBy('updated_at', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('created_at', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('created_at', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
                 </span></th>
                 <th >Invoice Number <span class="sorting-outer">
                   <a href="javascript:void(0)" onclick="sortOrderBy('invoice_number', 'ASC')">

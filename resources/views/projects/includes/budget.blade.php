@@ -77,6 +77,7 @@
               @foreach($bids as $bid)
                 @php    
                   $bidTotal =  (float) @$bid->material + (float) @$bid->labour_cost + (float) @$bid->subcontractor_price;   
+
                      foreach(@$bid->changeOrders as $k => $order){
                        if($order->type == \App\Models\ChangeOrder::ADD ){
                          $bidTotal += $order->subcontractor_price;
@@ -85,7 +86,8 @@
                          $bidTotal -= $order->subcontractor_price;
                        }
                      }
-                     
+                     echo $bidTotal;
+                  
                        $bidPayments =   $bid->payment;
 
                        $payment_vendors  = [];
@@ -131,7 +133,7 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
-                  <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
+                  <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
                   <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
@@ -160,7 +162,7 @@
                   <td></td>
                   <td></td>
                   <!-- <td></td> -->
-                  <td><b>${{ (float) @\App\Models\Payment::format($catGrandTotal ) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catGrandTotal ) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
                   <td><b>{{ ($catGrandTotal && $catPaidTotal) ? sprintf('%0.2f', @$catPaidTotal / @$catGrandTotal * 100) : 0 }} % </b></td>
@@ -230,7 +232,7 @@
            <tr>
                <td><b>Project Total</b></td>
                <td></td>
-               <td><b>${{ \App\Models\Payment::format($materialTotal )}}</b></td>
+               <td><b>${{ \App\Models\Payment::format($materialTotal + $extraTotal )}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
                <!-- <td></td> -->
