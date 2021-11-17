@@ -86,8 +86,7 @@
                          $bidTotal -= $order->subcontractor_price;
                        }
                      }
-                     echo $bidTotal;
-                  
+
                        $bidPayments =   $bid->payment;
 
                        $payment_vendors  = [];
@@ -129,9 +128,9 @@
 
                 @endphp
 
-                  <td>${{ (float) @\App\Models\Payment::format($bid->material)  }}</td>
-                  <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
-                  <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
@@ -196,7 +195,7 @@
             <tr>
                <td></td>
                <td>{{ $k}}</td>
-               <td>${{ (float) @\App\Models\Payment::format($vndr)}}</td>
+               <td>${{ @\App\Models\Payment::format($vndr)}}</td>
                <td colspan="7" style="padding:20px;"></td>
            </tr>
 
