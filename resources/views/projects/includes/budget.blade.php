@@ -236,8 +236,8 @@
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
                <!-- <td></td> -->
-               <td><b>${{ \App\Models\Payment::format($grandTotal) }}</b></td>
-               <td><b>${{ \App\Models\Payment::format($paidTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($grandTotal + $extraTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($paidTotal + $extraTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
                <td><b>{{ ($paidTotal && $grandTotal) ? sprintf('%0.2f', @$paidTotal / @$grandTotal * 100) : 0 }} % </b></td>
                <!-- <td></td> -->

@@ -218,20 +218,21 @@ class PaymentController extends Controller
 
          $due = (float) $total - (float) $payments;
 
-         return $due;
+        return round($due,2);
     } 
 
     public function proposalDueAmount($proposal,$payment_id){
 
          $total =  $this->proposalTotalAmount($proposal);  
-     
+
+
          $payments = Payment::whereProposalId($proposal->id)
          ->whereNull('vendor_id')                   
          ->where('id','<=', $payment_id)->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
 
-         return $due;
+         return round($due,2);
     } 
     /**
      * Display the specified resource.
