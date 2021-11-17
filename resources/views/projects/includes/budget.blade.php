@@ -174,12 +174,13 @@
            </tr>
 
         @endforeach
+
+        @php
+         $extraTotal = 0;
+         @endphp
           
          @if($vendors) 
 
-         @php
-         $extraTotal = 0;
-         @endphp
           
            <tr>
                <td colspan="2"><b>Extra</b></td>

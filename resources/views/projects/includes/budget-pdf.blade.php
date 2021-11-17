@@ -195,7 +195,7 @@
                   <td>${{ (float) @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{ (float) @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
-                  <td>${{ (float) @\App\Models\Payment::format($bidTotal)  }}</td>
+                  <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
                   <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
@@ -225,7 +225,7 @@
                   <td></td>
                   <td></td>
                   <!-- <td></td> -->
-                  <td><b>${{ (float) @\App\Models\Payment::format($catGrandTotal ) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catGrandTotal ) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
                   <td><b>{{ ($catGrandTotal && $catPaidTotal) ? sprintf('%0.2f', @$catPaidTotal / @$catGrandTotal * 100) : 0 }} % </b></td>
@@ -238,11 +238,13 @@
 
         @endforeach
 
-        @if($vendors) 
-
          @php
          $extraTotal = 0;
          @endphp
+
+        @if($vendors) 
+
+        
           
            <tr>
                <td colspan="2"><b>Extra</b></td>
@@ -295,7 +297,7 @@
            <tr>
                <td><b>Project Total</b></td>
                <td></td>
-               <td><b>${{ \App\Models\Payment::format($materialTotal )}}</b></td>
+               <td><b>${{ \App\Models\Payment::format($materialTotal + $extraTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
                <!-- <td></td> -->
