@@ -103,8 +103,9 @@
                <td> {{ (@$payment->vendor ) ? @$payment->vendor->name. 
                 ' (Vendor)' :  @$payment->subcontractor->name }}</td>
                <td> ${{ \App\Models\Payment::format($payment->payment_amount) }}</td>
-               <td>${{ \App\Models\Payment::format($payment->total_amount) }}</td>
-               <td>${{ \App\Models\Payment::format($payment->remaining) }}</td>
+
+               <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount) }}</td>
+               <td>  {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->remaining) }} </td>
                <td><a href="{{ asset($payment->file) }}" target="_blank">
               <p> {{ @$file->name }} </p>
               <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">

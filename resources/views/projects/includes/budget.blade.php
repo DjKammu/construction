@@ -99,15 +99,15 @@
 
                        @collect($bidPayments)->each(function($p) use (&$vendors){
                            if($p->vendor){
-                              $amount = (double) \App\Models\Payment::format($p->payment_amount);
+                              $amount =  $p->payment_amount;
                               if(isset( $vendors[$p->vendor->name])){
                                    $amount = $vendors[$p->vendor->name] +
-                                     \App\Models\Payment::format($p->payment_amount);   
+                                     $p->payment_amount;   
                               }
-                              $vendors[$p->vendor->name] = (double) $amount;  
+                              $vendors[$p->vendor->name] =  $amount;  
                              }
                        });
-                        
+
                           
                        $notes = @$bid->payment()->whereNotNull('notes')->pluck('notes')->join(',');
                       
@@ -189,6 +189,7 @@
            </tr>
 
            @foreach($vendors as $k => $vndr)
+
               @php
                 $extraTotal = $extraTotal + $vndr;
               @endphp
@@ -221,10 +222,10 @@
                <td> Material</td>
                <td> Labor</td>
                <td> Subcontractor</td>
-               <td></td>
-               <td></td>
-               <td></td>
-               <td></td>
+               <td>Total </td>
+                <td>Total Paid</td>
+                <td>Remaining Payment </td>
+                <td> % Complete </td>
                <!-- <td></td> -->
                <!-- <td></td> -->
            </tr>
