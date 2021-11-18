@@ -64,7 +64,7 @@
                                               </label>
                                               
                                               <input type="radio" name="type" value="venodr" />
-                                              <label class="text-dark" for="password">Venodr
+                                              <label class="text-dark" for="password">Vendor
                                               </label>
                                               
                                          </div>

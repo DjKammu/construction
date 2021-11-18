@@ -109,6 +109,7 @@ aria-expanded="true">
                                                 <label class="text-dark" for="password">Plans URL
                                                 </label>
                                                 <input  name="plans_url"  value="{{ $project->plans_url }}" type="text" class="form-control" placeholder="Plans URL" >
+                                                <a href="{{ $project->plans_url }}" target="_new"> Click Here </a>
                                             </div>
                                         </div>
                                         

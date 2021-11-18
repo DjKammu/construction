@@ -182,7 +182,7 @@
 
           
            <tr>
-               <td colspan="2"><b>Extra</b></td>
+               <td colspan="2"><b>Extra Material</b></td>
                <td colspan="8" style="padding:20px;"></td>
                <!-- <td></td> -->
                <!-- <td></td> -->
@@ -204,7 +204,7 @@
          
          <tr>
                <td class="text-danger h6 text-center" colspan="2">
-               <b>Extra Total </b>
+               <b>Extra Material Total </b>
                </td>
                <td><b>${{ \App\Models\Payment::format($extraTotal )}}</b></td>
                <td colspan="7" style="padding:20px;"></td>
