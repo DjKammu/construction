@@ -20,9 +20,9 @@
             }
 
             footer {
-                position: absolute; 
-                bottom:0;
-                right:0;
+                position: fixed; 
+                bottom:0px;
+                text-align: right;
             }
 
             table.payments-table{
@@ -74,6 +74,7 @@
         <footer>
             {{ \Carbon\Carbon::now()->format('m-d-Y H:i:s') }}
         </footer>
+
         <main>
 
 <div class="table-responsive">
