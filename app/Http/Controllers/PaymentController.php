@@ -475,8 +475,11 @@ class PaymentController extends Controller
           ['categories' => $categories,
           'trades' => $trades,'project' => $project]
         );
-        // return $pdf->stream('project_'.$id.'_pdf.pdf');
-        return $pdf->download('project_'.$id.'_pdf.pdf');
+
+        $slug = \Str::slug($project->name);
+
+        // return $pdf->stream('project_'.$slug .'_budget.pdf');
+        return $pdf->download('project_'.$slug.'_budget.pdf');
 
     }
 }
