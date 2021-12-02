@@ -63,7 +63,7 @@
                                            <div class="form-group">
                                                 <label class="text-dark" for="password">Labor Cost 
                                                 </label>
-                                                <input  name="labour_cost" value="{{ old('labour_cost')}}" type="number" class="form-control" placeholder="Labor Cost" >
+                                                <input  name="labour_cost" value="{{ old('labour_cost')}}" type="number" class="form-control" placeholder="Labor Cost" step="any">
                                             </div>
                                         </div>
                                     </div> 
@@ -73,7 +73,7 @@
                                            <div class="form-group">
                                                 <label class="text-dark" for="password">Material  
                                                 </label>
-                                                <input  name="material" value="{{ old('material')}}" type="number" class="form-control" placeholder="Material" >
+                                                <input  name="material" value="{{ old('material')}}" type="number" class="form-control" placeholder="Material" step="any">
                                             </div>
                                         </div>
                                     </div> 
@@ -83,7 +83,7 @@
                                            <div class="form-group">
                                                 <label class="text-dark" for="password">Subcontractor Price 
                                                 </label>
-                                                <input  name="subcontractor_price" value="{{ old('subcontractor_price')}}" type="number" class="form-control" placeholder="Subcontractor Price Cost" >
+                                                <input  name="subcontractor_price" value="{{ old('subcontractor_price')}}" type="number" class="form-control" placeholder="Subcontractor Price Cost" step="any">
                                             </div>
                                         </div>
                                     </div>
