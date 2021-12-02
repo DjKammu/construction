@@ -29,7 +29,7 @@
 <div id="proposals-list" class="row py-3">
    @foreach($proposals as $proposal)
    @php
-     $bidTotal = (int) $proposal->material + (int) $proposal->labour_cost + (int) $proposal->subcontractor_price
+     $bidTotal = (float) $proposal->material + (float) $proposal->labour_cost + (float) $proposal->subcontractor_price
    @endphp
    <div class="col-lg-4 col-sm-6 mb-4" style="display: flex; flex-wrap: wrap;">
       <div class="card card-user card-table-item" style="width: 100%; height: 100%;">
