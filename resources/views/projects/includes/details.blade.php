@@ -141,6 +141,264 @@ aria-expanded="true">
                                     
                                        
                                     </div>
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <h4 class="mt-0 text-left"> Project Owner Detail</h4>
+                    </div>
+                </div>
+
+                 <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Project Owner Name 
+                        </label>
+
+                        <input  name="owner_name" value="{{ $project->owner_name }}" type="text" class="form-control" placeholder="Project Owner Name">
+                    </div>
+                </div>
+            
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Address Street 
+                        </label>
+                        <textarea  name="owner_street"  type="text" class="form-control" placeholder="Property Address" >
+                        {{ $project->owner_street }}</textarea>
+                    </div>
+                </div>
+           
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">City 
+                        </label>
+                        <input  name="owner_city" value="{{ $project->owner_city }}" type="text" class="form-control" placeholder="City">
+                    </div>
+                </div>
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">State
+                        </label>
+                        <input  name="owner_state"  value="{{ $project->owner_state }}" type="text" class="form-control" placeholder="State" >
+                    </div>
+                </div>
+            
+          
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Zip Code 
+                        </label>
+                        <input  name="owner_zip"  value="{{ $project->owner_zip }}" type="text" class="form-control" placeholder="Zip Code" >
+                    </div>
+                </div>
+               
+            </div> 
+
+
+            <div class="row mb-2">
+                    <div class="col-6">
+                        <h4 class="mt-0 text-left"> Contract Detail</h4>
+                    </div>
+                </div>
+
+                 <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Contract Name 
+                        </label>
+
+                        <input  name="contract_name" value="{{ $project->contract_name }}" type="text" class="form-control" placeholder="Contract Name">
+                    </div>
+                </div>
+            
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Address Street 
+                        </label>
+                        <textarea  name="contract_street"  type="text" class="form-control" placeholder="Property Address" >
+                        {{ $project->contract_street }}</textarea>
+                    </div>
+                </div>
+           
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">City 
+                        </label>
+                        <input  name="contract_city" value="{{ $project->contract_city }}" type="text" class="form-control" placeholder="City">
+                    </div>
+                </div>
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">State
+                        </label>
+                        <input  name="contract_state"  value="{{ $project->contract_state }}" type="text" class="form-control" placeholder="State" >
+                    </div>
+                </div>
+            
+          
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Zip Code 
+                        </label>
+                        <input  name="contract_zip"  value="{{ $project->contract_zip }}" type="text" class="form-control" placeholder="Zip Code" >
+                    </div>
+                </div>
+               
+            </div>
+
+            <div class="row mb-2">
+                    <div class="col-6">
+                        <h4 class="mt-0 text-left"> Architect Detail</h4>
+                    </div>
+                </div>
+
+                 <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Architect Name 
+                        </label>
+
+                        <input  name="architect_name" value="{{ $project->architect_name }}" type="text" class="form-control" placeholder="Architect Name">
+                    </div>
+                </div>
+            
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Address Street 
+                        </label>
+                        <textarea  name="architect_street"  type="text" class="form-control" placeholder="Property Address" >
+                        {{ $project->architect_street }}</textarea>
+                    </div>
+                </div>
+           
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">City 
+                        </label>
+                        <input  name="architect_city" value="{{ $project->architect_city }}" type="text" class="form-control" placeholder="City">
+                    </div>
+                </div>
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">State
+                        </label>
+                        <input  name="architect_state"  value="{{ $project->architect_state }}" type="text" class="form-control" placeholder="State" >
+                    </div>
+                </div>
+            
+          
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Zip Code 
+                        </label>
+                        <input  name="architect_zip"  value="{{ $project->architect_zip }}" type="text" class="form-control" placeholder="Zip Code" >
+                    </div>
+                </div>
+               
+            </div>
+
+            <div class="row mb-2">
+                    <div class="col-6">
+                        <h4 class="mt-0 text-left"> Notary & Other  Detail</h4>
+                    </div>
+                </div>
+
+                 <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Notary Name 
+                        </label>
+
+                        <input  name="notary_name" value="{{ $project->notary_name }}" type="text" class="form-control" placeholder="Notary Name">
+                    </div>
+                </div>
+           
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Country 
+                        </label>
+                        <input  name="notary_country" value="{{ $project->notary_country }}" type="text" class="form-control" placeholder="Country">
+                    </div>
+                </div>
+            
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">State
+                        </label>
+                        <input  name="notary_state"  value="{{ $project->notary_state }}" type="text" class="form-control" placeholder="State" >
+                    </div>
+                </div>
+
+               <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Project Email
+                        </label>
+                        <input  name="project_email"  value="{{ $project->project_email }}" type="text" class="form-control" placeholder="Project Email" >
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Contract Date 
+                        </label>
+                        <input  name="contract_date" value="{{ $project->contract_date }}" type="text" class="form-control date" placeholder="Contract Date">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Project Date 
+                        </label>
+                        <input  name="project_date" value="{{ $project->project_date }}" type="text" class="form-control date" placeholder="Project Date">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Commission Expire Date 
+                        </label>
+                        <input  name="commission_expire_date" value="{{ $project->commission_expire_date }}" type="text" class="form-control date" placeholder="Commission Expire Date">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+
+                   <div class="form-group">
+                        <label class="text-dark" for="password">Default Retainage Percentage   
+                        </label>
+                        <input  name="retainage_percentage" value="{{ $project->retainage_percentage }}" type="number" class="form-control" max="100" min="0" placeholder="Default Retainage Percentage " step="any">
+                    </div>
+                </div> 
+
+                <div class="col-lg-6 col-md-6">
+
+                   <div class="form-group">
+                        <label class="text-dark" for="password">Original Amount   
+                        </label>
+                        <input  name="original_amount" value="{{ $project->original_amount }}" type="number" class="form-control" placeholder="Original Amount " step="any">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Status
+                        </label>
+                        <select class="form-control" name="status"> 
+                          <option value="">Select Status</option>
+                          <option value="{{\App\Models\Project::ACTIVE_STATUS }}">{{\App\Models\Project::ACTIVE_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::PUT_ON_HOLD_STATUS }}">{{\App\Models\Project::PUT_ON_HOLD_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::FINISHED_STATUS }}">{{\App\Models\Project::FINISHED_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::CANCELLED_STATUS }}">{{\App\Models\Project::CANCELLED_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::ARCHIVED_STATUS }}">{{\App\Models\Project::ARCHIVED_TEXT  }}</option>
+                        </select>
+                    </div>
+                </div>
+          
+               
+            </div>
 
                 <!-- Submit Button -->
                 <div class="col-12 text-center">
