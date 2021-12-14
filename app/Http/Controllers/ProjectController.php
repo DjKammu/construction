@@ -56,6 +56,11 @@ class ProjectController extends Controller
                 $q->where('slug', $p);
             });
          } 
+
+          if(request()->filled('st')){
+            $st = request()->st;
+            $projects->where('status', $st);
+         } 
          
          $projectTypes = ProjectType::all(); 
 

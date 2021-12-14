@@ -35,17 +35,26 @@
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-9">
                        <select style="height: 26px;" onchange="return window.location.href = '?p='+this.value"> 
                       <option>Select Project Type</option>
                       @foreach($projectTypes as $type)
                          <option value="{{ $type->slug }}" {{ (@request()->p == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach
                       </select>
+                        <select style="height: 26px;"  onchange="return window.location.href = '?stst='+this.value"name="status"> 
+                          <option value="">Select Status</option>
+                          <option value="{{\App\Models\Project::ACTIVE_STATUS }}" {{ (@request()->st == \App\Models\Project::ACTIVE_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ACTIVE_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::PUT_ON_HOLD_STATUS }}" {{ (@request()->st == \App\Models\Project::PUT_ON_HOLD_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::PUT_ON_HOLD_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::FINISHED_STATUS }}" {{ (@request()->st == \App\Models\Project::FINISHED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::FINISHED_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::CANCELLED_STATUS }}" {{ (@request()->st == \App\Models\Project::CANCELLED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::CANCELLED_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::ARCHIVED_STATUS }}" {{ (@request()->st == \App\Models\Project::ARCHIVED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ARCHIVED_TEXT  }}</option>
+                        </select>
+
                       <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >
                       <button id="search">Search</button>
                     </div>
-                    <div class="col-6 text-right">
+                    <div class="col-3 text-right">
                        <label>Per Page </label>
                       <select style="height: 26px;" name="per_page"  onchange="selectPerpage(this.value)"> 
                         <option value="">Per Page</option>
