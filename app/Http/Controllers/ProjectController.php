@@ -112,6 +112,7 @@ class ProjectController extends Controller
         $slug = \Str::slug($request->name);
 
         $data['photo'] = '';    
+        $data['status'] = Project::ACTIVE_STATUS;
 
         if($request->hasFile('photo')){
                $photo = $request->file('photo');
