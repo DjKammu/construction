@@ -65,21 +65,19 @@
 
                </div>
                
-
         </div> 
     </div>
 </template>
 
 <script>
     export default {
-        props: ['retainage','projectid'],
+        props: ['retainage','projectid','baseurl'],
 
         mounted() {
             this.loadLines();
         },
         data() {
             return {
-                baseUrl: window.location.origin,
                 projectLines : true,
                 error : false,
                 success : false,
@@ -103,7 +101,7 @@
             
               let _vm = this;
 
-              await axios.get(this.baseUrl+'/projects/'+this.projectid+'/get-project-lines/')
+              await axios.get(this.baseurl+'/projects/'+this.projectid+'/get-project-lines/')
                 .then(function (response) {
                        let res = response.data
                        _vm.project_lines = res.data
@@ -120,7 +118,7 @@
     
                 let _vm = this;
 
-                axios.delete(this.baseUrl+'/projects/'+$id+'/project-lines/') 
+                axios.delete(this.baseurl+'/projects/'+$id+'/project-lines/') 
                    .then(function (response) {
                        let res = response.data
                       _vm.success = true
@@ -163,7 +161,7 @@
                   return;
                }  
                
-              await axios.post(this.baseUrl+'/projects/'+this.projectid+'/add-project-lines/',{
+              await axios.post(this.baseurl+'/projects/'+this.projectid+'/add-project-lines/',{
                     data : this.form,
                     lines: lines
                 })
