@@ -15,6 +15,13 @@
               </div>
             @endif
 
+            @if(session()->has('error'))
+                <div class="alert alert-warning alert-dismissible fade show">
+                  <strong>Error!</strong> {{ session()->get('error') }}
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+            @endif
+
              @if ($errors->any())
                <div class="alert alert-warning alert-dismissible fade show">
                  <button type="button" class="close" data-dismiss="alert">&times;</button>

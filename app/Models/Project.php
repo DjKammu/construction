@@ -56,6 +56,10 @@ class Project extends Model
 
     public function payments(){
         return $this->hasMany(Payment::class);
+    } 
+
+    public function project_lines(){
+        return $this->hasMany(ProjectLine::class);
     }
 
     

@@ -4,8 +4,16 @@
 
 @section('content')
 
-@include('includes.back')
+<div class="row">
+       @include('includes.back')
       <!-- Start Main View -->
+
+      <div class="col-6 text-right">
+      <button type="button" class="btn btn-danger mt-0" onclick="return window.location.href='{{$project->id}}/add-project-lines'">Add Project Lines
+      </button>
+      </div>
+</div>
+
   <div class="card p-2">
     <div class="row">
         <div class="col-md-12">
@@ -24,6 +32,13 @@
                    {{implode(',',$errors->all() )}}
                 </div>
              @endif
+
+              @if(session()->has('error'))
+                <div class="alert alert-warning alert-dismissible fade show">
+                  <strong>Error!</strong> {{ session()->get('error') }}
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+            @endif
 
 
             <div class="card-body">

@@ -32,6 +32,8 @@ Route::get('/register',function(){
     return redirect('/');
 });
 
+// Migration Routes
+
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
     $exitCode = Artisan::call('storage:link', [] );
@@ -44,6 +46,8 @@ Route::get('/migration', function () {
     echo $exitCode;
 });
 
+// PRofile Routes
+
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])
 ->name('dashboard');
 
@@ -53,35 +57,41 @@ Route::post('/profile', [App\Http\Controllers\HomeController::class, 'updateProf
 
 Route::post('/password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('password');
 
+
+
+// Setup Routes
+
 Route::get('/setup', [App\Http\Controllers\HomeController::class, 'setup'])->name('setup');
-
-Route::resource('project-types', App\Http\Controllers\ProjectTypeController::class);
-
-Route::resource('projects', App\Http\Controllers\ProjectController::class);
-
-Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware('can:add_users');
-
-Route::resource('users', App\Http\Controllers\UserController::class)->middleware('can:add_users');
 
 Route::resource('document-types', App\Http\Controllers\DocumentTypeController::class);
 
+Route::resource('users', App\Http\Controllers\UserController::class)->middleware('can:add_users');
+
+Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware('can:add_users');
+
+Route::resource('project-types', App\Http\Controllers\ProjectTypeController::class);
+
 Route::resource('categories', App\Http\Controllers\CategoryController::class);
 
+Route::resource('trades', App\Http\Controllers\TradeController::class);
 
-Route::get('documents/search', [App\Http\Controllers\DocumentController::class,'search'])->name('documents.search');
+Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
+
+Route::resource('vendors', App\Http\Controllers\VendorController::class);
+
+
+// Document Routes
 
 Route::resource('documents', App\Http\Controllers\DocumentController::class);
 
-Route::get('projects/{id}/documents',[App\Http\Controllers\DocumentController::class,'create'])
-->name('projects.documents');
+Route::get('documents/search', [App\Http\Controllers\DocumentController::class,'search'])->name('documents.search');
 
-Route::get('projects/{id}/documents/{document}',[App\Http\Controllers\DocumentController::class,'show'])->name('projects.documents.show');
-
-Route::post('projects/{id}/documents',[App\Http\Controllers\DocumentController::class,'store'])
-->name('projects.documents');
 
 Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::class,'destroyFile'])->name('documents.file.destroy');
 
+
+
+// Files Routes
 
 Route::get('files/{directory?}',[App\Http\Controllers\FileController::class,'index'])->name('files.index');
 
@@ -96,7 +106,21 @@ Route::get('files/{directory}/{property_type}/{property}/{doc_type}/{doc}',[App\
 
 Route::delete('files', [App\Http\Controllers\FileController::class,'destroy'])->name('files.destroy');
 
-Route::resource('trades', App\Http\Controllers\TradeController::class);
+
+
+
+// Project Routes
+
+Route::resource('projects', App\Http\Controllers\ProjectController::class);
+
+Route::get('projects/{id}/documents',[App\Http\Controllers\DocumentController::class,'create'])
+->name('projects.documents');
+
+Route::get('projects/{id}/documents/{document}',[App\Http\Controllers\DocumentController::class,'show'])->name('projects.documents.show');
+
+Route::post('projects/{id}/documents',[App\Http\Controllers\DocumentController::class,'store'])
+->name('projects.documents');
+
 
 Route::get('projects/{id}/trades',[App\Http\Controllers\TradeController::class,'createProjectTrade'])->name('projects.trades');
 
@@ -136,5 +160,15 @@ Route::post('projects/payments/{id}',[App\Http\Controllers\PaymentController::cl
 
  Route::get('projects/{id}/download', [App\Http\Controllers\PaymentController::class,'downloadPDF'])->name('projects.download');
 
-Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::class);
-Route::resource('vendors', App\Http\Controllers\VendorController::class);
+
+Route::prefix('projects')->group(function(){
+ 
+   Route::get('{id}/get-project-lines', [App\Http\Controllers\ProjectLineController::class,'index'])->name('projects.get-project-lines');
+
+    Route::get('{id}/add-project-lines', [App\Http\Controllers\ProjectLineController::class,'create'])->name('projects.add-project-lines');
+
+    Route::post('{id}/add-project-lines', [App\Http\Controllers\ProjectLineController::class,'store'])->name('projects.add-project-lines.store'); 
+
+     Route::delete('{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'destroy'])->name('projects.project-lines.destroy');
+});
+

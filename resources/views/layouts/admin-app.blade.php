@@ -63,27 +63,28 @@
     <script src="{{ asset('js/paper-dashboard.min.js?v=2.1.1') }}" type="text/javascript"></script>
     <script src="{{ asset('js/demo/demo.js') }}"></script>
     <script src="{{ asset('js/plugins/select2.min.js') }}"></script>
+   
 
   </head>
 
   <body >
     @include('layouts.sidebar')
 
-     <div class="main-panel">
+     <div class="main-panel" >
 
      @include('layouts.nav')
 
-    <div class="content">
+    <div class="content" id="app" >
        
         @yield('content')
 
-        </div>
+    </div>
     </div>
        
   </body>
 
 @yield('pagescript')
-   
+     <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
     $(".alert").fadeTo(2000, 500).slideUp(500, function(){
         $(".alert").slideUp(500);

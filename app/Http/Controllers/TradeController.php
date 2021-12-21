@@ -199,12 +199,13 @@ class TradeController extends Controller
         if(Gate::denies('add')) {
                return abort('401');
          } 
+        $project = Project::find($id);
 
         $trades =  Trade::whereDoesntHave("projects", function($q) use($id){
             $q->where("project_id",$id);
           })->get();
 
-        return view('projects.includes.trades-create',compact('trades'));
+        return view('projects.includes.trades-create',compact('trades','project'));
     }
 
     /**
