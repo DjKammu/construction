@@ -62,7 +62,7 @@
 
                <button type="button" class="btn btn-danger mt-0" @click="editLineItem" >Edit Line Items
                 </button>
-                
+
                </div>
                
 
@@ -79,6 +79,7 @@
         },
         data() {
             return {
+                baseUrl: window.location.origin,
                 projectLines : true,
                 error : false,
                 success : false,
@@ -102,7 +103,7 @@
             
               let _vm = this;
 
-              await axios.get('/projects/'+this.projectid+'/get-project-lines/')
+              await axios.get(this.baseUrl+'/projects/'+this.projectid+'/get-project-lines/')
                 .then(function (response) {
                        let res = response.data
                        _vm.project_lines = res.data
@@ -119,7 +120,7 @@
     
                 let _vm = this;
 
-                axios.delete('/projects/'+$id+'/project-lines/') 
+                axios.delete(this.baseUrl+'/projects/'+$id+'/project-lines/') 
                    .then(function (response) {
                        let res = response.data
                       _vm.success = true
@@ -162,7 +163,7 @@
                   return;
                }  
                
-              await axios.post('/projects/'+this.projectid+'/add-project-lines/',{
+              await axios.post(this.baseUrl+'/projects/'+this.projectid+'/add-project-lines/',{
                     data : this.form,
                     lines: lines
                 })
