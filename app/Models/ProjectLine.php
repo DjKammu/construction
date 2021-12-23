@@ -16,26 +16,10 @@ class ProjectLine extends Model
      'retainage' 
     ];
 
-
-    // public function project_type(){
-    // 	return $this->belongsTo(ProjectType::class);
-    // }
-
-    // public function documents(){
-    // 	return $this->hasMany(Document::class);
-    // }
-
     public function trades(){
         return $this->belongsToMany(Trade::class)->withTimestamps();
     }
-    
-    // public function proposals(){
-    //     return $this->hasMany(Proposal::class);
-    // }
 
-    // public function payments(){
-    //     return $this->hasMany(Payment::class);
-    // }
 
     
 }

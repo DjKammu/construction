@@ -22,7 +22,7 @@
             <tbody>
 
               <tr v-for="(project_line, index) in project_lines" :key='project_line.id' >
-                <td>#</td>
+                <td>{{ project_line.id }}</td>
                 <td>
                 <input class="form-control" type="text"  v-model="project_lines[index].description"  /></td>
                 <td><input class="form-control" type="number" v-model:form.value[index]="project_lines[index].value" /></td>
@@ -50,16 +50,126 @@
                 <button type="button" class="btn btn-danger mt-0" @click="saveLineItem">Save Line Items
                 </button>
                 <button type="button" class="btn mt-0" @click="cancel" >Cancel
-                </button> 
+                </button>  
 
+                <button type="button" v-if="project_lines" class="btn mt-0" @click="summaryProject" >
+                    Summary
+                </button> 
+    
             </div>
 
+          </br>
+          </br>
+          </br>
+
+          <table v-if="isExcessOrShortfall" id="project-types-table" class="table table-hover payments-table">
+            <thead>
+            <tr >
+                <th>Project Line Total</th>
+                <th>${{ new Intl.NumberFormat().format(total) }}</th>
+            </tr>
+            <tr >
+                <th>Contract Original Scheduled Value</th>
+                <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+            </tr>
+            <tr style="color: red;" v-if="currentExcess">
+                <th >Current Excess</th>
+                <th>${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
+            </tr>
+            <tr style="color: red;" v-else>
+                <th> Short Fall</th>
+                <th>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+            </table> 
+
+
         </div>
-        <div v-else>
+        <div class="table-responsive" v-else>
+           <h3> Project Summary </h3>
+
+            <table v-if="isExcessOrShortfall"  id="project-types-table" class="table table-hover payments-table">
+                <thead>
+                 <tr >
+                    <th>Total Original Contract Amount</th>
+                    <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                </tr>
+                
+                <tr >
+                    <th>Project Line Item Total</th>
+                    <th>${{ new Intl.NumberFormat().format(total) }}</th>
+                </tr>
+               
+                <tr style="color: red;" >
+                    <th >Project Line Item Excess/(Shortfall)</th>
+                    <th v-if="currentExcess" >${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
+                    <th v-else>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+                </table> 
+
+                <table v-else id="project-types-table" class="table table-hover payments-table">
+                <thead>
+                 <tr >
+                    <th>Original Contract Sum</th>
+                    <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                </tr>
+                <tr >
+                    <th>Net Change from Change Order(s)</th>
+                    <th>$0 </th>
+                </tr>
+                <tr >
+                    <th>Subcontract Sum to Date</th>
+                    <th>${{ new Intl.NumberFormat().format(total) }}</th>
+                </tr>
+                <tr >
+                    <th>Total Completed & Stored to Date</th>
+                    <th>${{ new Intl.NumberFormat().format(total) }}</th>
+                </tr>  
+                <tr >
+                    <th>Retainage to Date</th>
+                    <th>${{ new Intl.NumberFormat().format(retainageToDate) }}</th>
+                </tr>
+                <tr >
+                    <th>Total Earned Less Retainage</th>
+                    <th>${{ new Intl.NumberFormat().format(totalEarned) }}</th>
+                </tr>
+                <tr >
+                    <th>Less Previous Applications & Certificates for Payment</th>
+                    <th>$0</th>
+                </tr>
+                <tr >
+                    <th>Current Payment Due</th>
+                    <th>${{ new Intl.NumberFormat().format(totalEarned) }}</th>
+                </tr>
+                <tr >
+                    <th>Balance to Finish Including Total Retainage</th>
+                    <th>${{ new Intl.NumberFormat().format(retainageToDate) }}</th>
+                </tr>
+               
+                <tr style="color: red;" v-if="currentExcess">
+                    <th >Current Excess</th>
+                    <th>${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
+                </tr>
+                <tr style="color: red;" v-else>
+                    <th> Short Fall</th>
+                    <th>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+                </table>
+
                <div>
                    
-                   Project Summary
-
+                  
                <button type="button" class="btn btn-danger mt-0" @click="editLineItem" >Edit Line Items
                 </button>
 
@@ -71,7 +181,7 @@
 
 <script>
     export default {
-        props: ['retainage','projectid','baseurl'],
+        props: ['retainage','projectid','original_amount'],
 
         mounted() {
             this.loadLines();
@@ -83,6 +193,13 @@
                 success : false,
                 errorMsg : null,
                 successMsg : null,
+                currentExcess:0,
+                shortFall:0,
+                retainageToDate:0,
+                totalEarned:0,
+                isExcessOrShortfall:false,
+                total:0,
+                lastLine: 0,
                 lines: [],
                 addLineItemHTML: [],
                 project_lines: [],
@@ -101,10 +218,11 @@
             
               let _vm = this;
 
-              await axios.get(this.baseurl+'/projects/'+this.projectid+'/get-project-lines/')
+              await axios.get('/projects/'+this.projectid+'/get-project-lines/')
                 .then(function (response) {
                        let res = response.data
                        _vm.project_lines = res.data
+                       _vm.excessOrShortfall();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -115,10 +233,14 @@
                      this.addLineItemHTML.push(this.addLineItemHTML.length+1)
             },
             deleteLine($id){
-    
+                 
+                if (!confirm("Are you sure to delete!")) {
+                  return;
+                } 
+ 
                 let _vm = this;
 
-                axios.delete(this.baseurl+'/projects/'+$id+'/project-lines/') 
+                axios.delete('/projects/'+$id+'/project-lines/') 
                    .then(function (response) {
                        let res = response.data
                       _vm.success = true
@@ -161,7 +283,7 @@
                   return;
                }  
                
-              await axios.post(this.baseurl+'/projects/'+this.projectid+'/add-project-lines/',{
+              await axios.post('/projects/'+this.projectid+'/add-project-lines/',{
                     data : this.form,
                     lines: lines
                 })
@@ -187,7 +309,7 @@
                         retainage: []
                 };
          
-             this.loadLines();
+            this.loadLines();
 
             setTimeout(()=>{
                this.clearMsg()
@@ -206,6 +328,38 @@
             },
             editLineItem(){
                 this.projectLines = true;
+                this.loadLines();
+            },
+            summaryProject(){
+                this.projectLines = false;
+                this.loadLines();
+            },
+            excessOrShortfall(){
+                let totalValues= 0 ;
+
+                let retainageTotal = 0
+
+                $.each(this.project_lines, function(key, value) {
+                     totalValues = parseFloat(totalValues) + parseFloat(value.value);
+                     console.log(value.value * value.retainage/100)
+                    retainageTotal = parseFloat(retainageTotal) + (parseFloat(value.value * value.retainage/100) )
+                });
+                this.retainageToDate = retainageTotal;
+
+                this.total = totalValues;
+                  
+                this.totalEarned =    parseFloat(this.total) -  parseFloat(this.retainageToDate);
+                  
+                if(this.total > this.original_amount || this.total < this.original_amount){
+                    this.isExcessOrShortfall = true;
+                    if(this.total > this.original_amount){
+                       this.currentExcess = parseFloat(this.total) - parseFloat(this.original_amount);
+                    } else{
+                       this.shortFall = parseFloat(this.original_amount) - parseFloat(this.total);
+                    }
+                }else{
+                  this.isExcessOrShortfall = false;  
+                }
             }
         }
 

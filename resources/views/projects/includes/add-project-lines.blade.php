@@ -35,7 +35,7 @@
 
                <div class="row">
                         <div class="col-md-12">
-                             <project-line baseurl="{{ URL::to('/') }}" projectid="{{ @$project->id }}" retainage="{{ @$project->retainage_percentage }}"></project-line>
+                             <project-line original_amount="{{ @$project->original_amount }}" projectid="{{ @$project->id }}" retainage="{{ @$project->retainage_percentage }}"></project-line>
                         </div>
                     </div>
             </div>
