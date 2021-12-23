@@ -8,10 +8,6 @@
        @include('includes.back')
       <!-- Start Main View -->
 
-      <div class="col-6 text-right">
-      <button type="button" class="btn btn-danger mt-0" onclick="return window.location.href='{{$project->id}}/add-project-lines'">Add Project Lines
-      </button>
-      </div>
 </div>
 
   <div class="card p-2">
@@ -86,6 +82,11 @@
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">Budget</a>
+                                              </li>
+
+                                               <li class="nav-item">
+                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/add-project-lines') }}" role="tab"
+                                                     aria-expanded="false">Add Project Lines</a>
                                               </li>
                                               @endif
                                         </ul>
