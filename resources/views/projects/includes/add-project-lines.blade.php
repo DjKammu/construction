@@ -44,11 +44,30 @@
 </div>
 
 @endsection
+@section('pagescript') 
+<style type="text/css">
 
-@section('pagescript')
+.sorting-outer{
+  position: absolute;
+}
 
-<script type="text/javascript">
+.sorting-outer a{
+  color: #ef8157 ;
+}
 
 
-</script>
+i.fa.fa-sort-desc {
+    position: relative;
+    left: -8px;
+    cursor: pointer;
+    top: 3px;
+}
+i.fa.fa-sort-asc{
+  position: relative;
+    left: 4px;
+    cursor: pointer;
+    top: 0px;
+}
+</style>
+
 @endsection

@@ -31,7 +31,22 @@ class ProjectLineController extends Controller
     {
        $project  = Project::find($id);  
       
-       $project_lines = $project->project_lines()->get();
+       $project_lines = $project->project_lines();
+
+        $orderBy = 'created_at';  
+        $order ='DESC' ;
+                    
+      if(request()->filled('order')){
+    
+            $orderBy = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
+                ['account_number'] ) ? 'created_at' : request()->orderBy ) : 'created_at';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'DESC' 
+             : request()->order;
+       }
+
+
+      $project_lines = $project_lines->orderBy($orderBy, $order)->get();
 
        return response()->json(
            [

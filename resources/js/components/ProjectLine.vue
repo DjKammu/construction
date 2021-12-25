@@ -12,7 +12,12 @@
           <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
-                <th style="width: 80px;">Item No.</th>
+                <th style="width: 80px;">Item No.
+                 <span class="sorting-outer">
+                  <a href="javascript:void(0)" @click="sortOrderBy('account_number', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" @click="sortOrderBy('account_number', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
+                </span>
+            </th>
                 <th>Description</th>
                 <th>Scheduled Value</th>
                 <th style="width: 80px;">Retainage %</th>
@@ -303,7 +308,18 @@
 
                 _vm.projectLines = false;
             },
+            sortOrderBy(orderBy,order){
+                 let _vm = this;
 
+                  axios.get('/projects/'+this.projectid+'/get-project-lines/?order='+order+'&orderBy='+orderBy)
+                    .then(function (response) {
+                           let res = response.data
+                           _vm.project_lines = res.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             resetLines(){
             
              this.addLineItemHTML = [];
