@@ -12,10 +12,10 @@
           <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
-                <th>#</th>
+                <th style="width: 80px;">Item No.</th>
                 <th>Description</th>
                 <th>Scheduled Value</th>
-                <th>Retainage %</th>
+                <th style="width: 80px;">Retainage %</th>
                 <th>Delete </th>
             </tr>
             </thead>
