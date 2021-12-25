@@ -13,7 +13,7 @@ class ProjectLine extends Model
 
     protected $fillable = [
      'project_id' , 'description' ,'value',
-     'retainage' 
+     'retainage', 'account_number'
     ];
 
     public function trades(){

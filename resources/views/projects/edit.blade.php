@@ -83,12 +83,13 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">Budget</a>
                                               </li>
-
-                                               <li class="nav-item">
-                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/add-project-lines') }}" role="tab"
-                                                     aria-expanded="false">Add Project Lines</a>
-                                              </li>
+                                               
                                               @endif
+
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/add-project-lines') }}" role="tab"
+                                                     aria-expanded="false">AIA Pay App</a>
+                                              </li>
                                         </ul>
                                     </div>
                                </div>

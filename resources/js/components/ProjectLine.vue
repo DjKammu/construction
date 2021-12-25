@@ -22,16 +22,17 @@
             <tbody>
 
               <tr v-for="(project_line, index) in project_lines" :key='project_line.id' >
-                <td>{{ project_line.id }}</td>
+                <td>
+                <input class="form-control" type="text"  v-model="project_lines[index].account_number"  /></td>
                 <td>
                 <input class="form-control" type="text"  v-model="project_lines[index].description"  /></td>
-                <td><input class="form-control" type="number" v-model:form.value[index]="project_lines[index].value" /></td>
-                <td><input class="form-control" type="number" max="100" v-model:form.retainage[index]="project_lines[index].retainage" /></td>
+                <td><input class="form-control" type="number" :v-model="project_lines[index].value" :value="formatNumber(project_lines[index].value)" @input="project_lines[index].value = $event.target.value"  /></td>
+                <td><input class="form-control" type="number" max="100" v-model="project_lines[index].retainage" /></td>
                 <td><i @click="deleteLine(project_line.id)" style="cursor: pointer;" class="fa fa-trash"></i></td>
               </tr>
 
               <tr v-for="(addLineItem, index) in addLineItemHTML">
-                <td>#</td>
+                <td><input class="form-control" type="text" v-model="form.account_number[index]"  /></td>
                 <td><input class="form-control" type="text" v-model="form.description[index]"  /></td>
                 <td><input class="form-control" type="number" v-model="form.value[index]"  /></td>
                 <td><input class="form-control" type="number" max="100" v-model="form.retainage[index]" /></td>
@@ -205,9 +206,10 @@
                 project_lines: [],
                 project_line : {},
                 form :{
+                        account_number: [],
                         description: [],
-                        value: [],
-                        retainage: []
+                        retainage: [],
+                        value: []
                 },
                 itemNumber: 1,
             };
@@ -252,7 +254,9 @@
                 });
 
             },
-
+            formatNumber(value){
+               return value
+            },
             deleteHTMLLine(index){
               this.addLineItemHTML.splice(index, 1);
             },          
@@ -264,6 +268,7 @@
 
               this.project_lines.map(function(value, key) {
                   lines.push({
+                        account_number: value.account_number, 
                         description: value.description, 
                         retainage: value.retainage, 
                         value: value.value, 
@@ -271,8 +276,7 @@
                     });
                }); 
                  
-
-               if((!lines) && (!this.form.description[0] || !this.form.value[0] || !this.form.retainage[0])){
+               if((!lines) && (!this.form.account_number[0] || !this.form.description[0] || !this.form.value[0] || !this.form.retainage[0])){
                   this.error = true
                   this.errorMsg = 'Enter lines to save data!'
 
@@ -304,6 +308,7 @@
             
              this.addLineItemHTML = [];
              this.form = {
+                        account_number: [],
                         description: [],
                         value: [],
                         retainage: []
@@ -341,7 +346,6 @@
 
                 $.each(this.project_lines, function(key, value) {
                      totalValues = parseFloat(totalValues) + parseFloat(value.value);
-                     console.log(value.value * value.retainage/100)
                     retainageTotal = parseFloat(retainageTotal) + (parseFloat(value.value * value.retainage/100) )
                 });
                 this.retainageToDate = retainageTotal;

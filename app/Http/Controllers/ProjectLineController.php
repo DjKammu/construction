@@ -91,12 +91,12 @@ class ProjectLineController extends Controller
 
         foreach ($data['description'] as $key => $value) {
 
-             $project_lines->updateOrCreate(
-                  ['id' => @$data['id'][$key]],
-                  [
+             $project_lines->Create(
+                    [
                     'description' => $value,
                       'value' => $data['value'][$key],
-                      'retainage' => $data['retainage'][$key] 
+                      'retainage' => $data['retainage'][$key],
+                      'account_number' => $data['account_number'][$key] 
                     ]
               );
 
@@ -110,7 +110,8 @@ class ProjectLineController extends Controller
                   [
                       'value' => $line['value'],
                       'retainage' => $line['retainage'],
-                      'description' => $line['description']
+                      'description' => $line['description'],
+                      'account_number' => $line['account_number']
                   ]
               );
          }
