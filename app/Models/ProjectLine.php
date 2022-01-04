@@ -16,10 +16,5 @@ class ProjectLine extends Model
      'retainage', 'account_number'
     ];
 
-    public function trades(){
-        return $this->belongsToMany(Trade::class)->withTimestamps();
-    }
-
-
     
 }

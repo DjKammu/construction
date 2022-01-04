@@ -61,6 +61,10 @@ class Project extends Model
     public function project_lines(){
         return $this->hasMany(ProjectLine::class);
     }
+    
+    public function applications(){
+        return $this->hasMany(Application::class);
+    }
 
     
 }

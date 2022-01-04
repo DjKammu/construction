@@ -87,7 +87,7 @@
                                               @endif
 
                                               <li class="nav-item">
-                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/add-project-lines') }}" role="tab"
+                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
                                                      aria-expanded="false">AIA Pay App</a>
                                               </li>
                                         </ul>

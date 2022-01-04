@@ -165,10 +165,18 @@ Route::prefix('projects')->group(function(){
  
    Route::get('{id}/get-project-lines', [App\Http\Controllers\ProjectLineController::class,'index'])->name('projects.get-project-lines');
 
-    Route::get('{id}/add-project-lines', [App\Http\Controllers\ProjectLineController::class,'create'])->name('projects.add-project-lines');
+    Route::get('{id}/aia-pay-app', [App\Http\Controllers\ProjectLineController::class,'create'])->name('projects.aia-pay-app');
 
     Route::post('{id}/add-project-lines', [App\Http\Controllers\ProjectLineController::class,'store'])->name('projects.add-project-lines.store'); 
 
      Route::delete('{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'destroy'])->name('projects.project-lines.destroy');
-});
 
+     Route::get('{id}/applications', [App\Http\Controllers\ProjectApplicationController::class,'create'])->name('projects.applications'); 
+    
+     Route::get('{id}/get-project-applications', [App\Http\Controllers\ProjectApplicationController::class,'index'])->name('projects.applications.index'); 
+
+     Route::post('{id}/applications', [App\Http\Controllers\ProjectApplicationController::class,'store'])->name('projects.applications.store');
+
+      Route::get('{id}/get-applications-summary', [App\Http\Controllers\ProjectApplicationController::class,'summary'])->name('projects.applications.summary'); 
+
+});

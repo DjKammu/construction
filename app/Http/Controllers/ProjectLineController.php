@@ -66,7 +66,7 @@ class ProjectLineController extends Controller
     {
         if(Gate::denies('add')) {
                return abort('401');
-         }
+        }
 
         $project  = Project::find($id);  
          
@@ -77,9 +77,11 @@ class ProjectLineController extends Controller
         if(!$project->retainage_percentage || !$project->original_amount){
            return redirect()->back()->with('error' ,'Retainage Percentage or Original Amount is not available!');
         }
+
+        $applications_count = $project->applications()->count();
       
 
-        return view('projects.includes.add-project-lines',compact('project'));
+        return view('projects.includes.aia-pay-app',compact('project','applications_count'));
     }  
 
 
