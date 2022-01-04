@@ -115,7 +115,7 @@
             <div class="col-12" v-else>
 
                 <button type="button" class="btn btn-danger mt-0" @click="createApplication" >
-                            <span v-if="applications_count"> Edit </span> <span v-else>Create</span> Application #{{ (applications_count) ? applications_count : 1 }}
+                            <span v-if="applications_count > 0"> Edit </span> <span v-else>Create</span> Application #{{ (applications_count > 0) ? applications_count : 1 }}
                 </button>
                       
             </div>

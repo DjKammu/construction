@@ -39,7 +39,7 @@ class ProjectApplicationController extends Controller
 
        if(!$application){
             $applications = $project->project_lines()
-                           ->orderBy($orderBy, $order)->get();
+            ->orderBy($orderBy, $order)->get();
        }     
        else{
 
