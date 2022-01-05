@@ -37,9 +37,9 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.payments',['id' => $proposal->id]) }}" enctype="multipart/form-data">
+                              action="{{ route('projects.payments',['id' => $proposal->id]) }}"
+                               enctype="multipart/form-data">
                                   @csrf
-
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -56,6 +56,7 @@
                                             </div>
                                         </div>
                                     </div> 
+
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -70,7 +71,7 @@
                                          </div>
                                          </div>
                                         </div>
-                                    </div> 
+                                   
                                     <div class="subcontractor-vendor" id="subcontractor">
                                           <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
@@ -224,10 +225,7 @@ $("input[name='type']").click(function() {
       $("#" + id).show();
   });
 
-
 });
-
-
 
 </script>
 @endsection

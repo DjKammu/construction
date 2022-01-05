@@ -307,8 +307,8 @@ class PaymentController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'subcontractor_id' => ['required',
-              'exists:subcontractors,id'],
+              // 'subcontractor_id' => ['required',
+              // 'exists:subcontractors,id'],
               'trade_id' => 'required|exists:trades,id',
               'payment_amount' => ['required',
                     function ($attribute, $value, $fail) use ($totalDueMount,$payment){
