@@ -224,10 +224,10 @@ class ProjectApplicationController extends Controller
                      
        }
        
-       $data['totalStored'] = (float) $totalStored;
-       $data['retainageToDate'] = (float) $retainageToDate;
-       $data['totalEarned'] = (float) $totalEarned;
        $data['currentDuePayment'] = (float) $currentDuePayment;
+       $data['retainageToDate'] = (float) $retainageToDate;
+       $data['totalStored'] = (float) $totalStored;
+       $data['totalEarned'] = (float) $totalEarned;
 
        return  $data;
 

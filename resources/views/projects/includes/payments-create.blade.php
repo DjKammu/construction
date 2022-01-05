@@ -213,16 +213,21 @@
 
 <script type="text/javascript">
 
-$('.date').datetimepicker({
-    format: 'M-D-Y'
-});
+$( document ).ready(function() {
+    $('.date').datetimepicker({
+      format: 'M-D-Y'
+  });
 
-$("input[name$='type']").click(function() {
+$("input[name='type']").click(function() {
       var id = $(this).val();
-
       $(".subcontractor-vendor").hide();
       $("#" + id).show();
   });
+
+
+});
+
+
 
 </script>
 @endsection
