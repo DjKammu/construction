@@ -114,9 +114,27 @@
 
             <div class="col-12" v-else>
 
-                <button type="button" class="btn btn-danger mt-0" @click="createApplication" >
-                            <span v-if="applications_count > 0"> Edit </span> <span v-else>Create</span> Application #{{ (applications_count > 0) ? applications_count : 1 }}
+                <span v-if="applications_count == 0"> 
+
+                  <button type="button" class="btn btn-danger mt-0" @click="createApplication" >
+                            Create Application #1 
                 </button>
+
+                </span>
+                <span v-else-if="applications_count >0" >
+
+                  <button type="button" class="btn btn-danger mt-0" @click="editApplication" >
+                            Edit Application #{{ (applications_count) }}
+                  </button>
+                  <button v-if="closeProject==false" type="button" class="btn btn-danger mt-0" @click="createApplication" >
+                            Create Application #{{ parseInt(applications_count) + 1 }}
+                  </button> 
+
+                  <button v-else type="button" class="btn btn-danger mt-0" @click="projectClose" >
+                            Close Project
+                  </button>
+                  
+                </span>
                       
             </div>
         
@@ -202,7 +220,7 @@
 
                <div>
                    
-               <button type="button" class="btn btn-danger mt-0" @click="editLineItem" >Edit Line Items
+                <button type="button"  v-if="applications_count < 2" class="btn btn-danger mt-0" @click="editLineItem" >Edit Line Items
                 </button>
 
                </div>
@@ -214,13 +232,14 @@
 <script>
 
     export default {
-        props: ['retainage','projectid','original_amount','applications_count'],
+        props: ['retainage','projectid','original_amount'],
 
         mounted() {
             this.loadLines();
         },
         data() {
             return {
+                closeProject : false,
                 projectLines : true,
                 firstTime : true,
                 error : false,
@@ -232,6 +251,7 @@
                 retainageToDate:0,
                 totalStored:0,
                 totalEarned:0,
+                applications_count : 0,
                 lastApplicationsPayments:0,
                 currentDuePayment:0,
                 balance:0,
@@ -241,7 +261,7 @@
                 lines: [],
                 addLineItemHTML: [],
                 project_lines: [],
-                project_line : {},
+                project_lines: [],
                 form :{
                         account_number: [],
                         description: [],
@@ -280,8 +300,10 @@
               await axios.get('/projects/'+this.projectid+'/get-applications-summary/')
                 .then(function (response) {
                        let res = response.data
+                       _vm.applications_count = res.data.applicationsCount
                        _vm.currentDuePayment = res.data.currentDuePayment
                        _vm.retainageToDate = res.data.retainageToDate
+                       _vm.closeProject = res.data.closeProject
                        _vm.totalStored = res.data.totalStored
                        _vm.totalEarned = res.data.totalEarned
                        _vm.balance = _vm.original_amount - res.data.totalEarned
@@ -307,8 +329,13 @@
                 axios.delete('/projects/'+$id+'/project-lines/') 
                    .then(function (response) {
                        let res = response.data
-                      _vm.success = true
-                      _vm.successMsg = res.message
+                       if(res.error){
+                            _vm.error = true
+                            _vm.errorMsg = res.message
+                       }else{
+                          _vm.success = true
+                          _vm.successMsg = res.message
+                       }
                       _vm.resetLines();
                 })
                 .catch(function (error) {
@@ -355,15 +382,23 @@
                 })
                 .then(function (response) {
                        let res = response.data
-                      _vm.success = true
-                      _vm.successMsg = res.message
-                      _vm.resetLines();
+                        if(res.error){
+                            _vm.error = true
+                            _vm.errorMsg = res.message
+                       }else{
+                          _vm.success = true
+                          _vm.successMsg = res.message
+                       }
+                       _vm.resetLines();
+                     
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-
-                _vm.projectLines = false;
+                
+                if(!_vm.error){
+                    _vm.projectLines = false;
+                 }
             },
             sortOrderBy(orderBy,order){
                  let _vm = this;
@@ -411,9 +446,24 @@
             summaryProject(){
                 this.projectLines = false;
                 this.loadLines();
+            }, 
+            projectClose(){
+                alert('closeProject')
             },
             createApplication(){
+              let applications_count = this.applications_count
+              if(applications_count == 1){
+  
+                 if(!confirm("If you proceed with creating application #2, you will no longer be able to make any changes to the original contract amount or the original project line items. Any subsequent changes to the contract value and contract line items will need to be made via change orders.\n\nDo you want to proceed with creating Application #2?")){
+                      return
+                 }
+
+              }
+
               window.location.href =  'applications';
+            },
+            editApplication(){
+              window.location.href =  'applications/edit';
             },
             excessOrShortfall(){
                 let totalValues= 0 ;

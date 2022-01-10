@@ -28,39 +28,16 @@ class ProjectApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(Request $request, $id)
     {
-       $project  = Project::find($id);  
-      
-       $application = $project->applications()->latest()->first();
+        $edit = $request->edit;
 
-       $orderBy = 'created_at';  
-       $order ='DESC' ;
+        $applications = $this->getApplication($id,$edit);
 
-       if(!$application){
-            $applications = $project->project_lines()
-            ->orderBy($orderBy, $order)->get();
-       }     
-       else{
-
-          $applications = $application->application_lines()
-                      ->orderBy($orderBy, $order)->get();
-
-          $applications->filter(function($app){
-              $app->description = $app->project_line->description;
-              $app->value = $app->project_line->value;
-              $app->total_percentage = number_format($app->work_completed/ $app->value*100, 1);
-          });               
-
-       }
-    
        return response()->json(
-           [
-            'status' => 200,
-            'data' => $applications,
-            'application_date' => @$application->application_date,
-            'period_to' => @$application->period_to
-           ]
+           array_merge(
+            ['status' => 200],
+            $applications)
        );
 
     }
@@ -109,14 +86,17 @@ class ProjectApplicationController extends Controller
         
         $project  = Project::find($id);  
 
-        $application_id =  $request->input('application_id');
+        $edit =  $request->input('edit');
+
+        $application_id = null;
          
         $msg = 'Application added Successfully!';
 
-        if($application_id){
+        if($edit){
+          $application_id =  $request->input('application_id');
           $msg = 'Application updated Successfully!';
         }
-
+         
         $this->saveApplications($request,$id,$application_id);
 
         return response()->json(
@@ -126,12 +106,9 @@ class ProjectApplicationController extends Controller
            ]
         );
         
-
-
     }
 
     public function saveApplications(Request $request,$project_id,$application_id = null){
-
 
         $application_date =  $request->input('application_date');
 
@@ -139,7 +116,7 @@ class ProjectApplicationController extends Controller
 
         $application = Application::UpdateOrCreate(
                      ['id' => $application_id],
-                    //['id' => 1],
+                    //['id' => 5],
                     [
                       'project_id' => $project_id,
                       'application_date' => $application_date,
@@ -148,11 +125,12 @@ class ProjectApplicationController extends Controller
               );
 
         $data = $request->data;
-       
-
-       if($application_id){
+   
+      if($application_id){
+ 
 
        foreach ($data as $key => $dt) {
+
              $update = [
                  'billed_to_date' => $dt['billed_to_date'],
                  'stored_to_date' => $dt['stored_to_date'],
@@ -160,16 +138,19 @@ class ProjectApplicationController extends Controller
                  'materials_stored' => $dt['materials_stored'],
              ];
              ApplicationLine::whereId($dt['id'])
-                ->update($update);
+                ->update($update);    
        }
     
        }
        else{
          
         $data = collect($data)->map(function($dt){
-          $dt['project_line_id'] = $dt['id'];
+          if(@!$dt['project_line_id']){
+              $dt['project_line_id'] =  $dt['id'];
+          }
           return $dt;
         }); 
+
         $application_lines = $application->application_lines()->createMany($data);
        }
 
@@ -206,28 +187,47 @@ class ProjectApplicationController extends Controller
       $retainageToDate = 0;
       $totalEarned = 0;
      
-      foreach (@$applications as $key => $application) {
+      foreach (@$applications as $ak => $application) {
            $lines = $application->application_lines()
                       ->get();
-            $currentDuePayment = 0;
+           $currentDuePayment = 0;
+           $closeProject = true;
+
            foreach (@$lines as $key => $line) {
 
-                    $totalStored = $totalStored + (float) $line['work_completed'];
+                    $total = (float) $line['work_completed'] + (float) $line['materials_stored'];
+
+                    $totalStored = $totalStored + $total;
 
                     $retainage = $line->project_line->retainage;
-                    $retainageToDate = $retainageToDate + (float) ($line['work_completed'] * $retainage/100);
+                    $retainageToDate = $retainageToDate + (float) ($total * $retainage/100);
 
                     $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
-                  
+
+                    $currentDuePayment = $total - (float) ($total * $retainage/100);
+
+                    if(count($applications) == $ak+1){
+                        $totalBilled = (float) $line['work_completed'] + (float) $line['billed_to_date'];
+                        $percentage = number_format($totalBilled / $line->project_line->value*100, 1);
+
+                      if( ($percentage < 100) && ($closeProject)){
+                          $closeProject = false;
+                      }
+                    }
+                   
             } 
-            $currentDuePayment =  (float) $totalEarned;          
+            $currentDuePayment =  (float) $currentDuePayment;          
                      
        }
        
+       $data['applicationsCount'] = @$applications->count();
        $data['currentDuePayment'] = (float) $currentDuePayment;
        $data['retainageToDate'] = (float) $retainageToDate;
        $data['totalStored'] = (float) $totalStored;
        $data['totalEarned'] = (float) $totalEarned;
+       $data['closeProject'] =  $closeProject;
+
+       //dd($data);
 
        return  $data;
 
@@ -241,8 +241,83 @@ class ProjectApplicationController extends Controller
      */
     public function edit($id)
     {
-        //
+        
+        if(Gate::denies('add')) {
+               return abort('401');
+        }
+
+        $project  = Project::find($id);  
+         
+        if(!$project){
+            return redirect()->back();
+        }
+
+        $application_id = $project->applications()->latest()->first();
+
+        $application_id = @$application_id->id;
+
+        $edit = true;
+      
+        return view('projects.includes.applications',compact('project','application_id','edit'));
     }
+    
+    public function getApplication($id,$edit = false){
+    
+       $project  = Project::find($id);  
+      
+       $application = $project->applications()->latest()->first();
+
+       $orderBy = 'created_at';  
+        $order ='DESC' ;
+
+       if(!$application){
+            $applications = $project->project_lines()
+            ->orderBy($orderBy, $order)->get();
+
+               $applications->filter(function($app) use ($edit){
+                  $app->billed_to_date = 0;
+                  $app->stored_to_date = 0;
+                  $app->work_completed = 0;
+                  $app->materials_stored = 0;
+            }); 
+
+       } 
+       else{
+
+            $applications = $application->application_lines()
+                      ->get();       
+                      
+             $applications->filter(function($app) use ($edit){
+
+                $app->description = $app->project_line->description;
+                $app->value = $app->project_line->value;
+                $total = (float) $app->work_completed + (float) $app->billed_to_date;
+                $app->total_percentage = number_format($total/ $app->value*100, 1);
+
+                 if($edit == false){
+                  $app->billed_to_date = $total;
+                  $app->stored_to_date = (float) $app->materials_stored + (float) $app->stored_to_date;
+                  $app->work_completed = 0;
+                  $app->materials_stored = 0;
+                }
+
+            }); 
+                      
+           if($edit == false){
+            $application->application_date = '';
+            $application->period_to = '';
+           }
+
+       }
+       
+        return  [ 'data' => $applications,
+                  'application_date' => @$application->application_date,
+                  'period_to' => @$application->period_to
+                ];
+   
+
+    }
+
 
     /**
      jmmmmmjjjjjjj* Update the specified resource in storage.
@@ -264,18 +339,7 @@ class ProjectApplicationController extends Controller
      */
     public function destroy($id)
     {
-         if(Gate::denies('delete')) {
-               return abort('401');
-          } 
-
-        ProjectLine::find($id)->delete();
-
-        return response()->json(
-           [
-            'status' => 200,
-            'message' => 'Project Lines Delete Successfully!'
-           ]
-        );
+      //
     }
 
 

@@ -57,11 +57,13 @@
                 {{ applications[index].description }} </td> 
                 <td> ${{ new Intl.NumberFormat().format(applications[index].value) }} </td>         
                 <td>
-                <input class="form-control" type="text" v-model="applications[index].billed_to_date" /></td>                
+                ${{ (applications[index].billed_to_date) ? 
+                new Intl.NumberFormat().format(applications[index].billed_to_date) : 0 }}                
                 <td>
-                <input class="form-control" type="text" v-model="applications[index].stored_to_date" /></td>
+                ${{ (applications[index].billed_to_date) ? 
+                new Intl.NumberFormat().format(applications[index].stored_to_date) : 0 }}   
                 <td><input class="form-control" @input="fillValue(index)" type="number" v-model="applications[index].work_completed" /></td>
-                <td><input class="form-control" type="number" max="100" v-model="applications[index].materials_stored" /></td>
+                <td><input class="form-control" @input="fillMaterial(index)" type="number" max="100" v-model="applications[index].materials_stored" /></td>
                 <td> <input class="form-control" @input="fillPercent(index)" type="number" max="100" v-model="applications[index].total_percentage" /></td>
               </tr>
 
@@ -69,7 +71,7 @@
             </table> 
 
             <div class="col-12">
-                <button type="button" class="btn btn-danger mt-0" @click="saveApplication">Save Application #1
+                <button type="button" class="btn btn-danger mt-0" @click="saveApplication">Save Application
                 </button>
                 <button type="button" class="btn mt-0" @click="cancel" >Cancel
                 </button>  
@@ -228,7 +230,7 @@
     import datetimepicker from '../../../public/js/plugins/bootstrap-datetimepicker.js' //import
 
     export default {
-        props: ['retainage','projectid','original_amount','application_id'],
+        props: ['retainage','projectid','original_amount','application_id','edit'],
 
         mounted() {
 
@@ -246,7 +248,6 @@
             }).on('dp.change', function (e) {
               _vm.period_to = $(this).val()
             });
-
 
         },
         data() {
@@ -279,7 +280,7 @@
             
               let _vm = this;
 
-              await axios.get('/projects/'+this.projectid+'/get-project-applications/')
+              await axios.get('/projects/'+this.projectid+'/get-project-applications/?edit='+this.edit)
                 .then(function (response) {
                        let res = response.data
                        _vm.applications = res.data
@@ -309,12 +310,13 @@
 
                   return;
                }
-               
+
               await axios.post('/projects/'+this.projectid+'/applications/',{
                     data : this.applications,
                     application_date: this.application_date,
                     period_to: this.period_to,
-                    application_id: this.application_id
+                    application_id: this.application_id,
+                    edit: this.edit
                 })
                 .then(function (response) {
                        console.log(response)
@@ -367,27 +369,72 @@
                 this.error = this.success = false
                 this.errorMsg = this.successMsg = null
             },
-
             cancel(){
-               window.location.href =  'aia-pay-app';
+               window.location.href =  '/projects/'+this.projectid+'/aia-pay-app';
             },
             fillValue(index){
 
-              this.applications[index].total_percentage = (this.applications[index].work_completed/ this.applications[index].value*100).toFixed(2);
+              let total = parseFloat(this.applications[index].work_completed) + parseFloat(this.applications[index].billed_to_date)
+            
+              this.applications[index].total_percentage = (total/ this.applications[index].value*100).toFixed(2);
 
-              if(parseFloat(this.applications[index].work_completed) >= parseFloat(this.applications[index].value) ){
+              if(parseFloat(total) >= parseFloat(this.applications[index].value) ){
                  this.applications[index].total_percentage = 100
-                 this.applications[index].work_completed = this.applications[index].value
+                 this.applications[index].work_completed = parseFloat(this.applications[index].value) - parseFloat(this.applications[index].billed_to_date)
               }
-            },
-            fillPercent(index){
 
-              this.applications[index].work_completed = (this.applications[index].total_percentage* this.applications[index].value/100);
+              if(total + parseFloat(this.applications[index].stored_to_date) >= parseFloat(this.applications[index].value) ){
+               
+                this.applications[index].materials_stored =  parseFloat(this.applications[index].value) - parseFloat(this.applications[index].work_completed) - parseFloat(this.applications[index].billed_to_date) - parseFloat(this.applications[index].stored_to_date)
+
+              }else{
+                  this.applications[index].materials_stored =  0
+              }
+                
+            },
+
+            fillMaterial(index){
+
+              let total = parseFloat(this.applications[index].work_completed) + parseFloat(this.applications[index].billed_to_date)
+            
+              if(parseFloat(total) >= parseFloat(this.applications[index].value) ){
+                 this.applications[index].materials_stored = 0
+              }
+
+             if(parseFloat(this.applications[index].total_percentage) >= parseFloat(100) ){
+                 this.applications[index].materials_stored = 0
+              }
+
+              if(parseFloat(this.applications[index].materials_stored) >= (parseFloat(this.applications[index].value) - total) ){
+                 this.applications[index].materials_stored = (parseFloat(this.applications[index].value) - total)
+              }
+                
+            },
+            fillPercent(index){ 
+
+              this.applications[index].work_completed = parseFloat(this.applications[index].total_percentage* this.applications[index].value/100) - parseFloat(this.applications[index].billed_to_date);
+
+              if(parseFloat(this.applications[index].work_completed) < 0){
+                 this.applications[index].work_completed = 0
+               }
               
               if(parseFloat(this.applications[index].total_percentage) >= parseFloat(100) ){
                  this.applications[index].total_percentage = 100
-                 this.applications[index].work_completed = this.applications[index].value
+                 this.applications[index].work_completed = parseFloat(this.applications[index].value) - parseFloat(this.applications[index].billed_to_date)
               }
+               
+             
+              if(parseFloat(this.applications[index].work_completed) + parseFloat(this.applications[index].billed_to_date)  + parseFloat(this.applications[index].stored_to_date) >= parseFloat(this.applications[index].value) ){
+               
+                this.applications[index].materials_stored =  parseFloat(this.applications[index].value) - parseFloat(this.applications[index].work_completed) - parseFloat(this.applications[index].billed_to_date) - parseFloat(this.applications[index].stored_to_date)
+
+              }else{
+                  this.applications[index].materials_stored =  0
+              }
+
+               this.applications[index].work_completed = this.applications[index].work_completed.toFixed(2) 
+
+
             },
             // excessOrShortfall(){
             //     let totalValues= 0 ;

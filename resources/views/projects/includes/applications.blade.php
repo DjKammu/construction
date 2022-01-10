@@ -35,7 +35,7 @@
 
                <div class="row">
                         <div class="col-md-12">
-                             <applications projectid="{{ @$project->id }}" application_id={{ @$application_id }}></applications>
+                             <applications projectid="{{ @$project->id }}" edit="{{ @$edit }}" application_id={{ @$application_id }}></applications>
                         </div>
                     </div>
             </div>

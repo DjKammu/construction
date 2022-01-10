@@ -16,5 +16,9 @@ class ProjectLine extends Model
      'retainage', 'account_number'
     ];
 
+     public function project(){
+        return $this->belongsTo(Project::class);
+    }
+
     
 }

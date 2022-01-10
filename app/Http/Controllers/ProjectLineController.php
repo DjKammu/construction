@@ -106,11 +106,24 @@ class ProjectLineController extends Controller
 
         $project_lines = $project->project_lines();
 
+        $applications = @$project->applications()->exists();
+
+        if($applications && array_filter($data) ){
+
+               return response()->json(
+               [
+                'status' => 200,
+                'error'  => true,
+                'message' => 'Project Lines can`t be Added!'
+               ]
+            );
+         }
+
         foreach ($data['description'] as $key => $value) {
 
              $project_lines->Create(
                     [
-                    'description' => $value,
+                      'description' => $value,
                       'value' => $data['value'][$key],
                       'retainage' => $data['retainage'][$key],
                       'account_number' => $data['account_number'][$key] 
@@ -192,7 +205,22 @@ class ProjectLineController extends Controller
                return abort('401');
           } 
 
-        ProjectLine::find($id)->delete();
+        $project_line = ProjectLine::find($id);
+        
+        $applications = @$project_line->project->applications()->exists();
+
+        if($applications){
+
+             return response()->json(
+             [
+              'status' => 200,
+              'error' => true,
+              'message' => 'Project Lines can`t be Deleted!'
+             ]
+          );
+        }
+
+        $project_line->delete();
 
         return response()->json(
            [
