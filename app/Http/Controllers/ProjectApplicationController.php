@@ -13,6 +13,8 @@ use PDF;
 
 class ProjectApplicationController extends Controller
 {
+    const APPLICATION = 'application';
+
     /**
      * Create a new controller instance.
      *
@@ -165,9 +167,8 @@ class ProjectApplicationController extends Controller
      */
     public function summary($id)
     {
-      $project  = Project::find($id);  
-      
-                  
+       $project  = Project::find($id);  
+              
        $data = $this->getSummary($project);
 
        return response()->json(
@@ -179,9 +180,15 @@ class ProjectApplicationController extends Controller
     }
 
 
-    public function  getSummary($project){
+    public function  getSummary($project, $app_id = null){
 
-      $applications = $project->applications()->get();
+      $applications = $project->applications();
+      
+      if($app_id){
+         $applications = $applications->where('id', '<=',$app_id);
+      }
+
+      $applications = $applications->get();
 
       $totalStored = 0;
       $retainageToDate = 0;
@@ -216,11 +223,13 @@ class ProjectApplicationController extends Controller
                     }
                    
             } 
-            $currentDuePayment =  (float) $currentDuePayment;          
-                     
+            $currentDuePayment =  (float) $currentDuePayment;                     
        }
        
+       $lastApplicationsPayments = $totalEarned - $currentDuePayment;
+
        $data['applicationsCount'] = @$applications->count();
+       $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
        $data['currentDuePayment'] = (float) $currentDuePayment;
        $data['retainageToDate'] = (float) $retainageToDate;
        $data['totalStored'] = (float) $totalStored;
@@ -342,5 +351,60 @@ class ProjectApplicationController extends Controller
       //
     }
 
+    public function allApplications($id){
+    
+        $project  = Project::find($id);  
+      
+        $applications = $project->applications()->latest()->get();
+
+        return response()->json(
+            ['status' => 200, 'data' => $applications]
+       );
+
+    }
+
+    public function generatePDF($id, $to, $app_id){
+        
+         if(Gate::denies('view')) {
+               return abort('401');
+         }
+
+        $project  = Project::find($id);  
+      
+        $application = $project->applications()
+                       ->where('id',$app_id)->first();
+
+        $lines = $application->application_lines()
+                      ->get();   
+        $data = [];
+
+        if($to == self::APPLICATION){
+
+          $summary = $this->getSummary($project,$app_id);
+        
+          $data = array_merge(['lines' => $lines,
+                   'application' => $application,
+                   'project' => $project
+                  ],$summary);
+
+        }           
+   
+        // return view('projects.includes.'. $to .'-pdf',
+        //   ['lines' => $lines,
+        //   'application' => $application,
+        //   'project' => $project
+        //   ]);
+        
+        $pdf = PDF::loadView('projects.includes.'. $to .'-pdf',
+          $data
+        )->setOptions(['margin' => 5]);
+
+        $pdf->setPaper('a4', 'landscape');  
+
+        $slug = \Str::slug($project->name);
+
+        return $pdf->stream('project_'.$slug .'_budget.pdf');
+        return $pdf->download('project_'.$slug.'_budget.pdf');
+    }
 
 }

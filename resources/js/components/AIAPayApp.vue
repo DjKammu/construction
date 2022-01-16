@@ -7,7 +7,7 @@
             <div  v-else-if="error" class="alert alert-warning alert-dismissible fade show">
             <strong>Error!</strong> {{ errorMsg }}
             </div>
-    <div class="table-responsive" v-if="projectLines">
+        <div class="table-responsive" v-if="projectLines">
 
           <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
@@ -93,7 +93,11 @@
             </table> 
         </div>
         <div class="table-responsive" v-else>
-          
+             <div class="col-6">
+               <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
+              </button>
+            </div>
+
             <div class="col-12" v-if="currentExcess > 0" >
 
                   <h6> Project Line Item Excess   </h6>
@@ -112,7 +116,8 @@
                 
             </div> 
 
-            <div class="col-12" v-else>
+    
+            <div class="col-6 pull-right" v-else>
 
                 <span v-if="applications_count == 0"> 
 
@@ -135,35 +140,64 @@
                   </button>
                   
                 </span>
+
+                <table class="table table-bordered text-center">
+                    <thead>
+                      <tr class="">
+                        <th colspan="4">Application Document History</th>
+                      </tr>
+                      <tr>
+                        <th>App #</th>
+                        <th>Date</th>
+                        <th>Application</th>
+                        <th>Continuation Sheet</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(application, index) in applications"  >
+                        <th scope="row">{{ applications.length - index}}</th>
+                        <td>{{ application.application_date }}</td>
+                        <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'application')" src="/img/pdf.png"></td>
+                        <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'continuation-sheet')" src="/img/pdf.png"></td>
+                      </tr>
+                    </tbody>
+                  </table>
                       
             </div>
-        
-            <h5 class="col-12"> Project Summary </h5>
 
-            <table v-if="isExcessOrShortfall"  id="project-types-table" class="table table-hover payments-table col-12">
-                <thead>
-                 <tr >
-                    <th>Total Original Contract Amount</th>
-                    <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
-                </tr>
-                
-                <tr >
-                    <th>Project Line Item Total</th>
-                    <th>${{ new Intl.NumberFormat().format(total) }}</th>
-                </tr>
-               
-                <tr style="color: red;" >
-                    <th >Project Line Item Excess/(Shortfall)</th>
-                    <th v-if="currentExcess" >${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
-                    <th     v-else>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
-                </tr>
-                </thead>
-                <tbody>
+              
+           <div v-if="isExcessOrShortfall" class="col-6">
 
-                </tbody>
+              <h5 class=""> Project Summary </h5>
+
+              <table   id="project-types-table" class="table table-hover payments-table">
+                    <thead>
+                     <tr >
+                        <th>Total Original Contract Amount</th>
+                        <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                    </tr>
+                    
+                    <tr >
+                        <th>Project Line Item Total</th>
+                        <th>${{ new Intl.NumberFormat().format(total) }}</th>
+                    </tr>
+                   
+                    <tr style="color: red;" >
+                        <th >Project Line Item Excess/(Shortfall)</th>
+                        <th v-if="currentExcess" >${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
+                        <th     v-else>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
                 </table> 
+           </div>
+           <div v-else class="col-6">
 
-                <table v-else id="project-types-table" class="table table-hover payments-table col-12">
+             <h5 class=""> Project Summary </h5>
+
+            <table  id="project-types-table" class="table table-hover payments-table">
                 <thead>
                  <tr >
                     <th>Original Contract Sum</th>
@@ -202,28 +236,15 @@
                     <th>${{ new Intl.NumberFormat().format(
                           (balance)) }}</th>
                 </tr>
-
-               <!-- 
-                <tr style="color: red;" v-if="currentExcess">
-                    <th >Current Excess</th>
-                    <th>${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
-                </tr>
-                <tr style="color: red;" v-else>
-                    <th> Short Fall</th>
-                    <th>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
-                </tr> -->
                 </thead>
                 <tbody>
 
                 </tbody>
-                </table>
+            </table>
+          </div>
 
-               <div>
-                   
-                <button type="button"  v-if="applications_count < 2" class="btn btn-danger mt-0" @click="editLineItem" >Edit Line Items
-                </button>
 
-               </div>
+               
                
         </div> 
     </div>
@@ -262,6 +283,7 @@
                 addLineItemHTML: [],
                 project_lines: [],
                 project_lines: [],
+                applications: [],
                 form :{
                         account_number: [],
                         description: [],
@@ -283,6 +305,7 @@
                        _vm.project_lines = res.data
                        _vm.excessOrShortfall();
                        _vm.loadSummary();
+                       _vm.loadApplications();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -300,6 +323,7 @@
               await axios.get('/projects/'+this.projectid+'/get-applications-summary/')
                 .then(function (response) {
                        let res = response.data
+                       _vm.lastApplicationsPayments = res.data.lastApplicationsPayments
                        _vm.applications_count = res.data.applicationsCount
                        _vm.currentDuePayment = res.data.currentDuePayment
                        _vm.retainageToDate = res.data.retainageToDate
@@ -307,6 +331,22 @@
                        _vm.totalStored = res.data.totalStored
                        _vm.totalEarned = res.data.totalEarned
                        _vm.balance = _vm.original_amount - res.data.totalEarned
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
+            async loadApplications(){
+            
+              let _vm = this;
+
+              await axios.get('/projects/'+this.projectid+'/get-all-applications/')
+                .then(function (response) {
+                       let res = response.data
+                       _vm.applications = res.data
+                       console.log(res)
 
                 })
                 .catch(function (error) {
@@ -464,6 +504,12 @@
             },
             editApplication(){
               window.location.href =  'applications/edit';
+            },
+            redirectTo($id,$to){
+                 let a= document.createElement('a');
+                 a.target= '_blank';
+                 a.href= '/projects/'+this.projectid+'/'+$to+'/'+$id;
+                 a.click();
             },
             excessOrShortfall(){
                 let totalValues= 0 ;

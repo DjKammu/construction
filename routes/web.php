@@ -181,4 +181,8 @@ Route::prefix('projects')->group(function(){
 
       Route::get('{id}/get-applications-summary', [App\Http\Controllers\ProjectApplicationController::class,'summary'])->name('projects.applications.summary'); 
 
+      Route::get('{id}/get-all-applications', [App\Http\Controllers\ProjectApplicationController::class,'allApplications'])->name('projects.all.applications');
+
+      Route::get('{id}/{to}/{app_id}', [App\Http\Controllers\ProjectApplicationController::class,'generatePDF'])->name('projects.application.pdf'); 
+
 });
