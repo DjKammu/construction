@@ -415,7 +415,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TABLE cellpadding=0 cellspacing=0 class="t2">
   <TR>
     <TD class="tr0 td22"><P class="p2 ft2">Application #</P></TD>
-    <TD class="tr0 td23"><P class="p8 ft3">9</P></TD>
+    <TD class="tr0 td23"><P class="p8 ft3">{{ @$applicationsCount }}</P></TD>
   </TR>
   <TR>
     <TD class="tr10 td22"><P class="p2 ft20">Application Date</P></TD>

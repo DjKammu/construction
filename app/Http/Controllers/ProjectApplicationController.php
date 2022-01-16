@@ -15,6 +15,8 @@ class ProjectApplicationController extends Controller
 {
     const APPLICATION = 'application';
 
+    const CONTINUATIONSHEET = 'continuation-sheet';
+
     /**
      * Create a new controller instance.
      *
@@ -387,6 +389,8 @@ class ProjectApplicationController extends Controller
                    'project' => $project
                   ],$summary);
 
+        }elseif ($to == self::CONTINUATIONSHEET) {
+           
         }           
    
         // return view('projects.includes.'. $to .'-pdf',
