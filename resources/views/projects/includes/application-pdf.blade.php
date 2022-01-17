@@ -247,7 +247,7 @@ body {margin-top: 0px;margin-left: 0px;}
 <DIV>
 <DIV id="id1_1">
   <div class="left1">
-    <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('image/invoice-logo.jpg'))) }}">
+    <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('img/invoice-logo.jpg'))) }}">
      <P class="p0 ft0">Application & Certficate for Payment</P>
      <P class="p1 ft1"> QPMCONSTRUCTION </P>
   </div>
