@@ -157,6 +157,7 @@ body {margin-top: 0px;margin-left: 0px;}
   border: 4px solid #17aecf;
   width: 580px;
   padding: 10px 0px;
+  position: relative;
 }
 
 .right1{
@@ -225,6 +226,16 @@ body {margin-top: 0px;margin-left: 0px;}
   width: 400px;
 }
 
+.left1 img{
+  width: 120px;
+  position: absolute;
+  /*height: 40px;*/
+  top: 5px;
+  left: 20px;
+}
+.left1 .ft1{
+  font-size: 12px;
+}
 
 
 </STYLE>
@@ -236,8 +247,9 @@ body {margin-top: 0px;margin-left: 0px;}
 <DIV>
 <DIV id="id1_1">
   <div class="left1">
+    <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('image/invoice-logo.jpg'))) }}">
      <P class="p0 ft0">Application & Certficate for Payment</P>
-     <P class="p1 ft1">{{ url('/') }}</P>
+     <P class="p1 ft1"> QPMCONSTRUCTION </P>
   </div>
 
 <TABLE cellpadding=0 cellspacing=0 class="t0 table1">
@@ -261,7 +273,7 @@ body {margin-top: 0px;margin-left: 0px;}
 </TR>
 <TR>
   <TD class="tr4 td4"><P class="p3 ft8">Name</P></TD>
-  <TD class="tr4 td5"><P class="p4 ft9">{{ @$project->name }} </P></TD>
+  <TD class="tr4 td5"><P class="p4 ft9">{{ @$project->contract_name }} </P></TD>
   <TD class="tr4 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr4 td7"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr4 td8"><P class="p2 ft5">&nbsp;</P></TD>
@@ -270,29 +282,29 @@ body {margin-top: 0px;margin-left: 0px;}
 <TR>
    <TD  class="tr5 td4"><P class="p3 ft10">Address </P></TD>
    <TD class="tr5 td5"><P class="p3 ft9">{{ @$project->contract_street }}</P></TD>
-  <TD colspan=4 class="tr5 td3"><P class="p3 ft9">{{ @$project->owner_street }}</P></TD>
+  <TD colspan=4 class="tr5 td3"><P class="p3 ft9">{{ @$project->address }}</P></TD>
 </TR>
-<TR>
+<!-- <TR>
   <TD class="tr5 td4"><P class="p3 ft11">Address 2</P></TD>
   <TD class="tr5 td5"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr5 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr5 td7"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr5 td8"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr5 td9"><P class="p2 ft5">&nbsp;</P></TD>
-</TR>
+</TR> -->
 <TR>
   <TD colspan=2 class="tr5 td2"><P class="p3 ft9"><SPAN class="ft10">City, State </SPAN>{{ @$project->contract_city }}, {{ @$project->contract_state }}</P></TD>
-  <TD colspan=4 class="tr5 td3"><P class="p3 ft9">{{ @$project->owner_city }}, {{ @$project->owner_state }}</P></TD>
+  <TD colspan=4 class="tr5 td3"><P class="p3 ft9">{{ @$project->city }}, {{ @$project->state }}</P></TD>
 </TR>
 <TR>
   <TD class="tr4 td4"><P class="p3 ft8">Zip</P></TD>
   <TD class="tr4 td5"><P class="p4 ft9">{{ @$project->contract_zip }}</P></TD>
-  <TD colspan=3 class="tr4 td10"><P class="p3 ft9">{{ @$project->owner_zip }}</P></TD>
+  <TD colspan=3 class="tr4 td10"><P class="p3 ft9">{{ @$project->zip_code }}</P></TD>
   <TD class="tr4 td9"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR>
   <TD class="tr6 td4"><P class="p3 ft10">Phone</P></TD>
-  <TD class="tr6 td5"><P class="p4 ft9"></P></TD>
+  <TD class="tr6 td5"><P class="p4 ft9">{{ @$project->contract_phone }} </P></TD>
   <TD class="tr6 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr6 td7"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr6 td8"><P class="p2 ft5">&nbsp;</P></TD>
@@ -427,13 +439,12 @@ body {margin-top: 0px;margin-left: 0px;}
   </TR>
   </TABLE>
 </div>
-<P class="p9 ft6 t2">SUBCONTRACTOR</P>
-<P class="p10 ft10">Name</P>
-<P class="p11 ft10">Address 1</P>
-<P class="p10 ft10">Address 2</P>
-<P class="p10 ft10">City, State</P>
-<P class="p10 ft10">Zip</P>
-<P class="p10 ft10">Phone</P>
+<P class="p9 ft6 t2">GENERAL CONTRACTOR</P>
+<P class="p10 ft10">Name :    {{ @$project->contract_name }} </P>
+<P class="p11 ft10">Address : {{ @$project->contract_street }}</P>
+<P class="p10 ft10">City, State : {{ @$project->contract_city }}, {{ @$project->contract_state }}</P>
+<P class="p10 ft10">Zip :   {{ @$project->contract_zip }}</P>
+<P class="p10 ft10">Phone : {{ @$project->contract_phone }}</P>
 <P class="p12 ft15">The undersigned Subcontractor certiﬁes that to the best of the Subcontractor's knowledge, information and belief the work covered by this application for Payment has been completed in accordance with the Subcontract Documents, that all amounts have been paid by the contractor for Work which previous certiﬁcates for payment were issued and payements received from the contractor and that the current payment shown herein is now due.</P>
 <P class="p11 ft9">Date: {{ \Carbon\Carbon::parse(@$application->application_date)->format('m/d/Y')}} </P>
 <P class="p13 ft10">Subcontractor Signature:</P>

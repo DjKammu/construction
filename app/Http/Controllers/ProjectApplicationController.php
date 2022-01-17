@@ -223,12 +223,12 @@ class ProjectApplicationController extends Controller
                           $closeProject = false;
                       }
                     }
-                   
             } 
             $currentDuePayment =  (float) $currentDuePayment;                     
        }
        
-       $lastApplicationsPayments = $totalEarned - $currentDuePayment;
+
+       $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment : 0;
 
        $data['applicationsCount'] = @$applications->count();
        $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
@@ -394,10 +394,7 @@ class ProjectApplicationController extends Controller
         }           
    
         // return view('projects.includes.'. $to .'-pdf',
-        //   ['lines' => $lines,
-        //   'application' => $application,
-        //   'project' => $project
-        //   ]);
+        //   $data);
         
         $pdf = PDF::loadView('projects.includes.'. $to .'-pdf',
           $data
