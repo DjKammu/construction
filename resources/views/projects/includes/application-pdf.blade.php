@@ -259,7 +259,7 @@ body {margin-top: 0px;margin-left: 0px;}
 </TR>
 <TR>
   <TD class="tr1 td0"><P class="p2 ft2">Project #</P></TD>
-  <TD class="tr1 td1"><P class="p2 ft4">{{ @$project->name }} {{ @\Carbon\Carbon::parse($project->created_at)->format('d M') }}</P></TD>
+  <TD class="tr1 td1"><P class="p2 ft4">{{ @$project->project_number }}</P></TD>
 </TR>
 <TR>
   <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Subcontractor Name</P></TD>

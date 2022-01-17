@@ -150,6 +150,15 @@ aria-expanded="true">
                  <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <div class="form-group">
+                        <label class="text-dark" for="password">Project Number
+                        </label>
+
+                        <input  name="project_number" value="{{ $project->project_number }}" type="text" class="form-control" placeholder="Project Number">
+                    </div>
+                </div> 
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
                         <label class="text-dark" for="password">Project Owner Name 
                         </label>
 
@@ -197,17 +206,17 @@ aria-expanded="true">
 
             <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left"> Contract Detail</h4>
+                        <h4 class="mt-0 text-left"> Contractor Detail</h4>
                     </div>
                 </div>
 
                  <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <div class="form-group">
-                        <label class="text-dark" for="password">Contract Name 
+                        <label class="text-dark" for="password">Contractor Name 
                         </label>
 
-                        <input  name="contract_name" value="{{ $project->contract_name }}" type="text" class="form-control" placeholder="Contract Name">
+                        <input  name="contract_name" value="{{ $project->contract_name }}" type="text" class="form-control" placeholder="Contractor Name">
                     </div>
                 </div>
             
@@ -243,6 +252,14 @@ aria-expanded="true">
                         <label class="text-dark" for="password">Zip Code 
                         </label>
                         <input  name="contract_zip"  value="{{ $project->contract_zip }}" type="text" class="form-control" placeholder="Zip Code" >
+                    </div>
+                </div> 
+
+                 <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Phone Number 
+                        </label>
+                        <input  name="contract_phone"  value="{{ $project->contract_phone }}" type="text" class="form-control" placeholder="Phone Number" >
                     </div>
                 </div>
                
