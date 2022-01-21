@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Product Lines')
+@section('title', 'Product Applications')
 
 @section('content')
 
@@ -29,13 +29,13 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">{{ @$project->name }} - Project Line</h4>
+                        <h4 class="mt-0 text-left">{{ @$project->name }} - Change Orders</h4>
                     </div>
                 </div>
 
                <div class="row">
                         <div class="col-md-12">
-                             <aia-pay-app v-bind:project="{{ @json_encode($project) }}" original_amount="{{ @$project->original_amount }}" projectid="{{ @$project->id }}" retainage="{{ @$project->retainage_percentage }}" applications_count={{ @$applications_count }}></aia-pay-app>
+                             <change_orders v-bind:project="{{ @json_encode($project) }}"  projectid="{{ @$project->id }}" retainage="{{ @$project->retainage_percentage }}" applications_count={{ @$applications_count }}></change_orders>
                         </div>
                     </div>
             </div>

@@ -248,7 +248,7 @@ body {margin-top: 0px;margin-left: 0px;}
 <DIV id="id1_1">
   <div class="left1">
     <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('img/invoice-logo.jpg'))) }}">
-     <P class="p0 ft0">Application & Certficate for Payment</P>
+     <P class="p0 ft0">Application & Certificate for Payment</P>
      <P class="p1 ft1"> QPMCONSTRUCTION </P>
   </div>
 
@@ -374,7 +374,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD class="tr12 td9 bwl"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">
-  <TD colspan=4 class="tr12 td11 bl"><P class="p3 ft1">7. Less Previous Applications & Certiﬁcates for Payment</P></TD>
+  <TD colspan=4 class="tr12 td11 bl"><P class="p3 ft1">7. Less Previous Applications & Certiicates for Payment</P></TD>
   <TD class="tr12 td8"><P class="p5 ft9">${{ \App\Models\Payment::format($lastApplicationsPayments ) }}</P></TD>
   <TD class="tr12 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
@@ -445,7 +445,7 @@ body {margin-top: 0px;margin-left: 0px;}
 <P class="p10 ft10">City, State : {{ @$project->contract_city }}, {{ @$project->contract_state }}</P>
 <P class="p10 ft10">Zip :   {{ @$project->contract_zip }}</P>
 <P class="p10 ft10">Phone : {{ @$project->contract_phone }}</P>
-<P class="p12 ft15">The undersigned Subcontractor certiﬁes that to the best of the Subcontractor's knowledge, information and belief the work covered by this application for Payment has been completed in accordance with the Subcontract Documents, that all amounts have been paid by the contractor for Work which previous certiﬁcates for payment were issued and payements received from the contractor and that the current payment shown herein is now due.</P>
+<P class="p12 ft15">The undersigned Subcontractor certifies that to the best of the Subcontractor's knowledge, information and belief the work covered by this application for Payment has been completed in accordance with the Subcontract Documents, that all amounts have been paid by the contractor for Work which previous certificates for payment were issued and payements received from the contractor and that the current payment shown herein is now due.</P>
 <P class="p11 ft9">Date: {{ \Carbon\Carbon::parse(@$application->application_date)->format('m/d/Y')}} </P>
 <P class="p13 ft10">Subcontractor Signature:</P>
 <P class="p14 ft21">_________________________________________________________</P>

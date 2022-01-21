@@ -93,9 +93,33 @@
             </table> 
         </div>
         <div class="table-responsive" v-else>
+
+             
+
              <div class="col-6">
-               <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
+
+               <table class="table table-hover payments-table">
+                  <thead>
+                  <tr >
+                      <th> {{ project.name }}
+                      <br>
+                      {{project.address}} {{project.city}} 
+                      <br>
+                      {{ project.state }} , {{project.country}} {{ project.zip_code }}  
+                       </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+
+                  </tbody>
+              </table> 
+
+               <button type="button"  class="btn btn-danger" @click="changeOrders" >Change Orders
               </button>
+
+              <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
+              </button>
+
             </div>
 
             <div class="col-12" v-if="currentExcess > 0" >
@@ -241,11 +265,7 @@
 
                 </tbody>
             </table>
-          </div>
-
-
-               
-               
+          </div>  
         </div> 
     </div>
 </template>
@@ -253,7 +273,7 @@
 <script>
 
     export default {
-        props: ['retainage','projectid','original_amount'],
+        props: ['project','retainage','projectid','original_amount'],
 
         mounted() {
             this.loadLines();
@@ -281,7 +301,6 @@
                 lastLine: 0,
                 lines: [],
                 addLineItemHTML: [],
-                project_lines: [],
                 project_lines: [],
                 applications: [],
                 form :{
@@ -504,6 +523,9 @@
             },
             editApplication(){
               window.location.href =  'applications/edit';
+            },
+            changeOrders(){
+              window.location.href =  'change-orders';
             },
             redirectTo($id,$to){
                  let a= document.createElement('a');

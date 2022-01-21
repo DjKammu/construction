@@ -21,6 +21,7 @@ window.Vue = require('vue').default;
 
 Vue.component('aia-pay-app', require('./components/AIAPayApp.vue').default);
 Vue.component('applications', require('./components/Applications.vue').default);
+Vue.component('change_orders', require('./components/ChangeOrders.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

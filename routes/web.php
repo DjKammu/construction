@@ -185,4 +185,13 @@ Route::prefix('projects')->group(function(){
 
       Route::get('{id}/{to}/{app_id}', [App\Http\Controllers\ProjectApplicationController::class,'generatePDF'])->name('projects.application.pdf'); 
 
+
+      Route::get('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'create'])->name('projects.change-orders.create'); 
+
+      Route::post('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'store'])->name('projects.change-orders.store'); 
+
+        Route::get('{id}/get-change-orders', [App\Http\Controllers\ChangeOrderController::class,'index'])->name('projects.change-orders.index'); 
+
+        Route::delete('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'destroy'])->name('projects.change-orders.destroy');
+
 });
