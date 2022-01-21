@@ -14,7 +14,7 @@
             @click=cancel >Project Summary</button>
 
              <button type="button" class="btn btn-danger mt-0"
-             v-if="changeOrders" @click=swapChangeOrder >Change Orders </button>
+             v-if="changeOrders.length > 0" @click=swapChangeOrder >Change Orders </button>
          </div>
         
         <div  v-if="isSelect == false">
@@ -271,7 +271,9 @@
                         console.log(error);
                     });
                     
-                    _vm.projectLines = true;
+                    if(_vm.changeOrders.length > 0) {
+                       _vm.projectLines = true;
+                    }
             },
            async  saveChangeOrder() {
 
