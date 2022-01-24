@@ -17,7 +17,7 @@ class CreateChangeOrderApplicationLinesTable extends Migration
             $table->id();
 
             $table->unsignedBigInteger('change_order_application_id');
-            $table->foreign('change_order_application_id')->references('id')->on('change_order_applications')
+            $table->foreign('change_order_application_id','coa_id_foreign')->references('id')->on('change_order_applications')
             ->onDelete('cascade');
 
             $table->string('billed_to_date')->nullable();
