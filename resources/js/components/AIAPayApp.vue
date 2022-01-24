@@ -226,14 +226,15 @@
                  <tr >
                     <th>Original Contract Sum</th>
                     <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                   
                 </tr>
                 <tr >
                     <th>Net Change from Change Order(s)</th>
-                    <th>$0 </th>
+                     <th>${{  new Intl.NumberFormat().format(changeOrdersTotal)  }}</th>
                 </tr>
                 <tr >
                     <th>Subcontract Sum to Date</th>
-                    <th>${{ new Intl.NumberFormat().format(original_amount) }}</th>
+                    <th>${{ new Intl.NumberFormat().format( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
                 </tr>
                 <tr >
                     <th>Total Completed & Stored to Date</th>
@@ -280,39 +281,38 @@
         },
         data() {
             return {
+                lastApplicationsPayments :0,
+                isExcessOrShortfall :false,
+                applications_count : 0,
                 closeProject : false,
                 projectLines : true,
+                currentDuePayment :0,
+                changeOrdersTotal :0,
+                successMsg : null,
+                retainageToDate :0,
                 firstTime : true,
-                error : false,
                 success : false,
                 errorMsg : null,
-                successMsg : null,
-                currentExcess:0,
-                shortFall:0,
-                retainageToDate:0,
-                totalStored:0,
-                totalEarned:0,
-                applications_count : 0,
-                lastApplicationsPayments:0,
-                currentDuePayment:0,
-                balance:0,
-                isExcessOrShortfall:false,
-                total:0,
-                lastLine: 0,
-                lines: [],
-                addLineItemHTML: [],
-                project_lines: [],
-                applications: [],
+                currentExcess :0,
+                totalStored :0,
+                totalEarned :0,
+                error : false,
+                lastLine : 0,
+                shortFall :0,
+                balance :0,
+                total :0,
+                lines : [],
+                addLineItemHTML : [],
+                project_lines : [],
+                applications : [],
                 form :{
                         account_number: [],
                         description: [],
                         retainage: [],
                         value: []
-                },
-                itemNumber: 1,
+                }
             };
         },
-
         methods: {
             async loadLines(){
             
@@ -344,12 +344,13 @@
                        let res = response.data
                        _vm.lastApplicationsPayments = res.data.lastApplicationsPayments
                        _vm.applications_count = res.data.applicationsCount
+                       _vm.changeOrdersTotal = res.data.changeOrdersTotal
                        _vm.currentDuePayment = res.data.currentDuePayment
                        _vm.retainageToDate = res.data.retainageToDate
                        _vm.closeProject = res.data.closeProject
                        _vm.totalStored = res.data.totalStored
                        _vm.totalEarned = res.data.totalEarned
-                       _vm.balance = _vm.original_amount - res.data.totalEarned
+                       _vm.balance = parseFloat(_vm.original_amount) +  parseFloat(res.data.changeOrdersTotal) - parseFloat(res.data.totalEarned)
 
                 })
                 .catch(function (error) {

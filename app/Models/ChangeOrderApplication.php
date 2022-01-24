@@ -15,7 +15,7 @@ class ChangeOrderApplication extends Model
     ];
 
     public function application_lines(){
-        return $this->hasMany(ApplicationLine::class);
+        return $this->hasMany(ChangeOrderApplicationLine::class);
     }
 
 }

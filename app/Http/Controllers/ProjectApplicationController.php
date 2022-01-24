@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Application;
 use App\Models\ApplicationLine;
+use App\Models\ChangeOrderApplicationLine;
 use Gate;
 use Carbon\Carbon;
 use PDF;
@@ -102,6 +103,7 @@ class ProjectApplicationController extends Controller
         }
          
         $this->saveApplications($request,$id,$application_id);
+        $this->saveChangeOrderApplications($request,$id);
 
         return response()->json(
            [
@@ -120,8 +122,7 @@ class ProjectApplicationController extends Controller
 
         $application = Application::UpdateOrCreate(
                      ['id' => $application_id],
-                    //['id' => 5],
-                    [
+                     [
                       'project_id' => $project_id,
                       'application_date' => $application_date,
                       'period_to' => $period_to
@@ -160,6 +161,30 @@ class ProjectApplicationController extends Controller
 
 
     }
+
+     public function saveChangeOrderApplications(Request $request,$project_id,$application_id = null){
+
+        $change_orders = $request->change_orders;
+
+       foreach ($change_orders as $key => $dt) {
+
+             $update = [
+                 'billed_to_date' => $dt['billed_to_date'],
+                 'stored_to_date' => $dt['stored_to_date'],
+                 'work_completed' => $dt['work_completed'],
+                 'materials_stored' => $dt['materials_stored'],
+                 'change_order_application_id' => $dt['id']
+             ];
+
+              ChangeOrderApplicationLine::UpdateOrCreate(
+                     ['id' => @$dt['line_id']],
+                     $update
+              );   
+       }
+    
+
+
+    }
      
     /**
      * Display the specified resource.
@@ -195,6 +220,7 @@ class ProjectApplicationController extends Controller
       $totalStored = 0;
       $retainageToDate = 0;
       $totalEarned = 0;
+      $changeOrdertotalEarned = 0;
      
       foreach (@$applications as $ak => $application) {
            $lines = $application->application_lines()
@@ -228,11 +254,57 @@ class ProjectApplicationController extends Controller
        }
        
 
+      $changeOrderApplications = $project->changeOrderApplications()->get();
+
+      $changeOrdersTotal = 0; 
+      $changeOrdercurrentDue = 0;
+
+      foreach (@$changeOrderApplications as $ck => $changeOrder) {
+
+           $changeOrdersTotal = $changeOrdersTotal + $changeOrder->value;
+
+           $changeOrderlines = $changeOrder->application_lines()->get(); 
+
+
+          foreach (@$changeOrderlines as $k => $cLine) {
+
+                    $total = (float) $cLine['work_completed'] + (float) $cLine['materials_stored'];
+
+                    $totalStored = $totalStored + $total;
+
+                    $retainage = $changeOrder->retainage;
+
+                    $retainageToDate = $retainageToDate + (float) ($total * $retainage/100);
+
+                    $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
+                    
+                    if(@count($changeOrderlines) == $k+1){
+                       $changeOrdercurrentDue =  $changeOrdercurrentDue + $total - (float) ($total * $retainage/100);
+
+                        $totalBilled = (float) $cLine['work_completed'] + (float) $cLine['billed_to_date'];
+                        $percentage = number_format($totalBilled / $changeOrdersTotal*100, 1);
+
+                      if( ($percentage < 100) && ($closeProject)){
+                          $closeProjectcloseProject = false;
+                      }
+                    }
+            } 
+
+      }
+
+      $changeOrdercurrentDue =  (float) $changeOrdercurrentDue; 
+    
+
+       $currentDuePayment =  (float) $currentDuePayment + (float) $changeOrdercurrentDue;  
+    
+      
        $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment : 0;
+
 
        $data['applicationsCount'] = @$applications->count();
        $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
        $data['currentDuePayment'] = (float) $currentDuePayment;
+       $data['changeOrdersTotal'] = (float) $changeOrdersTotal;
        $data['retainageToDate'] = (float) $retainageToDate;
        $data['totalStored'] = (float) $totalStored;
        $data['totalEarned'] = (float) $totalEarned;
@@ -276,10 +348,14 @@ class ProjectApplicationController extends Controller
     
        $project  = Project::find($id);  
       
-       $application = $project->applications()->latest()->first();
+       $app = $project->applications();
+
+       $application = $app->latest()->first();
+
+       $applications_count = $app->count();
 
        $orderBy = 'created_at';  
-        $order ='DESC' ;
+       $order ='DESC' ;
 
        if(!$application){
             $applications = $project->project_lines()
@@ -320,12 +396,69 @@ class ProjectApplicationController extends Controller
            }
 
        }
+
+       $changeOrders = $this->getChangeOrders($project, $edit);
        
         return  [ 'data' => $applications,
+                  'applications_count' => ($edit) ? @$applications_count : 
+                  @$applications_count +1 ,
+                  'change_orders' => $changeOrders,
                   'application_date' => @$application->application_date,
                   'period_to' => @$application->period_to
                 ];
    
+
+    }
+
+    public function getChangeOrders($project, $edit = false){
+      
+       $changeOrderApplications = $project->changeOrderApplications()->get();
+       $orderBy = 'created_at';  
+       $order ='DESC' ; 
+
+       if(!$changeOrderApplications){
+          return [];
+       }
+
+       if(!$changeOrderApplications->first()->has('application_lines')->exists()){
+
+               $changeOrderApplications->filter(function($app) use ($edit){
+                  $app->billed_to_date = 0;
+                  $app->stored_to_date = 0;
+                  $app->work_completed = 0;
+                  $app->materials_stored = 0;
+            }); 
+       } 
+       else{
+                 
+
+             $changeOrderApplications->filter(function($changeOrder) use ($edit){
+
+                 $line = $changeOrder->application_lines()
+                      ->latest()->first(); 
+
+                $changeOrder->description = $changeOrder->description;
+                $changeOrder->value = $changeOrder->value;
+                $total = (float) $line->work_completed + (float) $line->billed_to_date;
+                $changeOrder->total_percentage = number_format($total/ $changeOrder->value*100, 1);
+                $changeOrder->billed_to_date =  $line->billed_to_date;
+                $changeOrder->stored_to_date =  $line->stored_to_date;
+                $changeOrder->work_completed =  $line->work_completed;
+                $changeOrder->materials_stored = $line->materials_stored;
+
+                 if($edit == false){
+                   $changeOrder->billed_to_date = $total;
+                   $changeOrder->stored_to_date = (float) $changeOrder->materials_stored + (float) $changeOrder->stored_to_date;
+                   $changeOrder->work_completed = 0;
+                   $changeOrder->materials_stored = 0;
+                 }else{
+                     $changeOrder->line_id = $line->id;
+                 }     
+            }); 
+                   
+       }
+
+       return $changeOrderApplications;
 
     }
 
