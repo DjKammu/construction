@@ -41,7 +41,8 @@ Route::get('/linkstorage', function () {
 });
 
 Route::get('/migration', function () {
-    Artisan::call('migrate');
+    $m = request()->m;
+    Artisan::call('migrate'.$m);
     $exitCode = Artisan::call('migrate', [] );
     echo $exitCode;
 });
