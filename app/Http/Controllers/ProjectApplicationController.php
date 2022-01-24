@@ -285,7 +285,7 @@ class ProjectApplicationController extends Controller
                         $percentage = number_format($totalBilled / $changeOrdersTotal*100, 1);
 
                       if( ($percentage < 100) && ($closeProject)){
-                          $closeProjectcloseProject = false;
+                          $closeProject = false;
                       }
                     }
             } 
@@ -416,11 +416,11 @@ class ProjectApplicationController extends Controller
        $orderBy = 'created_at';  
        $order ='DESC' ; 
 
-       if(!$changeOrderApplications){
+       if($changeOrderApplications->count() == 0){
           return [];
        }
 
-       if(!$changeOrderApplications->first()->has('application_lines')->exists()){
+       if(@!$changeOrderApplications->first()->has('application_lines')->exists()){
 
                $changeOrderApplications->filter(function($app) use ($edit){
                   $app->billed_to_date = 0;
