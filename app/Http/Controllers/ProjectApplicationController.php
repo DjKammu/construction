@@ -258,7 +258,7 @@ class ProjectApplicationController extends Controller
       $changeOrderApplications = $project->changeOrderApplications()->get();
 
       $changeOrdercloseProject = true;
-    
+
       $changeOrdersTotal = 0; 
       $changeOrdercurrentDue = 0;
 
@@ -268,6 +268,7 @@ class ProjectApplicationController extends Controller
 
            $changeOrderlines = $changeOrder->application_lines()->get(); 
 
+          $changeOrdercloseProject = false;
 
           foreach (@$changeOrderlines as $k => $cLine) {
 
@@ -288,11 +289,11 @@ class ProjectApplicationController extends Controller
                         $totalBilled = (float) $cLine['work_completed'] + (float) $cLine['billed_to_date'];
                         $percentage = number_format($totalBilled / $changeOrdersTotal*100, 1);
 
-                      if( ($percentage < 100) && ($changeOrdercloseProject)){
-                          $changeOrdercloseProject = false;
+                      if( ((float) $percentage >= 100) && (!$changeOrdercloseProject)){
+                          $changeOrdercloseProject = true;
                       }
                     }
-            } 
+            }
 
       }
 
@@ -441,10 +442,10 @@ class ProjectApplicationController extends Controller
                 $changeOrder->value = $changeOrder->value;
                 $total = (float) @$line->work_completed + (float) @$line->billed_to_date;
                 $changeOrder->total_percentage = number_format($total/ $changeOrder->value*100, 1);
-                $changeOrder->billed_to_date =  @$line->billed_to_date;
-                $changeOrder->stored_to_date =  @$line->stored_to_date;
-                $changeOrder->work_completed =  @$line->work_completed;
-                $changeOrder->materials_stored = @$line->materials_stored;
+                $changeOrder->billed_to_date =  @$line->billed_to_date ?? 0;
+                $changeOrder->stored_to_date =  @$line->stored_to_date ?? 0;
+                $changeOrder->work_completed =  @$line->work_completed ?? 0;
+                $changeOrder->materials_stored = @$line->materials_stored ?? 0;
 
                  if($edit == false){
                    $changeOrder->billed_to_date = $total;
