@@ -256,6 +256,8 @@ class ProjectApplicationController extends Controller
 
       $changeOrderApplications = $project->changeOrderApplications()->get();
 
+      $changeOrdercloseProject = true;
+    
       $changeOrdersTotal = 0; 
       $changeOrdercurrentDue = 0;
 
@@ -284,20 +286,18 @@ class ProjectApplicationController extends Controller
                         $totalBilled = (float) $cLine['work_completed'] + (float) $cLine['billed_to_date'];
                         $percentage = number_format($totalBilled / $changeOrdersTotal*100, 1);
 
-                      if( ($percentage < 100) && ($closeProject)){
-                          $closeProject = false;
+                      if( ($percentage < 100) && ($changeOrdercloseProject)){
+                          $changeOrdercloseProject = false;
                       }
                     }
             } 
 
       }
 
-      $changeOrdercurrentDue =  (float) $changeOrdercurrentDue; 
+       $changeOrdercurrentDue =  (float) $changeOrdercurrentDue; 
     
-
        $currentDuePayment =  (float) $currentDuePayment + (float) $changeOrdercurrentDue;  
     
-      
        $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment : 0;
 
 
@@ -308,7 +308,7 @@ class ProjectApplicationController extends Controller
        $data['retainageToDate'] = (float) $retainageToDate;
        $data['totalStored'] = (float) $totalStored;
        $data['totalEarned'] = (float) $totalEarned;
-       $data['closeProject'] =  $closeProject;
+       $data['closeProject'] =  ($closeProject &&  $changeOrdercloseProject ) ? $closeProject : false;
 
        //dd($data);
 

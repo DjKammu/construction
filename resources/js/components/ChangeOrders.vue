@@ -266,14 +266,16 @@
                     .then(function (response) {
                            let res = response.data
                            _vm.changeOrders = res.data
+
+                          if(_vm.changeOrders.length > 0) {
+                             _vm.projectLines = true;
+                          }
+
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
-                    
-                    if(_vm.changeOrders.length > 0) {
-                       _vm.projectLines = true;
-                    }
+                   
             },
            async  saveChangeOrder() {
 

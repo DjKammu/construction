@@ -162,18 +162,18 @@ class ChangeOrderController extends Controller
 
         $changeOrderApplication = ChangeOrderApplication::find($id);
         
-        // $applications = @$project_line->project->applications()->exists();
+        $applications = @$changeOrderApplication->application_lines()->exists();
 
-        // if($applications){
+        if($applications){
 
-        //      return response()->json(
-        //      [
-        //       'status' => 200,
-        //       'error' => true,
-        //       'message' => 'Project Lines can`t be Deleted!'
-        //      ]
-        //   );
-        // }
+             return response()->json(
+             [
+              'status' => 200,
+              'error' => true,
+              'message' => 'Change Order can`t be Deleted!'
+             ]
+          );
+        }
 
         $changeOrderApplication->delete();
 
