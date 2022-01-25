@@ -221,6 +221,8 @@ class ProjectApplicationController extends Controller
       $retainageToDate = 0;
       $totalEarned = 0;
       $changeOrdertotalEarned = 0;
+      $currentDuePayment = 0;
+      $closeProject = false;
      
       foreach (@$applications as $ak => $application) {
            $lines = $application->application_lines()
@@ -239,9 +241,9 @@ class ProjectApplicationController extends Controller
 
                     $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
 
-                    $currentDuePayment = $total - (float) ($total * $retainage/100);
-
                     if(count($applications) == $ak+1){
+                        $currentDuePayment = $currentDuePayment + $total - (float) ($total * $retainage/100);
+
                         $totalBilled = (float) $line['work_completed'] + (float) $line['billed_to_date'];
                         $percentage = number_format($totalBilled / $line->project_line->value*100, 1);
 
@@ -252,7 +254,6 @@ class ProjectApplicationController extends Controller
             } 
             $currentDuePayment =  (float) $currentDuePayment;                     
        }
-       
 
       $changeOrderApplications = $project->changeOrderApplications()->get();
 
@@ -281,6 +282,7 @@ class ProjectApplicationController extends Controller
                     $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
                     
                     if(@count($changeOrderlines) == $k+1){
+
                        $changeOrdercurrentDue =  $changeOrdercurrentDue + $total - (float) ($total * $retainage/100);
 
                         $totalBilled = (float) $cLine['work_completed'] + (float) $cLine['billed_to_date'];
@@ -294,11 +296,12 @@ class ProjectApplicationController extends Controller
 
       }
 
-       $changeOrdercurrentDue =  (float) $changeOrdercurrentDue; 
+       $changeOrdercurrentDue =  (float) $changeOrdercurrentDue;
     
        $currentDuePayment =  (float) $currentDuePayment + (float) $changeOrdercurrentDue;  
     
-       $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment : 0;
+       $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment 
+       : 0;
 
 
        $data['applicationsCount'] = @$applications->count();
@@ -309,8 +312,6 @@ class ProjectApplicationController extends Controller
        $data['totalStored'] = (float) $totalStored;
        $data['totalEarned'] = (float) $totalEarned;
        $data['closeProject'] =  ($closeProject &&  $changeOrdercloseProject ) ? $closeProject : false;
-
-       //dd($data);
 
        return  $data;
 
@@ -431,7 +432,6 @@ class ProjectApplicationController extends Controller
        } 
        else{
                  
-
              $changeOrderApplications->filter(function($changeOrder) use ($edit){
 
                  $line = $changeOrder->application_lines()
@@ -439,12 +439,12 @@ class ProjectApplicationController extends Controller
 
                 $changeOrder->description = $changeOrder->description;
                 $changeOrder->value = $changeOrder->value;
-                $total = (float) $line->work_completed + (float) $line->billed_to_date;
+                $total = (float) @$line->work_completed + (float) @$line->billed_to_date;
                 $changeOrder->total_percentage = number_format($total/ $changeOrder->value*100, 1);
-                $changeOrder->billed_to_date =  $line->billed_to_date;
-                $changeOrder->stored_to_date =  $line->stored_to_date;
-                $changeOrder->work_completed =  $line->work_completed;
-                $changeOrder->materials_stored = $line->materials_stored;
+                $changeOrder->billed_to_date =  @$line->billed_to_date;
+                $changeOrder->stored_to_date =  @$line->stored_to_date;
+                $changeOrder->work_completed =  @$line->work_completed;
+                $changeOrder->materials_stored = @$line->materials_stored;
 
                  if($edit == false){
                    $changeOrder->billed_to_date = $total;
@@ -452,7 +452,7 @@ class ProjectApplicationController extends Controller
                    $changeOrder->work_completed = 0;
                    $changeOrder->materials_stored = 0;
                  }else{
-                     $changeOrder->line_id = $line->id;
+                     $changeOrder->line_id = @$line->id;
                  }     
             }); 
                    

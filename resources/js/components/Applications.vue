@@ -66,7 +66,7 @@
             </tbody>
             </table>
 
-               <h5> Change Orders  for Application # {{ applications_count }}</h5>
+             <h5 v-if="change_orders.length > 0" > Change Orders  for Application # {{ applications_count }}</h5>
              <table id="project-types-table"  v-if="change_orders.length > 0" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">

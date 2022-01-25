@@ -178,11 +178,14 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(application, index) in applications"  >
+                      <tr  v-if="applications.length > 0" v-for="(application, index) in applications"  >
                         <th scope="row">{{ applications.length - index}}</th>
                         <td>{{ application.application_date }}</td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'application')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'continuation-sheet')" src="/img/pdf.png"></td>
+                      </tr>
+                      <tr v-else colspan="2">
+                        <th>No Applicayions</th>
                       </tr>
                     </tbody>
                   </table>
@@ -366,7 +369,6 @@
                 .then(function (response) {
                        let res = response.data
                        _vm.applications = res.data
-                       console.log(res)
 
                 })
                 .catch(function (error) {

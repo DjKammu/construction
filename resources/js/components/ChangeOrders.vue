@@ -50,7 +50,7 @@
                      <div class="form-group">
                           <label class="text-dark" for="password">App #  
                           </label>
-                          <input  type="number" class="form-control" placeholder="1" v-model="form.app" >
+                          <input  type="number" class="form-control" placeholder="App Number" v-model="form.app" >
                       </div>
                   </div>
               </div> 
