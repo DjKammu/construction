@@ -45,6 +45,7 @@
 
 @endsection
 @section('pagescript') 
+@include('includes.vue-js')
 <style type="text/css">
 
 .sorting-outer{

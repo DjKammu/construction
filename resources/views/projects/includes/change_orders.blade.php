@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Product Applications')
+@section('title', 'Change Orders')
 
 @section('content')
 
@@ -45,6 +45,7 @@
 
 @endsection
 @section('pagescript') 
+@include('includes.vue-js')
 <style type="text/css">
 
 .sorting-outer{

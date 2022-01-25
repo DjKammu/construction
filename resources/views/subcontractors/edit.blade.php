@@ -184,12 +184,15 @@
 
 
 @section('pagescript')
-  <script>
+  <script >
 
-  $("#trades").select2({
+
+   $("#trades").select2({
       placeholder: "Select Trades",
       allowClear: true
   });
+
+  
 </script>
 
 @endsection
