@@ -70,6 +70,10 @@ class Project extends Model
     public function changeOrderApplications(){
         return $this->hasMany(ChangeOrderApplication::class);
     }
+    
+    public function closeProject(){
+        return $this->hasOne(CloseProject::class);
+    }
 
     
 }

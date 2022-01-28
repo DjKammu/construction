@@ -16,7 +16,11 @@ class ProjectApplicationController extends Controller
 {
     const APPLICATION = 'application';
 
-    const CONTINUATIONSHEET = 'continuation-sheet';
+    const APPLICATION_CLOSE_PROJECT = 'application-cp';
+
+    const CONTINUATIONSHEET  = 'continuation-sheet';
+
+    const CONTINUATIONSHEET_CLOSE_PROJECT  = 'continuation-sheet-cp';
 
     /**
      * Create a new controller instance.
@@ -284,17 +288,17 @@ class ProjectApplicationController extends Controller
                     
                     if(@count($changeOrderlines) == $k+1){
 
+
                        $changeOrdercurrentDue =  $changeOrdercurrentDue + $total - (float) ($total * $retainage/100);
 
                         $totalBilled = (float) $cLine['work_completed'] + (float) $cLine['billed_to_date'];
-                        $percentage = number_format($totalBilled / $changeOrdersTotal*100, 1);
+                        $percentage = number_format($totalBilled / $changeOrder->value*100, 1);
 
                       if( ((float) $percentage >= 100) && (!$changeOrdercloseProject)){
                           $changeOrdercloseProject = true;
                       }
                     }
             }
-
       }
 
        $changeOrdercurrentDue =  (float) $changeOrdercurrentDue;
@@ -303,7 +307,8 @@ class ProjectApplicationController extends Controller
     
        $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment 
        : 0;
-
+        
+       $isProjectClosed = @$project->closeProject()->first();  
 
        $data['applicationsCount'] = @$applications->count();
        $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
@@ -312,6 +317,7 @@ class ProjectApplicationController extends Controller
        $data['retainageToDate'] = (float) $retainageToDate;
        $data['totalStored'] = (float) $totalStored;
        $data['totalEarned'] = (float) $totalEarned;
+       $data['isProjectClosed'] = $isProjectClosed;
        $data['closeProject'] =  ($closeProject &&  $changeOrdercloseProject ) ? $closeProject : false;
 
        return  $data;
@@ -505,16 +511,19 @@ class ProjectApplicationController extends Controller
                return abort('401');
          }
 
-        $project  = Project::find($id);  
-      
-        $application = $project->applications()
-                       ->where('id',$app_id)->first();
+        $project  = Project::find($id); 
 
-        $lines = $application->application_lines()
-                      ->get();   
         $data = [];
+     
 
+      
         if($to == self::APPLICATION){
+
+          $application = $project->applications()
+                       ->where('id',$app_id)->first();
+           $lines = $application->application_lines()
+                 ->get();  
+
 
           $summary = $this->getSummary($project,$app_id);
         
@@ -523,12 +532,18 @@ class ProjectApplicationController extends Controller
                    'project' => $project
                   ],$summary);
 
-        }elseif ($to == self::CONTINUATIONSHEET) {
+        }elseif ($to == self::APPLICATION_CLOSE_PROJECT) {
+           dd($to);
+        }  
+        
+        elseif ($to == self::CONTINUATIONSHEET) {
            
+        }  
+        
+        elseif ($to == self::CONTINUATIONSHEET_CLOSE_PROJECT) {
+            dd($to);
         }           
    
-        // return view('projects.includes.'. $to .'-pdf',
-        //   $data);
         
         $pdf = PDF::loadView('projects.includes.'. $to .'-pdf',
           $data

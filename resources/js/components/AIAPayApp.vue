@@ -14,7 +14,7 @@
             <tr class="text-danger">
                 <th style="width: 80px;">Item No.
                  <span class="sorting-outer">
-                  <a href="javascript:void(0)" @click="sortOrderBy('account_number', 'ASC')"><i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" @click="sortOrderBy('account_number', 'ASC')"><i class="fa fa-sort-asc"></i></a>
                   <a href="javascript:void(0)" @click="sortOrderBy('account_number', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
                 </span>
             </th>
@@ -94,8 +94,6 @@
         </div>
         <div class="table-responsive" v-else>
 
-             
-
              <div class="col-6">
 
                <table class="table table-hover payments-table">
@@ -114,7 +112,7 @@
                   </tbody>
               </table> 
 
-               <button type="button"  class="btn btn-danger" @click="changeOrders" >Change Orders
+               <button type="button"  v-if="applications_count > 1 && !isProjectClosed" class="btn btn-danger" @click="changeOrders" >Change Orders
               </button>
 
               <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
@@ -142,7 +140,9 @@
 
     
             <div class="col-6 pull-right" v-else>
-
+                
+                <span v-if="!isProjectClosed">
+                  
                 <span v-if="applications_count == 0"> 
 
                   <button type="button" class="btn btn-danger mt-0" @click="createApplication" >
@@ -165,6 +165,12 @@
                   
                 </span>
 
+                </span>
+
+                <span v-else>
+                  <h5> Project Closed </h5>
+                </span>
+
                 <table class="table table-bordered text-center">
                     <thead>
                       <tr class="">
@@ -178,15 +184,19 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <tr v-if="isProjectClosed">
+                        <th scope="row">{{ applications.length + 1}}</th>
+                        <td>{{ isProjectClosed.application_date }}</td>
+                        <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'application-cp')" src="/img/pdf.png"></td>
+                        <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'continuation-sheet-cp')" src="/img/pdf.png"></td>
+                      </tr>
                       <tr  v-if="applications.length > 0" v-for="(application, index) in applications"  >
                         <th scope="row">{{ applications.length - index}}</th>
                         <td>{{ application.application_date }}</td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'application')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'continuation-sheet')" src="/img/pdf.png"></td>
                       </tr>
-                      <tr v-else colspan="2">
-                        <th>No Applicayions</th>
-                      </tr>
+                      
                     </tbody>
                   </table>
                       
@@ -225,7 +235,7 @@
              <h5 class=""> Project Summary </h5>
 
             <table  id="project-types-table" class="table table-hover payments-table">
-                <thead>
+                <thead v-if="!isProjectClosed">
                  <tr >
                     <th>Original Contract Sum</th>
                     <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
@@ -243,6 +253,7 @@
                     <th>Total Completed & Stored to Date</th>
                     <th>${{ new Intl.NumberFormat().format(totalStored) }}</th>
                 </tr>  
+
                 <tr >
                     <th>Retainage to Date</th>
                     <th>${{ new Intl.NumberFormat().format(retainageToDate) }}</th>
@@ -264,42 +275,137 @@
                     <th>${{ new Intl.NumberFormat().format(
                           (balance)) }}</th>
                 </tr>
+                
+                 
                 </thead>
-                <tbody>
+                <thead v-else>
+                    <tr >
+                      <th>Original Contract Sum</th>
+                      <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                     
+                    </tr>
+                    <tr >
+                      <th>Net Change from Change Order(s)</th>
+                       <th>${{  new Intl.NumberFormat().format(changeOrdersTotal)  }}</th>
+                    </tr>
+                    <tr >
+                      <th>Subcontract Sum to Date</th>
+                      <th>${{ new Intl.NumberFormat().format( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
+                    </tr>
+                    <tr >
+                      <th>Total Completed & Stored to Date</th>
+                      <th>${{ new Intl.NumberFormat().format(totalStored) }}</th>
+                    </tr>  
 
-                </tbody>
+                     <tr >
+                      <th>Balance to Finish Including Total Retainage</th>
+                      <th>$0.00</th>
+                    </tr>
+
+                </thead>
             </table>
           </div>  
         </div> 
-    </div>
+    
+
+     <!-- Modal -->
+      <div class="modal fade" id="closeProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+          
+          <div class="modal-header">
+             <div v-if="success2" class="alert alert-success alert-dismissible fade show">
+              <strong>Success!</strong> {{ successMsg2 }}
+            </div>
+    
+            <div  v-else-if="error2" class="alert alert-warning alert-dismissible fade show">
+            <strong>Error!</strong> {{ errorMsg2 }}
+            </div>
+
+              <h5 class="modal-title" id="exampleModalLabel">Set Final Application Dates</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">  
+                 <div  class="col-12">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Application Date 
+                        </label>
+                        <input  v-model="application_date" id="application_date" type="text" class="form-control date" placeholder="Application Date">
+
+                    </div>
+                </div>
+
+                 <div class="col-12">
+                    <div class="form-group">
+                        <label class="text-dark" for="password">Period To 
+                        </label>
+                        <input  v-model="period_to" id="period_to" type="text" class="form-control date" placeholder="Period To">
+
+                    </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary mt-0" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-danger mt-0" @click="saveCloseProject" >Save changes</button>
+          </div>
+          </div>
+      </div>
+      </div>
+ </div>
+
 </template>
 
 <script>
+    import datetimepicker from '../../../public/js/plugins/bootstrap-datetimepicker.js' //import
 
     export default {
         props: ['project','retainage','projectid','original_amount'],
 
         mounted() {
             this.loadLines();
+            
+            let _vm = this
+
+            $('#application_date').datetimepicker({
+                format: 'Y-M-D'
+            }).on('dp.change', function (e) {
+              _vm.application_date = $(this).val()
+            });
+
+            $('#period_to').datetimepicker({
+                format: 'Y-M-D'
+            }).on('dp.change', function (e) {
+              _vm.period_to = $(this).val()
+            });
+
         },
         data() {
             return {
                 lastApplicationsPayments :0,
                 isExcessOrShortfall :false,
                 applications_count : 0,
+                application_date: null,
+                period_to: null,
                 closeProject : false,
                 projectLines : true,
                 currentDuePayment :0,
                 changeOrdersTotal :0,
                 successMsg : null,
+                successMsg2 : null,
                 retainageToDate :0,
                 firstTime : true,
                 success : false,
+                success2 : false,
                 errorMsg : null,
+                errorMsg2 : null,
                 currentExcess :0,
                 totalStored :0,
                 totalEarned :0,
                 error : false,
+                error2 : false,
+                isProjectClosed : false,
                 lastLine : 0,
                 shortFall :0,
                 balance :0,
@@ -350,6 +456,7 @@
                        _vm.changeOrdersTotal = res.data.changeOrdersTotal
                        _vm.currentDuePayment = res.data.currentDuePayment
                        _vm.retainageToDate = res.data.retainageToDate
+                       _vm.isProjectClosed = res.data.isProjectClosed
                        _vm.closeProject = res.data.closeProject
                        _vm.totalStored = res.data.totalStored
                        _vm.totalEarned = res.data.totalEarned
@@ -492,9 +599,10 @@
                  
             },
             clearMsg(){
-
                 this.error = this.success = false
+                this.error2 = this.success2 = false
                 this.errorMsg = this.successMsg = null
+                this.errorMsg2 = this.successMsg2 = null
             },
 
             cancel(){
@@ -510,8 +618,59 @@
                 this.loadLines();
             }, 
             projectClose(){
-                alert('closeProject')
+             
+               if(!confirm("This project has been 100% billed, less retainage. Closing the project will mark the current application as Complete. The final application for the retainage will also be created. You will not be able to create any additional applications or make any other updates to the project.\n\nAre you sure you want to close the project?")){
+                    return
+               }
+
+              $('#closeProjectModal').modal('show')
+
             },
+            async  saveCloseProject() {
+
+              let _vm = this;
+
+
+               if(!this.application_date || !this.period_to ){
+                  this.error2 = true
+                  this.errorMsg2 = 'Application date or Period to is missing!'
+
+                   setTimeout(()=>{
+                       this.clearMsg()
+                    },2000);
+
+                  return;
+               }
+
+              await axios.post('/projects/'+this.projectid+'/close-project/',{
+                    application_date: this.application_date,
+                    retainage_value: this.balance,
+                    period_to: this.period_to
+                })
+                .then(function (response) {
+
+                       let res = response.data
+
+                      if(res.error){
+                            _vm.error2 = true
+                            _vm.errorMsg2 = res.message
+                       }else{
+                          _vm.success = true
+                          _vm.successMsg = res.message
+                           $('#closeProjectModal').modal('hide')
+                           _vm.loadLines();
+                       }
+
+                       setTimeout(()=>{
+                         this.clearMsg()
+                      },2000);
+                      
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             createApplication(){
               let applications_count = this.applications_count
               if(applications_count == 1){
@@ -519,9 +678,7 @@
                  if(!confirm("If you proceed with creating application #2, you will no longer be able to make any changes to the original contract amount or the original project line items. Any subsequent changes to the contract value and contract line items will need to be made via change orders.\n\nDo you want to proceed with creating Application #2?")){
                       return
                  }
-
               }
-
               window.location.href =  'applications';
             },
             editApplication(){

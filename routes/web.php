@@ -191,8 +191,13 @@ Route::prefix('projects')->group(function(){
 
       Route::post('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'store'])->name('projects.change-orders.store'); 
 
-        Route::get('{id}/get-change-orders', [App\Http\Controllers\ChangeOrderController::class,'index'])->name('projects.change-orders.index'); 
+      Route::get('{id}/get-change-orders', [App\Http\Controllers\ChangeOrderController::class,'index'])->name('projects.change-orders.index'); 
 
-        Route::delete('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'destroy'])->name('projects.change-orders.destroy');
+      Route::delete('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'destroy'])->name('projects.change-orders.destroy');
+
+      Route::get('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'create'])->name('projects.close-project.create'); 
+
+      Route::post('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'store'])->name('projects.close-project.store'); 
+
 
 });
