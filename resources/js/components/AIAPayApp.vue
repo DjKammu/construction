@@ -117,7 +117,6 @@
 
               <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
               </button>
-
             </div>
 
             <div class="col-12" v-if="currentExcess > 0" >
