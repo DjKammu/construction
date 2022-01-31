@@ -22,6 +22,10 @@ class ProjectApplicationController extends Controller
 
     const CONTINUATIONSHEET_CLOSE_PROJECT  = 'continuation-sheet-cp';
 
+    const CHANGE_ORDERS  = 'change-order';
+
+    const CHANGE_ORDERS_CLOSE_PROJECT  = 'change-order-cp';
+
     /**
      * Create a new controller instance.
      *
@@ -76,7 +80,7 @@ class ProjectApplicationController extends Controller
         //    return redirect()->back()->with('error' ,'Retainage Percentage or Original Amount is not available!');
         // }
       
-        return view('projects.includes.applications',compact('project','application_id'));
+        return view('projects.aia.applications',compact('project','application_id'));
     }  
 
 
@@ -258,8 +262,11 @@ class ProjectApplicationController extends Controller
             } 
             $currentDuePayment =  (float) $currentDuePayment;                     
        }
+       
+      $applicationsCount = @$applications->count(); 
 
-      $changeOrderApplications = $project->changeOrderApplications()->get();
+      $changeOrderApplications = $project->changeOrderApplications()
+                                   ->where('app', '<=',$applicationsCount)->get();
 
       $changeOrdercloseProject = true;
 
@@ -310,7 +317,7 @@ class ProjectApplicationController extends Controller
         
        $isProjectClosed = @$project->closeProject()->first();  
 
-       $data['applicationsCount'] = @$applications->count();
+       $data['applicationsCount'] = @$applicationsCount;
        $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
        $data['currentDuePayment'] = (float) $currentDuePayment;
        $data['changeOrdersTotal'] = (float) $changeOrdersTotal;
@@ -349,7 +356,7 @@ class ProjectApplicationController extends Controller
 
         $edit = true;
       
-        return view('projects.includes.applications',compact('project','application_id','edit'));
+        return view('projects.aia.applications',compact('project','application_id','edit'));
     }
     
     public function getApplication($id,$edit = false){
@@ -521,19 +528,31 @@ class ProjectApplicationController extends Controller
 
           $application = $project->applications()
                        ->where('id',$app_id)->first();
-           $lines = $application->application_lines()
-                 ->get();  
-
-
+  
           $summary = $this->getSummary($project,$app_id);
         
-          $data = array_merge(['lines' => $lines,
+          $data = array_merge([
                    'application' => $application,
                    'project' => $project
                   ],$summary);
 
         }elseif ($to == self::APPLICATION_CLOSE_PROJECT) {
-           dd($to);
+
+           $application = $project->closeProject()->first();
+
+           $lastApplication = $project->applications()
+                       ->latest()->first();
+       
+           $summary = $this->getSummary($project,$lastApplication->id);
+
+           $summary['lastApplicationsPayments'] = (float) $summary['lastApplicationsPayments'] + (float) $summary['currentDuePayment'];
+
+           $summary['currentDuePayment'] = 0.0;
+
+           $data = array_merge([
+                   'application' => $application,
+                   'project' => $project
+                  ],$summary);
         }  
         
         elseif ($to == self::CONTINUATIONSHEET) {
@@ -542,10 +561,13 @@ class ProjectApplicationController extends Controller
         
         elseif ($to == self::CONTINUATIONSHEET_CLOSE_PROJECT) {
             dd($to);
-        }           
-   
+        }      
         
-        $pdf = PDF::loadView('projects.includes.'. $to .'-pdf',
+        // return View('projects.aia.'. $to .'-pdf',
+        //   $data
+        // );
+        
+        $pdf = PDF::loadView('projects.aia.'. $to .'-pdf',
           $data
         )->setOptions(['margin' => 5]);
 

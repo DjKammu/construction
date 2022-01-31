@@ -81,7 +81,7 @@ class ProjectLineController extends Controller
         $applications_count = $project->applications()->count();
       
 
-        return view('projects.includes.aia-pay-app',compact('project','applications_count'));
+        return view('projects.aia.index',compact('project','applications_count'));
     }  
 
 

@@ -63,7 +63,7 @@ class ChangeOrderController extends Controller
 
          $applications_count = $project->applications()->count();
 
-        return view('projects.includes.change_orders',compact('project','applications_count'));
+        return view('projects.aia.change-orders',compact('project','applications_count'));
     }  
 
 

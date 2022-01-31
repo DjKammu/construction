@@ -112,7 +112,7 @@
                   </tbody>
               </table> 
 
-               <button type="button"  v-if="applications_count > 1 && !isProjectClosed" class="btn btn-danger" @click="changeOrders" >Change Orders
+               <button type="button"  v-if="applications_count > 0 && !isProjectClosed" class="btn btn-danger" @click="changeOrders" >Change Orders
               </button>
 
               <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
@@ -173,13 +173,15 @@
                 <table class="table table-bordered text-center">
                     <thead>
                       <tr class="">
-                        <th colspan="4">Application Document History</th>
+                        <th :colspan="(changeOrdersTotal > 0) ? 5 : 4">
+                        Application Document History</th>
                       </tr>
                       <tr>
                         <th>App #</th>
                         <th>Date</th>
                         <th>Application</th>
                         <th>Continuation Sheet</th>
+                        <th v-if="changeOrdersTotal > 0">Change Orders</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -188,12 +190,14 @@
                         <td>{{ isProjectClosed.application_date }}</td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'application-cp')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'continuation-sheet-cp')" src="/img/pdf.png"></td>
+                        <td v-if="changeOrdersTotal > 0"><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'change-order-cp')" src="/img/pdf.png"></td>
                       </tr>
                       <tr  v-if="applications.length > 0" v-for="(application, index) in applications"  >
                         <th scope="row">{{ applications.length - index}}</th>
                         <td>{{ application.application_date }}</td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'application')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'continuation-sheet')" src="/img/pdf.png"></td>
+                        <td v-if="changeOrdersTotal > 0"><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'change-order')" src="/img/pdf.png"></td>
                       </tr>
                       
                     </tbody>

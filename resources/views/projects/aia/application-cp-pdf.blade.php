@@ -127,6 +127,7 @@ body {margin-top: 0px;margin-left: 0px;}
 .tr16{height: 28px;}
 .tr17{height: 21px;padding-bottom: 2px;}
 .tr18{height: 32px;}
+.tr19{height: 10px;}
 .tr4.td2{padding-bottom: 9px;}
 
 .t0{
@@ -335,7 +336,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD colspan=2 class="tr10 td2"><P class="p3 ft17">2. Net Change from Change Order(s)</P></TD>
   <TD class="tr10 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr10 td7"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr10 td8"><P class="p5 ft12">${{ \App\Models\Payment::format(0) }}</P></TD>
+  <TD class="tr10 td8"><P class="p5 ft12">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
   <TD class="tr10 td9"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR>
@@ -349,33 +350,33 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD colspan=2 class="tr11 td2 bwr"><P class="p3 ft12">3. Subcontract Sum to Date</P></TD>
   <TD class="tr11 td6 btb"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr11 td7 btb"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr11 td8 btb"><P class="p5 ft12">${{ \App\Models\Payment::format($totalStored ) }}</P></TD>
+  <TD class="tr11 td8 btb"><P class="p5 ft12">${{ \App\Models\Payment::format(@$totalStored) }}</P></TD>
   <TD class="tr11 td9 bwl"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">
   <TD colspan=2 class="tr2 td bl"><P class="p3 ft1">4. Total Completed & Stored to Date</P></TD>
   <TD class="tr2 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr2 td7"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr2 td8"><P class="p5 ft9">${{ \App\Models\Payment::format($totalStored ) }}</P></TD>
+  <TD class="tr2 td8"><P class="p5 ft9">${{ \App\Models\Payment::format(@$totalStored ) }}</P></TD>
   <TD class="tr2 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">
   <TD colspan=2 class="tr1 td2 bl"><P class="p3 ft1">5. Retainage to Date</P></TD>
   <TD class="tr1 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr1 td7"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr1 td8"><P class="p5 ft9">${{ \App\Models\Payment::format($retainageToDate ) }}</P></TD>
+  <TD class="tr1 td8"><P class="p5 ft9">${{ \App\Models\Payment::format(@$retainageToDate ) }}</P></TD>
   <TD class="tr1 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="full-order">
   <TD colspan=2 class="tr12 td2 bwr"><P class="p3 ft10">6. Total Earned Less Retainage</P></TD>
   <TD class="tr12 td6 btb"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr12 td7 btb"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr12 td8 btb"><P class="p5 ft10">${{ \App\Models\Payment::format($totalEarned ) }}</P></TD>
+  <TD class="tr12 td8 btb"><P class="p5 ft10">${{ \App\Models\Payment::format(@$totalEarned ) }}</P></TD>
   <TD class="tr12 td9 bwl"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">
   <TD colspan=4 class="tr12 td11 bl"><P class="p3 ft1">7. Less Previous Applications & Certiicates for Payment</P></TD>
-  <TD class="tr12 td8"><P class="p5 ft9">${{ \App\Models\Payment::format($lastApplicationsPayments ) }}</P></TD>
+  <TD class="tr12 td8"><P class="p5 ft9">${{ \App\Models\Payment::format(@$lastApplicationsPayments ) }}</P></TD>
   <TD class="tr12 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">
@@ -396,7 +397,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD colspan=2 class="tr15 td14 bl"><P class="p3 ft12">8. Current Payment Due</P></TD>
   <TD class="tr15 td15"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr15 td16"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr15 td17"><P class="p5 ft12">${{ \App\Models\Payment::format($currentDuePayment ) }}</P></TD>
+  <TD class="tr15 td17"><P class="p5 ft12">${{ \App\Models\Payment::format(@$currentDuePayment ) }}</P></TD>
   <TD class="tr15 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">
@@ -406,11 +407,22 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD class="tr6 td21"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr10 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
+<TR class="side-order">
+  <TD colspan=5 class=" bl"></TD>
+   <TD class="tr19 br"></TD>
+</TR>
+<TR class="side-order">
+   <TD colspan=2 class="tr15 td14 bl"><P class="p3 ft12">8a. Retainage Payment Due</P></TD>
+  <TD class="tr6 td19"><P class="p2 ft5">&nbsp;</P></TD>
+  <TD class="tr6 td20"><P class="p2 ft5">&nbsp;</P></TD>
+   <TD class="tr15 td17"><P class="p5 ft12">${{ \App\Models\Payment::format( (float) ($project->original_amount) +  (Float) ($changeOrdersTotal) - (float)($totalEarned) ) }}</P></TD>
+  <TD class="tr10 td9 br"><P class="p2 ft5">&nbsp;</P></TD>
+</TR>
 <TR class="full-order">
   <TD colspan=2 class="tr16 td2 blt"><P class="p3 ft12">9. Balance to Finish</P></TD>
   <TD class="tr16 td6 bt"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr16 td7 bt"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr16 td8 bt"><P class="p5 ft12">${{ \App\Models\Payment::format($retainageToDate ) }}</P></TD>
+  <TD class="tr16 td8 bt"><P class="p5 ft12">$0.00</P></TD>
   <TD class="tr16 td9 brt"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR>
