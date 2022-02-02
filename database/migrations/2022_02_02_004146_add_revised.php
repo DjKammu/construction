@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddAppNo extends Migration
+class AddRevised extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class AddAppNo extends Migration
      */
     public function up()
     {
-        Schema::table('change_order_application_lines', function (Blueprint $table) {
-           $table->string('app_no')->nullable();
+        Schema::table('change_order_applications', function (Blueprint $table) {
+           $table->tinyInteger('revised')->default(0);
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *
@@ -25,8 +25,8 @@ class AddAppNo extends Migration
      */
     public function down()
     {
-        Schema::table('change_order_application_lines', function (Blueprint $table) {
-              $table->dropColumn('app_no');
+        Schema::table('change_order_applications', function (Blueprint $table) {
+              $table->dropColumn('revised');
         });
     }
 }

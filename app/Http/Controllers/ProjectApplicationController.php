@@ -280,8 +280,8 @@ class ProjectApplicationController extends Controller
            $changeOrdersTotal = $changeOrdersTotal + $changeOrder->value;
 
            $changeOrderlines = $changeOrder->application_lines()
-                                ->where('app_no','<=',$applicationsCount)->get(); 
-                                
+                                ->where('app_no','<=',$applicationsCount)->get();
+                                                      
           $changeOrdercloseProject = false;
 
           foreach (@$changeOrderlines as $k => $cLine) {

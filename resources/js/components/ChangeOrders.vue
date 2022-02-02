@@ -196,6 +196,7 @@
                 changeOrders: [],
                 description: null,
                 selectOrderLine: null,
+                isRevised: false,
                 form:{
                    'id' : null,
                    'app' : null,
@@ -217,6 +218,7 @@
                 this.description = null
                 this.isSelect = false
                 this.existLine = null
+                this.isRevised = false
              },
              selectOrder(){
                this.form.description = this.applications[this.selectOrderLine].description
@@ -224,9 +226,11 @@
             },
             continueOrder(){
                 this.existLine = false
+                this.isRevised = true
             },
             changeOrder(){
                 this.existLine = true
+                this.isRevised = false
             },
             swapChangeOrder(){
                this.projectLines = !this.projectLines
@@ -305,6 +309,7 @@
                }
 
               await axios.post('/projects/'+this.projectid+'/change-orders/',{
+                    revised : this.isRevised,
                     data : this.form,
                     edit: this.edit
                 })

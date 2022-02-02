@@ -109,6 +109,7 @@ class ChangeOrderController extends Controller
         $changeOrderApplications = $project->changeOrderApplications();
 
         $data = $request->data;
+        $revised = $request->revised;
 
         $changeOrderApplications->UpdateOrCreate(
                      ['id' => @$data['id']],
@@ -116,7 +117,8 @@ class ChangeOrderController extends Controller
                       'description' => $data['description'],
                       'retainage' => $data['retainage'],
                       'value' => $data['value'],
-                      'app' => $data['app']
+                      'app' => $data['app'],
+                      'revised' => (int) $revised
                     ]
               );
     }
