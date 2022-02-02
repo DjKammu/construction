@@ -522,18 +522,12 @@ p.p32  {
   <TD class="lr tr8 td12"><P class="p2 ft13">&nbsp;</P></TD>
 </TR>
 @php
- $codTotal = $coeTotal = $cofTotal = $cogTotal = $cohTotal = $coiTotal = 0;
  $dTotal = $eTotal = $fTotal = $gTotal = $hTotal = $iTotal = 0;
- $nmTotal = $pbTotal = 0;
- $conmTotal = $copbTotal = 0;
  $total_percentage = 0;
- $co_less_retainage = 0;
 @endphp
 @foreach(@$lines as $key => $line)
 @php 
-
- $total = $line->billed_to_date + $line->work_completed + $line->stored_to_date +  $line->materials_stored;
-
+ $total = $line->billed_to_date + $line->work_completed + ($line->materials_stored > 0) ?? $line->materials_stored ;
  $retainage =  $line->project_line->retainage;
  $percentage = number_format($total/ $line->project_line->value*100, 1);
  $retainage_value =  ($total * $retainage/100);
@@ -541,51 +535,27 @@ p.p32  {
 
  $dTotal = $dTotal + $line->billed_to_date;
  $eTotal = $eTotal + $line->work_completed;
- $fTotal = $fTotal + $line->materials_stored + $line->stored_to_date;
+ $fTotal = $fTotal + $line->materials_stored;
  $gTotal = $gTotal + $total;
  $hTotal = $hTotal + $exclude_retainage;
  $iTotal = $iTotal + $retainage_value;
 
-
- if($line->materials_stored > 0){
-   $nmTotal = $nmTotal + $line->materials_stored;
-}
-else
-{
-  $pbTotal = $pbTotal + $line->materials_stored;
-}
-
-$less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
+ $less_retainage = ($eTotal + $fTotal) * $retainage/100;
 
 @endphp
 <TR>
   <TD class="lb tr1 td4"><P class="p5 ft7">{{ $key + 1}}</P></TD>
   <TD class="tr1 td5"><P class="p6 ft7">{{ $line->project_line->description }}
   </P>
-   
-   @if($line->materials_stored)
-       <p class="p23 ft9">
-       <br> <span class='star'>*</span>
-
-       @if($line->materials_stored < 0)
-       ${{ \App\Models\Payment::format(abs($line->materials_stored)) }}
-       materials used, previously billed
-       @else
-        ${{ \App\Models\Payment::format($line->materials_stored) }}
-       new materials stored
-       @endif
-
-       </p>
-   @endif
  
 </TD>
   <TD class="tr1 td6"><P class="p5 ft7">${{ \App\Models\Payment::format($line->project_line->value) }}</P></TD>
-  <TD class="tr1 td7"><P class="p15 ft7">${{ \App\Models\Payment::format($line->billed_to_date) }}</P></TD>
-  <TD class="tr1 td8"><P class="p16 ft7">{!! ($line->work_completed) ? '<span class="star">*</span>' : '' !!}${{ \App\Models\Payment::format($line->work_completed) }}</P></TD>
-  <TD class="tr1 td9"><P class="p16 ft7">{!! ($line->materials_stored) ? '<span class="star">*</span>' : '' !!} ${{ ($line->materials_stored > 0 ) ? \App\Models\Payment::format($line->materials_stored + $line->stored_to_date) : \App\Models\Payment::format(0.00) }}</P></TD>
+  <TD class="tr1 td7"><P class="p15 ft7">${{ \App\Models\Payment::format($total) }}</P></TD>
+  <TD class="tr1 td8"><P class="p16 ft7">${{ \App\Models\Payment::format(0) }}</P></TD>
+  <TD class="tr1 td9"><P class="p16 ft7">${{ \App\Models\Payment::format(0.00) }}</P></TD>
   <TD class="tr1 td10"><P class="p17 ft7">${{ \App\Models\Payment::format($total) }}</P></TD>
-  <TD class="tr1 td11"><P class="p14 ft8">{{ $percentage  }}%</P></TD>
-  <TD class="tr1 td10"><P class="p15 ft7">${{ $exclude_retainage }}</P></TD>
+  <TD class="tr1 td11"><P class="p14 ft8">100%</P></TD>
+  <TD class="tr1 td10"><P class="p15 ft7">${{ \App\Models\Payment::format(0.00) }}</P></TD>
   <TD class="tr1 td12"><P class="p11 ft7">${{ \App\Models\Payment::format($retainage_value) }}</P></TD>
 </TR>
 @endforeach
@@ -606,51 +576,6 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 @if($changeOrdersTotal > 0)
 
 
-@php
-
- $changeOrderApplications = $project->changeOrderApplications()
-                            ->where('app','<=',$applicationsCount)->get();            
-  $totalCO = 0;
-  
-  foreach (@$changeOrderApplications as $ck => $changeOrder) {
-
-       $coTotal = $changeOrder->value;
-       $coRetainage = $changeOrder->retainage;
-
-       $changeOrderlines = $changeOrder->application_lines()
-                            ->where('app_no',$applicationsCount)->get(); 
-
-       foreach (@$changeOrderlines as $k => $cLine) {
-
-                $totalCO = $cLine->billed_to_date + $cLine->work_completed + (($cLine->materials_stored > 0) ? $cLine->materials_stored : 0) ;
-
-                $co_retainage_value   =  ($totalCO * $coRetainage/100);
-
-                $co_exclude_retainage =  $coTotal - (float) $totalCO;
-       
-                $codTotal = $codTotal + $cLine['billed_to_date'];
-                $coeTotal = $coeTotal + $cLine['work_completed'];                
-                $cofTotal = $cofTotal + $cLine['materials_stored'] + $cLine->stored_to_date;                
-                $cogTotal = $cogTotal + $totalCO;                
-                $cohTotal = $cohTotal + $co_exclude_retainage;                
-                $coiTotal = $coiTotal + $co_retainage_value; 
-
-                 if($cLine->materials_stored > 0){
-                     $conmTotal = $conmTotal + $cLine->materials_stored;
-                  }
-                  else
-                  {
-                    $copbTotal = $copbTotal + $cLine->materials_stored;
-                  }
-
-        }
-        if($changeOrderlines->count() > 0){
-         $co_less_retainage = $co_less_retainage + (($coeTotal + $conmTotal + $copbTotal) * $coRetainage/100);
-        }
-  }
-
-
-@endphp
 <TR>
   <TD class="tr15 td4"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="tr15 td5"><P class="p2 ft13">&nbsp;</P></TD>
@@ -667,16 +592,13 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
   <TD class="lb bub tr12 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
   <TD class="lr bub tr12 td5 tr-grey"><P class="p20 ft15">TOTAL CHANGE ORDERS</P></TD>
   <TD class="lr bub tr12 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
-  <TD class="lr bub tr12 td7 tr-grey"><P class="p15 ft7">
-  ${{ \App\Models\Payment::format($codTotal) }}</P></TD>
-  <TD class="lr bub  tr12 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$coeTotal) }}</P></TD>
-  <TD class="lr bub tr12 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$cofTotal) }}</P></TD>
-  <TD class="lr bub tr12 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$cogTotal) }}</P></TD>
-  <TD class="lr bub tr12 td11 tr-grey"><P class="p14 ft8">{{
-   number_format((@$cogTotal) / $changeOrdersTotal * 100,1)
-  }}%</P></TD>
-  <TD class="lr bub tr12 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$cohTotal) }}</P></TD>
-  <TD class="lr bub tr12 td12 tr-grey"><P class="p11 ft7 pbb2"><span>${{ \App\Models\Payment::format(@$coiTotal) }}</span></P></TD>
+  <TD class="lr bub tr12 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="lr bub  tr12 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="lr bub tr12 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="lr bub tr12 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="lr bub tr12 td11 tr-grey"><P class="p14 ft8">50%</P></TD>
+  <TD class="lr bub tr12 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="lr bub tr12 td12 tr-grey"><P class="p11 ft7 pbb2"><span>${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</span></P></TD>
 </TR>
 
 <TR>
@@ -696,79 +618,19 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
   <TD class="blrn bb tr13 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
   <TD class="bb tr13 td5 tr-grey"><P class="p20 ft15">GRAND TOTALS</P></TD>
   <TD class="bb tr13 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format( @$project->original_amount + $changeOrdersTotal)  }}</P></TD>
-  <TD class="bb tr13 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format(@$codTotal + $dTotal) }}</P></TD>
-  <TD class="bb tr13 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$coeTotal + $eTotal) }}</P></TD>
-  <TD class="bb tr13 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$cofTotal + $fTotal) }}</P></TD>
-  <TD class="bb tr13 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$cogTotal + $gTotal) }}</P></TD>
-  <TD class="bb tr13 td11 tr-grey"><P class="p14 ft8">{{
-   number_format((@$cogTotal + $gTotal) / (@$project->original_amount + $changeOrdersTotal) * 100,1)
-  }}%</P></TD>
-  <TD class="bb tr13 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$cohTotal + $hTotal) }}</P></TD>
-  <TD class="bb tr13 td12 tr-grey"><P class="p11 ft7">${{ \App\Models\Payment::format(@$coiTotal + $iTotal) }}</P></TD>
+  <TD class="bb tr13 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format(@$lastApplicationsPayments) }}</P></TD>
+  <TD class="bb tr13 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="bb tr13 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="bb tr13 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$totalEarned) }}</P></TD>
+  <TD class="bb tr13 td11 tr-grey"><P class="p14 ft8">50%</P></TD>
+  <TD class="bb tr13 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$currentDuePayment) }}</P></TD>
+  <TD class="bb tr13 td12 tr-grey"><P class="p11 ft7">${{ \App\Models\Payment::format(@$retainageToDate) }}</P></TD>
 </TR>
 
 @endif
 
 </TABLE>
 
-@if($nmTotal || $pbTotal)
-<TABLE cellpadding=0 cellspacing=0 class="t4">
-<TR>
-  <TD class="tr18"><P class="p24 ft23">Materials Stored Summary</P></TD>
-  <TD class="tr18 td30"><P class="p0 ft0">&nbsp;</P></TD>
-  <TD class="tr18 td31"><P class="p0 ft0">&nbsp;</P></TD>
-</TR>
-<TR>
-  <TD colspan=2  class="lb tr19 td4"><P class="p6 ft21">Work Completed This Period</P></TD>
- 
-  <TD class="tr19 td31"><P class="p32 ft21">${{ \App\Models\Payment::format($eTotal + $coeTotal) }}</P></TD>
-</TR>
-
-
-@if($nmTotal)
-<TR>
-  <TD colspan=2  class="lb tr20 td4"><P class="p6 ft9">
-      
-          New Materials Stored this Period
-       
-  </P></TD>
-  
-  <TD class="tr20 td31"><P class="p32 ft9">
-        ${{ \App\Models\Payment::format($nmTotal + $conmTotal ) }}
-</P></TD>
-</TR>
-@endif
-
-@if($pbTotal)
-<TR>
-  <TD colspan=2  class="lb tr20 td4"><P class="p6 ft9">
-         Less Material Used, Previously Billed
-  </P></TD>
-  
-  <TD class="tr20 td31"><P class="p32 ft9">
- 
-         -${{ \App\Models\Payment::format(abs($pbTotal) + abs($copbTotal)) }}
-       
-</P></TD>
-</TR>
-@endif
-
-<TR>
-  <TD colspan=2 class="lb tr19 td33"><P class="p6 ft9">Total Earned This Period Including Retainage</P></TD>
-  <TD class="tr19 td31"><P class="p32 ft9">${{ \App\Models\Payment::format($eTotal + $coeTotal + $nmTotal + $conmTotal + $pbTotal + $copbTotal) }}</P></TD>
-</TR>
-<TR>
-  <TD colspan=2  class="lb tr20 td4"><P class="p6 ft9">Less Retainage</P></TD>
-
-  <TD class="tr20 td31"><P class="p32 ft9"><NOBR>-${{ \App\Models\Payment::format($less_retainage + $co_less_retainage) }} </NOBR></P></TD>
-</TR>
-<TR>
-  <TD colspan=2  class="lb tr19 td4 bb"><P class="p6 ft21">Current Payment Due</P></TD>
-
-  <TD class="tr19 td31 bb"><P class="p32 ft21">${{ \App\Models\Payment::format($eTotal + $coeTotal + $nmTotal + $conmTotal + $pbTotal + $copbTotal - $less_retainage - $co_less_retainage) }}</P></TD>
-</TR>
-</TABLE>
-@endif
 
 </DIV>
 

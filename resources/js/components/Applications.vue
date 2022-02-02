@@ -209,6 +209,7 @@
                     application_date: this.application_date,
                     period_to: this.period_to,
                     application_id: this.application_id,
+                    app_no: this.applications_count,
                     edit: this.edit
                 })
                 .then(function (response) {

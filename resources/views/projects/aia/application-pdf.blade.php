@@ -237,11 +237,25 @@ body {margin-top: 0px;margin-left: 0px;}
   font-size: 12px;
 }
 
+ footer {
+      position: fixed; 
+      bottom:0px;
+      text-align: right;
+      font-size: 12px;
+  }
+  .pagenum:before {
+          content: counter(page);
+  }
 
 </STYLE>
 </HEAD>
 
 <BODY>
+
+  <footer>
+      {{ \Carbon\Carbon::now()->format('m-d-Y') }} - Page <span class="pagenum"></span>
+  </footer>
+
 <DIV id="page_1">
 
 <DIV>
@@ -349,7 +363,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD colspan=2 class="tr11 td2 bwr"><P class="p3 ft12">3. Subcontract Sum to Date</P></TD>
   <TD class="tr11 td6 btb"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr11 td7 btb"><P class="p2 ft5">&nbsp;</P></TD>
-  <TD class="tr11 td8 btb"><P class="p5 ft12">${{ \App\Models\Payment::format($totalStored) }}</P></TD>
+  <TD class="tr11 td8 btb"><P class="p5 ft12">${{ \App\Models\Payment::format( @$project->original_amount + $changeOrdersTotal)  }}</P></TD>
   <TD class="tr11 td9 bwl"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR class="side-order">

@@ -173,6 +173,7 @@ class ProjectApplicationController extends Controller
      public function saveChangeOrderApplications(Request $request,$project_id,$application_id = null){
 
         $change_orders = $request->change_orders;
+        $app_no = $request->app_no;
 
        foreach ($change_orders as $key => $dt) {
 
@@ -181,7 +182,8 @@ class ProjectApplicationController extends Controller
                  'stored_to_date' => $dt['stored_to_date'],
                  'work_completed' => $dt['work_completed'],
                  'materials_stored' => $dt['materials_stored'],
-                 'change_order_application_id' => $dt['id']
+                 'change_order_application_id' => $dt['id'],
+                 'app_no' => $app_no
              ];
 
               ChangeOrderApplicationLine::UpdateOrCreate(
@@ -262,11 +264,11 @@ class ProjectApplicationController extends Controller
             } 
             $currentDuePayment =  (float) $currentDuePayment;                     
        }
-       
+
       $applicationsCount = @$applications->count(); 
 
       $changeOrderApplications = $project->changeOrderApplications()
-                                   ->where('app', '<=',$applicationsCount)->get();
+                                   ->where('app', '<=',$applicationsCount)->get();                         
 
       $changeOrdercloseProject = true;
 
@@ -277,8 +279,9 @@ class ProjectApplicationController extends Controller
 
            $changeOrdersTotal = $changeOrdersTotal + $changeOrder->value;
 
-           $changeOrderlines = $changeOrder->application_lines()->get(); 
-
+           $changeOrderlines = $changeOrder->application_lines()
+                                ->where('app_no','<=',$applicationsCount)->get(); 
+                                
           $changeOrdercloseProject = false;
 
           foreach (@$changeOrderlines as $k => $cLine) {
@@ -522,17 +525,18 @@ class ProjectApplicationController extends Controller
 
         $data = [];
      
-
-      
-        if($to == self::APPLICATION){
+        if($to == self::APPLICATION  || $to == self::CONTINUATIONSHEET){
 
           $application = $project->applications()
                        ->where('id',$app_id)->first();
+
+          $lines = $application->application_lines()->get();              
   
           $summary = $this->getSummary($project,$app_id);
         
           $data = array_merge([
                    'application' => $application,
+                   'lines' => $lines,
                    'project' => $project
                   ],$summary);
 
@@ -549,23 +553,46 @@ class ProjectApplicationController extends Controller
 
            $summary['currentDuePayment'] = 0.0;
 
+           $summary['applicationsCount'] = $summary['applicationsCount'] + 1;
+
            $data = array_merge([
                    'application' => $application,
                    'project' => $project
                   ],$summary);
         }  
         
-        elseif ($to == self::CONTINUATIONSHEET) {
-           
-        }  
+        // elseif ($to == self::CONTINUATIONSHEET) {
+          
+        // }  
         
         elseif ($to == self::CONTINUATIONSHEET_CLOSE_PROJECT) {
-            dd($to);
+            $application = $project->closeProject()->first();
+
+            $lastApplication = $project->applications()
+                       ->latest()->first();       
+
+           $lines = $lastApplication->application_lines()->get(); 
+
+           $summary = $this->getSummary($project,$lastApplication->id);
+
+           $summary['lastApplicationsPayments'] = (float) $summary['lastApplicationsPayments'] + (float) $summary['currentDuePayment'];
+
+           $summary['currentDuePayment'] = 0.0;
+
+           $summary['applicationsCount'] = $summary['applicationsCount'] + 1;
+
+           $data = array_merge([
+                   'application' => $application,
+                   'lines' => $lines,
+                   'project' => $project
+                  ],$summary);
         }      
-        
+
         // return View('projects.aia.'. $to .'-pdf',
         //   $data
         // );
+
+       // dd($data); 
         
         $pdf = PDF::loadView('projects.aia.'. $to .'-pdf',
           $data
