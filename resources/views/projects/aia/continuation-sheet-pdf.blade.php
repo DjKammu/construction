@@ -608,8 +608,9 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 
 @php
 
- $changeOrderApplications = $project->changeOrderApplications()
-                            ->where('app','<=',$applicationsCount)->get();            
+  $changeOrderApplications = $project->changeOrderApplications()
+                            ->where('app','<=',$applicationsCount)->get();  
+                                
   $totalCO = 0;
   
   foreach (@$changeOrderApplications as $ck => $changeOrder) {
@@ -619,6 +620,8 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 
        $changeOrderlines = $changeOrder->application_lines()
                             ->where('app_no',$applicationsCount)->get(); 
+
+       $coseTotal = $cosnmTotal = $cospbTotal = 0 ;              
 
        foreach (@$changeOrderlines as $k => $cLine) {
 
@@ -630,6 +633,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
        
                 $codTotal = $codTotal + $cLine['billed_to_date'];
                 $coeTotal = $coeTotal + $cLine['work_completed'];                
+                $coseTotal = $coseTotal + $cLine['work_completed'];                
                 $cofTotal = $cofTotal + $cLine['materials_stored'] + $cLine->stored_to_date;                
                 $cogTotal = $cogTotal + $totalCO;                
                 $cohTotal = $cohTotal + $co_exclude_retainage;                
@@ -637,18 +641,21 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 
                  if($cLine->materials_stored > 0){
                      $conmTotal = $conmTotal + $cLine->materials_stored;
+                     $cosnmTotal = $cosnmTotal + $cLine->materials_stored;
                   }
                   else
                   {
                     $copbTotal = $copbTotal + $cLine->materials_stored;
+                    $cospbTotal = $cospbTotal + $cLine->materials_stored;
                   }
 
         }
-        if($changeOrderlines->count() > 0){
-         $co_less_retainage = $co_less_retainage + (($coeTotal + $conmTotal + $copbTotal) * $coRetainage/100);
-        }
-  }
 
+        if($changeOrderlines->count() > 0){
+         $co_less_retainage = $co_less_retainage + (($coseTotal + $cosnmTotal + $cospbTotal) * $coRetainage/100);
+        }
+         
+  }
 
 @endphp
 <TR>
@@ -711,7 +718,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 
 </TABLE>
 
-@if($nmTotal || $pbTotal)
+@if($nmTotal || $pbTotal || $conmTotal || $copbTotal)
 <TABLE cellpadding=0 cellspacing=0 class="t4">
 <TR>
   <TD class="tr18"><P class="p24 ft23">Materials Stored Summary</P></TD>
@@ -725,7 +732,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 </TR>
 
 
-@if($nmTotal)
+@if($nmTotal || $conmTotal)
 <TR>
   <TD colspan=2  class="lb tr20 td4"><P class="p6 ft9">
       
@@ -739,7 +746,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 </TR>
 @endif
 
-@if($pbTotal)
+@if($pbTotal || $copbTotal)
 <TR>
   <TD colspan=2  class="lb tr20 td4"><P class="p6 ft9">
          Less Material Used, Previously Billed

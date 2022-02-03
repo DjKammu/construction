@@ -509,6 +509,13 @@ class ProjectApplicationController extends Controller
       
         $applications = $project->applications()->latest()->get();
 
+        $applications->filter(function ($application, $key) use ($project,$applications) {
+             $changeOrderApplications = $project->changeOrderApplications()
+                                       ->where('app','<=', ($applications->count() - $key))->exists();
+            return $application['has_change_order'] = $changeOrderApplications;   
+      
+        });
+
         return response()->json(
             ['status' => 200, 'data' => $applications]
        );
@@ -525,7 +532,7 @@ class ProjectApplicationController extends Controller
 
         $data = [];
      
-        if($to == self::APPLICATION  || $to == self::CONTINUATIONSHEET){
+        if($to == self::APPLICATION  || $to == self::CONTINUATIONSHEET || $to == self::CHANGE_ORDERS){
 
           $application = $project->applications()
                        ->where('id',$app_id)->first();
@@ -561,10 +568,6 @@ class ProjectApplicationController extends Controller
                   ],$summary);
         }  
         
-        // elseif ($to == self::CONTINUATIONSHEET) {
-          
-        // }  
-        
         elseif ($to == self::CONTINUATIONSHEET_CLOSE_PROJECT) {
             $application = $project->closeProject()->first();
 
@@ -586,11 +589,31 @@ class ProjectApplicationController extends Controller
                    'lines' => $lines,
                    'project' => $project
                   ],$summary);
+        }   
+
+        elseif ($to == self::CHANGE_ORDERS_CLOSE_PROJECT) {
+            $application = $project->closeProject()->first();
+
+            $lastApplication = $project->applications()
+                       ->latest()->first();       
+
+           $summary = $this->getSummary($project,$lastApplication->id);
+
+           $summary['lastApplicationsPayments'] = (float) $summary['lastApplicationsPayments'] + (float) $summary['currentDuePayment'];
+
+           $summary['currentDuePayment'] = 0.0;
+
+           $summary['applicationsCount'] = $summary['applicationsCount'] + 1;
+
+           $data = array_merge([
+                   'application' => $application,
+                   'project' => $project
+                  ],$summary);
         }      
 
-        // return View('projects.aia.'. $to .'-pdf',
-        //   $data
-        // );
+          // return View('projects.aia.'. $to .'-pdf',
+          //   $data
+          // );
 
        // dd($data); 
         

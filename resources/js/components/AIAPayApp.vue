@@ -197,7 +197,7 @@
                         <td>{{ application.application_date }}</td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'application')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'continuation-sheet')" src="/img/pdf.png"></td>
-                        <td v-if="changeOrdersTotal > 0"><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'change-order')" src="/img/pdf.png"></td>
+                        <td v-if="(changeOrdersTotal > 0)"><img v-if="application.has_change_order" style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'change-order')" src="/img/pdf.png"></td>
                       </tr>
                       
                     </tbody>

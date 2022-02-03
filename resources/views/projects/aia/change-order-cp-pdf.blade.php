@@ -349,7 +349,27 @@ p.p32  {
 .t4{width: 470px;font: 13px 'Arial';margin-top: 20px;}
 .t5{width: 351px;font: 20px 'Arial';}
 
+.ft-red{
+  color: red;
+}
+.ft-green{
+  color: green;
+}
+.legend{
+    float: left;
+    border: 1px solid;
+    color: green;
+    text-align: left;
+    padding: 5px;
+    margin-top: 100px;
+}
 
+.legend .p7{
+    text-align: left;
+}
+.legend .p7:first-child{
+    font-weight: bold;
+}
 </STYLE>
 </HEAD>
 
@@ -363,7 +383,7 @@ p.p32  {
       <div style="float: left; width: 63%; margin-bottom: 10px;">
       <div class="left1">
         <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('img/invoice-logo.jpg'))) }}">
-         <P class="p0 ft0">Continuation Sheet</P>
+         <P class="p0 ft0 ft-red">Change Orders</P>
          <P class="p1 ft1"> QPMCONSTRUCTION </P>
 
       </div>
@@ -383,7 +403,7 @@ p.p32  {
         </TR>
         </TABLE>
     </div>
-
+    <div style="float: left; width: 27%; margin-bottom: 10px;">
     <div class="right1">
       <TABLE cellpadding=0 cellspacing=0 class="t2">
       <TR>
@@ -399,6 +419,14 @@ p.p32  {
         <TD class="tr12 td23"><P class="p8 ft3" style="text-align:left;">{{ \Carbon\Carbon::parse(@$application->period_to)->format('m/d/Y')}}</P></TD>
       </TR>
       </TABLE>
+
+    </div>
+
+     <div class="legend">
+      <P class="p7 ft11">Type Legend</P>
+      <P class="p7 ft11">A = Addition</P>
+      <P class="p7 ft11">R = Revised +/-</P>
+     </div>
     </div>
 
 </header>
@@ -414,8 +442,50 @@ p.p32  {
 <DIV id="id1_2">
 
 <TABLE cellpadding=0 cellspacing=0 class="t3">
+
 <TR>
-  <TD class="lb tr4 td4"><P class="p5 ft7">A</P></TD>
+  <TD class="lb tr4 td4 tr-grey"><P class="p5 ft7"> </P></TD>
+  <TD class="tr4 td4 tr-grey"><P class="p5 ft7 ft-red"> CO #</P></TD>
+  <TD class="tr4 td5 tr-grey"><P class="p6 ft8 ft-red">CHANGE 
+  ORDERS</P></TD>
+  <TD class="tr4 td6 tr-grey"><P class="p5 ft7 ft-red">CHANGE 
+  </P></TD>
+  <TD class="tr4 td7 tr-grey"><P class="p7 ft7 ft-red"> &nbsp;</P></TD>
+  <TD class="tr4 td8 tr-grey"><P class="p8 ft8 ft-red">CHANGE 
+  </P></TD>
+  <TD class="tr4 td9 tr-grey"><P class="p9 ft8 ft-red"></P></TD>
+  <TD class="tr4 td10 tr-grey"><P class="p9 ft7 ft-red">CHANGE
+   </P></TD>
+  <TD class="tr4 td11 tr-grey"><P class="p2 ft6 ft-red">&nbsp;</P></TD>
+  <TD class="tr4 td10 tr-grey"><P class="p7 ft7 ft-red">CHANGE 
+  </P></TD>
+  <TD class="tr4 td12 tr-grey"><P class="p11 ft7 ft-red">CHANGE 
+  </P></TD>
+</TR>
+
+<TR>
+  <TD class="lrb tr-grey"><P class="p5 ft7"> </P></TD>
+  <TD class="lr tr-grey"><P class="p5 ft7"> </P></TD>
+  <TD class="lr tr-grey"><P class="p6 ft8 ft-red"></P></TD>
+  <TD class="lr tr-grey"><P class="p5 ft7 ft-red">ORDERS 
+  </P></TD>
+  <TD class="lr tr-grey"><P class="p7 ft7 ft-red"> &nbsp;</P></TD>
+  <TD class="lr tr-grey"><P class="p8 ft8 ft-red">ORDERS 
+  </P></TD>
+  <TD class="lr tr-grey"><P class="p9 ft8 ft-red"></P></TD>
+  <TD class="lr tr-grey"><P class="p9 ft7 ft-red">ORDERS
+   </P></TD>
+  <TD class="lr tr-grey"><P class="p2 ft6 ft-red">&nbsp;</P></TD>
+  <TD class="lr tr-grey"><P class="p7 ft7 ft-red">ORDERS 
+  </P></TD>
+  <TD class="lr tr-grey"><P class="p11 ft7 ft-red">ORDERS 
+  </P></TD>
+</TR>
+
+
+<TR>
+  <TD class="lb tr4 td4"><P class="p5 ft7"></P></TD>
+  <TD class="tr5 td11"><P class="p5 ft7">A</P></TD>
   <TD class="tr4 td5"><P class="p6 ft8">B</P></TD>
   <TD class="tr4 td6"><P class="p5 ft7">C</P></TD>
   <TD class="tr4 td7"><P class="p7 ft7">D</P></TD>
@@ -427,7 +497,8 @@ p.p32  {
   <TD class="tr4 td12"><P class="p11 ft7">I</P></TD>
 </TR>
 <TR>
-  <TD class="lb tr5 td4"><P class="p12 ft7">ITEM #</P></TD>
+  <TD class="lb tr5 td4"><P class="p12 ft7 ft-green">TYPE</P></TD>
+  <TD class="tr5 td11"><P class="p12 ft7">ITEM #</P></TD>
   <TD class="tr5 td5"><P class="p6 ft8">DESCRIPTION OF WORK</P></TD>
   <TD class="tr5 td6"><P class="p5 ft9">SCHEDULED</P></TD>
   <TD colspan=2 class="tr5 td13"><P class="p13 ft7">WORK COMPLETED</P></TD>
@@ -439,6 +510,7 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr6 td4"><P class="p2 ft10">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft10">&nbsp;</P></TD>
   <TD class="lr tr6 td5"><P class="p2 ft10">&nbsp;</P></TD>
   <TD class="lr tr6 td6"><P class="p5 ft8">VALUE</P></TD>
   <TD rowspan=2 class="lr tr5 td7"><P class="p7 ft8">FROM</P></TD>
@@ -451,6 +523,7 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr7 td4"><P class="p2 ft12">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft12">&nbsp;</P></TD>
   <TD class="lr tr7 td5"><P class="p2 ft12">&nbsp;</P></TD>
   <TD class="lr tr7 td6"><P class="p2 ft12">&nbsp;</P></TD>
   <TD rowspan=2 class="lr tr6 td9"><P class="p9 ft9">STORED</P></TD>
@@ -461,6 +534,7 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr8 td4"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td5"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD rowspan=2 class="lr tr9 td7"><P class="p19 ft8">PREVIOUS</P></TD>
@@ -470,7 +544,8 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr8 td4"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="lr tr8 td5"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td8"><P class="p2 ft13">&nbsp;</P></TD>
   <TD rowspan=2 class="lr tr9 td9"><P class="p9 ft7">(not in D or E)</P></TD>
@@ -481,6 +556,7 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr8 td4"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td5"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD rowspan=2 class="lr tr9 td7"><P class="p7 ft8">APPLICATIONS</P></TD>
@@ -490,7 +566,8 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr8 td4"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="lr tr8 td5"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td8"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td9"><P class="p2 ft13">&nbsp;</P></TD>
@@ -501,7 +578,8 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr11 td4"><P class="p2 ft14">&nbsp;</P></TD>
-  <TD class="lr tr11 td5"><P class="p2 ft14">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft14">&nbsp;</P></TD>
+  <TD class="lr tr11 td6"><P class="p2 ft14">&nbsp;</P></TD>
   <TD class="lr tr11 td6"><P class="p2 ft14">&nbsp;</P></TD>
   <TD rowspan=2 class="lr tr10 td7"><P class="p7 ft8">Column (D & E)</P></TD>
   <TD class="lr tr11 td8"><P class="p2 ft14">&nbsp;</P></TD>
@@ -512,6 +590,7 @@ p.p32  {
 </TR>
 <TR>
   <TD class="lrb tr8 td4"><P class="p2 ft13">&nbsp;</P></TD>
+  <TD class="lr tr6 td4"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td5"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td6"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td8"><P class="p2 ft13">&nbsp;</P></TD>
@@ -521,178 +600,101 @@ p.p32  {
   <TD class="lr tr8 td10"><P class="p2 ft13">&nbsp;</P></TD>
   <TD class="lr tr8 td12"><P class="p2 ft13">&nbsp;</P></TD>
 </TR>
+
+@php
+
+ $changeOrderApplications = $project->changeOrderApplications()
+                            ->where('app','<=',$applicationsCount)->get();      
+
+@endphp
+
 @php
  $codTotal = $coeTotal = $cofTotal = $cogTotal = $cohTotal = $coiTotal = 0;
- $dTotal = $eTotal = $fTotal = $gTotal = $hTotal = $iTotal = 0;
+ $cTotal = $dTotal = $eTotal = $fTotal = $gTotal = $hTotal = $iTotal = 0;
  $nmTotal = $pbTotal = 0;
  $conmTotal = $copbTotal = 0;
  $total_percentage = 0;
  $co_less_retainage = 0;
 @endphp
 
-@foreach(@$lines as $key => $line)
+@foreach(@$changeOrderApplications as $key => $line)
+
 @php 
- $total = $line->billed_to_date + $line->work_completed + ($line->materials_stored > 0) ?? $line->materials_stored ;
- $retainage =  $line->project_line->retainage;
- $percentage = number_format($total/ $line->project_line->value*100, 1);
- $retainage_value =  ($total * $retainage/100);
- $exclude_retainage =  $line->project_line->value - (float) $total;
+$changeOrderlines = $line->application_lines()
+                            ->where('app_no',($applicationsCount - 1))->get();                          
+$cTotal = $cTotal + @$line->value;
+$dsTotal = $esTotal = $fsTotal = $gsTotal = $hsTotal = $isTotal = $nmTotal = $pbTotal = 0;
+foreach (@$changeOrderlines as $k => $cLine) {
+       $total = $cLine->billed_to_date + $cLine->work_completed + $cLine->stored_to_date +  $cLine->materials_stored;
 
- $dTotal = $dTotal + $line->billed_to_date;
- $eTotal = $eTotal + $line->work_completed;
- $fTotal = $fTotal + $line->materials_stored;
- $gTotal = $gTotal + $total;
- $hTotal = $hTotal + $exclude_retainage;
- $iTotal = $iTotal + $retainage_value;
+      $dTotal = $dTotal + $cLine->billed_to_date;
+      $dsTotal = $dsTotal + $cLine->billed_to_date;
 
- $less_retainage = ($eTotal + $fTotal) * $retainage/100;
+      $eTotal = $eTotal + $cLine->work_completed;
+      $esTotal = $esTotal + $cLine->work_completed;
+
+      $fTotal = $fTotal + $cLine->materials_stored + $cLine->stored_to_date;
+      $fsTotal = $fsTotal + $cLine->materials_stored + $cLine->stored_to_date;
+
+      $gTotal = $gTotal + $total;
+      $gsTotal = $gsTotal + $total;
+
+      $exclude_retainage =  $line->value - (float) $total;
+      $hTotal = $hTotal + $exclude_retainage;
+      $hsTotal = $hsTotal + $exclude_retainage;
+      
+      $retainage =  $line->retainage;
+      $retainage_value =  ($total * $retainage/100);
+
+      $iTotal = $iTotal + $retainage_value;
+      $isTotal = $isTotal + $retainage_value;
+
+       if($cLine->materials_stored > 0){
+         $nmTotal = $nmTotal + $cLine->materials_stored;
+       }
+       else
+       {
+         $pbTotal = $pbTotal + $cLine->materials_stored;
+       }
+
+
+ }
 
 @endphp
+
 <TR>
-  <TD class="lb tr1 td4"><P class="p5 ft7">{{ $key + 1}}</P></TD>
-  <TD class="tr1 td5"><P class="p6 ft7">{{ $line->project_line->description }}
+  <TD class="lb tr1 td4"><P class="p5 ft7 ft-green"> {{ ($line->revised == 0) ? 'R+' : 'A' }} </P></TD>
+  <TD class="tr5 td11"><P class="p5 ft7">{{ $key + 1}}</P></TD>
+  <TD class="tr1 td5"><P class="p6 ft7">{{ $line->description }}
   </P>
  
 </TD>
-  <TD class="tr1 td6"><P class="p5 ft7">${{ \App\Models\Payment::format($line->project_line->value) }}</P></TD>
-  <TD class="tr1 td7"><P class="p15 ft7">${{ \App\Models\Payment::format($total) }}</P></TD>
-  <TD class="tr1 td8"><P class="p16 ft7">${{ \App\Models\Payment::format(0) }}</P></TD>
+  <TD class="tr1 td6"><P class="p5 ft7">${{ \App\Models\Payment::format(@$line->value) }}</P></TD>
+  <TD class="tr1 td7"><P class="p15 ft7">${{ \App\Models\Payment::format(@$line->value) }}</P></TD>
+  <TD class="tr1 td8"><P class="p16 ft7">${{ \App\Models\Payment::format(0.00) }}</P></TD>
   <TD class="tr1 td9"><P class="p16 ft7">${{ \App\Models\Payment::format(0.00) }}</P></TD>
-  <TD class="tr1 td10"><P class="p17 ft7">${{ \App\Models\Payment::format($total) }}</P></TD>
-  <TD class="tr1 td11"><P class="p14 ft8">100%</P></TD>
-  <TD class="tr1 td10"><P class="p15 ft7">${{ \App\Models\Payment::format(0.00) }}</P></TD>
-  <TD class="tr1 td12"><P class="p11 ft7">${{ \App\Models\Payment::format($retainage_value) }}</P></TD>
+  <TD class="tr1 td10"><P class="p17 ft7">${{ \App\Models\Payment::format(@$gsTotal) }}</P></TD>
+  <TD class="tr1 td11"><P class="p14 ft8">{{ number_format(@$gsTotal / $line->value*100 , 1)   }}%</P></TD>
+  <TD class="tr1 td10"><P class="p15 ft7">${{ \App\Models\Payment::format(@$hsTotal) }}</P></TD>
+  <TD class="tr1 td12"><P class="p11 ft7">${{ \App\Models\Payment::format(@$isTotal) }}</P></TD>
 </TR>
+
 @endforeach
 
 <TR>
-  <TD class="lb bb brn tr1 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
-  <TD class="bb tr1 td5 tr-grey"><P class="p20 ft15">TOTALS</P></TD>
-  <TD class="bb tr1 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format(@$project->original_amount ) }}</P></TD>
-  <TD class="bb tr1 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format($dTotal) }}</P></TD>
-  <TD class="bb tr1 td8 tr-grey"><P class="p8 ft7">${{\App\Models\Payment::format($eTotal)}}</P></TD>
-  <TD class="bb tr1 td9 tr-grey"><P class="p16 ft7">${{ ($fTotal > 0) ?  \App\Models\Payment::format($fTotal) : \App\Models\Payment::format(0)}}</P></TD>
+  <TD class="lb bb  tr1 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
+  <TD class="bb brn tr1 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
+  <TD class="bb tr1 td4 tr-grey"><P class="p20 ft15">CHANGE ORDERS TOTALS </P></TD>
+  <TD class="bb tr1 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format(@$cTotal ) }}</P></TD>
+  <TD class="bb tr1 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format($cTotal) }}</P></TD>
+  <TD class="bb tr1 td8 tr-grey"><P class="p8 ft7">${{\App\Models\Payment::format(0.00)}}</P></TD>
+  <TD class="bb tr1 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(0)}}</P></TD>
   <TD class="bb tr1 td10 tr-grey"><P class="p17 ft7">${{\App\Models\Payment::format($gTotal)}}</P></TD>
-  <TD class="bb tr1 td11 tr-grey"><P class="p14 ft8">{{ number_format(($gTotal/ @$project->original_amount*100), 1) }}%</P></TD>
+  <TD class="bb tr1 td11 tr-grey"><P class="p14 ft8">{{ number_format(($gTotal/ @$cTotal*100), 1) }}%</P></TD>
   <TD class="bb tr1 td10 tr-grey"><P class="p7 ft7">${{\App\Models\Payment::format($hTotal)}}</P></TD>
   <TD class="tr1 td12 tr-grey"><P class="p11 ft7 pbb"><span>${{\App\Models\Payment::format($iTotal)}}</span></P></TD>
 </TR>
-
-@if($changeOrdersTotal > 0)
-
-@php
- $changeOrderApplications = $project->changeOrderApplications()
-                            ->where('app','<=',$applicationsCount)->get();  
-                                
-  $totalCO = 0;
-  
-  foreach (@$changeOrderApplications as $ck => $changeOrder) {
-
-       $coTotal = $changeOrder->value;
-       $coRetainage = $changeOrder->retainage;
-
-       $changeOrderlines = $changeOrder->application_lines()
-                            ->where('app_no',($applicationsCount - 1))->get();                       
-
-       $coseTotal = $cosnmTotal = $cospbTotal = 0 ;              
-
-       foreach (@$changeOrderlines as $k => $cLine) {
-
-                $totalCO = $cLine->billed_to_date + $cLine->work_completed + (($cLine->materials_stored > 0) ? $cLine->materials_stored : 0) ;
-
-                $co_retainage_value   =  ($totalCO * $coRetainage/100);
-
-                $co_exclude_retainage =  $coTotal - (float) $totalCO;
-       
-                $codTotal = $codTotal + $cLine['billed_to_date'];
-                $coeTotal = $coeTotal + $cLine['work_completed'];                
-                $coseTotal = $coseTotal + $cLine['work_completed'];                
-                $cofTotal = $cofTotal + $cLine['materials_stored'] + $cLine->stored_to_date;                
-                $cogTotal = $cogTotal + $totalCO;                
-                $cohTotal = $cohTotal + $co_exclude_retainage;                
-                $coiTotal = $coiTotal + $co_retainage_value; 
-
-                 if($cLine->materials_stored > 0){
-                     $conmTotal = $conmTotal + $cLine->materials_stored;
-                     $cosnmTotal = $cosnmTotal + $cLine->materials_stored;
-                  }
-                  else
-                  {
-                    $copbTotal = $copbTotal + $cLine->materials_stored;
-                    $cospbTotal = $cospbTotal + $cLine->materials_stored;
-                  }
-
-        }
-
-        if($changeOrderlines->count() > 0){
-         $co_less_retainage = $co_less_retainage + (($coseTotal + $cosnmTotal + $cospbTotal) * $coRetainage/100);
-        }
-         
-  }
-
- @endphp 
-
-<TR>
-  <TD class="tr15 td4"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td5"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td6"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td8"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td9"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td10"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td11"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td10"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td12"><P class="p2 ft13">&nbsp;</P></TD>
-</TR>
-
-<TR>
-  <TD class="lb bub tr12 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
-  <TD class="lr bub tr12 td5 tr-grey"><P class="p20 ft15">TOTAL CHANGE ORDERS</P></TD>
-  <TD class="lr bub tr12 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
-  <TD class="lr bub tr12 td7 tr-grey"><P class="p15 ft7">
-  ${{ \App\Models\Payment::format($codTotal) }}</P></TD>
-  <TD class="lr bub  tr12 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$coeTotal) }}</P></TD>
-  <TD class="lr bub tr12 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$cofTotal) }}</P></TD>
-  <TD class="lr bub tr12 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
-  <TD class="lr bub tr12 td11 tr-grey"><P class="p14 ft8">{{
-   number_format((@$changeOrdersTotal) / $changeOrdersTotal * 100,1)
-  }}%</P></TD>
-  <TD class="lr bub tr12 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$cohTotal) }}</P></TD>
-  <TD class="lr bub tr12 td12 tr-grey"><P class="p11 ft7 pbb2"><span>${{ \App\Models\Payment::format(@$coiTotal) }}</span></P></TD>
-</TR>
-
-<TR>
-  <TD class="tr15 td4"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td5"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td6"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td8"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td9"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td10"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td11"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td10"><P class="p2 ft13">&nbsp;</P></TD>
-  <TD class="tr15 td12"><P class="p2 ft13">&nbsp;</P></TD>
-</TR>
-
-
-<TR>
-  <TD class="blrn bb tr13 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
-  <TD class="bb tr13 td5 tr-grey"><P class="p20 ft15">GRAND TOTALS</P></TD>
-  <TD class="bb tr13 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format( @$project->original_amount + $changeOrdersTotal)  }}</P></TD>
-  <TD class="bb tr13 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format(@$codTotal + $dTotal) }}</P></TD>
-  <TD class="bb tr13 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$coeTotal + $eTotal) }}</P></TD>
-  <TD class="bb tr13 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$cofTotal + $fTotal) }}</P></TD>
-  <TD class="bb tr13 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$cogTotal + $gTotal) }}</P></TD>
-  <TD class="bb tr13 td11 tr-grey"><P class="p14 ft8">{{
-   number_format((@$cogTotal + $gTotal) / (@$project->original_amount + $changeOrdersTotal) * 100,1)
-  }}%</P></TD>
-  <TD class="bb tr13 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$cohTotal + $hTotal) }}</P></TD>
-  <TD class="bb tr13 td12 tr-grey"><P class="p11 ft7">${{ \App\Models\Payment::format(@$coiTotal + $iTotal) }}</P></TD>
-</TR>
-
-@endif
-
 </TABLE>
-
-
 </DIV>
 
 </DIV>
