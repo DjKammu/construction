@@ -56,6 +56,15 @@
               <div class="row">
                    <div class="col-lg-5 col-md-6 mx-auto">
                      <div class="form-group">
+                          <label class="text-dark" for="password">Item No. 
+                          </label>
+                          <input  type="text" class="form-control" :disabled="account_number != null"  v-model="form.account_number" placeholder="Account Number" >
+                      </div>
+                  </div>
+              </div> 
+              <div class="row">
+                   <div class="col-lg-5 col-md-6 mx-auto">
+                     <div class="form-group">
                           <label class="text-dark" for="password">Description 
                           </label>
                           <input  type="text" class="form-control" :disabled="description != null"  v-model="form.description" placeholder="Description" >
@@ -144,6 +153,7 @@
                 <thead>
                 <tr class="text-danger">
                     <th >App #</th>
+                    <th>Item No.</th>
                     <th>Description</th>
                     <th>Scheduled Value</th>
                     <th>Retainage</th>
@@ -153,6 +163,7 @@
                 <tbody>
                   <tr v-for="(cOrder, index) in changeOrders"  >
                     <td>{{ cOrder.app }} </td> 
+                    <td>{{ cOrder.account_number }} </td> 
                     <td>{{ cOrder.description }} </td> 
                     <td> ${{ new Intl.NumberFormat().format(cOrder.value) }} </td>          
                     <td>{{ cOrder.retainage }} </td> 
@@ -195,13 +206,15 @@
                 applications: [],
                 changeOrders: [],
                 description: null,
+                account_number: null,
                 selectOrderLine: null,
                 isRevised: false,
                 form:{
                    'id' : null,
-                   'app' : null,
-                   'description' : null,
+                   'app' : (this.applications_count != 0) ? this.applications_count : 1,
                    'value' : null,
+                   'description' : null,
+                   'account_number' : null,
                    'retainage' : this.retainage
                 },
                 
@@ -215,14 +228,18 @@
              },
              changeType(){
                 this.form.description = null
+                this.form.account_number = null
                 this.description = null
+                this.account_number = null
                 this.isSelect = false
                 this.existLine = null
                 this.isRevised = false
              },
              selectOrder(){
                this.form.description = this.applications[this.selectOrderLine].description
+               this.form.account_number = this.applications[this.selectOrderLine].account_number
                this.description = true
+               this.account_number = true
             },
             continueOrder(){
                 this.existLine = false
@@ -286,7 +303,7 @@
 
               var lines = [];
 
-               if(!this.form.app || !this.form.description || !this.form.retainage || !this.form.value ){
+               if(!this.form.app || !this.form.description || !this.form.account_number || !this.form.retainage || !this.form.value ){
                   this.error = true
                   this.errorMsg = 'Fill all details!'
 
@@ -297,7 +314,7 @@
                   return;
                }
 
-               if(parseInt(this.form.app) > parseInt(this.applications_count)){
+               if(parseInt(this.form.app) > ( parseInt(this.applications_count) > 0  ? parseInt(this.applications_count) : 1)){
                   this.error = true
                   this.errorMsg = 'App can`t be greater!'
 

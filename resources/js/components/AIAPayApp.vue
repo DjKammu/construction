@@ -112,7 +112,7 @@
                   </tbody>
               </table> 
 
-               <button type="button"  v-if="applications_count > 0 && !isProjectClosed" class="btn btn-danger" @click="changeOrders" >Change Orders
+               <button type="button"  v-if="(!currentExcess) && (!shortFall) && (applications_count >= 0) && !isProjectClosed" class="btn btn-danger" @click="changeOrders" >Change Orders
               </button>
 
               <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
@@ -186,7 +186,8 @@
                     </thead>
                     <tbody>
                       <tr v-if="isProjectClosed">
-                        <th scope="row">{{ applications.length + 1}}</th>
+                        <!-- <th scope="row">{{ applications.length + 1}}</th> -->
+                        <th scope="row">Final</th>
                         <td>{{ isProjectClosed.application_date }}</td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'application-cp')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'continuation-sheet-cp')" src="/img/pdf.png"></td>

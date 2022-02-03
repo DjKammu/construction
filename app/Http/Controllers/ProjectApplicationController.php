@@ -141,7 +141,6 @@ class ProjectApplicationController extends Controller
    
       if($application_id){
  
-
        foreach ($data as $key => $dt) {
 
              $update = [
@@ -268,7 +267,7 @@ class ProjectApplicationController extends Controller
       $applicationsCount = @$applications->count(); 
 
       $changeOrderApplications = $project->changeOrderApplications()
-                                   ->where('app', '<=',$applicationsCount)->get();                         
+                                   ->where('app', '<=',($applicationsCount != 0) ? $applicationsCount : 1)->get();                        
 
       $changeOrdercloseProject = true;
 
@@ -394,6 +393,7 @@ class ProjectApplicationController extends Controller
                       
              $applications->filter(function($app) use ($edit){
 
+                $app->account_number = $app->project_line->account_number;
                 $app->description = $app->project_line->description;
                 $app->value = $app->project_line->value;
                 $total = (float) $app->work_completed + (float) $app->billed_to_date;

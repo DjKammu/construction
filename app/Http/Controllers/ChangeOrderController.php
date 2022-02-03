@@ -114,6 +114,7 @@ class ChangeOrderController extends Controller
         $changeOrderApplications->UpdateOrCreate(
                      ['id' => @$data['id']],
                     [
+                      'account_number' => $data['account_number'],
                       'description' => $data['description'],
                       'retainage' => $data['retainage'],
                       'value' => $data['value'],

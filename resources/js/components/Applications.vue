@@ -48,7 +48,7 @@
             <tbody>
 
               <tr v-for="(project_line, index) in applications"  >
-                <td>{{ index+1 }}</td>
+                <td>{{ applications[index].account_number }}</td>
                 <td>
                 {{ applications[index].description }} </td> 
                 <td> ${{ new Intl.NumberFormat().format(applications[index].value) }} </td>         
@@ -84,7 +84,7 @@
             <tbody>
 
               <tr v-for="(change_order, index) in change_orders"  >
-                <td>{{ index+1 }}</td>
+                <td>{{ change_orders[index].account_number }}</td>
                 <td>
                 {{ change_orders[index].description }} </td> 
                 <td> ${{ new Intl.NumberFormat().format(change_orders[index].value) }} </td>         
@@ -103,7 +103,7 @@
             </table> 
 
             <div class="col-12">
-                <button type="button" class="btn btn-danger mt-0" @click="saveApplication">Save Application
+                <button type="button" class="btn btn-danger mt-0" :disabled="disableSubmit" @click="saveApplication">Save Application
                 </button>
                 <button type="button" class="btn mt-0" @click="cancel" >Cancel
                 </button>  
@@ -157,6 +157,7 @@
                 applications: [],
                 change_orders: [],
                 project_line : {},
+                disableSubmit:false,
                 itemNumber: 1,
             };
         },
@@ -202,6 +203,8 @@
 
                   return;
                }
+              
+              _vm.disableSubmit = true
 
               await axios.post('/projects/'+this.projectid+'/applications/',{
                     data : this.applications,

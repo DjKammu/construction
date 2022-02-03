@@ -12,7 +12,7 @@ class ChangeOrderApplication extends Model
     protected $fillable = [
      'project_id' , 'description' ,
      'retainage','value' , 'app',
-     'revised'
+     'revised','account_number'
     ];
 
     public function application_lines(){

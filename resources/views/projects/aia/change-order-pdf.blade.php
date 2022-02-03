@@ -663,7 +663,7 @@ foreach (@$changeOrderlines as $k => $cLine) {
 @endphp
 
 <TR>
-  <TD class="lb tr1 td4"><P class="p5 ft7 ft-green"> {{ ($line->revised == 0) ? 'R+' : 'A' }} </P></TD>
+  <TD class="lb tr1 td4"><P class="p5 ft7 ft-green"> {{ ($line->revised == 1) ? 'R+' : 'A' }} </P></TD>
   <TD class="tr5 td11"><P class="p5 ft7">{{ $key + 1}}</P></TD>
   <TD class="tr1 td5"><P class="p6 ft7">{{ $line->description }}
   </P>

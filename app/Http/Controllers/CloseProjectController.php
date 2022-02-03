@@ -116,6 +116,8 @@ class CloseProjectController extends Controller
                     ]
         );
 
+        $project->update(['status' => Project::FINISHED_STATUS]);
+
         return response()->json(
            [
             'status' => 200,
