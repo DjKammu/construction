@@ -549,7 +549,7 @@ p.p32  {
 
 @endphp
 <TR>
-  <TD class="lb tr1 td4"><P class="p5 ft7">{{ @$line->account_number}}</P></TD>
+  <TD class="lb tr1 td4"><P class="p5 ft7">{{ @$line->project_line->account_number}}</P></TD>
   <TD class="tr1 td5"><P class="p6 ft7">{{ $line->project_line->description }}
   </P>
  
