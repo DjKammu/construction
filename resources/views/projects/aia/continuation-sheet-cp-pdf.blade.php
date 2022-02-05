@@ -356,7 +356,7 @@ p.p32  {
 <BODY>
 
   <footer>
-      {{ \Carbon\Carbon::now()->format('m-d-Y') }} - Page <span class="pagenum"></span>
+     Page <span class="pagenum"></span>
   </footer>
 
   <header> 
@@ -378,8 +378,8 @@ p.p32  {
           <TD class="tr1 td1"><P class="p2 ft4">{{ @$project->project_number }}</P></TD>
         </TR>
         <TR>
-          <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Subcontractor Name</P></TD>
-          <TD class="tr2 td1"><P class="p2 ft5">&nbsp;</P></TD>
+          <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Onwer Name</P></TD>
+          <TD class="tr2 td1"><P class="p2 ft5">{{ @$project->owner_name }}</P></TD>
         </TR>
         </TABLE>
     </div>

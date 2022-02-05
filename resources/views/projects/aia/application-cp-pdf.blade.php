@@ -261,7 +261,7 @@ body {margin-top: 0px;margin-left: 0px;}
         Easy, accurate pay apps by {{ config('app.name', 'QPM CONSTRUCTION') }}. 
       Visit {{ url('/') }} 
      </span> -->
-      {{ \Carbon\Carbon::now()->format('m-d-Y') }} - Page <span class="pagenum"></span>
+      Page <span class="pagenum"></span>
   </footer>
 <DIV id="page_1">
 
@@ -283,8 +283,8 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD class="tr1 td1"><P class="p2 ft4">{{ @$project->project_number }}</P></TD>
 </TR>
 <TR>
-  <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Subcontractor Name</P></TD>
-  <TD class="tr2 td1"><P class="p2 ft5">&nbsp;</P></TD>
+  <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Onwer Name</P></TD>
+  <TD class="tr2 td1"><P class="p2 ft5">{{ @$project->owner_name }}</P></TD>
 </TR>
 </TABLE>
 <TABLE cellpadding=0 cellspacing=0 class="t1 table2">
@@ -332,7 +332,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD class="tr6 td9"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR>
-  <TD colspan=2 class="tr7 td2"><P class="p3 ft12">1. Original Subcontract Sum</P></TD>
+  <TD colspan=2 class="tr7 td2"><P class="p3 ft12">1. Original Contract Sum</P></TD>
   <TD class="tr7 td6"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr7 td7"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr7 td8"><P class="p5 ft12">${{ \App\Models\Payment::format(@$project->original_amount ) }}</P></TD>
@@ -367,7 +367,7 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD class="tr4 td9"><P class="p2 ft5">&nbsp;</P></TD>
 </TR>
 <TR>
-  <TD colspan=2 class="tr11 td2 bwr"><P class="p3 ft12">3. Subcontract Sum to Date</P></TD>
+  <TD colspan=2 class="tr11 td2 bwr"><P class="p3 ft12">3. Contract Sum to Date</P></TD>
   <TD class="tr11 td6 btb"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr11 td7 btb"><P class="p2 ft5">&nbsp;</P></TD>
   <TD class="tr11 td8 btb"><P class="p5 ft12">${{ \App\Models\Payment::format( @$project->original_amount + $changeOrdersTotal)  }}</P></TD>
@@ -477,24 +477,24 @@ body {margin-top: 0px;margin-left: 0px;}
 <P class="p10 ft10">City, State : {{ @$project->contract_city }}, {{ @$project->contract_state }}</P>
 <P class="p10 ft10">Zip :   {{ @$project->contract_zip }}</P>
 <P class="p10 ft10">Phone : {{ @$project->contract_phone }}</P>
-<P class="p12 ft15">The undersigned Subcontractor certifies that to the best of the Subcontractor's knowledge, information and belief the work covered by this application for Payment has been completed in accordance with the Subcontract Documents, that all amounts have been paid by the contractor for Work which previous certificates for payment were issued and payements received from the contractor and that the current payment shown herein is now due.</P>
+<P class="p12 ft15">The undersigned General Contractor certifies that to the best of the General Contractor's knowledge, information and belief the work covered by this application for Payment has been completed in accordance with the General Contractor Documents, that all amounts have been paid by the contractor for Work which previous certificates for payment were issued and payements received from the contractor and that the current payment shown herein is now due.</P>
 <P class="p11 ft9">Date: {{ \Carbon\Carbon::parse(@$application->application_date)->format('m/d/Y')}} </P>
-<P class="p13 ft10">Subcontractor Signature:</P>
+<P class="p13 ft10">General Contractor Signature:</P>
 <P class="p14 ft21">_________________________________________________________</P>
 <TABLE cellpadding=0 cellspacing=0 class="t3">
 <TR>
   <TD class="tr12 td24"><P class="p2 ft9">State of:</P></TD>
-  <TD class="tr12 td25"><P class="p15 ft9">_______________________</P></TD>
+  <TD class="tr12 td25"><P class="p15 ft9">{{@$project->notary_state}}</P></TD>
 </TR>
 <TR>
-  <TD class="tr18 td24"><P class="p2 ft9">County of:</P></TD>
-  <TD class="tr18 td25"><P class="p15 ft9">_______________________</P></TD>
+  <TD class="tr18 td24"><P class="p2 ft9">Country of:</P></TD>
+  <TD class="tr18 td25"><P class="p15 ft9">{{@$project->notary_country}}</P></TD>
 </TR>
 </TABLE>
 <P class="p16 ft10">Subscribed and sworn to before me</P>
 <P class="p17 ft9">this _______ day of _______ 20______</P>
 <P class="p11 ft10">Notary Public:</P>
-<P class="p18 ft21">_________________________________________________________</P>
+<P class="p18 ft21">{{@$project->notary_name}}</P>
 <P class="p19 ft10">My commission expires: <SPAN class="ft9">_______________________</SPAN></P>
 </DIV>
 </DIV>
