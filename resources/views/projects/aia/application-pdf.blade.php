@@ -276,8 +276,9 @@ body {margin-top: 0px;margin-left: 0px;}
   <TD class="tr1 td1"><P class="p2 ft4">{{ @$project->project_number }}</P></TD>
 </TR>
 <TR>
-  <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Onwer Name</P></TD>
-  <TD class="tr2 td1"><P class="p2 ft5">{{ @$project->owner_name }}</P></TD>
+  <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Owner Name</P></TD>
+  <TD class="tr2 td1" style="padding-bottom:5px;"><P class="p2 ft3">
+    {{ @$project->owner_name }}</P></TD>
 </TR>
 </TABLE>
 <TABLE cellpadding=0 cellspacing=0 class="t1 table2">
@@ -465,19 +466,20 @@ body {margin-top: 0px;margin-left: 0px;}
 <P class="p14 ft21">_________________________________________________________</P>
 <TABLE cellpadding=0 cellspacing=0 class="t3">
 <TR>
-  <TD class="tr12 td24"><P class="p2 ft9">State of:</P></TD>
-  <TD class="tr12 td25"><P class="p15 ft9">{{@$project->notary_state}}</P></TD>
+  <TD class="tr12 td24"><P class="p2 ft9">State of: {{@$project->notary_state}} </P></TD>
+  <TD class="tr12 td25"><P class="p15 ft9"></P></TD>
 </TR>
 <TR>
-  <TD class="tr18 td24"><P class="p2 ft9">Country of:</P></TD>
-  <TD class="tr18 td25"><P class="p15 ft9">{{@$project->notary_country}}</P></TD>
+  <TD class="tr18 td24"><P class="p2 ft9">County of: {{@$project->notary_country}}</P></TD>
+  <TD class="tr18 td25"><P class="p15 ft9"></P></TD>
 </TR>
 </TABLE>
 <P class="p16 ft10">Subscribed and sworn to before me</P>
 <P class="p17 ft9">this _______ day of _______ 20______</P>
 <P class="p11 ft10">Notary Public:</P>
-<P class="p18 ft21">{{@$project->notary_name}}</P>
-<P class="p19 ft10">My commission expires: <SPAN class="ft9">_______________________</SPAN></P>
+<P class="p18 ft20">{{@$project->notary_name}}</P>
+<P class="p19 ft10">My commission expires: <SPAN class="ft9">{{
+\Carbon\Carbon::parse(@$project->created_at)->format('Y-m-d') }}</SPAN></P>
 </DIV>
 </DIV>
 </DIV>

@@ -336,9 +336,9 @@ aria-expanded="true">
            
                <div class="col-lg-6 col-md-6">
                     <div class="form-group">
-                        <label class="text-dark" for="password">Country 
+                        <label class="text-dark" for="password">County 
                         </label>
-                        <input  name="notary_country" value="{{ $project->notary_country }}" type="text" class="form-control" placeholder="Country">
+                        <input  name="notary_country" value="{{ $project->notary_country }}" type="text" class="form-control" placeholder="County">
                     </div>
                 </div>
             
