@@ -495,8 +495,8 @@ body {margin-top: 0px;margin-left: 0px;}
 <P class="p16 ft10">Subscribed and sworn to before me</P>
 <P class="p17 ft9">this _______ day of _______ 20______</P>
 <P class="p11 ft10">Notary Public:</P>
-<P class="p18 ft20">{{@$project->notary_name}}</P>
-<P class="p19 ft10">My commission expires: <SPAN class="ft9">{{
+<P class="p18 ft4">{{@$project->notary_name}}</P>
+<P class="p19 "><span class="ft10">My commission expires: </span><SPAN class="ft1">{{
 \Carbon\Carbon::parse(@$project->created_at)->format('Y-m-d') }}</SPAN></P>
 </DIV>
 </DIV>
