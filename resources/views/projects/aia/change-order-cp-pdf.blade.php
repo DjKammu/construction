@@ -399,8 +399,9 @@ p.p32  {
           <TD class="tr1 td1"><P class="p2 ft4">{{ @$project->project_number }}</P></TD>
         </TR>
         <TR>
-          <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Onwer Name</P></TD>
-          <TD class="tr2 td1"><P class="p2 ft5">{{ @$project->owner_name }}</P></TD>
+          <TD class="tr2 td0" style="padding-bottom:5px;"><P class="p2 ft2">Owner Name</P></TD>
+          <TD class="tr2 td1" style="padding-bottom:5px;"><P class="p2 ft3">
+            {{ @$project->owner_name }}</P></TD>
         </TR>
         </TABLE>
     </div>
