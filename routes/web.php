@@ -201,3 +201,10 @@ Route::prefix('projects')->group(function(){
 
 
 });
+
+
+// Calendar Route
+
+Route::resource('calendar', App\Http\Controllers\CalendarController::class);
+Route::get('get-projects', [App\Http\Controllers\CalendarController::class,'getProjects'])
+     ->name('calendar.projects');

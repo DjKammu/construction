@@ -38,6 +38,11 @@ class Project extends Model
      'status','project_number','contract_phone'
     ];
 
+    
+    protected $casts = [
+    'start_date' => 'date', 
+    'end_date' => 'date'
+    ];
 
     public function project_type(){
     	return $this->belongsTo(ProjectType::class);
