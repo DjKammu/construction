@@ -79,6 +79,8 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="save-event">Save changes</button>
+            <button type="button" class="btn btn-primary" id="update-event">Update changes</button>
+            <button type="button" class="btn btn-danger" event-id="0" id="delete-event">Delete</button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
@@ -100,12 +102,9 @@ $(document).ready(function () {
     var intervalStart, intervalEnd; //variables with higher scope level
 
     var calendar = $('#fullCalendar').fullCalendar({
-        header: {
-            left: "BackwardButton, ForwardButton",
-            center: "title"
-        },
+        droppable: true,
         editable: true,
-        events: "{{ route('calendar.create')}}",
+        events: "{{ route('calendar.index')}}",
         displayEventTime: false,
         eventRender: function (event, element, view) {
             if (event.allDay === 'true') {
@@ -119,54 +118,13 @@ $(document).ready(function () {
         select: function (start, end, allDay) {
               // Display the modal.
               // You could fill in the start and end fields based on the parameters
-
-              $.ajax({
-                    url: "{{ route('calendar.projects')}}",
-                    type: "GET",
-                    success: function (response) {
-                        var html = '<option value="">Select Project</option>';
-                        for (let i = 0; i < response.length; i++) {
-                          html += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
-                        }
-                        $('#projects').html(html);
-                    }
-                });
-
-                $('.modal').modal('show');
+               modalOpen();
         },
         
         editable: true,
-        eventDrop: function (event, delta) {
-                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
-                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
-                    $.ajax({
-                        url: 'edit-event.php',
-                        data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
-                        type: "POST",
-                        success: function (response) {
-                            displayMessage("Updated Successfully");
-                        }
-                    });
-                },
+      
         eventClick: function (event) {
-            var deleteMsg = confirm("Do you really want to delete?");
-            if (deleteMsg) {
-                let Url = '{{ url("calendar") }}';
-                $.ajax({
-                    type: "DELETE",
-                    url: Url +'/'+event.id,
-                    data: {                       
-                        id: event.id,
-                        _token : '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        if(response.status ==  200) {
-                            $('#fullCalendar').fullCalendar('removeEvents', event.id);
-                            displayMessage("Deleted Successfully");
-                        }
-                    }
-                });
-            }
+            modalOpen(event);
         },
         viewRender: function (view, element)
         {
@@ -176,7 +134,7 @@ $(document).ready(function () {
         }
     });
         
-         $("#starts-at, #ends-at").datetimepicker( );
+         $("#starts-at, #ends-at").datetimepicker();
 
     
         // Whenever the user clicks on the "save" button om the dialog
@@ -218,11 +176,119 @@ $(document).ready(function () {
 
              $('#fullCalendar').fullCalendar('refetchEvents');
         });
+
+        $('#update-event').on('click', function() {
+            var title = $('#title').val();
+           
+            if (title) {
+
+                var eventData = {
+                    id:  $('#delete-event').attr('event-id'),
+                    title: title,
+                    project_id: $('#projects').val(),
+                    start: $('#starts-at').val(),
+                    end: $('#ends-at').val(),
+                    _token: '{{ csrf_token() }}'
+                };
+             
+             $.ajax
+                ({
+                    type: "POST",
+                    url: "{{route('calendar.store')}}", 
+                    data: eventData
+                }).done( function(data){
+                     displayMessage("Updated Successfully");
+                    //console.log(data)
+                }).fail(function(){
+                    console.log('Ajax Failed')
+                });
+
+               // $('#fullCalendar').fullCalendar('renderEvent', eventData, false); // stick? = true
+            }
+            
+            // $('#fullCalendar').fullCalendar('unselect');
+
+            //Clear modal inputs
+            $('.modal').find('input').val('');
+
+            // hide modal
+            $('.modal').modal('hide');
+
+             $('#fullCalendar').fullCalendar('refetchEvents');
+        });
+
+        $('#delete-event').on('click',function(){
+          $('.modal').modal('hide');
+          var event_id = $('#delete-event').attr('event-id'); 
+          var deleteMsg = confirm("Do you really want to delete?");
+            if (deleteMsg) {
+                let Url = '{{ url("calendar") }}';
+                $.ajax({
+                    type: "DELETE",
+                    url: Url +'/'+event_id,
+                    data: {                       
+                        id: event.id,
+                        _token : '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if(response.status ==  200) {
+                            $('#fullCalendar').fullCalendar('removeEvents', event.id);
+                            displayMessage("Deleted Successfully");
+                        }
+                    }
+                });
+            }
+
+ 
+        });
 });
 
 function displayMessage(message) {
       $(".response").html("<div class='success'>"+message+"</div>");
     setInterval(function() { $(".success").fadeOut(); }, 1000);
+}
+
+function modalOpen($event){
+  
+      $.ajax({
+            url: "{{ route('calendar.projects')}}",
+            type: "GET",
+            success: function (response) {
+                var html = '<option value="">Select Project</option>';
+                for (let i = 0; i < response.length; i++) {
+                  html += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
+                }
+                $('#projects').html(html);
+
+                if($event){
+                  $('#projects').val($event.project_id);  
+                } 
+            }
+        });
+
+       if($event){
+         $('.modal-title').html('Edit event');
+         $('#save-event').hide();
+         $('#update-event').show();    
+         $('#delete-event').attr('event-id',$event.id);
+         $('#delete-event').show();
+
+         $('#title').val($event.eventTitle);
+         
+         $('#starts-at').val(moment($event.start).format('MM/DD/YYYY h:m A'));
+         $('#ends-at').val(moment($event.end).format('MM/DD/YYYY h:m A'));
+
+       }else{
+         $('.modal-title').html('Create new event');
+         $('#save-event').show();
+         $('#update-event').hide();
+         $('#delete-event').hide();
+       }
+
+        $('.modal').modal('show');
+
+        
+
 }
 </script>
 
@@ -405,16 +471,58 @@ function displayMessage(message) {
     }
 
     button.fc-today-button.fc-button.fc-state-default {
-        color: #f1e6e6;
         background-color: #403D39 !important;
-        background-image: linear-gradient(to bottom,#fff,#403D39);
-    }
-    button.fc-today-button.fc-button.fc-state-default.fc-corner-left.fc-corner-right{
-
+        background-image: none;
     }
 
-    button.fc-today-button.fc-button.fc-state-default.fc-corner-left.fc-corner-right.fc-state-disabled{
-
+    button.fc-today-button.fc-button.fc-state-default.fc-state-disabled{
+        color: #f1e6e6;
     }
+
+    .fc-button {
+        display: inline-block;
+        font-weight: 400;
+        color: rgb(33, 37, 41);
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        background-color: transparent;
+        font-size: 1em;
+        line-height: 1.5;
+        border-width: 1px;
+        border-style: solid;
+        border-color: transparent;
+        border-image: initial;
+        padding: 0.4em 0.65em;
+        border-radius: 0.25em;
+            text-transform: none;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        border-radius: 0px;
+        overflow: visible;
+        margin: 0px;
+    }
+
+    .fc-button-group > .fc-button {
+        position: relative;
+        -webkit-box-flex: 1;
+        flex: 1 1 auto;
+        margin: 0 0 0 2px;
+    }
+
+    .fc-button:not(:disabled) {
+        cursor: pointer;
+    }
+
+    .fc-state-default {
+        color: rgb(255, 255, 255);
+        background-color: rgb(44, 62, 80);
+        border-color: rgb(44, 62, 80);
+    }
+
+    
+
+    
 </style>
 @endsection

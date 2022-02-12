@@ -27,12 +27,72 @@ class CalendarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
          if(Gate::denies('view')) {
                return abort('401');
          } 
+         
+         if($request->ajax()){
+            
+            $projects = Project::query();
+            $events = Event::query();
 
+            if (!empty($request->input('start',null))) {
+                $rangeStart = $request->input('start');
+                $rangeEnd = $request->input('end');
+            } else {
+                $rangeStart = Carbon::now()->toDateString();
+                $rangeEnd = Carbon::now()->toDateString();
+            }
+            
+
+             $projects = $projects->WhereNotNull(['start_date','end_date'])
+                                 ->where('start_date', ">=", $rangeStart)
+                                 ->where('end_date', "<=", $rangeEnd)
+                                 ->get();
+
+            $events = $events->WhereNotNull(['start','end'])
+                                 ->where('start', ">=", $rangeStart)
+                                 ->where('end', "<=", $rangeEnd)
+                                 ->with('project')
+                                 ->get();
+
+            $eventsKey = 0;
+
+             foreach ($events as $key => $event) {
+                 $events[$key]['eventTitle'] = $event['title'];
+                $events[$key]['title'] = $event['title'].' - '.$event->project->name;
+
+            }
+           
+            foreach ($projects as $key => $project) {
+
+                $className = '';
+
+                $events->push([
+                    'start'                => $project->start_date->format('Y-m-d H:i:s'),
+                    'end'                  => $project->start_date->format('Y-m-d H:i:s'),
+                    'title'                => $project->name.' starts',
+                    'allDay'               => false,
+                    'className'            => $className
+                ]);
+
+                $events->push([
+                    'start'                => $project->end_date->format('Y-m-d H:i:s'),
+                    'end'                  => $project->end_date->format('Y-m-d H:i:s'),
+                    'title'                => $project->name.' ends',
+                    'allDay'               => false,
+                    'className'            => $className
+                ]);
+
+            }
+
+
+            return response()->json($events);
+
+
+         }
          return view('calendar.index');
     }
 
@@ -74,6 +134,7 @@ class CalendarController extends Controller
 
          foreach ($events as $key => $event) {
 
+            $events[$key]['eventTitle'] = $event['title'];
             $events[$key]['title'] = $event['title'].' - '.$event->project->name;
 
         }
@@ -132,12 +193,14 @@ class CalendarController extends Controller
         $data['start'] = Carbon::parse($data['start'])->toDateTimeString();
         $data['end']   = Carbon::parse($data['end'])->toDateTimeString();
 
-        Event::create($data);
-
+        Event::UpdateOrCreate(
+               ['id' => @$data['id']],
+               $data);
+        
         return response()->json(
            [
             'status' => 200,
-            'message' => 'Event Created Successfully!!'
+            'message' => "Event ".( @$data['id']) ? 'Updated' : 'Created'." Successfully!!"
           ]
         );
     }
