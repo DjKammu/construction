@@ -315,12 +315,7 @@ function modalOpen($event){
         margin: 0 auto;
     }
 
-    #loading {
-        display: none;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
+  
     .modal-dialog-slideout {
         min-height: 100%;
         margin: 0 0 0 auto;
@@ -370,22 +365,6 @@ function modalOpen($event){
         padding: 16px;
     }
 
-    .badge {
-        padding: 5px 12px;
-        text-transform: uppercase;
-        font-size: 10px;
-        color: #fff;
-        display: inline-block;
-        white-space: normal;
-    }
-    .badge-pill {
-        padding-right: .6em;
-        padding-left: .6em;
-        border-radius: 10rem;
-    }
-    .badge.badge-default {
-        background-color: #999;
-    }
     .bootstrap-datetimepicker-widget table td.day>div {
         z-index: 1 !important;
     }
@@ -394,21 +373,13 @@ function modalOpen($event){
         padding: 2px;
         font-size: 13px;
     }
-    .event-green .fc-event-dot{
-          background-color: green;
-    }.event-orange .fc-event-dot{
-          background-color: #ff9800;
-    }.event-azure .fc-event-dot{
-          background-color: #69e6e6;
-    }.event-blue .fc-event-dot{
-          background-color: blue;
-    }.event-red .fc-event-dot{
-          background-color: red;
-    }.event-grey .fc-event-dot{
-          background-color: grey;
-    }
+
     .fc-day-grid-event .fc-title{
-         float:right;
+        font-family: Arial;
+        float: right;
+        font-size: 11px;
+        padding: 3px;
+        color: #fff;
     }
     .fc-header.fc-widget-header .fc-title{
      background: #eee;
