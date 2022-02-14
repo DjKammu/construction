@@ -61,21 +61,22 @@ class CalendarController extends Controller
             $eventsKey = 0;
 
              foreach ($events as $key => $event) {
-                 $events[$key]['eventTitle'] = $event['title'];
-                $events[$key]['title'] = $event['title'].' - '.$event->project->name;
+                  $events[$key]['color'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+                  $events[$key]['eventTitle'] = $event['title'];
+                  $events[$key]['title'] = $event['title'].' - '.$event->project->name;
 
             }
            
             foreach ($projects as $key => $project) {
 
-                $className = '';
+                $className = 'aasa';
 
                 $events->push([
                     'start'                => $project->start_date->format('Y-m-d H:i:s'),
                     'end'                  => $project->start_date->format('Y-m-d H:i:s'),
                     'title'                => $project->name.' starts',
                     'allDay'               => false,
-                    'className'            => $className
+                    'color'                => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
                 ]);
 
                 $events->push([
@@ -83,14 +84,12 @@ class CalendarController extends Controller
                     'end'                  => $project->end_date->format('Y-m-d H:i:s'),
                     'title'                => $project->name.' ends',
                     'allDay'               => false,
-                    'className'            => $className
+                    'color'                => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
                 ]);
 
             }
 
-
             return response()->json($events);
-
 
          }
          return view('calendar.index');
