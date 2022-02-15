@@ -64,6 +64,7 @@
 
                           <div id="my-tab-content" class="tab-content">
                               @include('reports.project-summary')
+                              @include('reports.subcontractor-payment')
                         </div>
 
                       </div>
@@ -98,6 +99,21 @@ function selectPerpage(perPage){
        else if(isPerpage != perPage){
          window.location.href = fullUrl.replace(isPerpage, perPage)
        }
+  } 
+
+function selectProject(project, cLass){
+       let path = window.location.href.split('?')[0]
+       var projectType = $('.'+cLass).val();
+        
+       let url = ''; 
+       if(projectType){
+          url += 'pt='+projectType+'&';
+       }
+       url += 'p='+project;
+
+       window.location.href = path+'?'+url;
+      
+       
   } 
 
   const loc = new URL(window.location.href) || null

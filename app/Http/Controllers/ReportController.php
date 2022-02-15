@@ -52,15 +52,26 @@ class ReportController extends Controller
          }  
           
           $categories = $trades = $project = [];
+         
          if(request()->filled('p')){
             $p = request()->p;
             @extract($this->getreportDetails($p));
-         }
+         } 
+        
+        if(request()->filled('pt')){
+            $pt = request()->pt;
+            $projects->whereHas('project_type', function($q) use ($pt){
+                $q->where('slug', $pt);
+            });
+         } 
+
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
          $projects = $projects->paginate($perPage);
 
-         return view('reports.index',compact('projects','categories','trades','project'));
+         $projectTypes = ProjectType::all(); 
+
+         return view('reports.index',compact('projects','projectTypes','categories','trades','project'));
     }
 
     /**
