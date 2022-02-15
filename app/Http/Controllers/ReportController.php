@@ -50,26 +50,17 @@ class ReportController extends Controller
             ->orWhere('zip_code', 'LIKE', "%{$searchTerm}%")
             ->orWhere('notes', 'LIKE', "%{$searchTerm}%");
          }  
-
+          
+          $categories = $trades = $project = [];
          if(request()->filled('p')){
             $p = request()->p;
-            $projects->whereHas('project_type', function($q) use ($p){
-                $q->where('slug', $p);
-            });
-         } 
-
-         if(request()->filled('st')){
-            $st = request()->st;
-            $projects->where('status', $st);
-         } 
-         
-         $projectTypes = ProjectType::all(); 
-
+            @extract($this->getreportDetails($p));
+         }
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
          $projects = $projects->paginate($perPage);
 
-         return view('reports.index',compact('projects','projectTypes'));
+         return view('reports.index',compact('projects','categories','trades','project'));
     }
 
     /**
@@ -150,14 +141,21 @@ class ReportController extends Controller
                return abort('401');
           } 
     }
+   
+    public function getreportDetails($id){
 
-
-    public function getReport($id,$type){
-
-        $project = Project::find($id); 
+         $project = Project::find($id); 
         $trades = $project->trades()->get();
         $catids = @($trades->pluck('category_id'))->unique();
         $categories = Category::whereIn('id',$catids)->get(); 
+     
+        return compact('project','trades','categories');
+
+    }
+
+    public function getReport($id,$type){
+        
+        $data = @extract($this->getreportDetails($id));
 
        // return View('reports.'.$type.'-pdf',
        //    ['categories' => $categories,
