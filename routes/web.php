@@ -91,6 +91,13 @@ Route::get('documents/search', [App\Http\Controllers\DocumentController::class,'
 Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::class,'destroyFile'])->name('documents.file.destroy');
 
 
+// REports Routes
+
+Route::resource('reports', App\Http\Controllers\ReportController::class);
+
+ Route::get('reports/{id}/{type}', [App\Http\Controllers\ReportController::class,'getReport'])->name('reports.report');
+
+
 
 // Files Routes
 

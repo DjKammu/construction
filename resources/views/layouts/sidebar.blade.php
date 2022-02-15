@@ -110,6 +110,19 @@
             @can('view')
 
             <!-- Property Types -->
+             <li class="{{ Request::is('reports*') ? 'active' : '' }}">
+                <a href="{{ route('reports.index') }}">
+                    <i class="fa fa-file"></i>
+                    <p>Reports</p>
+                </a>
+            </li>
+
+            @endcan
+
+
+            @can('view')
+
+            <!-- Property Types -->
            <!--   <li class="{{ Request::is('files*') ? 'active' : '' }}">
                 <a href="{{ route('files.index') }}">
                     <i class="nc-icon nc-bank"></i>
