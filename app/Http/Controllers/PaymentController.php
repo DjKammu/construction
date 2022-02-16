@@ -368,16 +368,19 @@ class PaymentController extends Controller
               $year  = date('Y');
 
              $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
-                                  'name' => $name,
-                                  'date' => $date,'month' => $month,
-                                  'year' => $year
-                                  ];
+                          'name' => $name,
+                          'date' => $date,
+                          'month' => $month,
+                          'year' => $year
+                          ];
 
            @$document->files()->whereFile($file)->delete();             
             $document->files()->create($fileArr);
+            $data['file'] = $fileName;
         }
 
         $payment->update($data);

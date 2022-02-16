@@ -106,10 +106,15 @@
 
                <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount) }}</td>
                <td>  {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->remaining) }} </td>
-               <td><a href="{{ asset($payment->file) }}" target="_blank">
-              <p> {{ @$file->name }} </p>
+               <td>
+                @if($payment->file)
+                <a href="{{ asset($payment->file) }}" target="_blank">
               <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
-              </a> </td>
+              </a> 
+              @else
+                -
+              @endif
+            </td>
                <td>{{ @\App\Models\Payment::$statusArr[$payment->status] }}</td>
                   <td>        
                     <button onclick="return window.location.href='payments/{{$payment->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        

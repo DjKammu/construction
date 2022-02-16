@@ -55,7 +55,7 @@
 
                                       <li class="nav-item">
                                           <a class="nav-link text-dark"  data-toggle="tab" href="#subcontractor-payment" role="tab"
-                                             aria-expanded="false">Sub Contractor Payment</a>
+                                             aria-expanded="false">Sub Contractor / Vendor Payment</a>
                                       </li>
 
                                   </ul>
