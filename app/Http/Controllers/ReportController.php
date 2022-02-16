@@ -51,7 +51,8 @@ class ReportController extends Controller
             ->orWhere('notes', 'LIKE', "%{$searchTerm}%");
          }  
           
-          $categories = $trades = $project = $payments = $project_subcontractors = [];
+          $categories = $trades = $project = $payments = $project_subcontractors =
+           $project_vendors = [];
          
         
         if(request()->filled('pt')){
@@ -60,11 +61,14 @@ class ReportController extends Controller
                 $q->where('slug', $pt);
             });
          } 
+
+
           
         if(request()->filled('p')){
             $p = request()->p;
             $sc = request()->filled('sc') ? request()->sc : null;
-            @extract($this->getreportDetails($p,$sc));
+            $v = request()->filled('v') ? request()->v : null;
+            @extract($this->getreportDetails($p,$sc, $v));
 
             $proposalsQry = @$project->proposals()->IsAwarded();
 
@@ -78,8 +82,13 @@ class ReportController extends Controller
             //      return $prpsl->trade;
             // });
 
-        }
 
+            $vendorIds = $project->payments()->whereNotNull('vendor_id')
+                             ->pluck('vendor_id')->unique();
+           
+            $project_vendors = Vendor::whereIn('id',$vendorIds)->get();
+
+        }
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -87,7 +96,7 @@ class ReportController extends Controller
 
          $projectTypes = ProjectType::all(); 
 
-         return view('reports.index',compact('projects','projectTypes','categories','trades','project','project_subcontractors','payments'));
+         return view('reports.index',compact('projects','projectTypes','categories','trades','project','project_subcontractors','project_vendors','payments'));
     }
 
     /**
@@ -169,7 +178,7 @@ class ReportController extends Controller
           } 
     }
    
-    public function getreportDetails($id, $sc = null){
+    public function getreportDetails($id, $sc = null, $v= null){
 
         $project = Project::find($id); 
         $trades = $project->trades()->get();
@@ -177,11 +186,16 @@ class ReportController extends Controller
         $categories = Category::whereIn('id',$catids)->get();
         $payments = [];
 
-        if($sc){
+        if($sc || $v){
             $payments = $project->payments();
-            $payments->where('subcontractor_id', $sc);
+            if($sc){
+              $payments->where('subcontractor_id', $sc)
+              ->where('vendor_id',null);  
+            }else{
+              $payments->where('vendor_id', $v);
+            }
+           
             $payments = $payments->get();
-
              $payments->filter(function($payment){
 
                 $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
@@ -197,8 +211,10 @@ class ReportController extends Controller
     }
 
     public function getReport($id,$type,$sc = null){
+
+        $v = request()->v;
         
-        $data = @extract($this->getreportDetails($id,$sc));
+        $data = @extract($this->getreportDetails($id,$sc,$v));
 
        // return View('reports.'.$type.'-pdf',
        //    ['categories' => $categories,'payments' => $payments,

@@ -131,6 +131,24 @@ function selectSubcontractor(trade, cLass, cLass2){
        url += 'sc='+trade;
 
        window.location.href = path+'?'+url;
+         
+  } 
+
+function selectVendor(trade, cLass, cLass2){
+       let path = window.location.href.split('?')[0]
+       var projectType = $('.'+cLass).val();
+       var project = $('.'+cLass2).val();
+        
+       let url = ''; 
+       if(projectType){
+          url += 'pt='+projectType+'&';
+       }
+       if(project){
+          url += 'p='+project+'&';
+       }
+       url += 'v='+trade;
+
+       window.location.href = path+'?'+url;
       
        
   } 

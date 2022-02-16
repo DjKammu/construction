@@ -42,7 +42,7 @@
              @php
                 
                 $paidTotal = (float) @$payment->payment_amount + $paidTotal;
-                $remainingTotal = (float) @$payment->remaining + $remainingTotal;
+                $remainingTotal = (float) @$payment->remaining;
                 
              @endphp
              <tr>

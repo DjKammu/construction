@@ -24,11 +24,18 @@ aria-expanded="true">
          <option value="{{ $subcontractor->id }}" {{ (@request()->sc == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
       @endforeach
       </select>
+
+      <select style="height: 26px;" onchange="selectVendor(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','p')" > 
+      <option value="">Select Vendor</option>
+      @foreach($project_vendors as $vendor)
+         <option value="{{ $vendor->id }}" {{ (@request()->v == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
+      @endforeach
+      </select>
     </div>
-    @if(@request()->p && @request()->sc && @request()->t == 'subcontractor-payment' )
+    @if(@request()->p && ( @request()->sc || @request()->v ) && @request()->t == 'subcontractor-payment' )
       
       <div class="col-3 text-right">
-        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/subcontractor-payment/{{@request()->sc}}'" rel="tooltip" data-original-title="Sub Contractor Payment" title="Sub Contractor Payment">Download
+        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/subcontractor-payment/{{@request()->sc}}?v={{@request()->v }}'" rel="tooltip" data-original-title="Sub Contractor Payment" title="Sub Contractor Payment">Download
         </button>
     </div>
 
