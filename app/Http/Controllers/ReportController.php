@@ -169,7 +169,7 @@ class ReportController extends Controller
           } 
     }
    
-    public function getreportDetails($id, $sc){
+    public function getreportDetails($id, $sc = null){
 
         $project = Project::find($id); 
         $trades = $project->trades()->get();
@@ -181,23 +181,32 @@ class ReportController extends Controller
             $payments = $project->payments();
             $payments->where('subcontractor_id', $sc);
             $payments = $payments->get();
+
+             $payments->filter(function($payment){
+
+                $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
+
+                return $payment;
+               
+             });
+
          }
      
         return compact('project','trades','categories','payments');
 
     }
 
-    public function getReport($id,$type){
+    public function getReport($id,$type,$sc = null){
         
-        $data = @extract($this->getreportDetails($id));
+        $data = @extract($this->getreportDetails($id,$sc));
 
        // return View('reports.'.$type.'-pdf',
-       //    ['categories' => $categories,
+       //    ['categories' => $categories,'payments' => $payments,
        //    'trades' => $trades,'project' => $project]
        //  );
 
         $pdf = PDF::loadView('reports.'.$type.'-pdf',
-          ['categories' => $categories,
+          ['categories' => $categories,'payments' => $payments,
           'trades' => $trades,'project' => $project]
         );
 

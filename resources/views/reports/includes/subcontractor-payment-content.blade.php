@@ -11,8 +11,6 @@
                 <th></th>
                 <th></th>
             </tr>
-            </thead>
-            <tbody>
 
          @php   
          $remainingTotal = $grandTotal =$paidTotal = 0;
@@ -61,8 +59,8 @@
              @endforeach
 
              @php
-             $trades = @$payments->unique('trade_id');
-             $grandTotal = @$trades->sum('total_amount');
+             $trades = ($payments) ? @$payments->unique('trade_id') : '';
+             $grandTotal = ($trades) ? @$trades->sum('total_amount') : 0;
 
              @endphp
              <tr>

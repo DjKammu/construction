@@ -28,7 +28,7 @@ aria-expanded="true">
     @if(@request()->p && @request()->sc && @request()->t == 'subcontractor-payment' )
       
       <div class="col-3 text-right">
-        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/subcontractor-payment'" rel="tooltip" data-original-title="Sub Contractor Payment" title="Sub Contractor Payment">Download
+        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/subcontractor-payment/{{@request()->sc}}'" rel="tooltip" data-original-title="Sub Contractor Payment" title="Sub Contractor Payment">Download
         </button>
     </div>
 
