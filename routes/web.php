@@ -95,7 +95,7 @@ Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::c
 
 Route::resource('reports', App\Http\Controllers\ReportController::class);
 
- Route::get('reports/{id}/{type}', [App\Http\Controllers\ReportController::class,'getReport'])->name('reports.report');
+ Route::get('reports/{id}/{type}/{trade?}', [App\Http\Controllers\ReportController::class,'getReport'])->name('reports.report');
 
 
 

@@ -32,7 +32,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
          if(Gate::denies('view')) {
                return abort('401');
@@ -51,12 +51,8 @@ class ReportController extends Controller
             ->orWhere('notes', 'LIKE', "%{$searchTerm}%");
          }  
           
-          $categories = $trades = $project = [];
+          $categories = $trades = $project = $payments = $project_subcontractors = [];
          
-         if(request()->filled('p')){
-            $p = request()->p;
-            @extract($this->getreportDetails($p));
-         } 
         
         if(request()->filled('pt')){
             $pt = request()->pt;
@@ -64,6 +60,26 @@ class ReportController extends Controller
                 $q->where('slug', $pt);
             });
          } 
+          
+        if(request()->filled('p')){
+            $p = request()->p;
+            $sc = request()->filled('sc') ? request()->sc : null;
+            @extract($this->getreportDetails($p,$sc));
+
+            $proposalsQry = @$project->proposals()->IsAwarded();
+
+            $proposals = @$proposalsQry->get();
+
+            $project_subcontractors = @$proposals->map(function($prpsl){
+                     return $prpsl->subcontractor;
+            })->unique();
+
+            // $project_trades = $proposals->map(function($prpsl){
+            //      return $prpsl->trade;
+            // });
+
+        }
+
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -71,7 +87,7 @@ class ReportController extends Controller
 
          $projectTypes = ProjectType::all(); 
 
-         return view('reports.index',compact('projects','projectTypes','categories','trades','project'));
+         return view('reports.index',compact('projects','projectTypes','categories','trades','project','project_subcontractors','payments'));
     }
 
     /**
@@ -153,14 +169,21 @@ class ReportController extends Controller
           } 
     }
    
-    public function getreportDetails($id){
+    public function getreportDetails($id, $sc){
 
-         $project = Project::find($id); 
+        $project = Project::find($id); 
         $trades = $project->trades()->get();
         $catids = @($trades->pluck('category_id'))->unique();
-        $categories = Category::whereIn('id',$catids)->get(); 
+        $categories = Category::whereIn('id',$catids)->get();
+        $payments = [];
+
+        if($sc){
+            $payments = $project->payments();
+            $payments->where('subcontractor_id', $sc);
+            $payments = $payments->get();
+         }
      
-        return compact('project','trades','categories');
+        return compact('project','trades','categories','payments');
 
     }
 
