@@ -34,6 +34,7 @@
           $catGrandTotal = 0;
           $catPaidTotal = 0;
           $catDueTotal = 0;
+          $catSubcontractorTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          @endphp
@@ -66,9 +67,11 @@
                      foreach(@$bid->changeOrders as $k => $order){
                        if($order->type == \App\Models\ChangeOrder::ADD ){
                          $bidTotal += $order->subcontractor_price;
+                         $catSubcontractorTotal += $order->subcontractor_price;
                        }
                        else{
                          $bidTotal -= $order->subcontractor_price;
+                         $catSubcontractorTotal -= $order->subcontractor_price;
                        }
                      }
                      
@@ -87,7 +90,7 @@
                               $amount =  $p->payment_amount;
                               if(isset( $vendors[$p->vendor->name])){
                                    $amount = $vendors[$p->vendor->name] +
-                                     $p->payment_amount;   
+                                    $p->payment_amount;   
                               }
                               $vendors[$p->vendor->name] =  $amount;  
                              }
@@ -100,9 +103,11 @@
                       $paid =  (float) @$bid->payment()->whereNull('vendor_id')->sum('payment_amount');
                       $due =  (float) @$bidTotal  - (float) $paid;
 
+                      $catSubcontractorTotal +=  @$bid->subcontractor_price;
+
                       $materialTotal = (float) @$bid->material + $materialTotal;
                       $labourTotal = (float) @$bid->labour_cost + $labourTotal;
-                      $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal;
+                      $subcontractorTotal = (float) $catSubcontractorTotal + $subcontractorTotal;
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
@@ -115,7 +120,7 @@
 
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
-                  <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($catSubcontractorTotal)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>

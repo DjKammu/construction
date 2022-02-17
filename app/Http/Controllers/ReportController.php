@@ -90,9 +90,7 @@ class ReportController extends Controller
 
         }
 
-         $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
-
-         $projects = $projects->paginate($perPage);
+         $projects = $projects->get();
 
          $projectTypes = ProjectType::all(); 
 
