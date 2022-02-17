@@ -103,6 +103,7 @@ function selectPerpage(perPage){
 
 function selectProject(project, cLass){
        let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
        var projectType = $('.'+cLass).val();
         
        let url = ''; 
@@ -118,6 +119,7 @@ function selectProject(project, cLass){
 
 function selectSubcontractor(trade, cLass, cLass2){
        let path = window.location.href.split('?')[0]
+        path = path.split('#')[0]
        var projectType = $('.'+cLass).val();
        var project = $('.'+cLass2).val();
         
@@ -136,6 +138,7 @@ function selectSubcontractor(trade, cLass, cLass2){
 
 function selectVendor(trade, cLass, cLass2){
        let path = window.location.href.split('?')[0]
+        path = path.split('#')[0]
        var projectType = $('.'+cLass).val();
        var project = $('.'+cLass2).val();
         
