@@ -37,9 +37,10 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.payments',['id' => $proposal->id]) }}"
+                              action="{{ route('projects.payments',['id' => (@$proposal->id) ? @$proposal->id : 0 ]) }}"
                                enctype="multipart/form-data">
                                   @csrf
+                                   @if(@$proposal)
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -56,11 +57,11 @@
                                             </div>
                                         </div>
                                     </div> 
-
+                                    
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                              <input type="radio" name="type" checked="checked" value="subcontractor"  />
+                                              <input type="radio" name="type" checked="checked" value="subcontractor" />
                                               <label class="text-dark" for="password">Subcontractor
                                               </label>
                                               
@@ -79,7 +80,7 @@
                                                 <label class="text-dark" for="password">Subcontractor
                                                 </label>
                                                 <select class="form-control" name="subcontractor_id"> 
-                                                   <option value="{{ $proposal->subcontractor_id }}" >{{ $proposal->subcontractor->name}}
+                                                   <option value="{{ @$proposal->subcontractor_id }}" >{{ @$proposal->subcontractor->name}}
                                                    </option>
                                                 </select>
                                             </div>
@@ -104,12 +105,12 @@
                                             </div>
                                         </div>
                                     </div> 
-
+      
                                     </div> 
-                                    
+                                    @endif
                                   
-                                    
-                                     <div class="row subcontractor-vendor" id="venodr" style="display: none;">
+                                     <div class="row subcontractor-vendor" id="venodr" 
+                                         {{ (@!$proposal->id  && @$proposal->subcontractor_id) ? 'style="display: none;"' : ''}}>
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Vendor
@@ -196,6 +197,7 @@
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
+                                      <input type="hidden" name="project_id" value="{{ $id }}" />
                                         <button id="change-password-button" type="submit" class="btn btn-danger">Create Payment
                                         </button>
                                     </div>

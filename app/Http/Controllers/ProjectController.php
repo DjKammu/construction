@@ -326,6 +326,11 @@ class ProjectController extends Controller
 
             $folderPath = Document::INVOICES."/";
 
+             if(@!$payment->proposal){
+                 $vendor  = Vendor::find($payment->vendor_id);
+                 $trade_slug =  @$vendor->slug;
+            }
+
             $folderPath .= "$project_slug/$trade_slug/";
         
             $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;

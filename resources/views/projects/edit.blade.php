@@ -74,11 +74,12 @@
                                               </li>
                                               @endif 
 
-                                              @if($awarded)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
                                               </li>
+                                              
+                                              @if($awarded)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">Budget</a>
@@ -105,8 +106,8 @@
                                     @if($allProposals->count() > 0)
                                     @include('projects.includes.bids')
                                     @endif 
-                                    @if($awarded)
                                     @include('projects.includes.payments')
+                                    @if($awarded)
                                     @include('projects.includes.budget')
                                     @endif
                               </div>

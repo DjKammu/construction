@@ -156,7 +156,7 @@ Route::post('projects/proposals/{id}/upload',[App\Http\Controllers\ProposalContr
 
 Route::get('projects/{id}/payments',[App\Http\Controllers\PaymentController::class,'create'])->name('projects.payments');
 
-Route::post('projects/{id}/payments',[App\Http\Controllers\PaymentController::class,'store'])->name('projects.payments');
+Route::post('projects/{id?}/payments',[App\Http\Controllers\PaymentController::class,'store'])->name('projects.payments');
 
 Route::get('projects/payments/{id}',[App\Http\Controllers\PaymentController::class,'show'])->name('projects.payments.edit');
 

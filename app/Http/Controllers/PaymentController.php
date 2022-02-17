@@ -73,7 +73,7 @@ class PaymentController extends Controller
         $totalAmount = $this->proposalTotalAmount($proposal);
         $dueAmount = $this->proposalDueTotalAmount($proposal);
 
-        return view('projects.includes.payments-create',compact('proposal','vendors','trades',
+        return view('projects.includes.payments-create',compact('id','proposal','vendors','trades',
           'totalAmount','dueAmount'));
     }  
 
@@ -90,39 +90,65 @@ class PaymentController extends Controller
           if(Gate::denies('add')) {
                return abort('401');
         } 
+
         
         $proposal  = Proposal::find($id);  
          
-        if(!$proposal){
+        if(!$proposal &&  $id == null){
             return redirect('/');
         }
 
         $totalDueMount =  $this->proposalDueTotalAmount($proposal);
 
+
         $data = $request->except('_token');
 
-        $request->validate([
-                'subcontractor_id' => ['required',
-                'exists:subcontractors,id'],
-                'trade_id' => 'required|exists:trades,id',
-                 'payment_amount' => ['required',
-                      function ($attribute, $value, $fail) use ($totalDueMount){
-                        if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
-                            $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                        }
-                    }
-                  ]
-                // 'status' => 'required'
-            ]
-        );
+        if($id == 0){
+             
+             $request->validate([
+                  'vendor_id' => 'required|exists:vendors,id',
+                   'payment_amount' => ['required',
+                        function ($attribute, $value, $fail) use ($totalDueMount){
+                          if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
+                              $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                          }
+                      }
+                    ]
+                  // 'status' => 'required'
+              ]
+          );
+
+
+        }else{
+
+            $request->validate([
+                  'subcontractor_id' => ['required',
+                  'exists:subcontractors,id'],
+                  'trade_id' => 'required|exists:trades,id',
+                   'payment_amount' => ['required',
+                        function ($attribute, $value, $fail) use ($totalDueMount){
+                          if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
+                              $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                          }
+                      }
+                    ]
+                  // 'status' => 'required'
+              ]
+          );
+        }
+
+      
+
 
         $project_id = @$proposal->project->id;
-        $data['project_id']  = $project_id;
-        $data['proposal_id'] = $id;
+        $project_id = (!$project_id) ? $request->project_id : $project_id;
+
+        $data['project_id']  = (int) $project_id;
+        $data['proposal_id'] = ($id > 0) ? $id : null ;
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
         
-        $data['total_amount'] = $this->proposalTotalAmount($proposal);
+        $data['total_amount'] = @$this->proposalTotalAmount(@$proposal);
 
 
         $project = Project::find($project_id);
@@ -133,9 +159,14 @@ class PaymentController extends Controller
 
         $trade_slug = @$trade->slug;
 
-        $subcontractor = Subcontractor::find($request->subcontractor_id);
+        $subcontractor = Subcontractor::find(@$request->subcontractor_id);
 
-        $subcontractor_slug = $subcontractor->slug;
+        $subcontractor_slug = @$subcontractor->slug;
+
+        if(@!$proposal){
+             $vendor  = Vendor::find($request->vendor_id);
+             $subcontractor_slug = $trade_slug =  @$vendor->slug;
+        }
 
         $public_path = public_path().'/';
 
@@ -196,7 +227,12 @@ class PaymentController extends Controller
     public function proposalTotalAmount($proposal){
 
        $total =  (float) @$proposal->material + (float) @$proposal->labour_cost + (float) @$proposal->subcontractor_price;  
-  
+
+         if(!@$proposal->changeOrders)
+         {
+             return $total;
+         }
+
          foreach(@$proposal->changeOrders as $k => $order){
            if($order->type == \App\Models\ChangeOrder::ADD ){
              $total += $order->subcontractor_price;
@@ -213,7 +249,7 @@ class PaymentController extends Controller
 
          $total =  $this->proposalTotalAmount($proposal);  
      
-         $payments = Payment::whereProposalId($proposal->id)
+         $payments = Payment::whereProposalId(@$proposal->id)
                     ->whereNull('vendor_id')->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
@@ -225,8 +261,7 @@ class PaymentController extends Controller
 
          $total =  $this->proposalTotalAmount($proposal);  
 
-
-         $payments = Payment::whereProposalId($proposal->id)
+         $payments = Payment::whereProposalId(@$proposal->id)
          ->whereNull('vendor_id')                   
          ->where('id','<=', $payment_id)->sum('payment_amount');
 
@@ -303,26 +338,48 @@ class PaymentController extends Controller
         $payment = Payment::find($id);
 
         $totalDueMount =  $this->proposalDueTotalAmount($payment->proposal);
+     
 
         $data = $request->except('_token');
 
-        $request->validate([
-              // 'subcontractor_id' => ['required',
-              // 'exists:subcontractors,id'],
-              'trade_id' => 'required|exists:trades,id',
-              'payment_amount' => ['required',
-                    function ($attribute, $value, $fail) use ($totalDueMount,$payment){
-                      if (!request()->filled('vendor_id') && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
-                          $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+         if($payment->proposal){
+
+           $request->validate([
+                // 'subcontractor_id' => ['required',
+                // 'exists:subcontractors,id'],
+                'trade_id' => 'required|exists:trades,id',
+                'payment_amount' => ['required',
+                      function ($attribute, $value, $fail) use ($totalDueMount,$payment){
+                        if (!request()->filled('vendor_id') && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
+                            $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                        }
+                    }
+                  ]
+                //'payment_amount' => 'required|lte:'.((int) $totalDueMount + $payment->payment_amount),
+                // 'status' => 'required'
+            // ],[
+            //   'payment_amount.lte' => 'The payment amount must be less than or equal '.$totalDueMount.'.'
+            ]
+        );
+
+        }else{
+
+            $request->validate([
+                   'vendor_id' => 'required|exists:vendors,id',
+                   'payment_amount' => ['required',
+                        function ($attribute, $value, $fail) use ($totalDueMount){
+                          if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
+                              $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                          }
                       }
-                  }
-                ]
-              //'payment_amount' => 'required|lte:'.((int) $totalDueMount + $payment->payment_amount),
-              // 'status' => 'required'
-          // ],[
-          //   'payment_amount.lte' => 'The payment amount must be less than or equal '.$totalDueMount.'.'
-          ]
-      );
+                    ]
+                  // 'status' => 'required'
+              ]
+          );
+        }
+
+
+       
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
 
@@ -334,6 +391,11 @@ class PaymentController extends Controller
         $trade_slug = @$payment->trade->slug;
 
         $subcontractor_slug = @$payment->subcontractor->slug;
+
+         if(@!$payment->proposal){
+             $vendor  = Vendor::find($request->vendor_id);
+             $subcontractor_slug = $trade_slug =  @$vendor->slug;
+        }
 
         $public_path = public_path().'/';
 

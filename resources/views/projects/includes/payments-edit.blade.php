@@ -39,7 +39,7 @@
                                 <form   method="post" 
                               action="{{ route('projects.payments.update',['id' => $payment->id]) }}" enctype="multipart/form-data">
                                   @csrf
-
+                                    @if(@$payment->trade_id)
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -47,14 +47,15 @@
                                                 </label>
                                                 <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="trade_id"> 
                                                  
-                                                   <option value="{{ $payment->trade->id }}" {{ 
-                                                   $payment->trade_id == $payment->id ? 'selected' : '' 
-                                                   }}>{{ $payment->trade->name}}
+                                                   <option value="{{ @$payment->trade->id }}" {{ 
+                                                   @$payment->trade_id == $payment->id ? 'selected' : '' 
+                                                   }}>{{ @$payment->trade->name}}
                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div> 
+                                    @endif
                                     @if(!$payment->vendor_id)
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
