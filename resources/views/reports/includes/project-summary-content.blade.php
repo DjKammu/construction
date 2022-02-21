@@ -172,9 +172,9 @@
 
                 <tr>
                   <td colspan="2" style="padding:10px;"></td>
-                  <td></td>
-                  <td></td>
                   <td><span class="doc_type_m">{{ @$tPay->vendor->name }}</span></td>
+                  <td></td>
+                  <td></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="4" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
