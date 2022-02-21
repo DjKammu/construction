@@ -70,6 +70,10 @@ class PaymentController extends Controller
              return $prpsl->trade;
         });
 
+        if(!@$project->proposals()->exists()){
+             $trades = Trade::all();
+         }
+
         $totalAmount = $this->proposalTotalAmount($proposal);
         $dueAmount = $this->proposalDueTotalAmount($proposal);
 
@@ -100,13 +104,13 @@ class PaymentController extends Controller
 
         $totalDueMount =  $this->proposalDueTotalAmount($proposal);
 
-
         $data = $request->except('_token');
 
         if($id == 0){
              
              $request->validate([
-                  'vendor_id' => 'required|exists:vendors,id',
+                   'trade_id' => 'required|exists:trades,id',
+                   'vendor_id' => 'required|exists:vendors,id',
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
                           if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
@@ -117,7 +121,6 @@ class PaymentController extends Controller
                   // 'status' => 'required'
               ]
           );
-
 
         }else{
 
@@ -150,7 +153,6 @@ class PaymentController extends Controller
         
         $data['total_amount'] = @$this->proposalTotalAmount(@$proposal);
 
-
         $project = Project::find($project_id);
 
         $project_slug = \Str::slug($project->name);
@@ -165,7 +167,7 @@ class PaymentController extends Controller
 
         if(@!$proposal){
              $vendor  = Vendor::find($request->vendor_id);
-             $subcontractor_slug = $trade_slug =  @$vendor->slug;
+             $subcontractor_slug = @$vendor->slug;
         }
 
         $public_path = public_path().'/';
@@ -303,10 +305,17 @@ class PaymentController extends Controller
 
         $totalAmount = $this->proposalTotalAmount($payment->proposal);
         $dueAmount = $this->proposalDueTotalAmount($payment->proposal);
+
+        $trades = [];
+
+        if(!@$project->proposals()->exists()){
+             $trades = Trade::all();
+        }
+
          
          session()->flash('url', route('projects.show',['project' => $payment->project_id]).'?#payments'); 
 
-        return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors','totalAmount','dueAmount'));
+        return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors','totalAmount','dueAmount','trades'));
     }
 
     /**
@@ -365,6 +374,7 @@ class PaymentController extends Controller
         }else{
 
             $request->validate([
+                    'trade_id' => 'required|exists:trades,id',
                    'vendor_id' => 'required|exists:vendors,id',
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
@@ -377,9 +387,6 @@ class PaymentController extends Controller
               ]
           );
         }
-
-
-       
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
 
@@ -394,7 +401,7 @@ class PaymentController extends Controller
 
          if(@!$payment->proposal){
              $vendor  = Vendor::find($request->vendor_id);
-             $subcontractor_slug = $trade_slug =  @$vendor->slug;
+             $subcontractor_slug  =  @$vendor->slug;
         }
 
         $public_path = public_path().'/';

@@ -46,16 +46,19 @@
               <td  colspan="7"></td>
             </tr>
          @foreach($catTrades as $trd)
-
-              @php
-                  $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
-                         ->get();
-                   if($bids->count() == 0){
-                     continue;
-                   }      
+              @php                  
+              $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
+                         ->get();     
+              $tradePayments = @$project->payments()->whereNotNull('vendor_id')
+                               ->selectRaw('sum(payment_amount) as payment_amount_total, vendor_id')
+                               ->where('trade_id',$trd->id)
+                               ->groupBy('vendor_id')
+                               ->get();
+               
               @endphp
-
-            <tr >
+            
+             @if($bids->count() > 0)
+            <tr>
               <td>{{ $trd->account_number }}</td>
               <td >
                  <span class="text-center" style="width: 15%;">{{ $trd->name  }}</span>
@@ -138,9 +141,47 @@
                   <td colspan="4" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
-
-
               @endforeach
+
+            @endif
+
+            @if($tradePayments->count() > 0)
+            
+              @foreach($tradePayments as $tPay)
+
+               @php
+
+               @endphp
+
+                  <tr>
+                    <td>{{ $trd->account_number }}</td>
+                    <td >
+                       <span class="text-center" style="width: 15%;">{{ $trd->name  }}</span>
+                    </td>
+                   
+                  <td>${{  @\App\Models\Payment::format(@$tPay->payment_amount_total)  }}</td>
+                  <td>${{  @\App\Models\Payment::format(0.00)  }}</td>
+                  <td>${{  @\App\Models\Payment::format(@$tPay->payment_amount_total)  }}</td>
+                  <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
+                  <td>${{  \App\Models\Payment::format(@@$tPay->payment_amount_total)  }}</td>
+                  <td>${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}</td>
+                  <td>${{ \App\Models\Payment::format(0.00) }} </td> 
+                  <td> 100 % </td> 
+                  <!-- <td>{{ trim(@$notes) }}</td>  -->
+                </tr>
+
+                <tr>
+                  <td colspan="2" style="padding:10px;"></td>
+                  <td></td>
+                  <td></td>
+                  <td><span class="doc_type_m">{{ @$tPay->vendor->name }}</span></td>
+                  <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
+                  <td colspan="4" style="padding:10px;"></td>
+                  <!-- <td colspan="4" style="padding:10px;"></td> -->
+                </tr>
+              @endforeach
+
+            @endif
 
          @endforeach
 

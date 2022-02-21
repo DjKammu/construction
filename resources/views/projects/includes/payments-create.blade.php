@@ -107,8 +107,25 @@
                                     </div> 
       
                                     </div> 
+
+                                    @else
+                                    
+                                      <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Trades
+                                                </label>
+                                                <select class="form-control" name="trade_id"> 
+                                                  @foreach($trades as $trade)
+                                                   <option value="{{ $trade->id }}" >{{ $trade->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div> 
+
                                     @endif
-                                  
                                      <div class="row subcontractor-vendor" id="venodr" 
                                          {{ (@!$proposal->id  && @$proposal->subcontractor_id) ? 'style="display: none;"' : ''}}>
                                         <div class="col-lg-5 col-md-6 mx-auto">

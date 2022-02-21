@@ -11,6 +11,7 @@ use App\Models\Subcontractor;
 use App\Models\Proposal;
 use App\Models\Category;
 use App\Models\Vendor;
+use App\Models\Trade;
 use Gate;
 
 
@@ -228,6 +229,10 @@ class ProjectController extends Controller
                  return $prpsl->trade;
          })->unique();
 
+         if(!@$project->proposals()->exists()){
+             $paymentTrades = Trade::all();
+         }
+
          $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
                  return $prpsl->subcontractor;
          })->unique();
@@ -326,9 +331,9 @@ class ProjectController extends Controller
 
             $folderPath = Document::INVOICES."/";
 
-             if(@!$payment->proposal){
+            if(@!$trade_slug){
                  $vendor  = Vendor::find($payment->vendor_id);
-                 $trade_slug =  @$vendor->slug;
+                 $trade_slug = @$vendor->slug;
             }
 
             $folderPath .= "$project_slug/$trade_slug/";

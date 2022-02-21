@@ -11,6 +11,7 @@ use App\Models\Subcontractor;
 use App\Models\Proposal;
 use App\Models\Category;
 use App\Models\Vendor;
+use App\Models\Trade;
 use Gate;
 use PDF;
 
@@ -179,9 +180,15 @@ class ReportController extends Controller
     public function getreportDetails($id, $sc = null, $v= null){
 
         $project = Project::find($id); 
-        $trades = $project->trades()->get();
+        $trades = $project->trades()->get(); 
+        if($trades->count() == 0){
+          $trade_ids = @$project->payments->whereNotNull('trade_id')
+                       ->pluck('trade_id');
+          $trades = Trade::whereIn('id',$trade_ids)->get();             
+        }
         $catids = @($trades->pluck('category_id'))->unique();
         $categories = Category::whereIn('id',$catids)->get();
+        
         $payments = [];
 
         if($sc || $v){
@@ -192,9 +199,9 @@ class ReportController extends Controller
             }else{
               $payments->where('vendor_id', $v);
             }
-           
+
             $payments = $payments->get();
-             $payments->filter(function($payment){
+            $payments->filter(function($payment){
 
                 $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
 

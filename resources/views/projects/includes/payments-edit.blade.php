@@ -39,8 +39,9 @@
                                 <form   method="post" 
                               action="{{ route('projects.payments.update',['id' => $payment->id]) }}" enctype="multipart/form-data">
                                   @csrf
-                                    @if(@$payment->trade_id)
-                                    <div class="row">
+
+                                  @if(@$payment->proposal->exists())
+                                   <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
@@ -55,7 +56,28 @@
                                             </div>
                                         </div>
                                     </div> 
+
+                                    @else
+                                    
+                                      <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Trades
+                                                </label>
+                                                <select class="form-control" name="trade_id"> 
+                                                  @foreach($trades as $trade)
+                                                   <option value="{{ $trade->id }}" {{ 
+                                                   $payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   }}>{{ $trade->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     @endif
+                                    
                                     @if(!$payment->vendor_id)
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
