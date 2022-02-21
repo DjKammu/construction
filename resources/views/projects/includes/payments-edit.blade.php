@@ -40,7 +40,7 @@
                               action="{{ route('projects.payments.update',['id' => $payment->id]) }}" enctype="multipart/form-data">
                                   @csrf
 
-                                  @if(@$payment->proposal->exists())
+                                  @if(@$payment->proposal()->exists())
                                    <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
