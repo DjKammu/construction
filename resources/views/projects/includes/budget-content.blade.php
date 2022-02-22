@@ -24,20 +24,21 @@
          $grandTotal = 0;
          $paidTotal = 0;
          $dueTotal = 0;
-          $vendors = [];
+         $vendors = [];
          @endphp
 
-        @foreach($categories as $cat)
+        @foreach($paymentCategories as $cat)
 
          @php   
-
           $catGrandTotal = 0;
           $catPaidTotal = 0;
           $catDueTotal = 0;
-          $catSubcontractorTotal = 0;
           $vendorsTotal = 0;
 
+          $trades = ($trades->count() == 0) ? $pTrades : $trades;
+
          $catTrades = @$trades->where('category_id', $cat->id);
+
          @endphp
             <tr >
               <td>{{ $cat->account_number }}</td>
@@ -47,19 +48,22 @@
               <td  colspan="7"></td>
             </tr>
          @foreach($catTrades as $trd)
-              @php                  
+
+              @php
+
               $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
-                         ->get();     
+                     ->get();
               $tradePayments = @$project->payments()->whereNotNull('vendor_id')
-                               ->selectRaw('sum(payment_amount) as payment_amount_total, vendor_id')
-                               ->where('trade_id',$trd->id)
-                               ->groupBy('vendor_id')
-                               ->get();
+                           ->selectRaw('sum(payment_amount) as payment_amount_total, vendor_id')
+                           ->where('trade_id',$trd->id)
+                           ->groupBy('vendor_id')
+                           ->get();
                
               @endphp
             
              @if($bids->count() > 0)
-            <tr>
+
+            <tr >
               <td>{{ $trd->account_number }}</td>
               <td >
                  <span class="text-center" style="width: 15%;">{{ $trd->name  }}</span>
@@ -71,11 +75,9 @@
                      foreach(@$bid->changeOrders as $k => $order){
                        if($order->type == \App\Models\ChangeOrder::ADD ){
                          $bidTotal += $order->subcontractor_price;
-                         $catSubcontractorTotal += $order->subcontractor_price;
                        }
                        else{
                          $bidTotal -= $order->subcontractor_price;
-                         $catSubcontractorTotal -= $order->subcontractor_price;
                        }
                      }
                      
@@ -94,7 +96,7 @@
                               $amount =  $p->payment_amount;
                               if(isset( $vendors[$p->vendor->name])){
                                    $amount = $vendors[$p->vendor->name] +
-                                    $p->payment_amount;   
+                                     $p->payment_amount;   
                               }
                               $vendors[$p->vendor->name] =  $amount;  
                              }
@@ -107,11 +109,9 @@
                       $paid =  (float) @$bid->payment()->whereNull('vendor_id')->sum('payment_amount');
                       $due =  (float) @$bidTotal  - (float) $paid;
 
-                      $catSubcontractorTotal +=  @$bid->subcontractor_price;
-
                       $materialTotal = (float) @$bid->material + $materialTotal;
                       $labourTotal = (float) @$bid->labour_cost + $labourTotal;
-                      $subcontractorTotal = (float) $catSubcontractorTotal + $subcontractorTotal;
+                      $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal;
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
@@ -124,7 +124,7 @@
 
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
-                  <td>${{  @\App\Models\Payment::format($catSubcontractorTotal)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
@@ -142,9 +142,11 @@
                   <td colspan="4" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
+
+
               @endforeach
 
-            @endif
+              @endif
 
             @if($tradePayments->count() > 0)
             
@@ -273,8 +275,7 @@
                <td><b>${{ \App\Models\Payment::format($grandTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($paidTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
-                <td><b>{{ ($paidTotal && $grandTotal)  || ($vendorsTotal) ? sprintf('%0.2f', (@$paidTotal + $vendorsTotal)/ (@$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
-
+               <td><b>{{ ($paidTotal && $grandTotal)  || ($vendorsTotal) ? sprintf('%0.2f', (@$paidTotal + $vendorsTotal)/ (@$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
                <!-- <td ></td> -->
             
            </tr>
@@ -282,199 +283,3 @@
             </tbody>
         </table>
 </div>
-
-<!----
-
-<div class="table-responsive">
-   <h4 class="mt-0 text-center">  </h4>
-    <table id="project-types-table" class="table table-hover text-center payments-table">
-            <thead>
-            <tr class="text-danger">
-                <th colspan=""> </th>
-                <th colspan="2">Project Name</th>
-                <th ></th>
-                <th colspan="2"> Today Date </th>
-                <th ></th>
-                <th></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-
-
-         @php   
-         $materialTotal = 0;
-         $labourTotal = 0;
-         $subcontractorTotal = 0;
-         $grandTotal = 0;
-         $paidTotal = 0;
-         $dueTotal = 0;
-          $vendors = [];
-         @endphp
-
-        @foreach($categories as $cat)
-
-         @php   
-
-          $catGrandTotal = 0;
-          $catPaidTotal = 0;
-          $catDueTotal = 0;
-
-         $catTrades = @$trades->where('category_id', $cat->id);
-
-         @endphp
-          
-         @foreach($catTrades as $trd)
-
-              @php
-                 
-                  $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
-                         ->get();
-                   if($bids->count() == 0){
-                     continue;
-                   }     
-              @endphp
-
-             
-
-              @foreach($bids as $bid)
-                @php    
-                  $bidTotal =  (float) @$bid->material + (float) @$bid->labour_cost + (float) @$bid->subcontractor_price;   
-                    
-                     foreach(@$bid->changeOrders as $k => $order){
-                       if($order->type == \App\Models\ChangeOrder::ADD ){
-                         $bidTotal += $order->subcontractor_price;
-                         $subcontractorTotal += $order->subcontractor_price;
-                       }
-                       else{
-                         $bidTotal -= $order->subcontractor_price;
-                         $subcontractorTotal -= $order->subcontractor_price;
-                       }
-                     }
-                     
-                       $bidPayments =   $bid->payment;
-
-                       $payment_vendors = [];
-
-                       $payment_vendors = @collect($bidPayments)->map(function($p) {
-                              if($p->vendor){
-                                return $p->vendor->name;
-                              }
-                       })->unique()->join(',');
-
-                       @collect($bidPayments)->each(function($p) use (&$vendors){
-                           if($p->vendor){
-                              $amount =  $p->payment_amount;
-                              if(isset( $vendors[$p->vendor->name])){
-                                   $amount = $vendors[$p->vendor->name] +
-                                     $p->payment_amount;   
-                              }
-                              $vendors[$p->vendor->name] =  $amount;  
-                             }
-                       });
-
-
-                       $notes = @$bid->payment()->whereNotNull('notes')->pluck('notes')->join(',');
-                      
-                        
-                      $paid =  (float) @$bid->payment()->whereNull('vendor_id')->sum('payment_amount');
-                      $due =  (float) @$bidTotal  - (float) $paid;
-
-                      $materialTotal = (float) @$bid->material + $materialTotal;
-                      $labourTotal = (float) @$bid->labour_cost + $labourTotal;
-                      $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal;
-                      $grandTotal = (float) @$bidTotal + $grandTotal;
-                      $paidTotal = (float) @$paid + $paidTotal;
-                      $dueTotal = (float) @$due + $dueTotal;
-
-                      $catGrandTotal = (float) @$bidTotal + $catGrandTotal;
-                      $catPaidTotal = (float) @$paid + $catPaidTotal;
-                      $catDueTotal = (float) @$due + $catDueTotal;
-
-                @endphp
-
-
-
-              @endforeach
-
-         @endforeach
-
-    
-        @endforeach
-
-         @php
-         $extraTotal = 0;
-         @endphp
-
-        @if($vendors) 
-
-          
-           @foreach($vendors as $k => $vndr)
-              @php
-                $extraTotal = $extraTotal + $vndr;
-              @endphp
-           
-           @endforeach
-         
-         @endif
-
-
-              <tr>
-                <td colspan=""></td>
-                <td colspan="2">{{ @$project->name }}</td>
-                <td></td>
-                <td colspan="2"> {{ \Carbon\Carbon::now()->format('m-d-Y') }} </td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr> 
-
-              <tr>
-                <td colspan="2"></td>
-                <td></td>
-                <td><b>Budget</b></td>
-                <td></td>
-                <td colspan="2"><b>Actual Paid</b></td>
-                <td></td>
-              </tr> 
-
-            <tr>
-              <td colspan="2" class="text-left">Total Material Paid</td>
-              <td></td>
-              <td >${{ \App\Models\Payment::format($materialTotal + $extraTotal)}}</td>
-              <td></td>
-              <td colspan="2"> ${{ \App\Models\Payment::format( $extraTotal) }} </td>
-              <td></td>
-            </tr>
-
-            <tr>
-              <td colspan="2" class="text-left">Total Labour</td>
-              <td></td>
-              <td >${{ \App\Models\Payment::format($labourTotal) }}</td>
-              <td></td>
-              <td colspan="2"> </td>
-              <td></td>
-            </tr>
-
-            <tr>
-              <td colspan="2" class="text-left">Total Subcontractor</td>
-              <td></td>
-              <td >${{ \App\Models\Payment::format($subcontractorTotal) }}</td>
-              <td></td>
-              <td colspan="2"> ${{ \App\Models\Payment::format($paidTotal) }} </td>
-              <td></td>
-            </tr> 
-
-             <tr>
-              <td colspan="2"></td>
-              <td><b>Total</b></td>
-              <td ><b>${{ \App\Models\Payment::format($grandTotal + $extraTotal) }}</b></td>
-              <td></td>
-              <td colspan="2"> <b>${{ \App\Models\Payment::format($paidTotal + $extraTotal) }} </b></td>
-              <td></td>
-            </tr>
-
-
-            </tbody>
-        </table>
-</div>-->
