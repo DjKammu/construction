@@ -348,17 +348,27 @@ class ProjectController extends Controller
 
          $catids = @($trades->pluck('category_id'))->unique();
 
-         $categories = Category::whereIn('id',$catids)->get(); 
+         $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
+
+         $pTrades = [];
+
+         if($paymentCategories->count() == 0){
+
+              $trade_ids = @$project->payments->whereNotNull('trade_id')
+                       ->pluck('trade_id');  
+              $pTrades = Trade::whereIn('id',$trade_ids)->get();             
+              $catids = @($pTrades->pluck('category_id'))->unique();
+              $paymentCategories = Category::whereIn('id',$catids)->get(); 
+         }
 
          $subcontractorsCount = @$project->proposals()
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
 
-                                 
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
-            'paymentSubcontractors'));
+            'paymentSubcontractors','paymentCategories','pTrades'));
     }
 
     /**
