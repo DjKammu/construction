@@ -1,3 +1,4 @@
+
 <div class="table-responsive">
    <!-- <h4 class="mt-0 text-center">  </h4> -->
     <table id="project-types-table" class="table table-hover text-center payments-table">
@@ -24,6 +25,7 @@
          $grandTotal = 0;
          $paidTotal = 0;
          $dueTotal = 0;
+         $vendorsTotal = 0;
          $vendors = [];
          @endphp
 
@@ -38,7 +40,7 @@
           $trades = ($trades->count() == 0) ? $pTrades : $trades;
 
          $catTrades = @$trades->where('category_id', $cat->id);
-
+         
          @endphp
             <tr >
               <td>{{ $cat->account_number }}</td>

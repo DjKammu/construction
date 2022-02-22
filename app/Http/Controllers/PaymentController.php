@@ -543,8 +543,16 @@ class PaymentController extends Controller
         $catids = @($trades->pluck('category_id'))->unique();
         $categories = Category::whereIn('id',$catids)->get(); 
 
+         if($categories->count() == 0){
+              $trade_ids = @$project->payments->whereNotNull('trade_id')
+                       ->pluck('trade_id');  
+              $pTrades = Trade::whereIn('id',$trade_ids)->get();             
+              $catids = @($pTrades->pluck('category_id'))->unique();
+              $categories = Category::whereIn('id',$catids)->get(); 
+         }
+
         $pdf = PDF::loadView('projects.includes.budget-pdf',
-          ['categories' => $categories,
+          ['paymentCategories' => $categories,'pTrades' => $pTrades,
           'trades' => $trades,'project' => $project]
         );
 
