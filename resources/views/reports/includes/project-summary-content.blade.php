@@ -45,6 +45,7 @@ table.payments-table thead>tr>th{
          $grandTotal = 0;
          $paidTotal = 0;
          $dueTotal = 0;
+         $vendorsTotal = 0;
           $vendors = [];
          @endphp
 
@@ -56,6 +57,7 @@ table.payments-table thead>tr>th{
           $catPaidTotal = 0;
           $catDueTotal = 0;
           $catSubcontractorTotal = 0;
+          $changeOrderTotal = 0;
           $vendorsTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
@@ -93,10 +95,12 @@ table.payments-table thead>tr>th{
                        if($order->type == \App\Models\ChangeOrder::ADD ){
                          $bidTotal += $order->subcontractor_price;
                          $catSubcontractorTotal += $order->subcontractor_price;
+                         $changeOrderTotal += $order->subcontractor_price;
                        }
                        else{
                          $bidTotal -= $order->subcontractor_price;
                          $catSubcontractorTotal -= $order->subcontractor_price;
+                         $changeOrderTotal -= $order->subcontractor_price;
                        }
                      }
                      
@@ -145,7 +149,7 @@ table.payments-table thead>tr>th{
 
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
-                  <td>${{  @\App\Models\Payment::format($catSubcontractorTotal)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($catSubcontractorTotal) }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
@@ -158,7 +162,7 @@ table.payments-table thead>tr>th{
                   <td colspan="2" style="padding:10px;"></td>
                   <td></td>
                   <td></td>
-                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
+                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</br> {{ ($changeOrderTotal > 0) ? 'Change Orders -'.$changeOrderTotal : ''  }}</span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="4" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
@@ -236,27 +240,27 @@ table.payments-table thead>tr>th{
 
         
           
-           <tr>
+         <!--   <tr>
                <td colspan="2"><b>Extra Material</b></td>
                <td colspan="8" style="padding:10px;"></td>
                <!-- <td></td> -->
-               <!-- <td></td> -->
-           </tr>
+               <!-- <td></td>
+           </tr> -->
 
            @foreach($vendors as $k => $vndr)
               @php
                 $extraTotal = $extraTotal + $vndr;
               @endphp
-            <tr>
+            <!-- <tr>
                <td></td>
                <td>{{ $k}}</td>
                <td>${{ @\App\Models\Payment::format($vndr)}}</td>
                <td colspan="7" style="padding:10px;"></td>
-           </tr>
+           </tr> -->
 
            @endforeach
          
-         <tr>
+         <!-- <tr>
                <td class="text-danger h6 text-center" colspan="2">
                <b>Extra Material Total </b>
                </td>
@@ -266,7 +270,7 @@ table.payments-table thead>tr>th{
 
          <tr>
             <td colspan="10" style="padding:20px;"></td>
-           </tr>
+           </tr> -->
 
          @endif
 
