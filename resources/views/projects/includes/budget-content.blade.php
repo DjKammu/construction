@@ -53,7 +53,7 @@
          @foreach($catTrades as $trd)
 
               @php
-
+              $changeOrderTotal = 0;
               $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
                      ->get();
               $tradePayments = @$project->payments()->whereNotNull('vendor_id')

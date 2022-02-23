@@ -57,7 +57,6 @@ table.payments-table thead>tr>th{
           $catPaidTotal = 0;
           $catDueTotal = 0;
           $catSubcontractorTotal = 0;
-          $changeOrderTotal = 0;
           $vendorsTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
@@ -70,7 +69,8 @@ table.payments-table thead>tr>th{
               <td  colspan="7"></td>
             </tr>
          @foreach($catTrades as $trd)
-              @php                  
+              @php    
+              $changeOrderTotal = 0;              
               $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
                          ->get();     
               $tradePayments = @$project->payments()->whereNotNull('vendor_id')
