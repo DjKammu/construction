@@ -542,7 +542,7 @@ class PaymentController extends Controller
         $trades = $project->trades()->get();
         $catids = @($trades->pluck('category_id'))->unique();
         $categories = Category::whereIn('id',$catids)->get(); 
-
+        $pTrades = [];
          if($categories->count() == 0){
               $trade_ids = @$project->payments->whereNotNull('trade_id')
                        ->pluck('trade_id');  
