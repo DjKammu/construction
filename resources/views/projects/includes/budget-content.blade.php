@@ -129,7 +129,7 @@
 
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
-                  <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</td>
+                  <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</br> <span class="doc_type_m">{{ ($changeOrderTotal > 0) ? 'Change Orders - $'. @\App\Models\Payment::format($changeOrderTotal) : ''  }}</span></td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
@@ -142,7 +142,7 @@
                   <td colspan="2" style="padding:10px;"></td>
                   <td></td>
                   <td></td>
-                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</br> {{ ($changeOrderTotal > 0) ? 'Change Orders -'.$changeOrderTotal : ''  }}</span></span></td>
+                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="4" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
