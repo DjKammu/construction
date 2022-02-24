@@ -117,7 +117,7 @@
                                    @if($proposal->changeOrders)
 
                                      @foreach($proposal->changeOrders as $k => $order )
-                                    
+                                     <div >
                                      <a href="javascript:void(0);" class="remove_button_2">X</a>  
                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
@@ -143,6 +143,8 @@
                                         </div>
                                         <input type="hidden"  value="{{ $order->id }}" name="change_orders[id][]">
                                      </div>
+                                   </div>
+
                                      @endforeach
                                    @endif
                                 
@@ -255,6 +257,13 @@ $(document).ready(function(){
     
     //Once remove button is clicked
     $(document).on('click', '.remove_button', function(e){
+        e.preventDefault();
+        $(this).parent('div').remove(); //Remove field html
+        x--; //Decrement field counter
+    });
+
+    //Once remove button is clicked
+    $(document).on('click', '.remove_button_2', function(e){
         e.preventDefault();
         $(this).parent('div').remove(); //Remove field html
         x--; //Decrement field counter

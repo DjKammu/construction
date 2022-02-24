@@ -155,7 +155,7 @@ table.payments-table thead>tr>th{
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
-                  <td>{{ sprintf('%0.2f', $paid /@$bidTotal * 100) }} % </td> 
+                  <td>{{ sprintf('%0.2f', @$paid /@$bidTotal * 100) }} % </td> 
                   <!-- <td>{{ trim(@$notes) }}</td>  -->
                 </tr>
 
@@ -223,7 +223,7 @@ table.payments-table thead>tr>th{
                   <td><b>${{ \App\Models\Payment::format($catGrandTotal + $vendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal + $vendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
-                  <td><b>{{ ($catGrandTotal && $catPaidTotal) || ($vendorsTotal) ? sprintf('%0.2f', (@$catPaidTotal + + $vendorsTotal) / (@$catGrandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
+                  <td><b>{{ ($catGrandTotal && $catPaidTotal) || ($vendorsTotal) ? sprintf('%0.2f', (@$catPaidTotal + $vendorsTotal) / (@$catGrandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
                   <!-- <td></td> -->
            </tr>
 

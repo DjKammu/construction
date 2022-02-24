@@ -326,7 +326,9 @@ class ProposalController extends Controller
         $priceArr = @$changeOrders['subcontractor_price'] ?? [];
         $notesArr = @$changeOrders['notes'];
         $idArr    = @$changeOrders['id'];
-         
+
+        $changeOrdersIds = @$proposal->changeOrders->pluck('id')->toArray();
+
         foreach (@$priceArr as $key => $price) {
            $id = @$idArr[$key] ?? 0; 
            $proposal->changeOrders()->updateOrCreate(
@@ -338,6 +340,14 @@ class ProposalController extends Controller
            );
         }
 
+        $reqChangeOrdersIds = (@$request->change_orders['id']) ? @$request->change_orders['id'] : [];
+
+        $notIds = @array_diff($changeOrdersIds, $reqChangeOrdersIds); 
+
+        if($notIds)
+        { 
+            @$proposal->changeOrders()->whereIn('id', $notIds)->delete();
+        }
       
         return redirect(route('projects.show',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'Proposal Updated Successfully!');
     }
