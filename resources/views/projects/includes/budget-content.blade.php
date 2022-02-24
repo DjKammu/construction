@@ -134,7 +134,8 @@
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
-                  <td>{{ sprintf('%0.2f', @$paid /@$bidTotal * 100) }} % </td> 
+                  <td>{{ ($paid && $bidTotal) ?  sprintf('%0.2f', @$paid /@$bidTotal * 100)  : 0 }}
+                   % </td> 
                   <!-- <td>{{ trim(@$notes) }}</td>  -->
                 </tr>
 
