@@ -350,13 +350,13 @@ class ProjectController extends Controller
 
          $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
 
-         $pTrades = [];
-
-         if($paymentCategories->count() == 0){
-
-              $trade_ids = @$project->payments->whereNotNull('trade_id')
+         $pTrades =  [];
+         
+         $trade_ids = @$project->payments->whereNotNull('trade_id')
                        ->pluck('trade_id');  
-              $pTrades = Trade::whereIn('id',$trade_ids)->get();             
+         $pTrades = Trade::whereIn('id',$trade_ids)->get();    
+
+         if($paymentCategories->count() == 0){         
               $catids = @($pTrades->pluck('category_id'))->unique();
               $paymentCategories = Category::whereIn('id',$catids)->get(); 
          }

@@ -38,7 +38,7 @@
           $catDueTotal = 0;
           $vendorsTotal = 0;
 
-          $trades = ($trades->count() == 0) ? $pTrades : $trades;
+          $trades = ($trades->count() == 0 || ($pTrades->count() > $trades->count())) ? $pTrades : $trades;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          
