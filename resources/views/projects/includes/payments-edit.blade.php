@@ -40,7 +40,7 @@
                               action="{{ route('projects.payments.update',['id' => $payment->id]) }}" enctype="multipart/form-data">
                                   @csrf
 
-                                  @if(@$payment->proposal()->exists())
+                                  <!-- @if(@$payment->proposal()->exists())
                                    <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -57,7 +57,7 @@
                                         </div>
                                     </div> 
 
-                                    @else
+                                    @endif -->
                                     
                                       <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
@@ -65,7 +65,7 @@
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
                                                 <select class="form-control" name="trade_id"> 
-                                                  @foreach($trades as $trade)
+                                                  @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
                                                    $payment->trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
@@ -76,7 +76,6 @@
                                         </div>
                                     </div>
                                     
-                                    @endif
                                     
                                     @if(!$payment->vendor_id)
                                     <div class="row">

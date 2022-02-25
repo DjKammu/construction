@@ -70,15 +70,14 @@ class PaymentController extends Controller
              return $prpsl->trade;
         });
 
-        if(!@$project->proposals()->exists()){
-             $trades = Trade::all();
-         }
+        //if(!@$project->proposals()->exists()){
+             $allTrades = Trade::all();
+       //  }
 
         $totalAmount = $this->proposalTotalAmount($proposal);
         $dueAmount = $this->proposalDueTotalAmount($proposal);
 
-        return view('projects.includes.payments-create',compact('id','proposal','vendors','trades',
-          'totalAmount','dueAmount'));
+        return view('projects.includes.payments-create',compact('id','proposal','vendors','trades','allTrades','totalAmount','dueAmount'));
     }  
 
 
@@ -308,14 +307,11 @@ class PaymentController extends Controller
 
         $trades = [];
 
-        if(!@$project->proposals()->exists()){
-             $trades = Trade::all();
-        }
-
+        $allTrades = Trade::all();
          
          session()->flash('url', route('projects.show',['project' => $payment->project_id]).'?#payments'); 
 
-        return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors','totalAmount','dueAmount','trades'));
+        return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors','totalAmount','dueAmount','trades','allTrades'));
     }
 
     /**
