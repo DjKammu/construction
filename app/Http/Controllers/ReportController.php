@@ -182,13 +182,14 @@ class ReportController extends Controller
         $project = Project::find($id); 
         $trades = $project->trades()->get(); 
         $paymentTrades = [];
-       // if($trades->count() == 0){
-          $trade_ids = @$project->payments->whereNotNull('trade_id')
+      
+        $trade_ids = @$project->payments->whereNotNull('trade_id')
                        ->pluck('trade_id');
-          $paymentTrades = Trade::whereIn('id',$trade_ids)->get();             
-        //}
-
-        $trades = ($paymentTrades->count() > $trades->count()) ? $paymentTrades : $trades;
+        $paymentTrades = Trade::whereIn('id',$trade_ids)->get();             
+       
+        if($paymentTrades){
+            $trades = $trades->merge($paymentTrades);
+        }
         $catids = @($trades->pluck('category_id'))->unique();
         $categories = Category::whereIn('id',$catids)->get();
 

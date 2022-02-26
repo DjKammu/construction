@@ -354,9 +354,13 @@ class ProjectController extends Controller
          
          $trade_ids = @$project->payments->whereNotNull('trade_id')
                        ->pluck('trade_id');  
-         $pTrades = Trade::whereIn('id',$trade_ids)->get();    
+         $pTrades = Trade::whereIn('id',$trade_ids)->get();   
 
-         if($paymentCategories->count() == 0){         
+         if($pTrades){
+            $trades = $trades->merge($pTrades);
+         }
+
+         if($paymentCategories->count() == 0){   
               $catids = @($pTrades->pluck('category_id'))->unique();
               $paymentCategories = Category::whereIn('id',$catids)->get(); 
          }
