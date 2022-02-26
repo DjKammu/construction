@@ -40,45 +40,42 @@
                               action="{{ route('projects.payments.update',['id' => $payment->id]) }}" enctype="multipart/form-data">
                                   @csrf
 
-                                  <!-- @if(@$payment->proposal()->exists())
-                                   <div class="row">
-                                        <div class="col-lg-5 col-md-6 mx-auto">
-                                            <div class="form-group">
-                                                <label class="text-dark" for="password">Trades
-                                                </label>
-                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="trade_id"> 
-                                                 
-                                                   <option value="{{ @$payment->trade->id }}" {{ 
-                                                   @$payment->trade_id == $payment->id ? 'selected' : '' 
-                                                   }}>{{ @$payment->trade->name}}
-                                                   </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div> 
+                                  @if(@$payment->proposal()->exists())
 
-                                    @endif -->
+                                   <div class="row">
+                                    <div class="col-lg-5 col-md-6 mx-auto">
+                                        <div class="form-group">
+                                          <input type="radio" name="type" {{ (!@$payment->vendor_id) ? 'checked="checked"' : '' }} value="subcontractor" />
+                                          <label class="text-dark" for="password">Subcontractor
+                                          </label>
+                                          
+                                          <input type="radio" name="type" {{ (@$payment->vendor_id) ? 'checked="checked"' : '' }} value="venodr" />
+                                          <label class="text-dark" for="password">Vendor
+                                          </label>
+                                          
+                                     </div>
+                                     </div>
+                                    </div>
                                     
+                                    <div class="subcontractor-vendor" id="subcontractor" style="display: {{  ((@!$payment->vendor_id) && (@$payment->subcontractor_id)) ? 'block' : 'none' }};" >
                                       <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Trades
+                                                <label class="text-dark" for="password"> Trades
                                                 </label>
-                                                <select class="form-control" name="trade_id"> 
-                                                  @foreach($allTrades as $trade)
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="trade_id"> 
+                                                  @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   $payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   @$payment->trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    
-                                    @if(!$payment->vendor_id)
-                                    <div class="row">
+                                    </div> 
+
+                                       <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Subcontractor
@@ -89,8 +86,8 @@
                                                 </select>
                                             </div>
                                         </div>
-                                    </div> 
-
+                                    </div>
+                                    
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -110,8 +107,66 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @endif
-                                    @if($payment->vendor_id)
+
+                                    </div> 
+
+                                     <div class="subcontractor-vendor" id="venodr" 
+                                    style="display: {{  ((@$payment->vendor_id) && (@$payment->subcontractor_id)) ? 'block' : 'none' }};"   >
+                                          <div class="row">
+                                           <div class="col-lg-5 col-md-6 mx-auto">
+                                              <div class="form-group">
+                                                  <label class="text-dark" for="password">Trades
+                                                  </label>
+                                                  <select class="form-control" name="trade_id"> 
+                                                    @foreach($allTrades as $trade)
+                                                     <option value="{{ $trade->id }}" {{ 
+                                                   $payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   }}>{{ $trade->name}}
+                                                     </option>
+                                                    @endforeach
+                                                  </select>
+                                              </div>
+                                          </div>
+                                        </div>
+                                         
+                                          <div class="row">
+                                          <div class="col-lg-5 col-md-6 mx-auto">
+                                              <div class="form-group">
+                                                  <label class="text-dark" for="password">Vendor
+                                                  </label>
+                                                  <select class="form-control" name="vendor_id"> 
+                                                    <option value="">Select Vendor</option>
+                                                    @foreach(@$vendors as $vendor)
+                                                     <option value="{{ $vendor->id }}" {{ 
+                                                      ($payment->vendor_id == $vendor->id ) ? 'selected' : ''}} >{{ $vendor->name}}
+                                                     </option>
+                                                    @endforeach
+                                                  </select>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                    </div> 
+
+                                    @else
+                                    
+                                      <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Trades
+                                                </label>
+                                                <select class="form-control" name="trade_id"> 
+                                                  @foreach($allTrades as $trade)
+                                                   <option value="{{ $trade->id }}" {{ 
+                                                   $payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   }}>{{ $trade->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                
                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -127,9 +182,11 @@
                                             </div>
                                         </div>
                                     </div> 
-                                    @endif
-                                     
 
+                                   @endif
+
+                                    
+                                  
                                      <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
 
@@ -289,6 +346,12 @@
 $('.date').datetimepicker({
      format: 'M-D-Y'
 });
+
+$("input[name='type']").click(function() {
+      var id = $(this).val();
+      $(".subcontractor-vendor").hide();
+      $("#" + id).show();
+  });
 
 </script>
 <style type="text/css">

@@ -276,7 +276,7 @@ class PaymentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
          if(Gate::denies('edit')) {
            return abort('401');
@@ -305,7 +305,16 @@ class PaymentController extends Controller
         $totalAmount = $this->proposalTotalAmount($payment->proposal);
         $dueAmount = $this->proposalDueTotalAmount($payment->proposal);
 
-        $trades = [];
+
+        $proposalsQry = $project->proposals()->IsAwarded();
+
+        $proposals = $proposalsQry->get();
+
+        ($request->filled('trade')) ? $proposalsQry->where('trade_id', $request->trade) : '';
+
+        $trades = $proposals->map(function($prpsl){
+             return $prpsl->trade;
+        });
 
         $allTrades = Trade::all();
          
