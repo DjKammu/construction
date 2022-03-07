@@ -57,6 +57,7 @@ table.payments-table thead>tr>th{
           $catPaidTotal = 0;
           $catDueTotal = 0;
           $catSubcontractorTotal = 0;
+          $catVendorsTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          @endphp
@@ -178,6 +179,7 @@ table.payments-table thead>tr>th{
 
                @php
                 $vendorsTotal = $vendorsTotal + $tPay->payment_amount_total;
+                $catVendorsTotal = $catVendorsTotal + $tPay->payment_amount_total;
                @endphp
 
                   <tr>
@@ -220,10 +222,10 @@ table.payments-table thead>tr>th{
                   <td></td>
                   <td></td>
                   <!-- <td></td> -->
-                  <td><b>${{ \App\Models\Payment::format($catGrandTotal + $vendorsTotal) }}</b></td>
-                  <td><b>${{ \App\Models\Payment::format($catPaidTotal + $vendorsTotal) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catGrandTotal + $catVendorsTotal) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catPaidTotal + $catVendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
-                  <td><b>{{ ($catGrandTotal && $catPaidTotal) || ($vendorsTotal) ? sprintf('%0.2f', (@$catPaidTotal + $vendorsTotal) / (@$catGrandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
+                  <td><b>{{ ($catGrandTotal && $catPaidTotal) || ($catVendorsTotal) ? sprintf('%0.2f', (@$catPaidTotal + $catVendorsTotal) / (@$catGrandTotal + $catVendorsTotal) * 100) : 0 }} % </b></td>
                   <!-- <td></td> -->
            </tr>
 
