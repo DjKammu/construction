@@ -13,7 +13,6 @@ use App\Models\Subcontractor;
 use App\Models\DocumentType;
 use Gate;
 
-
 class ProposalController extends Controller
 {
     /**
