@@ -52,7 +52,10 @@ table.payments-table thead>tr>th{
         @foreach($categories as $cat)
 
          @php   
-
+          
+          $catMaterialTotal = 0;
+          $catLabourTotal = 0;
+          $catSubcontractorTotal2 = 0;
           $catGrandTotal = 0;
           $catPaidTotal = 0;
           $catDueTotal = 0;
@@ -95,11 +98,13 @@ table.payments-table thead>tr>th{
                        if($order->type == \App\Models\ChangeOrder::ADD ){
                          $bidTotal += $order->subcontractor_price;
                          $catSubcontractorTotal += $order->subcontractor_price;
+                         $catSubcontractorTotal2 += $order->subcontractor_price;
                          $changeOrderTotal += $order->subcontractor_price;
                        }
                        else{
                          $bidTotal -= $order->subcontractor_price;
                          $catSubcontractorTotal -= $order->subcontractor_price;
+                         $catSubcontractorTotal2 -= $order->subcontractor_price;
                          $changeOrderTotal -= $order->subcontractor_price;
                        }
                      }
@@ -140,7 +145,10 @@ table.payments-table thead>tr>th{
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
-
+                      
+                      $catSubcontractorTotal2 = (float) @$bid->subcontractor_price + $catSubcontractorTotal2;
+                      $catMaterialTotal = (float) @$bid->material + $catMaterialTotal;
+                      $catLabourTotal = (float) @$bid->labour_cost + $catLabourTotal;
                       $catGrandTotal = (float) @$bidTotal + $catGrandTotal;
                       $catPaidTotal = (float) @$paid + $catPaidTotal;
                       $catDueTotal = (float) @$due + $catDueTotal;
@@ -218,9 +226,9 @@ table.payments-table thead>tr>th{
                  <td class="text-danger h6 text-center" colspan="2">
                  <b>{{ $cat->name }} Total </b>
                  </td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><b>${{ \App\Models\Payment::format($catMaterialTotal + $catVendorsTotal) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catLabourTotal) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catSubcontractorTotal2) }}</b></td>
                   <!-- <td></td> -->
                   <td><b>${{ \App\Models\Payment::format($catGrandTotal + $catVendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal + $catVendorsTotal) }}</b></td>

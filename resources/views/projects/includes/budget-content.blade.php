@@ -33,6 +33,9 @@
         @foreach($paymentCategories as $cat)
 
          @php   
+          $catMaterialTotal = 0;
+          $catLabourTotal = 0;
+          $catSubcontractorTotal = 0;
           $catGrandTotal = 0;
           $catPaidTotal = 0;
           $catDueTotal = 0;
@@ -77,10 +80,12 @@
                        if($order->type == \App\Models\ChangeOrder::ADD ){
                          $bidTotal += $order->subcontractor_price;
                          $changeOrderTotal += $order->subcontractor_price;
+                         $catSubcontractorTotal += $order->subcontractor_price;
                        }
                        else{
                          $bidTotal -= $order->subcontractor_price;
                          $changeOrderTotal -= $order->subcontractor_price;
+                         $catSubcontractorTotal -= $order->subcontractor_price;
                        }
                      }
                      
@@ -114,11 +119,14 @@
 
                       $materialTotal = (float) @$bid->material + $materialTotal;
                       $labourTotal = (float) @$bid->labour_cost + $labourTotal;
-                      $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal;
+                      $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal + $changeOrderTotal;
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
-
+                      
+                      $catSubcontractorTotal = (float) @$bid->subcontractor_price + $catSubcontractorTotal;
+                      $catMaterialTotal = (float) @$bid->material + $catMaterialTotal;
+                      $catLabourTotal = (float) @$bid->labour_cost + $catLabourTotal;
                       $catGrandTotal = (float) @$bidTotal + $catGrandTotal;
                       $catPaidTotal = (float) @$paid + $catPaidTotal;
                       $catDueTotal = (float) @$due + $catDueTotal;
@@ -197,9 +205,9 @@
                  <td class="text-danger h6 text-center" colspan="2">
                  <b>{{ $cat->name }} Total </b>
                  </td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><b>${{ \App\Models\Payment::format($catMaterialTotal + $catVendorsTotal) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catLabourTotal) }}</b></td>
+                  <td><b>${{ \App\Models\Payment::format($catSubcontractorTotal) }}</b></td>
                   <!-- <td></td> -->
                   <td><b>${{ \App\Models\Payment::format($catGrandTotal + $catVendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal + $catVendorsTotal) }}</b></td>
