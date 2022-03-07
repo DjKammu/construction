@@ -57,7 +57,6 @@ table.payments-table thead>tr>th{
           $catPaidTotal = 0;
           $catDueTotal = 0;
           $catSubcontractorTotal = 0;
-          $vendorsTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          @endphp

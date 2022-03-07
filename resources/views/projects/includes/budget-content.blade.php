@@ -36,7 +36,6 @@
           $catGrandTotal = 0;
           $catPaidTotal = 0;
           $catDueTotal = 0;
-          $vendorsTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          
