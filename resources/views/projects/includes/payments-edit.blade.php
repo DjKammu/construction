@@ -49,7 +49,7 @@
                                           <label class="text-dark" for="password">Subcontractor
                                           </label>
                                           
-                                          <input type="radio" name="type" {{ (@$payment->vendor_id) ? 'checked="checked"' : '' }} value="venodr" />
+                                          <input type="radio" name="type" {{ (@$payment->vendor_id) ? 'checked="checked"' : '' }} value="vendor" />
                                           <label class="text-dark" for="password">Vendor
                                           </label>
                                           
@@ -63,10 +63,10 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password"> Trades
                                                 </label>
-                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="trade_id"> 
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="subcontractor_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   @$payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   @$payment->proposal->trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
@@ -110,14 +110,14 @@
 
                                     </div> 
 
-                                     <div class="subcontractor-vendor" id="venodr" 
+                                     <div class="subcontractor-vendor" id="vendor" 
                                     style="display: {{  ((@$payment->vendor_id) && (@$payment->subcontractor_id)) ? 'block' : 'none' }};"   >
                                           <div class="row">
                                            <div class="col-lg-5 col-md-6 mx-auto">
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Trades
                                                   </label>
-                                                  <select class="form-control" name="trade_id"> 
+                                                  <select class="form-control" name="vendor_trade_id"> 
                                                     @foreach($allTrades as $trade)
                                                      <option value="{{ $trade->id }}" {{ 
                                                    $payment->trade_id == $trade->id ? 'selected' : '' 
@@ -155,7 +155,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select class="form-control" name="trade_id"> 
+                                                <select class="form-control" name="vendor_trade_id"> 
                                                   @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
                                                    $payment->trade_id == $trade->id ? 'selected' : '' 

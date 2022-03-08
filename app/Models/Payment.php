@@ -18,7 +18,10 @@ class Payment extends Model
     CONST PROGRESS_PAYMENT_STATUS = 'progress';
     CONST RETAINAGE_PAID_STATUS   = 'retainage';
     CONST FINAL_PAYMENT_STATUS    = 'final';
-
+    
+    CONST VENDOR = 'vendor';
+    CONST SUBCONTRACTOR = 'subcontractor';
+    
     protected $fillable = [
      'proposal_id' , 'subcontractor_id' ,'project_id',
      'trade_id' , 'vendor_id' ,'payment_amount', 'date',

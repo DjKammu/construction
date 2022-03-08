@@ -105,10 +105,12 @@ class PaymentController extends Controller
 
         $data = $request->except('_token');
 
+       $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
+
         if($id == 0){
              
              $request->validate([
-                   'trade_id' => 'required|exists:trades,id',
+                   $type.'_trade_id' => 'required|exists:trades,id',
                    'vendor_id' => 'required|exists:vendors,id',
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
@@ -121,15 +123,22 @@ class PaymentController extends Controller
               ]
           );
 
+          $data['trade_id'] = $data[$type.'_trade_id'];
+
         }else{
 
             $request->validate([
                   'subcontractor_id' => ['required',
                   'exists:subcontractors,id'],
-                  'trade_id' => 'required|exists:trades,id',
+                   $type.'_trade_id' => 'required|exists:trades,id',
+                   'vendor_id' => function ($attribute, $value, $fail){
+                        if (!$value &&  request()->type  == Payment::VENDOR) {
+                            $fail('Vendor Id is required');
+                        }
+                    },
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
-                          if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
+                          if (request()->type  != Payment::VENDOR && !request()->filled('vendor_id') && $value > $totalDueMount ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                           }
                       }
@@ -137,10 +146,10 @@ class PaymentController extends Controller
                   // 'status' => 'required'
               ]
           );
+       
+         $data['trade_id'] = $data[$type.'_trade_id'];
         }
-
-      
-
+        
 
         $project_id = @$proposal->project->id;
         $project_id = (!$project_id) ? $request->project_id : $project_id;
@@ -304,7 +313,8 @@ class PaymentController extends Controller
 
         $totalAmount = $this->proposalTotalAmount($payment->proposal);
         $dueAmount = $this->proposalDueTotalAmount($payment->proposal);
-
+       
+        //dd($totalAmount);
 
         $proposalsQry = $project->proposals()->IsAwarded();
 
@@ -319,6 +329,9 @@ class PaymentController extends Controller
         $allTrades = Trade::all();
          
          session()->flash('url', route('projects.show',['project' => $payment->project_id]).'?#payments'); 
+
+
+         // dd($payment);
 
         return view('projects.includes.payments-edit',compact('subcontractor','payment','vendors','totalAmount','dueAmount','trades','allTrades'));
     }
@@ -353,18 +366,24 @@ class PaymentController extends Controller
 
         $totalDueMount =  $this->proposalDueTotalAmount($payment->proposal);
      
-
         $data = $request->except('_token');
+
+         $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
 
          if($payment->proposal){
 
            $request->validate([
                 // 'subcontractor_id' => ['required',
                 // 'exists:subcontractors,id'],
-                'trade_id' => 'required|exists:trades,id',
+                 $type.'_trade_id'  => 'required|exists:trades,id',
+                 'vendor_id' => function ($attribute, $value, $fail){
+                      if (!$value &&  request()->type  == Payment::VENDOR) {
+                          $fail('Vendor Id is required');
+                      }
+                  },
                 'payment_amount' => ['required',
                       function ($attribute, $value, $fail) use ($totalDueMount,$payment){
-                        if (!request()->filled('vendor_id') && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
+                        if (request()->type  != Payment::VENDOR &&  $value > ((float) $totalDueMount + $payment->payment_amount) ) {
                             $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                         }
                     }
@@ -375,22 +394,31 @@ class PaymentController extends Controller
             //   'payment_amount.lte' => 'The payment amount must be less than or equal '.$totalDueMount.'.'
             ]
         );
+          
+          $data['trade_id'] = $data[$type.'_trade_id'];
+          $data['vendor_id'] = (request()->type  == Payment::SUBCONTRACTOR) 
+                               ? null :  $data['vendor_id'] ;
+    
+        // dd($data);
 
         }else{
 
             $request->validate([
-                    'trade_id' => 'required|exists:trades,id',
+                    $type.'_trade_id'  => 'required|exists:trades,id',
                    'vendor_id' => 'required|exists:vendors,id',
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
-                          if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
+                          if ( !request()->filled('vendor_id') && $value > $totalDueMount ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                           }
                       }
                     ]
                   // 'status' => 'required'
               ]
-          );
+          );  
+
+          $data['trade_id'] = $data[$type.'_trade_id'];
+
         }
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
