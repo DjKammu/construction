@@ -79,14 +79,11 @@
                                                      aria-expanded="false">Payments</a>
                                               </li>
                                               
-                                              @if($payments->count() > 0)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">Budget</a>
                                               </li>
                                                
-                                              @endif
-
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
                                                      aria-expanded="false">AIA Pay App</a>
@@ -107,9 +104,7 @@
                                     @include('projects.includes.bids')
                                     @endif 
                                     @include('projects.includes.payments')
-                                    @if($payments->count() > 0)
                                     @include('projects.includes.budget')
-                                    @endif
                               </div>
 
                             </div>

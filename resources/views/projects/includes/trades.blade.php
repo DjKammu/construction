@@ -40,7 +40,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                          @foreach($trades as $type)
+                          @foreach($prTrades as $type)
                          <tr>
                            <td> {{ $type->account_number }}</td>
                            <td>{{ $type->name }}</td>

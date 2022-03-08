@@ -205,6 +205,7 @@ class ReportController extends Controller
             }
 
             $payments = $payments->get();
+
             $payments->filter(function($payment){
 
                 $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);

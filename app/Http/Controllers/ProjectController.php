@@ -356,6 +356,8 @@ class ProjectController extends Controller
                        ->pluck('trade_id');  
          $pTrades = Trade::whereIn('id',$trade_ids)->get();   
 
+         $prTrades = $trades;
+
          if($pTrades){
             $trades = $trades->merge($pTrades);
          }
@@ -369,10 +371,10 @@ class ProjectController extends Controller
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
-
+           
          return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
-            'paymentSubcontractors','paymentCategories','pTrades'));
+            'paymentSubcontractors','paymentCategories','pTrades','prTrades'));
     }
 
     /**
