@@ -40,7 +40,7 @@ aria-expanded="true">
     </div>
        
        <div class="col-12" >
-          <h4 class="mt-0 text-left"> {{ $project->name }} Subcontractor/Vendor Summary</h4>
+          <h4 class="mt-0 text-left"> {{ $project->name }} {{ (@request()->sc) ?  'Subcontractor' : 'Vendor' }}  Summary</h4>
       </div>
 
         @include('reports.includes.subcontractor-payment-content')

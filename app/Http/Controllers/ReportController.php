@@ -239,10 +239,11 @@ class ReportController extends Controller
         $slug = \Str::slug($project->name);
 
         if($type == 'subcontractor-payment'){
-            $type  = \Str::slug('Subcontractor Vendor');
+            $type = (@$sc) ?  'Subcontractor' : 'Vendor';
+            $type  = \Str::slug($type);
         }
 
-        // return $pdf->stream($slug.'_'.$type .'.pdf');
+         //return $pdf->stream($slug.'_'.$type .'.pdf');
         return $pdf->download($slug.'-'.$type .'.pdf');
 
     }

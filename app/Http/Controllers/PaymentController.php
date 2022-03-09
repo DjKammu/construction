@@ -597,7 +597,7 @@ class PaymentController extends Controller
         $slug = \Str::slug($project->name);
 
         // return $pdf->stream('project_'.$slug .'_budget.pdf');
-        return $pdf->download('project_'.$slug.'_budget.pdf');
+        return $pdf->download($slug.'-budget.pdf');
 
     }
 }

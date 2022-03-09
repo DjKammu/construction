@@ -75,7 +75,7 @@
     <body>
         <!-- Define header and footer blocks before your content -->
         <header>
-            <h4>Subcontractor/Vendor Summary </h4>
+            <h4>{{ (@$sc) ?  'Subcontractor' : 'Vendor' }} Summary </h4>
         </header>
 
         <footer>
