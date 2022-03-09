@@ -228,18 +228,22 @@ class ReportController extends Controller
 
        // return View('reports.'.$type.'-pdf',
        //    ['categories' => $categories,'payments' => $payments,
-       //    'trades' => $trades,'project' => $project]
+       //    'trades' => $trades,'project' => $project,'sc' => $sc]
        //  );
-
+      
         $pdf = PDF::loadView('reports.'.$type.'-pdf',
           ['categories' => $categories,'payments' => $payments,
-          'trades' => $trades,'project' => $project]
+          'trades' => $trades,'project' => $project,'sc' => $sc]
         );
 
         $slug = \Str::slug($project->name);
 
-        // return $pdf->stream($type.'_'.$slug .'.pdf');
-        return $pdf->download($type.'_'.$slug.'.pdf');
+        if($type == 'subcontractor-payment'){
+            $type  = \Str::slug('Subcontractor Vendor');
+        }
+
+        // return $pdf->stream($slug.'_'.$type .'.pdf');
+        return $pdf->download($slug.'-'.$type .'.pdf');
 
     }
 

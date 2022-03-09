@@ -62,8 +62,11 @@
              $trades = ($payments) ? @$payments->unique('trade_id') : '';
              $grandTotal = ($trades) ? @$trades->sum('total_amount') : 0;
 
+              $sc =  (@$sc) ? $sc : @request()->sc; 
+
               $awardedBids = @$project->proposals()->IsAwarded()
-                              ->where('subcontractor_id', @request()->sc)->get();
+                              ->where('subcontractor_id', $sc)->get();
+            
               $bidTotal = 0; 
               foreach($awardedBids as $awarded){
                  $bidTotal =  $bidTotal + (float) @$awarded->material + (float) @$awarded->labour_cost + (float) @$awarded->subcontractor_price;
@@ -78,8 +81,6 @@
                      }
               } 
 
-
-
               $remainingTotal = ($remainingTotal == 0) ? $bidTotal : $remainingTotal;                
 
              @endphp
@@ -89,7 +90,7 @@
               <td ><b>${{ \App\Models\Payment::format($paidTotal) }}</b></td>
               <td ><b>${{ \App\Models\Payment::format($bidTotal) }}</b></td>
               <!-- <td><b>${{ \App\Models\Payment::format($grandTotal) }}</b></td> -->
-              <td colspan="2"> {!! (@request()->sc) ? '<b>$'.\App\Models\Payment::format($remainingTotal).'</b>' : '' !!} </td>
+              <td colspan="2"> {!! (@$sc) ? '<b>$'.\App\Models\Payment::format($remainingTotal).'</b>' : '' !!} </td>
               <td></td>
             </tr>
 

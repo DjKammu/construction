@@ -38,13 +38,17 @@ aria-expanded="true">
         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/subcontractor-payment/{{@request()->sc}}?v={{@request()->v }}'" rel="tooltip" data-original-title="Sub Contractor Payment" title="Sub Contractor Payment">Download
         </button>
     </div>
+       
+       <div class="col-12" >
+          <h4 class="mt-0 text-left"> {{ $project->name }} Subcontractor/Vendor Summary</h4>
+      </div>
 
         @include('reports.includes.subcontractor-payment-content')
    
     @else
    <div class="col-12">
    </br>
-   <h5>No Subconractor Selected </h5>
+   <h5>No Subcontractor/Vendor Selected </h5>
    </div>
   @endif
 

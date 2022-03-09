@@ -19,12 +19,15 @@ aria-expanded="true">
       </select>
     </div>
     @if(@request()->p && @request()->t == 'project-summary' )
-      
+       
+
       <div class="col-3 text-right">
         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/project-summary'" rel="tooltip" data-original-title="Project Summary" title="Project Summary">Download
         </button>
-    </div>
-
+       </div>
+      <div class="col-6" >
+          <h4 class="mt-0 text-left"> {{ $project->name }} Summary</h4>
+      </div>
       @include('reports.includes.project-summary-content')
     @else
    <div class="col-12">
