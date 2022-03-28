@@ -44,7 +44,7 @@
                 <div class="row mb-2">
                     <div class="col-9">
                        <select style="height: 26px;" onchange="return window.location.href = '?p='+this.value"> 
-                      <option>Select Project Type</option>
+                      <option value="">Select Project Type</option>
                       @foreach($projectTypes as $type)
                          <option value="{{ $type->slug }}" {{ (@request()->p == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach

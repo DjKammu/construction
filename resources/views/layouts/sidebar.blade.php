@@ -119,6 +119,18 @@
 
             @endcan
 
+            @can('view')
+
+            <!-- Property Types -->
+             <li class="{{ Request::is('itb-tracker*') ? 'active' : '' }}">
+                <a href="{{ route('itb-tracker.index') }}">
+                    <i class="fa fa-envelope"></i>
+                    <p>ITB Tracker</p>
+                </a>
+            </li>
+
+            @endcan
+
 
             @can('view')
 

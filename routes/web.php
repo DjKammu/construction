@@ -206,7 +206,6 @@ Route::prefix('projects')->group(function(){
 
       Route::post('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'store'])->name('projects.close-project.store'); 
 
-
 });
 
 
@@ -215,3 +214,4 @@ Route::prefix('projects')->group(function(){
 Route::resource('calendar', App\Http\Controllers\CalendarController::class);
 Route::get('get-projects', [App\Http\Controllers\CalendarController::class,'getProjects'])
      ->name('calendar.projects');
+Route::resource('itb-tracker', App\Http\Controllers\ITBTrackerController::class);
