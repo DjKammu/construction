@@ -215,3 +215,6 @@ Route::resource('calendar', App\Http\Controllers\CalendarController::class);
 Route::get('get-projects', [App\Http\Controllers\CalendarController::class,'getProjects'])
      ->name('calendar.projects');
 Route::resource('itb-tracker', App\Http\Controllers\ITBTrackerController::class);
+
+Route::post('send-mail', [App\Http\Controllers\ITBTrackerController::class,'sendMail'])->
+           name('send.mail');

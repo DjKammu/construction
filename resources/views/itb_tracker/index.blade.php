@@ -47,9 +47,14 @@
 
          <div class="card-body">
                 <div class="row mb-2">
-                    <div class="col-6">
-                        <h4 class="mt-0 text-left">Trades List</h4>
+                     <div class="col-6">
+                         <h4 class="mt-0 text-left">Trades List</h4>
+                     </div>
+                      <div class="col-6 text-right">
+                        <button type="button" class="btn btn-danger mt-0"  onclick="sendMail()">Send Mail
+                        </button>
                     </div>
+
                 </div>
                 <!-- Categories Table -->
                 <div class="table-responsive">
@@ -71,9 +76,12 @@
                          <tr>
                            <td> {{ $trade->account_number }}</td>
                            <td>{{ $trade->name }}</td>
-                            <td class="text-left">
-                              @foreach($trade->subcontractors as $subcontractor)
-                              <input class="checkbox" type="checkbox" value="1">
+                            <td style="width: 20%;" class="text-left">
+                              @foreach($trade->subcontractors as $tsk =>  $subcontractor)
+                              
+
+                              <input class="checkbox subcontractor" type="checkbox" 
+                               value="{{$trade->id.','.$subcontractor->id}}" {{ ($subcontractor->mail_sent == true ) ? 'checked="checked"' : '' }} >
                               <span> {{ $subcontractor->name }}</span>
                                </br> 
                               @endforeach
@@ -83,18 +91,16 @@
                               {{ $subcontractor->email_1 }}
                                </br> 
                               @endforeach
-                           </td> 
-                          
+                           </td>          
                            <td>
                               @foreach($trade->subcontractors as $subcontractor)
                               {{ $subcontractor->mobile }}
                                </br> 
                               @endforeach
                            </td>
-
                            <td>
                               @foreach($trade->subcontractors as $subcontractor)
-                              {{ \App\Models\ITBTracker::$ITBArr[\App\Models\ITBTracker::FALSE] }}
+                              {{ \App\Models\ITBTracker::$ITBArr[$subcontractor->mail_sent] }}
                                </br> 
                               @endforeach
                            </td>
@@ -110,8 +116,6 @@
                                </br> 
                               @endforeach
                            </td>
-                          
-                          
                          </tr> 
                          @endforeach
                         <!-- Category Types Go Here -->
@@ -136,6 +140,44 @@ function selectProject(project, cLass){
        url += 'p='+project;
        window.location.href = path+'?'+url;     
   } 
+var senders = [];
+$('.subcontractor').click(function() {
+    var checked = ($(this).val());
+    if ($(this).is(':checked')) {
+      senders.push(checked);
+    } else {
+      senders.splice($.inArray(checked, senders),1);
+    }
+  });
+
+function sendMail(){
+   
+   if(senders.length == 0 ){
+      alert('Select atleast one');
+      return;
+    }
+
+    let projectId = '{{ @$projectId }}';
+    let _token   =   "{{ csrf_token() }}";
+
+   $.ajax({
+        url: "{{ route('send.mail')}}",
+        type:"POST",
+        data:{
+          projectId:projectId,
+          senders:senders,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+  
+}
 
 </script>
 <style type="text/css">

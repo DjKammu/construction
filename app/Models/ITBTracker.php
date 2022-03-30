@@ -14,14 +14,16 @@ class ITBTracker extends Model
 
     CONST TRUE_TEXT = 'Yes';
     CONST FALSE_TEXT = 'No' ;
+
+    protected $table = 'itb_trackers';
     
     protected $perPage = 20;
 
     protected $fillable = [
-     'name' , 'slug' ,
-     'account_number',
-     'category_id',
-     'scope'
+     'project_id' , 'trade_id' ,
+     'subcontractors_id',
+     'mail_sent','bid_recieved',
+     'contract_sign',
     ];
 
     public static $ITBArr = [

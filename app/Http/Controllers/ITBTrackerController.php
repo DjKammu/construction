@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
-use App\Models\Document;
+use App\Models\ITBTracker;
 use Gate;
 
 
@@ -40,16 +40,23 @@ class ITBTrackerController extends Controller
          $project = Project::find($projectId);
 
          $trades = $project->trades()->get();
+           
+         $trades = $trades->filter(function($trade) use ($projectId) {
+                
+                $subcontractors = $trade->subcontractors->filter(function($sc) use ($projectId,$trade){
+                           $mail_sent = ITBTracker::where([
+                               'project_id' => $projectId, 'trade_id' => $trade->id , 
+                               'subcontractors_id' => $sc->id 
+                               ])->pluck('mail_sent')->first();
 
-         // $trades = $trades->filter(function($trade){
-             
-         //    $trade->email_sent = false; 
-         //    $trade->bid_recieved = false; 
-         //    $trade->contract_signed = false; 
-         //    return $trade;
+                            $sc->mail_sent = $mail_sent ?? false;
 
-         // });
-         
+                            return $sc;                           
+                });
+
+                return $trade;
+         });  
+
          return view('itb_tracker.index',compact('projects','projectId','trades'));
     }
 
@@ -60,11 +67,7 @@ class ITBTrackerController extends Controller
      */
     public function create()
     {
-        if(Gate::denies('add')) {
-               return abort('401');
-         } 
-
-        return view('categories.create');
+        //
     }
 
     /**
@@ -75,25 +78,7 @@ class ITBTrackerController extends Controller
      */
     public function store(Request $request)
     {
-          if(Gate::denies('add')) {
-               return abort('401');
-        } 
-
-        $data = $request->except('_token');
-
-        $request->validate([
-              'name' => 'required|unique:categories',
-              'account_number' => 'required|unique:categories',
-        ]);
-
-        $data['slug'] = \Str::slug($request->name);
-            
-        Category::create($data);
-
-        // $path = public_path().'/'.Document::PROPERTY.'/' . $data['slug'];
-        // \File::makeDirectory($path, $mode = 0777, true, true);
-
-        return redirect('categories')->with('message', 'Category Created Successfully!');
+         //
     }
 
     /**
@@ -104,12 +89,7 @@ class ITBTrackerController extends Controller
      */
     public function show($id)
     {
-          if(Gate::denies('edit')) {
-               return abort('401');
-          } 
-
-         $type = Category::find($id);
-         return view('categories.edit',compact('type'));
+         //
     }
 
     /**
@@ -132,37 +112,7 @@ class ITBTrackerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(Gate::denies('update')) {
-               return abort('401');
-        } 
-
-        $data = $request->except('_token');
-
-        $request->validate([
-              'name' => 'required|unique:categories,name,'.$id,
-              'account_number' => 'required|unique:categories,account_number,'.$id,
-        ]);
-
-        $data['slug'] = \Str::slug($request->name);
-         
-         $category = Category::find($id);
-         $slug = $data['slug'];
-         $oldSlug = $category->slug;
-        
-         if(!$category){
-            return redirect()->back();
-         }
-          
-
-        // if($slug != $oldSlug)
-        //  {
-        //    $path = public_path().'/'.Document::PROPERTY;
-        //    @rename($path.$oldSlug, $path.$slug);
-        //  }
-
-         $category->update($data);
-
-        return redirect('categories')->with('message', 'Category Updated Successfully!');
+        //
     }
 
     /**
@@ -173,17 +123,21 @@ class ITBTrackerController extends Controller
      */
     public function destroy($id)
     {
-         if(Gate::denies('delete')) {
-               return abort('401');
-          } 
+        //
+    }
 
-         $category = Category::find($id);
-         // $path = public_path().'/'. Document::PROPERTY.'/'; 
-         // @\File::copyDirectory($path.$project_type->slug, $path.Document::ARCHIEVED);
-         // @\File::deleteDirectory($path.$project_type->slug);
 
-         $category->delete();       
+    public function sendMail(Request $request){
+     
+      (new \App\Jobs\SendEmail())
+                ->dispatch();
 
-        return redirect()->back()->with('message', 'Category Delete Successfully!');
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Sent Successfully!'
+           ]
+       );
+
     }
 }
