@@ -232,7 +232,7 @@ footer {
 
 
 header {
-    position: {{ count(@$lines) < 4 ? "fixed" : '' }};
+    position: {{ count(@$lines) < 4 ? "fixed" : "relative"  }};
     top: 0px;
     left: 0px;
     right: 0px;
