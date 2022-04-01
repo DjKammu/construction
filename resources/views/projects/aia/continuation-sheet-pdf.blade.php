@@ -349,7 +349,7 @@ p.p32  {
 
 .t4{width: 470px;font: 13px 'Arial';margin-top: 20px;}
 .t5{width: 351px;font: 20px 'Arial';}
-
+.max-width-td{max-width: 200px;}
 </STYLE>
 </HEAD>
 
@@ -562,7 +562,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 @endphp
 <TR>
   <TD class="lb tr1 td4"><P class="p5 ft7">{{ @$line->project_line->account_number }}</P></TD>
-  <TD class="tr1 td5"><P class="p6 ft7">{{ $line->project_line->description }}
+  <TD class="tr1 td5 max-width-td" ><P class="p6 ft7">{{ $line->project_line->description }}
   </P>
    
    @if($line->materials_stored)
