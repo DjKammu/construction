@@ -348,7 +348,7 @@ p.p32  {
 
 .t4{width: 470px;font: 13px 'Arial';margin-top: 20px;}
 .t5{width: 351px;font: 20px 'Arial';}
-.max-width-td{max-width: 200px;}
+.max-width-td{width: 200px;}
 
 </STYLE>
 </HEAD>
