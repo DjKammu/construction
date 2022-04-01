@@ -231,7 +231,7 @@ footer {
 }
 
 header {
-    position: fixed;
+    position: {{ count(@$lines) < 4 ? "fixed" : '' }};
     top: 0px;
     left: 0px;
     right: 0px;

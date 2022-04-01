@@ -230,8 +230,9 @@ footer {
   font-size: 12px;
 }
 
+
 header {
-    position: fixed;
+    position: {{ count(@$lines) < 4 ? "fixed" : '' }};
     top: 0px;
     left: 0px;
     right: 0px;
@@ -349,7 +350,6 @@ p.p32  {
 .t4{width: 470px;font: 13px 'Arial';margin-top: 20px;}
 .t5{width: 351px;font: 20px 'Arial';}
 
-
 </STYLE>
 </HEAD>
 
@@ -359,7 +359,7 @@ p.p32  {
        Page <span class="pagenum"></span>
   </footer>
 
-  <header> 
+  <header > 
       <div style="float: left; width: 63%; margin-bottom: 10px;">
       <div class="left1">
         <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('img/invoice-logo.jpg'))) }}">
@@ -405,6 +405,7 @@ p.p32  {
 </header>
 
 <DIV id="page_1">
+
 
 <div>
 
@@ -590,6 +591,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
   <TD class="tr1 td12"><P class="p11 ft7">${{ \App\Models\Payment::format($retainage_value) }}</P></TD>
 </TR>
 @endforeach
+
 
 <TR>
   <TD class="lb bb brn tr1 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
