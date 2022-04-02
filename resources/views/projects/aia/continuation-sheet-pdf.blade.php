@@ -14,7 +14,7 @@ body {margin-top: 0px;margin-left: 0px;}
     padding: 0px;
     border: none;
     width: 1056px;
-    height: 731px;
+    height: 725px;
   }
 
 #page_1 #id1_1 {
