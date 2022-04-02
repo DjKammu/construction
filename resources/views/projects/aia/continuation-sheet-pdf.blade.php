@@ -14,7 +14,7 @@ body {margin-top: 0px;margin-left: 0px;}
     padding: 0px;
     border: none;
     width: 1056px;
-    height: 725px;
+    height: 700px;
   }
 
 #page_1 #id1_1 {
@@ -596,14 +596,14 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 <TR>
   <TD class="lb bb brn tr1 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
   <TD class="bb tr1 td5 tr-grey"><P class="p20 ft15">TOTALS</P></TD>
-  <TD class="bb tr1 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format(@$project->original_amount ) }}</P></TD>
-  <TD class="bb tr1 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format($dTotal) }}</P></TD>
-  <TD class="bb tr1 td8 tr-grey"><P class="p8 ft7">${{\App\Models\Payment::format($eTotal)}}</P></TD>
-  <TD class="bb tr1 td9 tr-grey"><P class="p16 ft7">${{ ($fTotal > 0) ?  \App\Models\Payment::format($fTotal) : \App\Models\Payment::format(0)}}</P></TD>
-  <TD class="bb tr1 td10 tr-grey"><P class="p17 ft7">${{\App\Models\Payment::format($gTotal)}}</P></TD>
-  <TD class="bb tr1 td11 tr-grey"><P class="p14 ft8">{{ number_format(($gTotal/ @$project->original_amount*100), 1) }}%</P></TD>
-  <TD class="bb tr1 td10 tr-grey"><P class="p7 ft7">${{\App\Models\Payment::format($hTotal)}}</P></TD>
-  <TD class="tr1 td12 tr-grey"><P class="p11 ft7 pbb"><span>${{\App\Models\Payment::format($iTotal)}}</span></P></TD>
+  <TD class="bb tr1 td6 tr-grey"><P class="p5 ft15">${{ \App\Models\Payment::format(@$project->original_amount ) }}</P></TD>
+  <TD class="bb tr1 td7 tr-grey"><P class="p15 ft15">${{ \App\Models\Payment::format($dTotal) }}</P></TD>
+  <TD class="bb tr1 td8 tr-grey"><P class="p8 ft15">${{\App\Models\Payment::format($eTotal)}}</P></TD>
+  <TD class="bb tr1 td9 tr-grey"><P class="p16 ft15">${{ ($fTotal > 0) ?  \App\Models\Payment::format($fTotal) : \App\Models\Payment::format(0)}}</P></TD>
+  <TD class="bb tr1 td10 tr-grey"><P class="p17 ft15">${{\App\Models\Payment::format($gTotal)}}</P></TD>
+  <TD class="bb tr1 td11 tr-grey"><P class="p14 ft15">{{ number_format(($gTotal/ @$project->original_amount*100), 1) }}%</P></TD>
+  <TD class="bb tr1 td10 tr-grey"><P class="p7 ft15">${{\App\Models\Payment::format($hTotal)}}</P></TD>
+  <TD class="tr1 td12 tr-grey"><P class="p11 ft15 pbb"><span>${{\App\Models\Payment::format($iTotal)}}</span></P></TD>
 </TR>
 
 @if($changeOrdersTotal > 0)
@@ -676,17 +676,17 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 <TR>
   <TD class="lb bub tr12 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
   <TD class="lr bub tr12 td5 tr-grey"><P class="p20 ft15">TOTAL CHANGE ORDERS</P></TD>
-  <TD class="lr bub tr12 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
-  <TD class="lr bub tr12 td7 tr-grey"><P class="p15 ft7">
+  <TD class="lr bub tr12 td6 tr-grey"><P class="p5 ft15">${{ \App\Models\Payment::format(@$changeOrdersTotal) }}</P></TD>
+  <TD class="lr bub tr12 td7 tr-grey"><P class="p15 ft15">
   ${{ \App\Models\Payment::format($codTotal) }}</P></TD>
-  <TD class="lr bub  tr12 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$coeTotal) }}</P></TD>
-  <TD class="lr bub tr12 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$cofTotal) }}</P></TD>
-  <TD class="lr bub tr12 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$cogTotal) }}</P></TD>
-  <TD class="lr bub tr12 td11 tr-grey"><P class="p14 ft8">{{
+  <TD class="lr bub  tr12 td8 tr-grey"><P class="p8 ft15">${{ \App\Models\Payment::format(@$coeTotal) }}</P></TD>
+  <TD class="lr bub tr12 td9 tr-grey"><P class="p16 ft15">${{ \App\Models\Payment::format(@$cofTotal) }}</P></TD>
+  <TD class="lr bub tr12 td10 tr-grey"><P class="p17 ft15">${{ \App\Models\Payment::format(@$cogTotal) }}</P></TD>
+  <TD class="lr bub tr12 td11 tr-grey"><P class="p14 ft15">{{
    number_format((@$cogTotal) / $changeOrdersTotal * 100,1)
   }}%</P></TD>
-  <TD class="lr bub tr12 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$cohTotal) }}</P></TD>
-  <TD class="lr bub tr12 td12 tr-grey"><P class="p11 ft7 pbb2"><span>${{ \App\Models\Payment::format(@$coiTotal) }}</span></P></TD>
+  <TD class="lr bub tr12 td10 tr-grey"><P class="p7 ft15">${{ \App\Models\Payment::format(@$cohTotal) }}</P></TD>
+  <TD class="lr bub tr12 td12 tr-grey"><P class="p11 ft15 pbb2"><span>${{ \App\Models\Payment::format(@$coiTotal) }}</span></P></TD>
 </TR>
 
 <TR>
@@ -705,16 +705,16 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
 <TR>
   <TD class="blrn bb tr13 td4 tr-grey"><P class="p2 ft6">&nbsp;</P></TD>
   <TD class="bb tr13 td5 tr-grey"><P class="p20 ft15">GRAND TOTALS</P></TD>
-  <TD class="bb tr13 td6 tr-grey"><P class="p5 ft7">${{ \App\Models\Payment::format( @$project->original_amount + $changeOrdersTotal)  }}</P></TD>
-  <TD class="bb tr13 td7 tr-grey"><P class="p15 ft7">${{ \App\Models\Payment::format(@$codTotal + $dTotal) }}</P></TD>
-  <TD class="bb tr13 td8 tr-grey"><P class="p8 ft7">${{ \App\Models\Payment::format(@$coeTotal + $eTotal) }}</P></TD>
-  <TD class="bb tr13 td9 tr-grey"><P class="p16 ft7">${{ \App\Models\Payment::format(@$cofTotal + $fTotal) }}</P></TD>
-  <TD class="bb tr13 td10 tr-grey"><P class="p17 ft7">${{ \App\Models\Payment::format(@$cogTotal + $gTotal) }}</P></TD>
-  <TD class="bb tr13 td11 tr-grey"><P class="p14 ft8">{{
+  <TD class="bb tr13 td6 tr-grey"><P class="p5 ft15">${{ \App\Models\Payment::format( @$project->original_amount + $changeOrdersTotal)  }}</P></TD>
+  <TD class="bb tr13 td7 tr-grey"><P class="p15 ft15">${{ \App\Models\Payment::format(@$codTotal + $dTotal) }}</P></TD>
+  <TD class="bb tr13 td8 tr-grey"><P class="p8 ft15">${{ \App\Models\Payment::format(@$coeTotal + $eTotal) }}</P></TD>
+  <TD class="bb tr13 td9 tr-grey"><P class="p16 ft15">${{ \App\Models\Payment::format(@$cofTotal + $fTotal) }}</P></TD>
+  <TD class="bb tr13 td10 tr-grey"><P class="p17 ft15">${{ \App\Models\Payment::format(@$cogTotal + $gTotal) }}</P></TD>
+  <TD class="bb tr13 td11 tr-grey"><P class="p14 ft15">{{
    number_format((@$cogTotal + $gTotal) / (@$project->original_amount + $changeOrdersTotal) * 100,1)
   }}%</P></TD>
-  <TD class="bb tr13 td10 tr-grey"><P class="p7 ft7">${{ \App\Models\Payment::format(@$cohTotal + $hTotal) }}</P></TD>
-  <TD class="bb tr13 td12 tr-grey"><P class="p11 ft7">${{ \App\Models\Payment::format(@$coiTotal + $iTotal) }}</P></TD>
+  <TD class="bb tr13 td10 tr-grey"><P class="p7 ft15">${{ \App\Models\Payment::format(@$cohTotal + $hTotal) }}</P></TD>
+  <TD class="bb tr13 td12 tr-grey"><P class="p11 ft15">${{ \App\Models\Payment::format(@$coiTotal + $iTotal) }}</P></TD>
 </TR>
 
 @endif
