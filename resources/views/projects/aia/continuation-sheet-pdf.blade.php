@@ -662,14 +662,14 @@ body {margin-top: 0px;margin-left: 0px;}
 
 footer {
   position: fixed; 
-  bottom:-5px;
+  bottom:-10px;
   text-align: right;
   font-size: 12px;
 }
 
 
 header {
-    position: {{ count(@$lines) < 4 ? "fixed" : ( ( $nmTotal || $pbTotal || $conmTotal || $copbTotal ) ? "relative" : "relative")   }};
+    position: {{  ( $nmTotal || $pbTotal || $conmTotal || $copbTotal ) ? "relative" : ( count(@$lines) < 4 ? "fixed" : "relative")   }};
     top: 0px;
     left: 0px;
     right: 0px;
