@@ -24,7 +24,7 @@ class MailConfigServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-           $setting = \App\Models\Setting::latest()->first();
+           $setting = \App\Models\Setting::first();
 
             if (@$setting != null) {
                    $config = array(
