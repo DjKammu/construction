@@ -26,7 +26,7 @@ class MailConfigServiceProvider extends ServiceProvider
     {
            $setting = \App\Models\Setting::latest()->first();
 
-            if ($setting->count() > 0) {
+            if (@$setting && @$setting->count() > 0) {
                    $config = array(
                     'transport' => 'smtp',
                     'host'       => $setting->server_name,
