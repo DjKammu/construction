@@ -62,7 +62,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Port 
                                                 </label>
-                                                <input  name="port" value="{{ @$setting->server_name }}" type="text" class="form-control" placeholder="Port" required="">
+                                                <input  name="port" value="{{ @$setting->port }}" type="text" class="form-control" placeholder="Port" required="">
                                             </div>
                                         </div>
                                     </div>

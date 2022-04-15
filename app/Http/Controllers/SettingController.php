@@ -81,21 +81,6 @@ class SettingController extends Controller
         $setting->update($data);
        }
 
-       if($setting){
-
-         $config = array(
-            'host'       => $setting->server_name,
-            'port'       => $setting->port,
-            'from'       => array('address' => $setting->from_email, 'name' =>  env('MAIL_FROM_NAME', 'QPM CONSTRUCTION') ),
-            'encryption' => $setting->mail_encryption,
-            'username'   => $setting->user_name,
-            'password'   => $setting->password
-          );
-
-          Config::set('mail', $config);
-
-       }
-
         return redirect()->back()->with('message', 'Setting Updated Successfully!');
     }
 
