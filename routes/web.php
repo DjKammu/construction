@@ -80,6 +80,9 @@ Route::resource('subcontractors', App\Http\Controllers\SubcontractorController::
 
 Route::resource('vendors', App\Http\Controllers\VendorController::class);
 
+Route::resource('setting', App\Http\Controllers\SettingController::class);
+
+
 
 // Document Routes
 
