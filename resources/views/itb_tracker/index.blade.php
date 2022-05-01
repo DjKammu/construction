@@ -73,18 +73,22 @@
                         </thead>
                         <tbody>
                           @foreach($trades as $trade)
+                           
+                           @php
+                             $subcontractorHtml = '';
+                             foreach($trade->subcontractors as $tsk =>  $subcontractor){
+                               $checked = ($subcontractor->mail_sent == true ) ? 'checked=checked' : '';
+                               $subcontractorHtml .=  "<input class='checkbox subcontractor' type='checkbox' value='$trade->id,$subcontractor->id'   $checked ><span>$subcontractor->name</span> </br>";
+                             
+                             }
+                      
+                             @endphp
+
                          <tr>
                            <td> {{ $trade->account_number }}</td>
                            <td>{{ $trade->name }}</td>
                             <td style="width: 20%;" class="text-left">
-                              @foreach($trade->subcontractors as $tsk =>  $subcontractor)
-                              
-
-                              <input class="checkbox subcontractor" type="checkbox" 
-                               value="{{$trade->id.','.$subcontractor->id}}" {{ ($subcontractor->mail_sent == true ) ? 'checked="checked"' : '' }} >
-                              <span> {{ $subcontractor->name }}</span>
-                               </br> 
-                              @endforeach
+                              {!! $subcontractorHtml !!}
                            </td> 
                            <td>
                               @foreach($trade->subcontractors as $subcontractor)

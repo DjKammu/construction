@@ -128,7 +128,9 @@ class ITBTrackerController extends Controller
 
 
     public function sendMail(Request $request){
-     
+      
+      set_time_limit(0);
+
       (new \App\Jobs\SendEmail())
                 ->dispatch();
 
