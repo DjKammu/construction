@@ -70,7 +70,7 @@ class SendEmail implements ShouldQueue
             }
 
             $subject = @ucwords($project->name);
-            $file = @$trade->scope ? public_path(\Storage::url($trade->scope)) : '';
+            $file = @$trade->scope ? realpath(public_path(\Storage::url($trade->scope))) : '';
 
             $data = [
               'subject' => $subject,
