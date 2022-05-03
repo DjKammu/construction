@@ -174,7 +174,7 @@ function sendMail(){
         },
         success:function(response){
            alert(response.message); 
-           location.reload();
+           //location.reload();
         },
         error: function(error) {
           alert(error);

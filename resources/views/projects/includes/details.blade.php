@@ -98,7 +98,7 @@ aria-expanded="true">
                                         </div>
                                         <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Project Due Date 
+                                                <label class="text-dark" for="password">Bid Due Date 
                                                 </label>
                                                 <input  name="due_date" value="{{ $project->due_date }}" type="text" class="form-control date" placeholder="Due Date">
                                             </div>
