@@ -33,12 +33,14 @@ class MaitToSubcontractor extends Mailable
         $heading = $this->data['heading'];
         $content = $this->data['content'];
         $subject = $this->data['subject'];
+        $plans = $this->data['plans'];
         $file = $this->data['file'];
 
         $mail = $this->subject($subject)
             ->markdown('itb_tracker.mail', [
             'heading' => $heading,
             'content' => $content,
+            'plans'   => $plans
           ]);
 
         if ($file) {

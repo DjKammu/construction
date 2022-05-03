@@ -66,7 +66,7 @@ class SendEmail implements ShouldQueue
 
 
             if($project->plans_url){
-                $content .= '<a href='.$project->plans_url.'>PLANS</a>';
+               // $content .= '<br/><a href='.$project->plans_url.'>PLANS</a>';
             }
 
             $subject = @ucwords($project->name);
@@ -76,6 +76,7 @@ class SendEmail implements ShouldQueue
               'subject' => $subject,
               'heading' => $heading,
               'content' => $content,
+              'plans'   => @$project->plans_url,
               'file' => $file
             ];
 
