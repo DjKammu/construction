@@ -76,9 +76,35 @@
                            
                            @php
                              $subcontractorHtml = '';
+                             $emailHtml = '';
+                             $mobileHtml = '';
+                             $mailSentHtml = '';
+                             $bidHtml = '';
+                             $signedHtml = '';
                              foreach($trade->subcontractors as $tsk =>  $subcontractor){
                                $checked = ($subcontractor->mail_sent == true ) ? 'checked=checked' : '';
+                               $selectedTrueBid = $subcontractor->bid_recieved == \App\Models\ITBTracker::TRUE ? "selected" : "";
+                               $selectedFalseBid = $subcontractor->bid_recieved == \App\Models\ITBTracker::FALSE ? "selected" : "";
+                               $selectedTrueSigned = $subcontractor->contract_sign == \App\Models\ITBTracker::TRUE ? "selected" : "";
+                               $selectedFalseSigned = $subcontractor->contract_sign == \App\Models\ITBTracker::FALSE ? "selected" : "";
                                $subcontractorHtml .=  "<input class='checkbox subcontractor' type='checkbox' value='$trade->id,$subcontractor->id'   $checked ><span>$subcontractor->name</span> </br>";
+
+                               $emailHtml .= " $subcontractor->email_1 </br>";
+                               $mobileHtml .= " $subcontractor->mobile </br>";
+                               $mailSentHtml .= \App\Models\ITBTracker::$ITBArr[$subcontractor->mail_sent]."
+                                </br>"; 
+                                $bidHtml .= "
+                                 <select onchange='selectBid(this.value,$subcontractor->tracker_id)'> 
+                                  <option value=''>Select</option>
+                                   <option value=".\App\Models\ITBTracker::TRUE." $selectedTrueBid>".\App\Models\ITBTracker::TRUE_TEXT." </option>
+                                   <option value=".\App\Models\ITBTracker::FALSE." $selectedFalseBid>".\App\Models\ITBTracker::FALSE_TEXT." </option>
+                                  </select></br>"; 
+
+                                 $signedHtml .= "<select onchange='selectSign(this.value,$subcontractor->tracker_id)'> 
+                                  <option value=''>Select</option>
+                                   <option value=".\App\Models\ITBTracker::TRUE." $selectedTrueSigned>".\App\Models\ITBTracker::TRUE_TEXT." </option>
+                                   <option value=".\App\Models\ITBTracker::FALSE." $selectedFalseSigned>".\App\Models\ITBTracker::FALSE_TEXT." </option>
+                                  </select></br>";
                              
                              }
                       
@@ -91,34 +117,19 @@
                               {!! $subcontractorHtml !!}
                            </td> 
                            <td>
-                              @foreach($trade->subcontractors as $subcontractor)
-                              {{ $subcontractor->email_1 }}
-                               </br> 
-                              @endforeach
+                             {!! $emailHtml !!}
                            </td>          
                            <td>
-                              @foreach($trade->subcontractors as $subcontractor)
-                              {{ $subcontractor->mobile }}
-                               </br> 
-                              @endforeach
+                              {!! $mobileHtml !!}
                            </td>
                            <td>
-                              @foreach($trade->subcontractors as $subcontractor)
-                              {{ \App\Models\ITBTracker::$ITBArr[$subcontractor->mail_sent] }}
-                               </br> 
-                              @endforeach
+                             {!! $mailSentHtml !!}
                            </td>
                            <td>
-                              @foreach($trade->subcontractors as $subcontractor)
-                              {{ \App\Models\ITBTracker::$ITBArr[\App\Models\ITBTracker::FALSE] }}
-                               </br> 
-                              @endforeach
+                             {!! $bidHtml !!}
                            </td>
                            <td>
-                              @foreach($trade->subcontractors as $subcontractor)
-                              {{ \App\Models\ITBTracker::$ITBArr[\App\Models\ITBTracker::FALSE] }}
-                               </br> 
-                              @endforeach
+                             {!! $signedHtml !!}
                            </td>
                          </tr> 
                          @endforeach
@@ -175,6 +186,64 @@ function sendMail(){
         success:function(response){
            alert(response.message); 
            location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+  
+}
+
+function selectSign(val, id){
+ 
+   if(val == null ){
+      alert('Select for Contract Sign');
+      return;
+    }
+
+    let tracker_id = id;
+    let _token   =   "{{ csrf_token() }}";
+
+   $.ajax({
+        url: "{{ route('contract.signed')}}",
+        type:"POST",
+        data:{
+          tracker_id:tracker_id,
+          value :val,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           // location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+  
+}
+
+function selectBid(val, id){
+ 
+   if(val == null ){
+      alert('Select for Bid Recieved');
+      return;
+    }
+
+    let tracker_id = id;
+    let _token   =   "{{ csrf_token() }}";
+
+   $.ajax({
+        url: "{{ route('bid.recieved')}}",
+        type:"POST",
+        data:{
+          tracker_id:tracker_id,
+          value :val,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           // location.reload();
         },
         error: function(error) {
           alert(error);

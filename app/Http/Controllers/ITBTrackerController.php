@@ -44,12 +44,15 @@ class ITBTrackerController extends Controller
          $trades = $trades->filter(function($trade) use ($projectId) {
                 
                 $subcontractors = $trade->subcontractors->filter(function($sc) use ($projectId,$trade){
-                           $mail_sent = ITBTracker::where([
+                           $itb_tracker = ITBTracker::where([
                                'project_id' => $projectId, 'trade_id' => $trade->id , 
                                'subcontractors_id' => $sc->id 
-                               ])->pluck('mail_sent')->first();
+                               ])->first();
 
-                            $sc->mail_sent = $mail_sent ?? false;
+                            $sc->mail_sent = $itb_tracker->mail_sent ?? false;
+                            $sc->bid_recieved  = $itb_tracker->bid_recieved ?? false;
+                            $sc->contract_sign = $itb_tracker->contract_sign ?? false;
+                            $sc->tracker_id = $itb_tracker->id ?? false;
 
                             return $sc;                           
                 });
@@ -138,6 +141,42 @@ class ITBTrackerController extends Controller
            [
             'status' => 200,
             'message' => 'Sent Successfully!'
+           ]
+       );
+
+    } 
+
+    public function bidRecieved(Request $request){
+       
+      $id = $request->tracker_id;
+      $value = $request->value;
+
+     $itb_tracker = ITBTracker::find($id);
+     $itb_tracker->bid_recieved = $value;
+     $itb_tracker->save();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Updated Successfully!'
+           ]
+       );
+
+    }  
+
+  public function contractSigned(Request $request){
+       
+      $id = $request->tracker_id;
+      $value = $request->value;
+
+     $itb_tracker = ITBTracker::find($id);
+     $itb_tracker->contract_sign = $value;
+     $itb_tracker->save();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Updated Successfully!'
            ]
        );
 

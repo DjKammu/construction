@@ -221,3 +221,7 @@ Route::resource('itb-tracker', App\Http\Controllers\ITBTrackerController::class)
 
 Route::post('send-mail', [App\Http\Controllers\ITBTrackerController::class,'sendMail'])->
            name('send.mail');
+Route::post('bid-recieved', [App\Http\Controllers\ITBTrackerController::class,'bidRecieved'])->
+           name('bid.recieved');
+Route::post('contract-signed', [App\Http\Controllers\ITBTrackerController::class,'contractSigned'])->
+           name('contract.signed');
