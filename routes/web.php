@@ -86,12 +86,14 @@ Route::resource('setting', App\Http\Controllers\SettingController::class);
 
 // Document Routes
 
-Route::resource('documents', App\Http\Controllers\DocumentController::class);
+
 
 Route::get('documents/search', [App\Http\Controllers\DocumentController::class,'search'])->name('documents.search');
 
 
 Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::class,'destroyFile'])->name('documents.file.destroy');
+
+Route::resource('documents', App\Http\Controllers\DocumentController::class);
 
 
 // Reports Routes

@@ -83,14 +83,14 @@
              @can('view')
 
             <!-- Property Types -->
-            <!--  <li class="{{ Request::is('documents*') ? 'active' : '' }}">
+             <li class="{{ Request::is('documents*') ? 'active' : '' }}">
                 <a href="{{ route('documents.search') }}">
-                    <i class="nc-icon nc-bank"></i>
+                    <!-- <i class="nc-icon nc-bank"></i> -->
                     <i class="fa fa-search"></i>
                     <p>Search Documents</p>
                 </a>
             </li>
- -->
+
             @endcan
 
 

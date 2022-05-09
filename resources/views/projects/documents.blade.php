@@ -28,25 +28,19 @@
                 <div class="row mb-2">
                     <div class="col-12">
                       <form>
-                        <select style="height: 26px;" name="property_type"> 
-                        <option value="">Select Property Type</option>
-                        @foreach($propertyTypes as $type)
-                           <option value="{{ $type->slug }}" {{ (@request()->property_type == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
+                        <select style="height: 26px;" name="project_type"> 
+                        <option value="">Select Project Type</option>
+                        @foreach($projectTypes as $type)
+                           <option value="{{ $type->slug }}" {{ (@request()->project_type == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                         @endforeach
                         </select>
-                        <select style="height: 26px;" name="property"> 
-                        <option value="">Select Property</option>
-                        @foreach($properties as $property)
-                           <option value="{{ $property->id }}" {{ (@request()->property == $property->id) ? 'selected' : ''}}> {{ $property->property_name }}</option>
+                        <select style="height: 26px;" name="project"> 
+                        <option value="">Select Project</option>
+                        @foreach($projects as $project)
+                           <option value="{{ $project->id }}" {{ (@request()->project == $project->id) ? 'selected' : ''}}> {{ $project->name }}</option>
                         @endforeach
                         </select>
 
-                        <select style="height: 26px;" name="tenant"> 
-                        <option value="">Select Tenant</option>
-                        @foreach($tenants as $tenant)
-                           <option value="{{ $tenant->id }}" {{ (@request()->tenant == $tenant->id) ? 'selected' : ''}}> {{ $tenant->name }}</option>
-                        @endforeach
-                        </select>
                         <select style="height: 26px;" name="document_type"> 
                         <option value="">Select Document Type</option>
                         @foreach($documentTypes as $type)
@@ -128,13 +122,13 @@
                                          <div class="card card-table-item" style="width: 100%; height: 100%;">
                                             <div class="card-body pb-0">
                                                <div class="author mt-1">
-                                                 <span class="doc_type_m">{{ $document->document->property->property_name 
+                                                 <span class="doc_type_m">{{ $document->document->project->name 
                                                  }} </span>
                                                  </br>
-                                                 <a  href="{{ ($document->file) ? $document->file : route('properties.documents.show', ['id' => request()->property, 'document' => $document->id ]) }}" {{ ($document->file) ? 'target="_blank"' : '' }} >
+                                                 <a  href="{{ ($document->file) ? $document->file : route('projects.documents.show', ['id' => request()->project, 'document' => $document->id ]) }}" {{ ($document->file) ? 'target="_blank"' : '' }} >
                                                   <img class="avatar border-gray" src="{{ asset('img/'.$extension.'.png') }}">  
                                                    </a>
-                                                  <a href="{{url('/')}}/properties/{{ \Str::slug($document->document->property->id)}}/documents/{{ $document->document->id }}" target="_blank">                     
+                                                  <a href="{{url('/')}}/projects/{{ \Str::slug($document->document->project->id)}}/documents/{{ $document->document->id }}" target="_blank">                     
                                                   <h6 class="title mb-0">{{ @$document->name ?? @$document->document->name }}</h6>
                                                    </a>
                                                    <span class="doc-type"> 

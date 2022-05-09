@@ -18,7 +18,7 @@ class Document extends Model
 
      protected $fillable = [
      'name' , 'slug' ,'account_number',
-     'file','property_id','tenant_id',
+     'file','project_id',
      'document_type_id','vendor_id',
      'subcontractor_id', 'proposal_id',
      'payment_id'
@@ -50,8 +50,8 @@ class Document extends Model
         return $this->hasMany(DocumentFile::class);
     }
 
-    public function scopePropertyIds($query,$ids){
-         return $query->whereIn('property_id',$ids);
+    public function scopeProjectIds($query,$ids){
+         return $query->whereIn('project_id',$ids);
     }
 
     public function scopeIsProposal($query,$id){
