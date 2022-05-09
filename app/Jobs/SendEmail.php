@@ -62,7 +62,7 @@ class SendEmail implements ShouldQueue
 
 
            $heading = 'Dear '.$subcontractor->name;
-           $content = 'We building a new '.@$project->project_type->name.'. We are inviting you to bid on the project called '.@$project->name.'. The Bids are due by '.$project->project_due_date.'. Please click on Drobox URL Link for access to the Architectural Plans. Please look at the attached scope file and bid according to plans and scope file.';
+           $content = 'We building a new '.@$project->project_type->name.'. We are inviting you to bid on the project called '.@$project->name.'. The Bids are due by '.$project->due_date.'. Please click on Drobox URL Link for access to the Architectural Plans. Please look at the attached scope file and bid according to plans and scope file.';
 
 
             if($project->plans_url){
