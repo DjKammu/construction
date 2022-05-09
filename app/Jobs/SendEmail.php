@@ -15,6 +15,7 @@ use App\Models\Trade;
 use App\Models\User;
 use App\Mail\MaitToSubcontractor;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class SendEmail implements ShouldQueue
 {
@@ -62,7 +63,7 @@ class SendEmail implements ShouldQueue
 
 
            $heading = 'Dear '.$subcontractor->name;
-           $content = 'We building a new '.@$project->project_type->name.'. We are inviting you to bid on the project called '.@$project->name.'. The Bids are due by '.$project->due_date.'. Please click on Drobox URL Link for access to the Architectural Plans. Please look at the attached scope file and bid according to plans and scope file.';
+           $content = 'We building a new <b>'.@$project->project_type->name.'</b>. We are inviting you to bid on the project called <b>'.@$project->name.'</b>. The Bids are due by <b>'.@Carbon::parse($project->due_date)->format('m-d-Y').'</b>. Please click on Drobox URL Link for access to the Architectural Plans. Please look at the attached scope file and bid according to plans and scope file.';
 
 
             if($project->plans_url){
