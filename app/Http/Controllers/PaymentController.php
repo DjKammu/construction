@@ -480,7 +480,7 @@ class PaymentController extends Controller
                           'year' => $year
                           ];
 
-           @$document->files()->whereFile($file)->delete();             
+           @$document->files()->delete();             
             $document->files()->create($fileArr);
             $data['file'] = $fileName;
         }
@@ -556,13 +556,12 @@ class PaymentController extends Controller
 
           @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $file = '';
-
           $documents = @$payment->project->documents()
                        ->where('payment_id',$id)->first();
+                                        
           $docFiles = @$documents->files()->whereFile($file)->delete();             
 
-          $payment->update(['file' => $file]);
+          $payment->update(['file' => '']);
 
           @unlink($path);
 
