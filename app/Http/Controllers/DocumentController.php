@@ -571,7 +571,9 @@ class DocumentController extends Controller
             
           $doc->file = url($folderPath.$doc->file);
 
-          return $doc->file;
+          if(! file_exists($doc->file)){
+             return $doc->file;
+          }
        
      });
 

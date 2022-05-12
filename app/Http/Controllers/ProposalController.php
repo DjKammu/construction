@@ -520,6 +520,7 @@ class ProposalController extends Controller
 
           $publicPath = public_path().'/';
 
+
           $aPath = $publicPath.Document::PROPOSALS."/".Document::ARCHIEVED; 
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
