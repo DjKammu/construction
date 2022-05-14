@@ -541,9 +541,9 @@ class DocumentController extends Controller
             ->orWhere('year', 'LIKE', "%{$searchTerm}%");
          }  
 
-         $perPage = request()->filled('per_page') ? request()->per_page : (new DocumentFile())->perPage;
+        $perPage = request()->filled('per_page') ? request()->per_page : (new DocumentFile())->perPage;
 
-         $documents = $documents->with('document')->paginate($perPage);
+        $documents = $documents->with('document')->paginate($perPage);
 
         $documents->filter(function($doc){
 
@@ -566,14 +566,11 @@ class DocumentController extends Controller
                  $trade_slug = @\Str::slug($proposal->trade->name);
                  $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
                  $folderPath .= "$project_slug/$trade_slug/";
-            // dd($folderPath);
             }
             
           $doc->file = url($folderPath.$doc->file);
 
-          if(! file_exists($doc->file)){
-             return $doc->file;
-          }
+          return $doc->file;
        
      });
 

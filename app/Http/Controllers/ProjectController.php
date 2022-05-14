@@ -444,6 +444,11 @@ class ProjectController extends Controller
                if($slug  != $oldSlug){
                   $path = public_path().'/'.Document::PROJECT.'/'.@$project_type->slug.'/';
                   @rename($path.$oldSlug, $path.$slug); 
+                  $path = public_path().'/'.Document::INVOICES."/";
+                  @rename($path.$oldSlug, $path.$slug); 
+                  $path = public_path().'/'.Document::PROPOSALS."/";
+                  @rename($path.$oldSlug, $path.$slug); 
+
                }
 
         }
