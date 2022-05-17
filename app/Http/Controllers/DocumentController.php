@@ -12,6 +12,7 @@ use App\Models\Project;
 use App\Models\Subcontractor;
 use App\Models\Document;
 use App\Models\Proposal;
+use App\Models\Payment;
 use App\Models\Vendor;
 use Gate;
 
@@ -206,6 +207,12 @@ class DocumentController extends Controller
                $proposal = Proposal::find($document->proposal_id);
                $trade_slug = @\Str::slug($proposal->trade->name);
                $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
+
+               if($document->payment_id){
+                     $payment = Payment::find($document->payment_id);
+                     $trade_slug = @\Str::slug($payment->trade->name);
+                 }
+
                $folderPath .= "$project_slug/$trade_slug/";
           }
           // dd($folderPath);
@@ -565,9 +572,15 @@ class DocumentController extends Controller
                  $proposal = Proposal::find($doc->document->proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
                  $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
+
+                 if($doc->document->payment_id){
+                     $payment = Payment::find($doc->document->payment_id);
+                     $trade_slug = @\Str::slug($payment->trade->name);
+                 }
+
                  $folderPath .= "$project_slug/$trade_slug/";
             }
-            
+
           $doc->file = url($folderPath.$doc->file);
 
           return $doc->file;

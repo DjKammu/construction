@@ -14,7 +14,12 @@
   </footer>
 
   <header > 
-      <div style="float: left; width: 63%; margin-bottom: 10px;">
+      
+
+</header>
+
+<DIV id="page_1">
+<div style="float: left; width: 63%; margin-bottom: 10px;">
       <div class="left1">
         <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('img/invoice-logo.jpg'))) }}">
          <P class="p0 ft0">Continuation Sheet</P>
@@ -55,11 +60,6 @@
       </TR>
       </TABLE>
     </div>
-
-</header>
-
-<DIV id="page_1">
-
 
 <div>
 
