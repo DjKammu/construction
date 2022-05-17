@@ -231,7 +231,8 @@ footer {
 }
 
 header {
-    position: {{ count(@$lines) < 4 ? "fixed" : "relative" }};
+    /*position: {{ count(@$lines) < 4 ? "fixed" : "relative" }};*/
+    position: fixed;
     top: 0px;
     left: 0px;
     right: 0px;
@@ -360,7 +361,12 @@ p.p32  {
   </footer>
 
   <header> 
-      <div style="float: left; width: 63%; margin-bottom: 10px;">
+     
+
+</header>
+
+<DIV id="page_1">
+  <div style="float: left; width: 63%; margin-bottom: 10px;">
       <div class="left1">
         <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('img/invoice-logo.jpg'))) }}">
          <P class="p0 ft0">Continuation Sheet</P>
@@ -401,11 +407,6 @@ p.p32  {
       </TR>
       </TABLE>
     </div>
-
-</header>
-
-<DIV id="page_1">
-
 <div>
 
 <!-- <div class="id1_1">
