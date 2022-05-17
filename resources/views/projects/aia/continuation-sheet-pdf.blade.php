@@ -669,7 +669,9 @@ footer {
 
 
 header {
-    position: {{  ( $nmTotal || $pbTotal || $conmTotal || $copbTotal ) ? "relative" : ( count(@$lines) < 4 ? "fixed" : "relative")   }};
+    /*position: {{  ( $nmTotal || $pbTotal || $conmTotal || $copbTotal ) ? "relative" : ( count(@$lines) < 4 ? "fixed" : "relative")   }};*/
+
+    position: {{  ( $nmTotal || $pbTotal || $conmTotal || $copbTotal ) ? "relative" : "fixed" }};
     top: 0px;
     left: 0px;
     right: 0px;
