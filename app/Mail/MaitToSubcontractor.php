@@ -38,7 +38,10 @@ class MaitToSubcontractor extends Mailable
         $pdffile  =  @$this->data['pdffile'];
         $fileName =  @$this->data['fileName'];
 
+         $setting = \App\Models\Setting::latest()->first();
+
         $mail = $this->subject($subject)
+            ->replyTo(@$setting->from_email)
             ->markdown('itb_tracker.mail', [
             'heading' => $heading,
             'content' => $content,
