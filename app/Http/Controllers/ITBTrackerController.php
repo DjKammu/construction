@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\ITBTracker;
+use App\Mail\MaitToSubcontractor;
 use Gate;
 
 
@@ -136,6 +137,39 @@ class ITBTrackerController extends Controller
 
       (new \App\Jobs\SendEmail())
                 ->dispatch();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Sent Successfully!'
+           ]
+       );
+
+    }
+
+    public function sendMailWithPdf(Request $request){
+      
+      set_time_limit(0);
+
+        $data = [
+          'heading' => '',
+          'plans' => '',
+          'file' => '',
+          'subject' => $request->subject,
+          'content' => $request->message,
+          'pdffile' => $request->file
+        ];
+
+        $pdffile = (new PaymentController())->downloadPDF(4,true);
+
+        dd($pdffile);
+ 
+
+        dispatch(
+          function() use ($request, $data){
+           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+          }
+        )->afterResponse();
 
       return response()->json(
            [

@@ -173,6 +173,8 @@ Route::post('projects/payments/{id}',[App\Http\Controllers\PaymentController::cl
 
  Route::get('projects/{id}/download', [App\Http\Controllers\PaymentController::class,'downloadPDF'])->name('projects.download');
 
+ Route::post('projects/{id}/send-mail', [App\Http\Controllers\PaymentController::class,'sendMail'])->name('projects.send.mail');
+
 
 Route::prefix('projects')->group(function(){
  
@@ -223,6 +225,9 @@ Route::resource('itb-tracker', App\Http\Controllers\ITBTrackerController::class)
 
 Route::post('send-mail', [App\Http\Controllers\ITBTrackerController::class,'sendMail'])->
            name('send.mail');
+
+Route::post('send-mail-pdf', [App\Http\Controllers\ITBTrackerController::class,'sendMailWithPdf'])->
+           name('send.mail.pdf');
 Route::post('bid-recieved', [App\Http\Controllers\ITBTrackerController::class,'bidRecieved'])->
            name('bid.recieved');
 Route::post('contract-signed', [App\Http\Controllers\ITBTrackerController::class,'contractSigned'])->

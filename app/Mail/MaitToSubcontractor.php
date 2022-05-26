@@ -33,8 +33,10 @@ class MaitToSubcontractor extends Mailable
         $heading = $this->data['heading'];
         $content = $this->data['content'];
         $subject = $this->data['subject'];
-        $plans = $this->data['plans'];
-        $file = $this->data['file'];
+        $plans =   $this->data['plans'];
+        $file  =   $this->data['file'];
+        $pdffile  =  @$this->data['pdffile'];
+        $fileName =  @$this->data['fileName'];
 
         $mail = $this->subject($subject)
             ->markdown('itb_tracker.mail', [
@@ -49,6 +51,10 @@ class MaitToSubcontractor extends Mailable
                 'as' => $fileName, // If you want you can chnage original name to custom name      
                 'mime' => pathinfo($file, PATHINFO_EXTENSION))
             );
+        }
+
+        if (isset($pdffile) && $pdffile && isset($fileName) && $fileName) {
+             $mail->attachData($pdffile,$fileName);
         }
 
         return $mail;

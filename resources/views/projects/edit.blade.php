@@ -135,6 +135,10 @@
           $("#search").click();
       }
     });
+  
+    $(".btn-close").click(function(){  
+            $("#myModal").modal('hide');
+        });
 
   });
 
@@ -142,6 +146,68 @@ $('.date').datetimepicker({
     format: 'Y-M-D'
 });
 
+   function sendEmailPopup(){   
+      $("#myModal").modal('show');
+   }
+
+   function sendMail(){
+   
+    var recipient = $('#recipient').val();
+    var subject = $('#subject').val();
+    var message = $('#message').val();
+    var file = $('#file').val();
+
+    const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+
+    if(!recipient){
+      alert('Recipient cant be blank')
+      return
+    }else if(!validateEmail(recipient)) {
+        alert('Recipient is invalid')
+      return
+  
+    }else if(!subject){
+      alert('Subject cant be blank')
+      return
+    } else if(!message){
+      alert('Message cant be blank')
+      return
+    }
+    
+    let projectId = '{{ @$project->id }}';
+
+    let _token   =   "{{ csrf_token() }}";
+
+    let url = '/projects/'+projectId+'/send-mail'
+
+   $.ajax({
+        url: url,
+        type:"POST",
+        data:{
+          recipient:recipient,
+          subject:subject,
+          message:message,
+          file:file,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           $("#myModal").modal('hide');
+           location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+
+   }
 
   function selectPerpage(perPage){
        var fullUrl = window.location.href;
@@ -226,6 +292,8 @@ $('.date').datetimepicker({
         url = url.replace(/[?#]$/,'');
         return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
     }
+
+   
 
 </script>
 <style type="text/css">

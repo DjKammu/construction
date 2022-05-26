@@ -3,9 +3,13 @@
 
 {!! $content !!}
 
+@if($plans)
 @component('mail::button', ['url' => $plans])
 PLANS
 @endcomponent
+
+@endif
+
 
 
 Thanks,<br>

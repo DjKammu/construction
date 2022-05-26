@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MaitToSubcontractor;
 use Illuminate\Validation\Rule; 
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -15,6 +16,7 @@ use App\Models\DocumentType;
 use App\Models\Subcontractor;
 use Gate;
 use Carbon\Carbon;
+
 use PDF;
 
 class PaymentController extends Controller
@@ -568,7 +570,7 @@ class PaymentController extends Controller
          return redirect()->back()->with('message', 'File Delete Successfully!');
     }
 
-    public function downloadPDF($id){
+    public function downloadPDF($id,$view = false){
 
         $project = Project::find($id); 
         $trades = $project->trades()->get();
@@ -595,8 +597,45 @@ class PaymentController extends Controller
 
         $slug = \Str::slug($project->name);
 
-        // return $pdf->stream('project_'.$slug .'_budget.pdf');
+        if($view){
+         // return $pdf->stream('project_'.$slug .'_budget.pdf');
+         return $pdf->setPaper('a4')->output();
+        }
+
         return $pdf->download($slug.'-budget.pdf');
+
+    }
+
+    public function sendMail(Request $request, $id){
+
+       set_time_limit(0);
+        $project = Project::find($id); 
+         $slug = \Str::slug($project->name);
+        $data = [
+          'heading' => '',
+          'plans' => '',
+          'file' => '',
+          'subject' => $request->subject,
+          'content' => $request->message,
+        ];
+       
+        $pdffile = $this->downloadPDF($id,true);
+
+        $data['pdffile'] = $pdffile;
+        $data['fileName'] = $slug.'-budget.pdf';
+
+        dispatch(
+          function() use ($request, $data){
+           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+          }
+        )->afterResponse();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Sent Successfully!'
+           ]
+       );
 
     }
 }
