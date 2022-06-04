@@ -34,14 +34,20 @@ aria-expanded="true">
     </div>
     @if(@request()->p && ( @request()->sc || @request()->v ) && @request()->t == 'subcontractor-payment' )
       
-      <div class="col-3 text-right">
+       <div class="col-8" >
+          <h4 class="mt-0 text-left"> {{ $project->name }} {{ (@request()->sc) ?  'Subcontractor' : 'Vendor' }}  Summary</h4>
+      </div>
+
+      <div class="col-4 text-right">
+       
+        <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
+          Send Email
+        </button>
+
         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/subcontractor-payment/{{@request()->sc}}?v={{@request()->v }}'" rel="tooltip" data-original-title="Sub Contractor Payment" title="Sub Contractor Payment">Download
         </button>
     </div>
-       
-       <div class="col-12" >
-          <h4 class="mt-0 text-left"> {{ $project->name }} {{ (@request()->sc) ?  'Subcontractor' : 'Vendor' }}  Summary</h4>
-      </div>
+
 
         @include('reports.includes.subcontractor-payment-content')
    

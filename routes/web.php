@@ -102,6 +102,8 @@ Route::resource('reports', App\Http\Controllers\ReportController::class);
 
  Route::get('reports/{id}/{type}/{trade?}', [App\Http\Controllers\ReportController::class,'getReport'])->name('reports.report');
 
+ Route::post('reports/{id}/send-mail', [App\Http\Controllers\ReportController::class,'reportSendMail'])->name('reports.send-mail');
+
 
 
 // Files Routes

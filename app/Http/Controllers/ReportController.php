@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MaitToSubcontractor;
 use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\Document;
@@ -220,7 +221,7 @@ class ReportController extends Controller
 
     }
 
-    public function getReport($id,$type,$sc = null){
+    public function getReport($id,$type,$sc = null, $view = null){
 
         $v = request()->v;
         
@@ -242,9 +243,52 @@ class ReportController extends Controller
             $type = (@$sc) ?  'Subcontractor' : 'Vendor';
             $type  = \Str::slug($type);
         }
+        
+        if($view){
+         // return $pdf->stream('project_'.$slug .'_budget.pdf');
+         return $pdf->setPaper('a4')->output();
+        }
 
          //return $pdf->stream($slug.'_'.$type .'.pdf');
         return $pdf->download($slug.'-'.$type .'.pdf');
+
+    }
+
+    public function reportSendMail(Request $request, $id){
+      
+     $type = request()->t;
+     $sc = request()->sc;
+
+      set_time_limit(0);
+        $project = Project::find($id); 
+         $slug = \Str::slug($project->name);
+        $data = [
+          'heading' => '',
+          'plans' => '',
+          'file' => '',
+          'subject' => $request->subject,
+          'content' => $request->message,
+        ];
+    
+        $pdffile =  $this->getReport($id,$type,$sc, true);
+
+        $data['pdffile'] = $pdffile;
+        $data['fileName'] = $slug.'-'.$type.'.pdf';
+
+        dispatch(
+          function() use ($request, $data){
+           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+          }
+        )->afterResponse();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Sent Successfully!'
+           ]
+       );
+
+
 
     }
 

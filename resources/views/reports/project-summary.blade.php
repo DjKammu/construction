@@ -20,15 +20,22 @@ aria-expanded="true">
     </div>
     @if(@request()->p && @request()->t == 'project-summary' )
        
+       </br> 
+        <div class="col-6" >
+            <h4 class="mt-0 text-left"> {{ $project->name }} Summary</h4>
+        </div>
 
-      <div class="col-3 text-right">
-        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/project-summary'" rel="tooltip" data-original-title="Project Summary" title="Project Summary">Download
+        <div class="col-6 text-right">
+        <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
+          Send Email
         </button>
-       </div>
-      <div class="col-6" >
-          <h4 class="mt-0 text-left"> {{ $project->name }} Summary</h4>
-      </div>
-      @include('reports.includes.project-summary-content')
+
+          <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='reports/{{$project->id}}/project-summary'" rel="tooltip" data-original-title="Project Summary" title="Project Summary">Download
+          </button>
+         </div>
+        
+        @include('reports.includes.project-summary-content')
+
     @else
    <div class="col-12">
    </br>
