@@ -537,8 +537,12 @@ class ProjectApplicationController extends Controller
           $application = $project->applications()
                        ->where('id',$app_id)->first();
 
-          $lines = $application->application_lines()->get();              
-  
+          $lines = $application->application_lines()
+                    ->with('project_line')
+                   ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
+                   ->orderBy('project_lines.account_number', 'desc')
+                   ->get();
+
           $summary = $this->getSummary($project,$app_id);
         
           $data = array_merge([
@@ -574,7 +578,11 @@ class ProjectApplicationController extends Controller
             $lastApplication = $project->applications()
                        ->latest()->first();       
 
-           $lines = $lastApplication->application_lines()->get(); 
+           $lines = $lastApplication->application_lines()
+                   ->with('project_line')
+                   ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
+                   ->orderBy('project_lines.account_number', 'desc')
+                     ->get(); 
 
            $summary = $this->getSummary($project,$lastApplication->id);
 
