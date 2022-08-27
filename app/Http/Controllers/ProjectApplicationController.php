@@ -540,7 +540,7 @@ class ProjectApplicationController extends Controller
           $lines = $application->application_lines()
                     ->with('project_line')
                    ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
-                   ->orderBy('project_lines.account_number', 'desc')
+                   ->orderBy('project_lines.account_number')
                    ->get();
 
           $summary = $this->getSummary($project,$app_id);
@@ -581,7 +581,7 @@ class ProjectApplicationController extends Controller
            $lines = $lastApplication->application_lines()
                    ->with('project_line')
                    ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
-                   ->orderBy('project_lines.account_number', 'desc')
+                   ->orderBy('project_lines.account_number')
                      ->get(); 
 
            $summary = $this->getSummary($project,$lastApplication->id);

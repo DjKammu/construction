@@ -606,7 +606,7 @@ p.p32  {
 
  $changeOrderApplications = $project->changeOrderApplications()
                             ->where('app','<=',$applicationsCount)
-                            ->orderBy('account_number', 'desc')
+                            ->orderBy('account_number')
                             ->get();      
 
 @endphp
