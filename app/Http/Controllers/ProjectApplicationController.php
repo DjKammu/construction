@@ -376,7 +376,10 @@ class ProjectApplicationController extends Controller
 
        if(!$application){
             $applications = $project->project_lines()
-            ->orderBy($orderBy, $order)->get();
+            ->with('project_line')
+           ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
+           ->orderBy('project_lines.account_number')->get();
+            // ->orderBy($orderBy, $order)->get();
 
                $applications->filter(function($app) use ($edit){
                   $app->billed_to_date = 0;
@@ -389,7 +392,9 @@ class ProjectApplicationController extends Controller
        else{
 
             $applications = $application->application_lines()
-                      ->get();       
+                      ->with('project_line')
+                      ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
+                      ->orderBy('project_lines.account_number')->get();       
                       
              $applications->filter(function($app) use ($edit){
 
@@ -430,7 +435,8 @@ class ProjectApplicationController extends Controller
 
     public function getChangeOrders($project, $edit = false){
       
-       $changeOrderApplications = $project->changeOrderApplications()->get();
+       $changeOrderApplications = $project->changeOrderApplications()
+                                   ->orderBy('account_number')->get();
        $orderBy = 'created_at';  
        $order ='DESC' ; 
 
