@@ -23,9 +23,7 @@ aria-expanded="true">
                                                 <input  name="name" value="{{ $project->name }}" type="text" class="form-control" placeholder="Name" required="">
                                             </div>
                                         </div>
-                                    
-                                      
-
+                                
                                          <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Project Type
