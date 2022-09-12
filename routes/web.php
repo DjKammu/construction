@@ -82,6 +82,8 @@ Route::resource('vendors', App\Http\Controllers\VendorController::class);
 
 Route::resource('setting', App\Http\Controllers\SettingController::class);
 
+Route::resource('property-types', App\Http\Controllers\PropertyTypeController::class);
+
 
 
 // Document Routes

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\Document;
 use App\Models\ProjectType;
+use App\Models\PropertyType;
 use App\Models\Project;
 use App\Models\Subcontractor;
 use App\Models\Proposal;
@@ -83,9 +84,10 @@ class ProjectController extends Controller
                return abort('401');
          } 
 
+        $propertyTypes = PropertyType::all(); 
         $projectTypes = ProjectType::all(); 
 
-        return view('projects.create',compact('projectTypes'));
+        return view('projects.create',compact('projectTypes','propertyTypes'));
     }
 
     /**
@@ -144,6 +146,7 @@ class ProjectController extends Controller
                return abort('401');
           } 
 
+         $propertyTypes = PropertyType::all();
          $projectTypes = ProjectType::all();
          $projects = Project::all()->except($id);
          $project = Project::find($id);
@@ -372,7 +375,7 @@ class ProjectController extends Controller
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
            
-         return view('projects.edit',compact('projectTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
+         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades'));
     }

@@ -63,6 +63,22 @@
                                                 </select>
                                             </div>
                                         </div>
+
+                                          <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Property Type
+                                                </label>
+
+                                                <select class="form-control" name="property_type_id"> 
+                                                  <option> Select Property Type</option>
+                                                  @foreach($propertyTypes as $type)
+                                                   <option value="{{ $type->id }}" {{ 
+                                                    (@$project->property_type_id == $type->id) ? 'selected=""' : ''}}>{{ $type->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div> 
                                     
                                        <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
