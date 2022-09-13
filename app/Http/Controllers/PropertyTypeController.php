@@ -162,7 +162,7 @@ class PropertyTypeController extends Controller
                return abort('401');
           } 
 
-         $propertyType = ProjectType::find($id);
+         $propertyType = PropertyType::find($id);
          // $path = public_path().'/'. Document::PROJECT.'/'; 
          // @\File::copyDirectory($path.$propertyType->slug, $path.Document::ARCHIEVED);
          // @\File::deleteDirectory($path.$propertyType->slug);
