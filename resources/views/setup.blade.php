@@ -40,7 +40,7 @@
                         
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("setting")}}'">Email
                         </button>
-                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("property-types")}}'">Property Types
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("properties")}}'">Property
                         </button>
                     </div>
                 </div>

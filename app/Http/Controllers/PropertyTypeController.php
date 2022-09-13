@@ -35,7 +35,7 @@ class PropertyTypeController extends Controller
 
          $propertyTypes = $propertyTypes->paginate((new PropertyType())->perPage); 
          
-         return view('property_types.index',compact('propertyTypes'));
+         return view('properties.index',compact('propertyTypes'));
     }
 
     /**
@@ -49,7 +49,7 @@ class PropertyTypeController extends Controller
                return abort('401');
          } 
 
-        return view('property_types.create');
+        return view('properties.create');
     }
 
     /**
@@ -78,7 +78,7 @@ class PropertyTypeController extends Controller
         // $path = public_path().'/'.Document::PROJECT.'/' . $data['slug'];
         // \File::makeDirectory($path, $mode = 0777, true, true);
 
-        return redirect('property-types')->with('message', 'Property Type Created Successfully!');
+        return redirect('properties')->with('message', 'Property Created Successfully!');
     }
 
     /**
@@ -94,7 +94,7 @@ class PropertyTypeController extends Controller
           } 
 
          $type = PropertyType::find($id);
-         return view('property_types.edit',compact('type'));
+         return view('properties.edit',compact('type'));
     }
 
     /**
@@ -147,7 +147,7 @@ class PropertyTypeController extends Controller
 
          $type->update($data);
 
-        return redirect('property-types')->with('message', 'Property Type Updated Successfully!');
+        return redirect('properties')->with('message', 'Property Updated Successfully!');
     }
 
     /**
@@ -169,6 +169,6 @@ class PropertyTypeController extends Controller
 
          $propertyType->delete();       
 
-        return redirect()->back()->with('message', 'Property Type Delete Successfully!');
+        return redirect()->back()->with('message', 'Property Delete Successfully!');
     }
 }
