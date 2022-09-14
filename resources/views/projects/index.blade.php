@@ -49,6 +49,13 @@
                          <option value="{{ $type->slug }}" {{ (@request()->p == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach
                       </select>
+
+                      <select style="height: 26px;" onchange="return window.location.href = '?pr='+this.value"> 
+                      <option value="">Select Property</option>
+                      @foreach($propertyTypes as $type)
+                         <option value="{{ $type->id }}" {{ (@request()->pr == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
+                      @endforeach
+                      </select>
                         <select style="height: 26px;"  onchange="return window.location.href = '?st='+this.value"name="status"> 
                           <option value="">Select Status</option>
                           <option value="{{\App\Models\Project::ACTIVE_STATUS }}" {{ (@request()->st == \App\Models\Project::ACTIVE_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ACTIVE_TEXT  }}</option>

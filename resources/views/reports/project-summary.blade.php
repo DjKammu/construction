@@ -10,13 +10,23 @@ aria-expanded="true">
            <option value="{{ $type->slug }}" {{ (@request()->pt == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
        @endforeach
       </select>
+       
+      <select class="pr" style="height: 26px;" onchange="selectProperty(this.value+'&t=project-summary#project-summary','pt')"> 
+       <option value="">Select Property</option>
+       @foreach($propertyTypes as $type)
+           <option value="{{ $type->id }}" {{ (@request()->pr == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
+       @endforeach
+      </select>
 
-       <select style="height: 26px;" onchange="selectProject(this.value+'&t=project-summary#project-summary','pt')"> 
+      <select style="height: 26px;" onchange="selectProject(this.value+'&t=project-summary#project-summary','pt','pr')"> 
       <option value="">Select Project</option>
       @foreach($projects as $pr)
          <option value="{{ $pr->id }}" {{ (@request()->p == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
       @endforeach
       </select>
+
+     
+
     </div>
     @if(@request()->p && @request()->t == 'project-summary' )
        

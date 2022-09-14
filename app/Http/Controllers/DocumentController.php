@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
 use App\Models\ProjectType;
+use App\Models\PropertyType;
 use App\Models\Project;
 use App\Models\Subcontractor;
 use App\Models\Document;
@@ -450,7 +451,7 @@ class DocumentController extends Controller
          $docsIds  = [];
 
          $documents = DocumentFile::query();
-          $projects = Project::query();
+         $projects = Project::query();
 
          if(request()->filled('project_type')){
           $project_type = ProjectType::where('slug',request()->project_type)
@@ -466,6 +467,7 @@ class DocumentController extends Controller
 
 
          }
+         
 
          if(request()->filled('project')){
           $project = Project::where('id',request()->project)
@@ -487,6 +489,26 @@ class DocumentController extends Controller
            // dd($docsIds);
          }
 
+         if(request()->filled('property')){
+          $project = Project::where('property_type_id',request()->property)
+                           ->with('documents')->first();                  
+
+          $prDocsIds =  (@$project ) ? @$project->documents->pluck('id') : [];
+
+
+          
+          if($docsIds && $prDocsIds ){
+
+            $docsIds = $docsIds->filter(function ($value, $key) use ($prDocsIds){
+                return $prDocsIds->contains($value);
+            });            
+
+          }
+          else{
+             $docsIds = (@$prDocsIds) ? $prDocsIds->merge($docsIds) : $docsIds ; 
+          }
+         }
+         
          if(request()->filled('document_type')){
           $document_type = DocumentType::where('slug',request()->document_type)
                            ->with('documents')->first(); 
@@ -509,12 +531,14 @@ class DocumentController extends Controller
          }
           
 
+         $propertyTypes = PropertyType::all(); 
          $projectTypes = ProjectType::all(); 
          $documentTypes = DocumentType::all(); 
          $projects = $projects->get();
          // $tenants = Tenant::all();
 
          $docsIds =    ($docsIds) ? @$docsIds->unique() : []; 
+
 
          if($docsIds){
             $documents->docIds($docsIds);
@@ -590,7 +614,7 @@ class DocumentController extends Controller
 
          //dd($documents);
 
-         return view('projects.documents',compact('documents','projectTypes',
+         return view('projects.documents',compact('documents','propertyTypes','projectTypes',
           'projects','documentTypes'));
     }
 

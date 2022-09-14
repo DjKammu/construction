@@ -62,15 +62,20 @@ class ProjectController extends Controller
           if(request()->filled('st')){
             $st = request()->st;
             $projects->where('status', $st);
+         }
+        if(request()->filled('pr')){
+            $pr = request()->pr;
+            $projects->where('property_type_id', $pr);
          } 
-         
+
+         $propertyTypes = PropertyType::all(); 
          $projectTypes = ProjectType::all(); 
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
          $projects = $projects->paginate($perPage);
 
-         return view('projects.index',compact('projects','projectTypes'));
+         return view('projects.index',compact('projects','projectTypes','propertyTypes'));
     }
 
     /**
@@ -145,7 +150,7 @@ class ProjectController extends Controller
           if(Gate::denies('edit')) {
                return abort('401');
           } 
-
+        
          $propertyTypes = PropertyType::all();
          $projectTypes = ProjectType::all();
          $projects = Project::all()->except($id);

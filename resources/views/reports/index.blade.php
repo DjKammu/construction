@@ -133,7 +133,7 @@ function selectPerpage(perPage){
        }
   } 
 
-function selectProject(project, cLass){
+function selectProperty(property, cLass){
        let path = window.location.href.split('?')[0]
        path = path.split('#')[0]
        var projectType = $('.'+cLass).val();
@@ -142,6 +142,25 @@ function selectProject(project, cLass){
        if(projectType){
           url += 'pt='+projectType+'&';
        }
+       url += 'pr='+property;
+
+       window.location.href = path+'?'+url;
+       
+  } 
+
+  function selectProject(project, cLass, cLass2){
+       let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
+       var projectType = $('.'+cLass).val();
+       var property = $('.'+cLass2).val();
+        
+       let url = ''; 
+       if(projectType){
+          url += 'pt='+projectType+'&';
+       }
+       if(property){
+          url += 'pr='+property+'&';
+       }
        url += 'p='+project;
 
        window.location.href = path+'?'+url;
@@ -149,15 +168,19 @@ function selectProject(project, cLass){
        
   } 
 
-function selectSubcontractor(trade, cLass, cLass2){
+function selectSubcontractor(trade, cLass, cLass2, cLass3){
        let path = window.location.href.split('?')[0]
         path = path.split('#')[0]
        var projectType = $('.'+cLass).val();
-       var project = $('.'+cLass2).val();
+       var property = $('.'+cLass2).val();
+       var project = $('.'+cLass3).val();
         
        let url = ''; 
        if(projectType){
           url += 'pt='+projectType+'&';
+       }
+       if(property){
+          url += 'pr='+property+'&';
        }
        if(project){
           url += 'p='+project+'&';
@@ -168,15 +191,19 @@ function selectSubcontractor(trade, cLass, cLass2){
          
   } 
 
-function selectVendor(trade, cLass, cLass2){
+function selectVendor(trade, cLass, cLass2, cLass3){
        let path = window.location.href.split('?')[0]
         path = path.split('#')[0]
        var projectType = $('.'+cLass).val();
-       var project = $('.'+cLass2).val();
+       var property = $('.'+cLass2).val();
+       var project = $('.'+cLass3).val();
         
        let url = ''; 
        if(projectType){
           url += 'pt='+projectType+'&';
+       }
+        if(property){
+          url += 'pr='+property+'&';
        }
        if(project){
           url += 'p='+project+'&';

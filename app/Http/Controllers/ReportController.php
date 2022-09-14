@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\Document;
 use App\Models\ProjectType;
+use App\Models\PropertyType;
 use App\Models\Project;
 use App\Models\Subcontractor;
 use App\Models\Proposal;
@@ -63,7 +64,11 @@ class ReportController extends Controller
                 $q->where('slug', $pt);
             });
          } 
-
+         
+         if(request()->filled('pr')){
+            $pr = request()->pr;
+            $projects->where('property_type_id', $pr);
+         } 
 
           
         if(request()->filled('p')){
@@ -84,7 +89,7 @@ class ReportController extends Controller
             //      return $prpsl->trade;
             // });
 
-
+            
             $vendorIds = $project->payments()->whereNotNull('vendor_id')
                              ->pluck('vendor_id')->unique();
            
@@ -95,8 +100,9 @@ class ReportController extends Controller
          $projects = $projects->get();
 
          $projectTypes = ProjectType::all(); 
+         $propertyTypes = PropertyType::all(); 
 
-         return view('reports.index',compact('projects','projectTypes','categories','trades','project','project_subcontractors','project_vendors','payments'));
+         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments'));
     }
 
     /**

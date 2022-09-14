@@ -34,10 +34,18 @@
                            <option value="{{ $type->slug }}" {{ (@request()->project_type == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                         @endforeach
                         </select>
+                         
                         <select style="height: 26px;" name="project"> 
                         <option value="">Select Project</option>
                         @foreach($projects as $project)
                            <option value="{{ $project->id }}" {{ (@request()->project == $project->id) ? 'selected' : ''}}> {{ $project->name }}</option>
+                        @endforeach
+                        </select>
+
+                         <select style="height: 26px;" name="property"> 
+                        <option value="">Select Property</option>
+                        @foreach($propertyTypes as $type)
+                           <option value="{{ $type->id }}" {{ (@request()->property == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
                         @endforeach
                         </select>
 

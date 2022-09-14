@@ -10,27 +10,35 @@ aria-expanded="true">
            <option value="{{ $type->slug }}" {{ (@request()->pt == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
        @endforeach
       </select>
+       
+      <select class="pr2" style="height: 26px;" onchange="selectProperty(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2')"> 
+       <option value="">Select Property</option>
+       @foreach($propertyTypes as $type)
+           <option value="{{ $type->id }}" {{ (@request()->pr == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
+       @endforeach
+      </select>
 
-       <select class="p" style="height: 26px;" onchange="selectProject(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2')" > 
+       <select class="p" style="height: 26px;" onchange="selectProject(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','pr2')" > 
       <option value="">Select Project</option>
       @foreach($projects as $pr)
          <option value="{{ $pr->id }}" {{ (@request()->p == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
       @endforeach
       </select>
 
-      <select style="height: 26px;" onchange="selectSubcontractor(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','p')" > 
+      <select style="height: 26px;" onchange="selectSubcontractor(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','pr2','p')" > 
       <option value="">Select Subcontractor</option>
       @foreach($project_subcontractors as $subcontractor)
          <option value="{{ $subcontractor->id }}" {{ (@request()->sc == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
       @endforeach
       </select>
 
-      <select style="height: 26px;" onchange="selectVendor(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','p')" > 
+      <select style="height: 26px;" onchange="selectVendor(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','pr2','p')" > 
       <option value="">Select Vendor</option>
       @foreach($project_vendors as $vendor)
          <option value="{{ $vendor->id }}" {{ (@request()->v == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
       @endforeach
       </select>
+
     </div>
     @if(@request()->p && ( @request()->sc || @request()->v ) && @request()->t == 'subcontractor-payment' )
       
