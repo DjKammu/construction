@@ -43,20 +43,21 @@
 
                 <div class="row mb-2">
                     <div class="col-9">
-                       <select style="height: 26px;" onchange="return window.location.href = '?p='+this.value"> 
+                  <form>
+                       <select style="height: 26px;" name="p"> 
                       <option value="">Select Project Type</option>
                       @foreach($projectTypes as $type)
                          <option value="{{ $type->slug }}" {{ (@request()->p == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach
                       </select>
 
-                      <select style="height: 26px;" onchange="return window.location.href = '?pr='+this.value"> 
+                      <select style="height: 26px;" name="pr"> 
                       <option value="">Select Property</option>
                       @foreach($propertyTypes as $type)
                          <option value="{{ $type->id }}" {{ (@request()->pr == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach
                       </select>
-                        <select style="height: 26px;"  onchange="return window.location.href = '?st='+this.value"name="status"> 
+                        <select style="height: 26px;" name="st"> 
                           <option value="">Select Status</option>
                           <option value="{{\App\Models\Project::ACTIVE_STATUS }}" {{ (@request()->st == \App\Models\Project::ACTIVE_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ACTIVE_TEXT  }}</option>
                           <option value="{{ \App\Models\Project::PUT_ON_HOLD_STATUS }}" {{ (@request()->st == \App\Models\Project::PUT_ON_HOLD_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::PUT_ON_HOLD_TEXT  }}</option>
@@ -66,7 +67,8 @@
                         </select>
 
                       <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >
-                      <button id="search">Search</button>
+                      <button type="submit" id="search">Search</button>
+                    </form>
                     </div>
                     <div class="col-3 text-right">
                        <label>Per Page </label>
@@ -137,14 +139,14 @@
 
   $(document).ready(function(){
 
-  $('#search').click(function(){
-        var search = $('#inputSearch').val();
+  // $('#search').click(function(){
+  //       var search = $('#inputSearch').val();
 
-        if(!search){
-         // alert('Please enter to search');
-        }
-        window.location.href = '?s='+search;
-  });
+  //       if(!search){
+  //        // alert('Please enter to search');
+  //       }
+  //       window.location.href = '?s='+search;
+  // });
 
   $(document).keyup(function(event) {
     if (event.keyCode === 13) {
