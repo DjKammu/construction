@@ -18,4 +18,8 @@ class Vendor extends Model
 	'mobile' ,'image','notes'
 	];
 
+	 public function materials(){
+        return $this->hasMany(VendorMaterial::class);
+    }
+
 }

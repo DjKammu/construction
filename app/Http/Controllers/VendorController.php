@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vendor;
+use App\Models\VendorMaterial;
 use App\Models\DocumentType;
 use App\Models\Trade;
 use Gate;
@@ -151,7 +152,30 @@ class VendorController extends Controller
         }
 
         $vendor->update($data);
- 
+
+        $materials = $data['materials'];
+
+        $vendorMaterial = $vendor->materials();
+        $materialIds = $vendorMaterial->pluck('id')->toArray();
+        $inputIds = @$materials['id'] ? $materials['id'] : [];
+        $needToDeleted = array_diff($materialIds, $inputIds);
+         //dd($needToDeleted);
+        @$vendor->materials()->whereIn('id',@$needToDeleted)->delete();
+
+        if(array_filter($materials['account_number']) && count($materials['account_number']) > 0){
+            foreach (@array_filter($materials['account_number']) as $key => $account_number) {
+             
+                $vendorMaterial->updateOrCreate([
+                    'id'   => @$materials['id'][$key]
+                ],[
+                    'account_number'   => $account_number,
+                    'name'             => $materials['name'][$key]
+                ]); 
+
+            }
+          
+        }
+        
         return redirect('vendors')->with('message','Vendor Updated Successfully!');
     }
 
