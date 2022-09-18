@@ -142,6 +142,17 @@
                                               </div>
                                           </div>
                                         </div>
+                                        <div class="row">
+                                          <div class="col-lg-5 col-md-6 mx-auto">
+                                              <div class="form-group">
+                                                  <label class="text-dark" for="password">Vendor Material
+                                                  </label>
+                                                  <select id="materials" class="form-control" name="material_id"> 
+                                                    <option value="">Select Material</option>
+                                                  </select>
+                                              </div>
+                                          </div>
+                                        </div>
 
                                     </div> 
 
@@ -180,8 +191,6 @@
                                         </div>
 
                                     @endif
-
-                                    
 
                                     <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
@@ -283,6 +292,24 @@ $("input[name='type']").click(function() {
       $(".subcontractor-vendor").hide();
       $("#" + id).show();
   });
+
+
+
+ $('select[name="vendor_id"]').change(function(){
+      let vendorId = $(this).val();
+      $.ajax({
+            url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
+            type: "GET",
+            success: function (response) {
+                var html = '<option value="">Select Material</option>';
+                for (let i = 0; i < response.length; i++) {
+                  html += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
+                }
+                $('#materials').html(html);
+            }
+        });
+    
+ });
 
 });
 

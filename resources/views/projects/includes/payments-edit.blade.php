@@ -144,7 +144,21 @@
                                                   </select>
                                               </div>
                                           </div>
+                                        </div> 
+
+                                         <div class="row">
+                                          <div class="col-lg-5 col-md-6 mx-auto">
+                                              <div class="form-group">
+                                                  <label class="text-dark" for="password">Vendor Material
+                                                  </label>
+                                                  <select id="materials" class="form-control" name="material_id"> 
+                                                    <option value="">Select Material</option>
+                                                  </select>
+                                              </div>
+                                          </div>
                                         </div>
+                                    </div> 
+
 
                                     </div> 
 
@@ -342,6 +356,7 @@
 @section('pagescript')
 
 <script type="text/javascript">
+$( document ).ready(function() {
 
 $('.date').datetimepicker({
      format: 'M-D-Y'
@@ -352,6 +367,33 @@ $("input[name='type']").click(function() {
       $(".subcontractor-vendor").hide();
       $("#" + id).show();
   });
+
+ var selVendorId = "{{ @$payment->vendor_id}}";
+
+ $('select[name="vendor_id"]').change(function(){
+    let vendorId = $(this).val();
+    materialsHtml(vendorId);
+});
+
+function materialsHtml(vendorId){
+
+     $.ajax({
+          url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
+          type: "GET",
+          success: function (response) {
+              var html = '<option value="">Select Material</option>';
+              for (let i = 0; i < response.length; i++) {
+                let selected = ( response[i].vendor_id == selVendorId) ? 'selected' : '';
+                html += '<option value="'+response[i].id+'"  '+selected+'>'+response[i].name+'</option>';
+              }
+              $('#materials').html(html);
+          }
+      });
+}
+
+materialsHtml(selVendorId);
+
+});
 
 </script>
 <style type="text/css">

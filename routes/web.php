@@ -236,3 +236,8 @@ Route::post('bid-recieved', [App\Http\Controllers\ITBTrackerController::class,'b
            name('bid.recieved');
 Route::post('contract-signed', [App\Http\Controllers\ITBTrackerController::class,'contractSigned'])->
            name('contract.signed');
+
+//Vendor 
+
+ Route::get('get-materials', [App\Http\Controllers\VendorController::class,'getMaterials'])
+     ->name('vendor.materials');          

@@ -25,7 +25,7 @@ class Payment extends Model
     protected $fillable = [
      'proposal_id' , 'subcontractor_id' ,'project_id',
      'trade_id' , 'vendor_id' ,'payment_amount', 'date',
-     'total_amount' ,'notes','file','status','invoice_number'
+     'total_amount' ,'notes','file','status','invoice_number','material_id'
     ];
 
     public static $statusArr = [
@@ -54,6 +54,10 @@ class Payment extends Model
 
     public function vendor(){
         return $this->belongsTo(Vendor::class);
+    }
+
+    public function material(){
+        return $this->belongsTo(VendorMaterial::class);
     }
     
     public static function format($num){

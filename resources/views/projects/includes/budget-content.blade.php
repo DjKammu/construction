@@ -58,9 +58,9 @@
               $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
                      ->get();
               $tradePayments = @$project->payments()->whereNotNull('vendor_id')
-                           ->selectRaw('sum(payment_amount) as payment_amount_total, vendor_id')
-                           ->where('trade_id',$trd->id)
-                           ->groupBy('vendor_id')
+                            ->selectRaw('sum(payment_amount) as payment_amount_total, vendor_id,material_id')
+                             ->where('trade_id',$trd->id)
+                             ->groupBy('vendor_id','material_id')
                            ->get();
                
               @endphp
@@ -188,7 +188,8 @@
 
                 <tr>
                   <td colspan="2" style="padding:10px;"></td>
-                  <td><span class="doc_type_m">{{ @$tPay->vendor->name }}</span></td>
+                  <td><span class="doc_type_m">{{ @$tPay->vendor->name }} {{ 
+                (@$tPay->material) ? '('.@$tPay->material->name .')' : ""}}</span></td>
                   <td></td>
                   <td></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->

@@ -198,4 +198,16 @@ class VendorController extends Controller
 
         return redirect()->back()->with('message', 'Vendor Delete Successfully!');
     }
+
+   public function getMaterials(Request $request){
+        $vendor_id = $request->vendor_id;
+        $all = VendorMaterial::where('vendor_id',$vendor_id)
+              ->get();
+        
+        return response()->json($all); 
+
+    }
+
+
+
 }
