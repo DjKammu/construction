@@ -35,7 +35,6 @@ class Payment extends Model
        self::FINAL_PAYMENT_STATUS    => self::FINAL_PAYMENT_TEXT
     ];
     
-
     public function subcontractor(){
         return $this->belongsTo(Subcontractor::class);
     }
