@@ -87,6 +87,16 @@
                                         </div>
                                     </div>
 
+                                     <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password">Trade Budget</label>
+                                                <input  name="trade_budget" value="{{ @$proposal->trade_budget }}" type="number" class="form-control" placeholder="Trade Budget" step="any">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">

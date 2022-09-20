@@ -57,6 +57,7 @@
               <p class="mb-1">Change Order {{ $k+1}} : {{$order->type == \App\Models\ChangeOrder::ADD  ? '+' : '-'}} ${{ \App\Models\Payment::format($order->subcontractor_price)}}</p>
                <p class="card-text">Notes: {{ $order->notes}}</p>
             @endforeach
+             <p class="mb-1">Trade Budget: <b>${{ \App\Models\Payment::format(@$proposal->trade_budget) }}</b></p>
              <p class="mb-1">Grand Total: <b>${{ \App\Models\Payment::format($bidTotal) }}</b></p>
             <div class="row">
                <div class="col-6">

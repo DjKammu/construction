@@ -6,6 +6,7 @@
             <tr class="text-danger">
                 <th>Item No.</th>
                 <th >Category&Trade</th>
+                <th >Trade Budget</th>
                 <th>Material</th>
                 <th>Labor</th>
                 <th>Subcontractor</th>
@@ -20,6 +21,7 @@
             <tbody>
          @php   
          $materialTotal = 0;
+         $tradeTotal = 0;
          $labourTotal = 0;
          $subcontractorTotal = 0;
          $grandTotal = 0;
@@ -40,6 +42,7 @@
           $catPaidTotal = 0;
           $catDueTotal = 0;
           $catVendorsTotal = 0;
+          $catTradeTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          
@@ -49,7 +52,7 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="7"></td>
+              <td  colspan="8"></td>
             </tr>
          @foreach($catTrades as $trd)
 
@@ -118,6 +121,7 @@
                       $due =  (float) @$bidTotal  - (float) $paid;
 
                       $materialTotal = (float) @$bid->material + $materialTotal;
+                      $tradeTotal = (float) @$bid->trade_budget + $tradeTotal;
                       $labourTotal = (float) @$bid->labour_cost + $labourTotal;
                       $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal + $changeOrderTotal;
                       $grandTotal = (float) @$bidTotal + $grandTotal;
@@ -126,6 +130,7 @@
                       
                       $catSubcontractorTotal = (float) @$bid->subcontractor_price + $catSubcontractorTotal;
                       $catMaterialTotal = (float) @$bid->material + $catMaterialTotal;
+                      $catTradeTotal = (float) @$bid->trade_budget + $catTradeTotal;
                       $catLabourTotal = (float) @$bid->labour_cost + $catLabourTotal;
                       $catGrandTotal = (float) @$bidTotal + $catGrandTotal;
                       $catPaidTotal = (float) @$paid + $catPaidTotal;
@@ -133,6 +138,7 @@
 
                 @endphp
 
+                  <td>${{  @\App\Models\Payment::format(@$bid->trade_budget)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</br> <span class="doc_type_m">{{ ($changeOrderTotal > 0) ? 'Change Orders - $'. @\App\Models\Payment::format($changeOrderTotal) : ''  }}</span></td>
@@ -174,6 +180,7 @@
                     <td >
                        <span class="text-center" style="width: 15%;">{{ $trd->name  }}</span>
                     </td>
+                    <td ></td>
                    
                   <td>${{  @\App\Models\Payment::format(@$tPay->payment_amount_total)  }}</td>
                   <td>${{  @\App\Models\Payment::format(0.00)  }}</td>
@@ -187,7 +194,7 @@
                 </tr>
 
                 <tr>
-                  <td colspan="2" style="padding:10px;"></td>
+                  <td colspan="3" style="padding:10px;"></td>
                   <td><span class="doc_type_m">{{ @$tPay->vendor->name }} {{ 
                 (@$tPay->material) ? '('.@$tPay->material->name .')' : ""}}</span></td>
                   <td></td>
@@ -206,6 +213,7 @@
                  <td class="text-danger h6 text-center" colspan="2">
                  <b>{{ $cat->name }} Total </b>
                  </td>
+                  <td><b>${{ \App\Models\Payment::format($catTradeTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catMaterialTotal + $catVendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catLabourTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catSubcontractorTotal) }}</b></td>
@@ -268,6 +276,7 @@
            <tr>
                <td>Total</td>
                <td></td>
+               <td>Trade Budget</td>
                <td> Material</td>
                <td> Labor</td>
                <td> Subcontractor</td>
@@ -282,6 +291,7 @@
            <tr>
                <td><b>Project Total</b></td>
                <td></td>
+               <td><b>${{ \App\Models\Payment::format($tradeTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($materialTotal + $vendorsTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>

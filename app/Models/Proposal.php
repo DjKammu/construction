@@ -21,7 +21,7 @@ class Proposal extends Model
      'subcontractor_id', 'labour_cost',
      'material','subcontractor_price',
      'notes','project_id', 'trade_id', 
-     'files','awarded'
+     'files','awarded','trade_budget'
     ];
 
 
