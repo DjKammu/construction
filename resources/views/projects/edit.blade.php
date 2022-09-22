@@ -5,8 +5,16 @@
 @section('content')
 
 <div class="row">
-       @include('includes.back')
+       <!-- @include('includes.back') -->
       <!-- Start Main View -->
+
+<div class="col-6 text-left">
+            <button type="button" class="btn btn-danger mt-0" 
+            onclick="return window.location.href='{{ route("projects.index") }}'">Back
+</button>
+</div>
+
+
 
 </div>
 
@@ -293,6 +301,12 @@ $('.date').datetimepicker({
         return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
     }
 
+function proposalPage(id){
+        var fullUrl = window.location.href.split("?")[0];
+        fullUrl = fullUrl.split("#")[0];
+        url = fullUrl+'?trade='+id+'#proposals';
+        window.location.href = url;
+}
    
 
 </script>
@@ -394,9 +408,12 @@ span.doc_type_m{
  /*display: table-caption;*/
 }
 
-span.awarded-green{
-    background: #38ef38;
-    color: #fffdfa;
+span.awarded-green, span.awarded-green a{
+    /*background: #38ef38;*/
+    /*color: #fffdfa;*/
+    color: #038303;
+    font-weight: 800;
+    text-decoration: none;
 }
 
 .list li span.bid-text{

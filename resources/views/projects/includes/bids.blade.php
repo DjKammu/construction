@@ -46,7 +46,7 @@
 
                      }
                 @endphp
-                <span  style="width:{{$spanWidth}}%;" class="text-center bid-text {{ (@$bid->awarded) ? 'awarded-green' : '' }}">{{ $bid->subcontractor->name }} <br><b> {{ ($bidTotal) ? '$'.\App\Models\Payment::format($bidTotal)
+                <span  style="width:{{$spanWidth}}%;" class="text-center bid-text {{ (@$bid->awarded) ? 'awarded-green' : '' }}"><a onclick="proposalPage('{{@$trd->id }}')"  href="javascript:void(0)">{{ $bid->subcontractor->name }} </a> <br><b> {{ ($bidTotal) ? '$'.\App\Models\Payment::format($bidTotal)
                   : "No Bid" }} </b></span>
               @endforeach
 
