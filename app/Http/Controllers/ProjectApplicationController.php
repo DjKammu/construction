@@ -376,8 +376,8 @@ class ProjectApplicationController extends Controller
 
        if(!$application){
             $applications = $project->project_lines()
-            ->with('project_line')
-           ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
+            // ->with('project_line')
+           // ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
            ->orderBy('project_lines.account_number')->get();
             // ->orderBy($orderBy, $order)->get();
 
