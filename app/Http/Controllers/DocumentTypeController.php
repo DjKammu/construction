@@ -152,7 +152,7 @@ class DocumentTypeController extends Controller
 
          $type = DocumentType::find($id);
 
-        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE])){
+        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE, DocumentType::LIEN])){
               return redirect()->back()->withErrors('Document Type '.$type->name.' Can`t be Deleted!');
         }
 

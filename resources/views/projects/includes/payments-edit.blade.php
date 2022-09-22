@@ -270,6 +270,26 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Unconditional Lien Release File
+                                                </label>
+                                                <input  name="unconditional_lien_release_file"  type="file" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Conditional Lien Release File
+                                                </label>
+                                                <input  name="conditional_lien_release_file"  type="file" >
+                                            </div>
+                                        </div>
+                                    </div>
 
 
                                     <!-- Submit Button -->
@@ -329,6 +349,110 @@
                                                       {{ @$proposal->subcontractor->name }} 
                                                     </span></br> -->
                                                     <a href="{{ asset($payment->file) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
+
+                                    @endif
+
+                                    @if($payment->unconditional_lien_release_file)
+                                   @php
+                                     $fileInfo = pathinfo($payment->unconditional_lien_release_file);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.payments.file.destroy', $payment->id)}}?path={{$payment->unconditional_lien_release_file}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Property Type" title="Delete Property Type"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($payment->unconditional_lien_release_file) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
+
+                                    @endif
+
+                                    @if($payment->conditional_lien_release_file)
+                                   @php
+                                     $fileInfo = pathinfo($payment->conditional_lien_release_file);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.payments.file.destroy', $payment->id)}}?path={{$payment->conditional_lien_release_file}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Property Type" title="Delete Property Type"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($payment->conditional_lien_release_file) }}" target="_blank">
                                                       <p> {{ @$file->name }} </p>
                                                       <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
                                                       </a> 

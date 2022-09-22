@@ -13,6 +13,7 @@ use App\Models\Payment;
 use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\DocumentType;
+use App\Models\DocumentFile;
 use App\Models\Subcontractor;
 use Gate;
 use Carbon\Carbon;
@@ -190,7 +191,8 @@ class PaymentController extends Controller
 
         $data['file'] = '';
 
-        $payment = Payment::create($data);
+         $payment = Payment::create($data);
+       
 
         $document_type = DocumentType::where('name', DocumentType::INVOICE)
                          ->first();
@@ -199,7 +201,9 @@ class PaymentController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                   ->firstOrCreate(['payment_id' => $payment->id],
+                   ->firstOrCreate(['payment_id' => $payment->id,
+                    'document_type_id' => $document_type->id
+                     ],
                      ['name' => $name, 'slug' => $slug,
                      'payment_id'       => $payment->id,
                      'proposal_id'      => $id,
@@ -227,6 +231,84 @@ class PaymentController extends Controller
                                   ];
 
             $payment->update(['file' => $fileName]);
+
+            $document->files()->create($fileArr);
+        }
+
+        if($request->hasFile('unconditional_lien_release_file')){
+              
+              $document_type = DocumentType::where('name', DocumentType::LIEN)
+                         ->first();
+
+              $name = @$project->name.' Unconditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);              
+
+              $document = $project->documents()
+                         ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'payment_id'       => $payment->id,
+                           'proposal_id'      => $id,
+                           'document_type_id' => $document_type->id,
+                           'subcontractor_id' => @$proposal->subcontractor->id
+                           ]
+                       );
+
+              $file = $request->file('unconditional_lien_release_file');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+            $payment->update(['unconditional_lien_release_file' => $fileName]);
+
+            $document->files()->create($fileArr);
+        }
+
+        if($request->hasFile('conditional_lien_release_file')){
+              
+              $document_type = DocumentType::where('name', DocumentType::LIEN)
+                         ->first();
+
+              $name = @$project->name.' Conditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'payment_id'       => $payment->id,
+                           'proposal_id'      => $id,
+                           'document_type_id' => $document_type->id,
+                           'subcontractor_id' => @$proposal->subcontractor->id
+                           ]
+                       );
+
+              $file = $request->file('conditional_lien_release_file');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+            $payment->update(['conditional_lien_release_file' => $fileName]);
 
             $document->files()->create($fileArr);
         }
@@ -308,6 +390,8 @@ class PaymentController extends Controller
         $folderPath .= "$project_slug/$trade_slug/";
         
         $payment->file = @($payment->file) ? $folderPath.$payment->file : '';
+        $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath.$payment->unconditional_lien_release_file : '';
+        $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath.$payment->conditional_lien_release_file : '';
 
         $payment->date = @($payment->date) ? Carbon::parse($payment->date)->format('m-d-Y') : '' ;
 
@@ -453,7 +537,8 @@ class PaymentController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                   ->firstOrCreate(['payment_id' => $id],
+                   ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
                      'payment_id'       => $payment->id,
                      'proposal_id'      => $id,
@@ -486,6 +571,85 @@ class PaymentController extends Controller
             $document->files()->create($fileArr);
             $data['file'] = $fileName;
         }
+
+         if($request->hasFile('unconditional_lien_release_file')){
+              
+              $document_type = DocumentType::where('name', DocumentType::LIEN)
+                         ->first();
+
+              $name = @$project->name.' Unconditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'payment_id'       => $payment->id,
+                           'proposal_id'      => $id,
+                           'document_type_id' => $document_type->id,
+                           'subcontractor_id' => @$proposal->subcontractor->id
+                           ]
+                       );
+
+              $file = $request->file('unconditional_lien_release_file');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+
+            $document->files()->create($fileArr);
+            $data['unconditional_lien_release_file'] = $fileName;
+        }
+
+        if($request->hasFile('conditional_lien_release_file')){
+              
+              $document_type = DocumentType::where('name', DocumentType::LIEN)
+                         ->first();
+
+              $name = @$project->name.' Conditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'payment_id'       => $payment->id,
+                           'proposal_id'      => $id,
+                           'document_type_id' => $document_type->id,
+                           'subcontractor_id' => @$proposal->subcontractor->id
+                           ]
+                       );
+
+              $file = $request->file('conditional_lien_release_file');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+            $document->files()->create($fileArr);
+             $data['conditional_lien_release_file'] = $fileName;
+
+        }
+
 
         $payment->update($data);
 
@@ -556,14 +720,17 @@ class PaymentController extends Controller
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
-          @\File::copy($publicPath.$path, $aPath.'/'.$file);
+           @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $documents = @$payment->project->documents()
-                       ->where('payment_id',$id)->first();
-                                        
-          $docFiles = @$documents->files()->whereFile($file)->delete();             
+          $docFile  = DocumentFile::whereFile($file)->firstOrFail();
 
-          $payment->update(['file' => '']);
+          $coulumn = 'file';
+
+          $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
+          
+          @$docFile->delete();  
+
+          $payment->update([$coulumn => '']);
 
           @unlink($path);
 

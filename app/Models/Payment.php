@@ -25,7 +25,8 @@ class Payment extends Model
     protected $fillable = [
      'proposal_id' , 'subcontractor_id' ,'project_id',
      'trade_id' , 'vendor_id' ,'payment_amount', 'date',
-     'total_amount' ,'notes','file','status','invoice_number','material_id'
+     'total_amount' ,'notes','file','status','invoice_number','material_id',
+     'unconditional_lien_release_file','conditional_lien_release_file'
     ];
 
     public static $statusArr = [
