@@ -22,7 +22,7 @@ class AddLeinFieldsToPayments extends Migration
             array(
                 'name' => 'Lien',
                 'slug' =>  @\Str::slug('Lien'),
-                'account_number' => 300
+                'account_number' => 700
             )
         );
 

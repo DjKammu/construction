@@ -347,6 +347,8 @@ class ProjectController extends Controller
             $folderPath .= "$project_slug/$trade_slug/";
         
             $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
+            $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? asset($folderPath.$payment->conditional_lien_release_file) : '' ;
+            $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath.$payment->unconditional_lien_release_file) : '' ;
 
             $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
 

@@ -44,7 +44,13 @@
 
 
  <div class="table-responsive table-payments">
-
+       <div class="row">
+            <div class="col-8"></div>
+            <div class="col-4 text-right" >
+              <p> <b>ULR</b>  - Unconditional Lien Release</br>
+               <b>CLR</b>  - Conditional Lien Release</p>
+            </div>
+       </div>
        <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
@@ -71,7 +77,9 @@
                 <th>Amount Paid</th>
                 <th>Contract Amount </th>
                 <th>Remaining Amount </th>
-                <th>Attachment</th>
+                <th>Invoice</th>
+                <th>ULR </th>
+                <th>CLR </th>
                 <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -94,6 +102,38 @@
                   $extension = 'excel'; 
                }
                @endphp
+               @endif
+               
+               @if($payment->unconditional_lien_release_file)
+               @php
+                 $fileInfo = pathinfo($payment->unconditional_lien_release_file);
+                 $extension2 = @$fileInfo['extension'];
+                
+              if(in_array($extension2,['doc','docx','docm','dot',
+              'dotm','dotx'])){
+                  $extension2 = 'word'; 
+               }
+               else if(in_array($extension2,['csv','dbf','dif','xla',
+              'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                  $extension2 = 'excel'; 
+               }
+               @endphp
+                @endif
+
+               @if($payment->conditional_lien_release_file)
+               @php
+                 $fileInfo = pathinfo($payment->conditional_lien_release_file);
+                 $extension3 = @$fileInfo['extension'];
+                
+              if(in_array($extension3,['doc','docx','docm','dot',
+              'dotm','dotx'])){
+                  $extension3 = 'word'; 
+               }
+               else if(in_array($extension3,['csv','dbf','dif','xla',
+              'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                  $extension3 = 'excel'; 
+               }
+               @endphp
              @endif
              <tr>
                <td> {{ @$payment->date }}</td>
@@ -110,6 +150,24 @@
                 @if($payment->file)
                 <a href="{{ asset($payment->file) }}" target="_blank">
               <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+              </a> 
+              @else
+                -
+              @endif
+            </td>  
+            <td>
+                @if($payment->unconditional_lien_release_file)
+                <a href="{{ asset($payment->unconditional_lien_release_file) }}" target="_blank">
+              <img class="avatar border-gray" src="{{ asset('img/'.@$extension2.'.png') }}">
+              </a> 
+              @else
+                -
+              @endif
+            </td>  
+            <td>
+                @if($payment->conditional_lien_release_file)
+                <a href="{{ asset($payment->conditional_lien_release_file) }}" target="_blank">
+              <img class="avatar border-gray" src="{{ asset('img/'.@$extension3.'.png') }}">
               </a> 
               @else
                 -

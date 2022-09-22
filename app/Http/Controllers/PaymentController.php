@@ -686,12 +686,18 @@ class PaymentController extends Controller
          $path = @public_path().'/'.$folderPath;
 
          $file = @$payment->file;
+         $unconditional_lien_release_file = @$payment->unconditional_lien_release_file;
+         $conditional_lien_release_file = @$payment->conditional_lien_release_file;
          
          $aPath = public_path().'/'. Document::INVOICES."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
-        
-          @\File::copy($path.$file, $aPath.'/'.$file);
-          @unlink($path.$file);
+
+        @\File::copy($path.$file, $aPath.'/'.$file);
+        @\File::copy($path.$conditional_lien_release_file, $aPath.'/'.$conditional_lien_release_file);
+        @\File::copy($path.$unconditional_lien_release_file, $aPath.'/'.$unconditional_lien_release_file);
+        @unlink($path.$file);
+        @unlink($path.$conditional_lien_release_file);
+        @unlink($path.$unconditional_lien_release_file);
 
          $project->documents()
                     ->where(['payment_id' => $id])->delete();
