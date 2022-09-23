@@ -374,6 +374,8 @@ class ProjectApplicationController extends Controller
        $orderBy = 'created_at';  
        $order ='DESC' ;
 
+    
+
        if(!$application){
             $applications = $project->project_lines()
             // ->with('project_line')
@@ -391,11 +393,13 @@ class ProjectApplicationController extends Controller
        } 
        else{
 
+
             $applications = $application->application_lines()
+                      ->select('*', 'application_lines.id as id')
                       ->with('project_line')
                       ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
                       ->orderBy('project_lines.account_number')->get();       
-                      
+
              $applications->filter(function($app) use ($edit){
 
                 $app->account_number = $app->project_line->account_number;
