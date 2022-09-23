@@ -4,7 +4,16 @@
 
 @section('content')
 
-@include('includes.back')
+<div class="row">
+       <!-- @include('includes.back') -->
+      <!-- Start Main View -->
+
+<div class="col-6 text-left">
+            <button type="button" class="btn btn-danger mt-0" 
+            onclick="return window.location.href='{{ route("projects.show",['project' => @$project->id]) }}'">Back
+</button>
+</div>
+</div>
 
       <!-- Start Main View -->
   <div class="card p-2">
