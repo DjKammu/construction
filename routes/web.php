@@ -84,6 +84,12 @@ Route::resource('setting', App\Http\Controllers\SettingController::class);
 
 Route::resource('properties', App\Http\Controllers\PropertyTypeController::class);
 
+Route::resource('assignees', App\Http\Controllers\AssigneeController::class);
+
+Route::resource('ball_in_courts', App\Http\Controllers\BallInCourtController::class);
+
+Route::resource('statuses', App\Http\Controllers\StatusController::class);
+
 
 
 // Document Routes

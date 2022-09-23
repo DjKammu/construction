@@ -41,6 +41,12 @@
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("setting")}}'">Email
                         </button>
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("properties")}}'">Property
+                        </button> 
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("assignees")}}'">RFI/Submittal Assignees
+                        </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("ball_in_courts")}}'">Ball In Courts
+                        </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("statuses")}}'">Statuses
                         </button>
                     </div>
                 </div>
