@@ -56,14 +56,20 @@
                       @foreach($propertyTypes as $type)
                          <option value="{{ $type->id }}" {{ (@request()->pr == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
                       @endforeach
+
+                      
                       </select>
                         <select style="height: 26px;" name="st"> 
                           <option value="">Select Status</option>
-                          <option value="{{\App\Models\Project::ACTIVE_STATUS }}" {{ (@request()->st == \App\Models\Project::ACTIVE_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ACTIVE_TEXT  }}</option>
+                          @foreach($statuses as $status)
+                           <option value="{{ $status->id }}" {{ (@request()->st == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
+                        @endforeach
+
+                          <!-- <option value="{{\App\Models\Project::ACTIVE_STATUS }}" {{ (@request()->st == \App\Models\Project::ACTIVE_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ACTIVE_TEXT  }}</option>
                           <option value="{{ \App\Models\Project::PUT_ON_HOLD_STATUS }}" {{ (@request()->st == \App\Models\Project::PUT_ON_HOLD_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::PUT_ON_HOLD_TEXT  }}</option>
                           <option value="{{ \App\Models\Project::FINISHED_STATUS }}" {{ (@request()->st == \App\Models\Project::FINISHED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::FINISHED_TEXT  }}</option>
                           <option value="{{ \App\Models\Project::CANCELLED_STATUS }}" {{ (@request()->st == \App\Models\Project::CANCELLED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::CANCELLED_TEXT  }}</option>
-                          <option value="{{ \App\Models\Project::ARCHIVED_STATUS }}" {{ (@request()->st == \App\Models\Project::ARCHIVED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ARCHIVED_TEXT  }}</option>
+                          <option value="{{ \App\Models\Project::ARCHIVED_STATUS }}" {{ (@request()->st == \App\Models\Project::ARCHIVED_STATUS) ? 'selected' : ''}}>{{\App\Models\Project::ARCHIVED_TEXT  }}</option> -->
                         </select>
 
                       <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >

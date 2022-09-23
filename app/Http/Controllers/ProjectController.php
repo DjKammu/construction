@@ -12,6 +12,7 @@ use App\Models\Subcontractor;
 use App\Models\Proposal;
 use App\Models\Category;
 use App\Models\Vendor;
+use App\Models\Status;
 use App\Models\Trade;
 use Gate;
 
@@ -61,7 +62,11 @@ class ProjectController extends Controller
 
           if(request()->filled('st')){
             $st = request()->st;
-            $projects->where('status', $st);
+            // $projects->where('status', $st);
+            $projects->whereHas('status', function($q) use ($st){
+                $q->where('id', $st);
+            });
+
          }
         if(request()->filled('pr')){
             $pr = request()->pr;
@@ -70,12 +75,13 @@ class ProjectController extends Controller
 
          $propertyTypes = PropertyType::all(); 
          $projectTypes = ProjectType::all(); 
+         $statuses = Status::all(); 
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
          $projects = $projects->paginate($perPage);
 
-         return view('projects.index',compact('projects','projectTypes','propertyTypes'));
+         return view('projects.index',compact('projects','projectTypes','propertyTypes','statuses'));
     }
 
     /**
@@ -88,11 +94,11 @@ class ProjectController extends Controller
         if(Gate::denies('add')) {
                return abort('401');
          } 
-
+        $statuses = Status::all(); 
         $propertyTypes = PropertyType::all(); 
         $projectTypes = ProjectType::all(); 
 
-        return view('projects.create',compact('projectTypes','propertyTypes'));
+        return view('projects.create',compact('projectTypes','propertyTypes','statuses'));
     }
 
     /**
@@ -150,7 +156,7 @@ class ProjectController extends Controller
           if(Gate::denies('edit')) {
                return abort('401');
           } 
-        
+         $statuses = Status::all(); 
          $propertyTypes = PropertyType::all();
          $projectTypes = ProjectType::all();
          $projects = Project::all()->except($id);
@@ -384,7 +390,7 @@ class ProjectController extends Controller
            
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
-            'paymentSubcontractors','paymentCategories','pTrades','prTrades'));
+            'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses'));
     }
 
     /**

@@ -436,7 +436,11 @@
                         </label>
                         <select class="form-control" name="status"> 
                           <option value="">Select Status</option>
-                          <option value="{{\App\Models\Project::ACTIVE_STATUS }}"
+                           @foreach($statuses as $status)
+                               <option value="{{ $status->id }}" {{ (@request()->st == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
+                            @endforeach
+                            
+                          <!-- <option value="{{\App\Models\Project::ACTIVE_STATUS }}"
                           >{{\App\Models\Project::ACTIVE_TEXT  }}</option>
                           <option value="{{ \App\Models\Project::PUT_ON_HOLD_STATUS }}"
                           >{{\App\Models\Project::PUT_ON_HOLD_TEXT  }}</option>
@@ -445,7 +449,7 @@
                           <option value="{{ \App\Models\Project::CANCELLED_STATUS }}"
                           >{{\App\Models\Project::CANCELLED_TEXT  }}</option>
                           <option value="{{ \App\Models\Project::ARCHIVED_STATUS }}"
-                          >{{\App\Models\Project::ARCHIVED_TEXT  }}</option>
+                          >{{\App\Models\Project::ARCHIVED_TEXT  }}</option> -->
                         </select>
                     </div>
                 </div>
