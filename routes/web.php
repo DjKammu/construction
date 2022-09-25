@@ -130,8 +130,6 @@ Route::get('files/{directory}/{property_type}/{property}/{doc_type}/{doc}',[App\
 Route::delete('files', [App\Http\Controllers\FileController::class,'destroy'])->name('files.destroy');
 
 
-
-
 // Project Routes
 
 Route::resource('projects', App\Http\Controllers\ProjectController::class);
@@ -222,6 +220,22 @@ Route::prefix('projects')->group(function(){
       Route::get('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'create'])->name('projects.close-project.create'); 
 
       Route::post('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'store'])->name('projects.close-project.store'); 
+
+    
+
+      // RFI Routes 
+    Route::get('{id}/rfi',[App\Http\Controllers\RFIController::class,'create'])->name('projects.rfi');
+
+    Route::post('{id?}/rfi',[App\Http\Controllers\RFIController::class,'store'])->name('projects.rfi');
+
+    Route::get('rfi/{id}',[App\Http\Controllers\RFIController::class,'show'])->name('projects.rfi.edit');
+
+    Route::post('rfi/{id}',[App\Http\Controllers\RFIController::class,'update'])->name('projects.rfi.update');
+
+     Route::delete('rfi/{id}', [App\Http\Controllers\RFIController::class,'destroy'])->name('projects.rfi.destroy');
+
+     Route::delete('rfi/{id}/file', [App\Http\Controllers\RFIController::class,'destroyFile'])->name('projects.rfi.file.destroy');
+
 
 });
 

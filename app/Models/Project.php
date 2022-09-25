@@ -64,6 +64,10 @@ class Project extends Model
         return $this->hasMany(Payment::class);
     } 
 
+     public function rfis(){
+        return $this->hasMany(RFI::class);
+    } 
+
     public function project_lines(){
         return $this->hasMany(ProjectLine::class);
     }

@@ -91,6 +91,15 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">Budget</a>
                                               </li>
+
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#rfi" role="tab"
+                                                     aria-expanded="false">RFI</a>
+                                              </li>
+                                              <!-- <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#submittal" role="tab"
+                                                     aria-expanded="false">Submittal</a>
+                                              </li> -->
                                                
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
@@ -113,6 +122,7 @@
                                     @endif 
                                     @include('projects.includes.payments')
                                     @include('projects.includes.budget')
+                                    @include('projects.includes.rfi')
                               </div>
 
                             </div>
@@ -283,6 +293,26 @@ $('.date').datetimepicker({
          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderby='+orderBy+'&order='+order
       }
        url = url+'#payments';
+       window.location.href = url;
+
+ } 
+
+  function sortOrderByRFI(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderbyRFI') ;
+      let isSort = fullUrl.includes('orderRFI') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderbyRFI',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'orderRFI',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbyRFI='+orderBy+'&orderRFI='+order
+      }
+       url = url+'#rfi';
        window.location.href = url;
 
  }

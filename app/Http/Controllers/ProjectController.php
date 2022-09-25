@@ -168,6 +168,7 @@ class ProjectController extends Controller
          $trades = $project->trades()->get();
 
          $payments = $project->payments();
+         $rfis = $project->rfis();
 
           if(request()->filled('payment_subcontractor')){
                 $subcontractor = request()->payment_subcontractor;
@@ -188,9 +189,28 @@ class ProjectController extends Controller
                 $payment_status = request()->payment_status;
                 $payments->where('status', $payment_status);
          } 
+
+         if(request()->filled('rfi_subcontractor')){
+                $subcontractor = request()->rfi_subcontractor;
+
+                $rfis->whereHas('subcontractor', function($q) use ($subcontractor){
+                    $q->where('id', $subcontractor);
+                });
+         }
+
+          if(request()->filled('rfi_status')){
+                $status = request()->rfi_status;
+
+                $rfis->whereHas('status', function($q) use ($status){
+                    $q->where('id', $status);
+                });
+         } 
+
         
          $orderBy = 'created_at';  
+         $orderByRFI = 'created_at';  
          $order ='DESC' ;
+         $orderRFI ='DESC' ;
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
@@ -200,7 +220,17 @@ class ProjectController extends Controller
              : request()->order;
         }
 
+        if(request()->filled('orderRFI')){
+            $orderByRFI = request()->filled('orderbyRFI') ? ( !in_array(request()->orderbyRFI, 
+                ['number'] ) ? 'created_at' : request()->orderbyRFI ) : 'created_at';
+            
+            $orderRFI = !in_array(\Str::lower(request()->orderRFI), ['desc','asc'])  ? 'ASC' 
+             : request()->orderRFI;
+        }
+
          $payments = $payments->orderBy($orderBy, $order)->get();
+
+         $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -360,6 +390,21 @@ class ProjectController extends Controller
 
             return $payment->file;
            
+         }); 
+
+          $rfis->filter(function($rfi){
+
+            $project = @$rfi->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $folderPath = Document::RFIS."/";
+
+            $folderPath .= "$project_slug/";
+        
+            $rfi->sent_file = @($rfi->sent_file) ? asset($folderPath.$rfi->sent_file) : '' ;
+            $rfi->recieved_file = @($rfi->recieved_file) ? asset($folderPath.$rfi->recieved_file) : '' ;
+           
          });
 
          $catids = @($trades->pluck('category_id'))->unique();
@@ -390,7 +435,7 @@ class ProjectController extends Controller
            
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
-            'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses'));
+            'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis'));
     }
 
     /**

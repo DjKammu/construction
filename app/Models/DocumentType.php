@@ -12,6 +12,8 @@ class DocumentType extends Model
     CONST BID = 'Bid';
     CONST INVOICE = 'Invoice';
     CONST LIEN  = 'Lien';
+    CONST RFI  = 'RFI';
+    CONST SUBMITTAL  = 'Submittal';
 
     protected $perPage = 20;
 

@@ -34,6 +34,7 @@ class Role extends Model
     {
         return $this->belongsToMany(User::class, 'role_users');
     }
+    
     public function hasAccess(string $permission) : bool
     {
         if ($this->hasPermission($permission)){
