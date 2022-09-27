@@ -138,7 +138,7 @@
               <td>
                  <form 
                   method="post" 
-                  action="{{route('projects.submittal.destroy',['id' => $submittal->id]).'#rfi'}}"> 
+                  action="{{route('projects.submittal.destroy',['id' => $submittal->id]).'#submittal'}}"> 
                    @csrf
                   {{ method_field('DELETE') }}
                   <button 
