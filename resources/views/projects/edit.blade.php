@@ -138,6 +138,8 @@
 
 
 @section('pagescript')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 <script type="text/javascript">
 
@@ -163,6 +165,37 @@
 $('.date').datetimepicker({
     format: 'Y-M-D'
 });
+
+var start =  '{{ Request::input("start")}}';
+var end =  '{{ Request::input("end")}}';
+
+ $('input[name="daterange"]').daterangepicker({
+
+    startDate: (start) ? start :   moment().startOf('month'),
+    endDate: (end) ? end :  moment().startOf('day'),
+    locale: {
+      format: 'YYYY-MM-DD'
+    }
+  }).on('apply.daterangepicker', function(ev, picker) {
+      var fullUrl = window.location.href.split("#")[0];
+      let isStart = fullUrl.includes('start') ;
+      let isEnd = fullUrl.includes('end') ;
+      
+      var url = '/';
+      if(isStart || isEnd){ 
+          fullUrl = replaceUrlParam(fullUrl,'start',picker.startDate.format('YYYY-MM-DD'));
+          fullUrl = replaceUrlParam(fullUrl,'end',picker.endDate.format('YYYY-MM-DD'));
+          url = fullUrl;
+      }
+      else{
+        url = fullUrl+(fullUrl.includes('?')?'&':'?')+'start='+picker.startDate.format('YYYY-MM-DD')+'&end='+picker.endDate.format('YYYY-MM-DD')
+      }
+
+      
+      url = url+'#rfi';
+       window.location.href = url;
+  });
+
 
    function sendEmailPopup(){   
       $("#myModal").modal('show');

@@ -14,6 +14,7 @@ use App\Models\Category;
 use App\Models\Vendor;
 use App\Models\Status;
 use App\Models\Trade;
+use Carbon\Carbon;
 use Gate;
 
 
@@ -206,7 +207,14 @@ class ProjectController extends Controller
                 });
          } 
 
-        
+        if(request()->filled('start') && request()->filled('end')){
+                 $start = Carbon::parse(request()->start)->format('Y-m-d'); 
+                 $end = Carbon::parse(request()->end)->format('Y-m-d'); 
+                 $rfis->whereRaw("date_sent >=  date('$start')")
+                      ->whereRaw("date_recieved <=  date('$end')");
+                
+         } 
+
          $orderBy = 'created_at';  
          $orderByRFI = 'created_at';  
          $order ='DESC' ;
@@ -222,7 +230,7 @@ class ProjectController extends Controller
 
         if(request()->filled('orderRFI')){
             $orderByRFI = request()->filled('orderbyRFI') ? ( !in_array(request()->orderbyRFI, 
-                ['number'] ) ? 'created_at' : request()->orderbyRFI ) : 'created_at';
+                ['number','date_sent','date_recieved'] ) ? 'created_at' : request()->orderbyRFI ) : 'created_at';
             
             $orderRFI = !in_array(\Str::lower(request()->orderRFI), ['desc','asc'])  ? 'ASC' 
              : request()->orderRFI;
@@ -317,6 +325,11 @@ class ProjectController extends Controller
                  $trade_slug = @\Str::slug($proposal->trade->name);
                  $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
                  $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+            else if($doc->document_type->name == DocumentType::RFI ){
+                 $folderPath = Document::RFIS."/";
+                 $folderPath .= "$project_slug/";
             }
 
             $files = $doc->files();

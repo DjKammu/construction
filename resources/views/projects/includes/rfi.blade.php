@@ -27,6 +27,7 @@
                  <option value="{{ $status->id }}" {{ (@request()->rfi_status == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
               @endforeach
             </select>
+            <input type="text" name="daterange" value="" />
           </form>
         </div>
     </div>
@@ -40,15 +41,25 @@
             
                 <th >Number <span class="sorting-outer">
                   <a href="javascript:void(0)" onclick="sortOrderByRFI('number', 'ASC')">
-                    <i class="fa fa-sort-asc" o ></i></a>
+                    <i class="fa fa-sort-asc"></i></a>
                   <a href="javascript:void(0)" onclick="sortOrderByRFI('number', 'DESC')">
                     <i class="fa fa-sort-desc"></i> </a>
                 </span></th>
 
                 <th>Name</th>
                 <th>Created By</th>
-                <th>Date Sent</th>
-                <th>Date Recieved</th>
+                <th>Date Sent <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderByRFI('date_sent', 'ASC')">
+                    <i class="fa fa-sort-asc"></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderByRFI('date_sent', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span> </th>
+                <th>Date Recieved <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderByRFI('date_recieved', 'ASC')">
+                    <i class="fa fa-sort-asc"></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderByRFI('date_recieved', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span> </th>
                 <th>Assign To</th>
                 <th>Sent File </th>
                 <th>Recieved File </th>

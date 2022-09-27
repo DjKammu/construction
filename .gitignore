@@ -4,6 +4,8 @@
 /public/project/*
 /public/proposals/*
 /public/invoices/*
+/public/rfis/*
+/public/submittals/*
 /public/storage
 /storage/*.key
 /vendor

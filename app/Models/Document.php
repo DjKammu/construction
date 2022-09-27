@@ -22,7 +22,7 @@ class Document extends Model
      'file','project_id',
      'document_type_id','vendor_id',
      'subcontractor_id', 'proposal_id',
-     'payment_id'
+     'payment_id','rfi_id','submittal_id'
     ];
 
 

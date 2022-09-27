@@ -45,7 +45,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Number 
                                                 </label>
-                                                 <input value="{{ @$rfi->number }}"class="form-control" readonly="">
+                                                 <input name="number" value="{{ @$rfi->number }}"class="form-control" required="">
                                             </div>
                                         </div>
                                     </div>  
@@ -204,12 +204,130 @@
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
-                                        <button id="change-password-button" type="submit" class="btn btn-danger">Update RIF
+                                        <button id="change-password-button" type="submit" class="btn btn-danger">Update RFI
                                         </button>
                                     </div>
 
                                 </form>
                             </div>
+
+                            <div class="table-responsive">           
+                                <table id="subcontractors-table" class="table card-table dataTable no-footer" role="grid" aria-describedby="subcontractors-table_info">
+                                 <thead class="d-none">
+                                    <tr role="row">
+                                       <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 0px;"></th>
+                                    </tr>
+                                 </thead>
+                                 <tbody class="row">
+                                
+                                  @if($rfi->sent_file)
+                                   @php
+                                     $fileInfo = pathinfo($rfi->sent_file);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.rfi.file.destroy', $rfi->id)}}?path={{$rfi->sent_file}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete File" title="Delete File"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($rfi->sent_file) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
+
+                                    @endif
+
+                                  @if($rfi->recieved_file)
+                                   @php
+                                     $fileInfo = pathinfo($rfi->recieved_file);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.rfi.file.destroy', $rfi->id)}}?path={{$rfi->recieved_file}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete File" title="Delete File"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($rfi->recieved_file) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
+
+                                    @endif
+
+                                 </tbody>
+                              </table>
+                                </div>
+
                         </div>
                     </div>
             </div>

@@ -86,7 +86,10 @@ class RFIController extends Controller
           if(Gate::denies('add')) {
                return abort('401');
         } 
-
+         
+        $request->validate([
+              'number' => 'required|unique:r_f_i_s'
+        ]);
         
         $project = Project::find($id);
          
@@ -122,9 +125,11 @@ class RFIController extends Controller
 
         $document = $project->documents()
                    ->firstOrCreate(['project_id' => $project->id,
-                    'document_type_id' => $document_type->id
+                    'document_type_id' => $document_type->id,
+                    'rfi_id'  => $rfi->id
                      ],
                      ['name' => $name, 'slug' => $slug,
+                       'rfi_id'  => $rfi->id,
                      'project_id'       => $project->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$request->subcontractor_id
@@ -231,7 +236,7 @@ class RFIController extends Controller
     }
 
     /**
-     jmmmmmjjjjjjj* Update the specified resource in storage.
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -242,6 +247,11 @@ class RFIController extends Controller
         if(Gate::denies('update')) {
                return abort('401');
         } 
+
+        $request->validate([
+              'number' => 'required|unique:r_f_i_s,name,'.$id
+        ]);
+
         $rfi = RFI::find($id);  
         $data = $request->except('_token');
 
@@ -268,11 +278,13 @@ class RFIController extends Controller
         $name = @$project->name.' '.@$request->name;                
         $slug = @\Str::slug($name);                
 
-        $document = $project->documents()
+         $document = $project->documents()
                    ->firstOrCreate(['project_id' => $project->id,
-                    'document_type_id' => $document_type->id
+                    'document_type_id' => $document_type->id,
+                    'rfi_id'  => $rfi->id
                      ],
                      ['name' => $name, 'slug' => $slug,
+                       'rfi_id'  => $rfi->id,
                      'project_id'       => $project->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$request->subcontractor_id
@@ -355,17 +367,17 @@ class RFIController extends Controller
          $sent_file = @$rfi->sent_file;
          $recieved_file = @$rfi->recieved_file;
          
-        //  $aPath = public_path().'/'. Document::RFIS."/".Document::ARCHIEVED; 
-        //  \File::makeDirectory($aPath, $mode = 0777, true, true);
+         $aPath = public_path().'/'. Document::RFIS."/".Document::ARCHIEVED; 
+         \File::makeDirectory($aPath, $mode = 0777, true, true);
 
-        // @\File::copy($path.$sent_file, $aPath.'/'.$sent_file);
-        // @\File::copy($path.$recieved_file, $aPath.'/'.$recieved_file);
+        @\File::copy($path.$sent_file, $aPath.'/'.$sent_file);
+        @\File::copy($path.$recieved_file, $aPath.'/'.$recieved_file);
 
-        // @unlink($path.$sent_file);
-        // @unlink($path.$recieved_file);
+        @unlink($path.$sent_file);
+        @unlink($path.$recieved_file);
 
-         // $project->documents()
-                    // ->where(['payment_id' => $id])->delete();
+         $project->documents()
+                    ->where(['rfi_id' => $id])->delete();
 
          $rfi->delete();
 
@@ -381,68 +393,31 @@ class RFIController extends Controller
 
           $path = request()->path;
 
-          $payment = Payment::find($id);
+          $rfi = RFI::find($id);
 
           $file = @end(explode('/', $path));
 
           $publicPath = public_path().'/';
 
-          $aPath = $publicPath.Document::INVOICES."/".Document::ARCHIEVED; 
-
+          $aPath = $publicPath.Document::RFIS."/".Document::ARCHIEVED; 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
-
-           @\File::copy($publicPath.$path, $aPath.'/'.$file);
+          @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
           $docFile  = DocumentFile::whereFile($file)->firstOrFail();
 
-          $coulumn = 'file';
+          $coulumn = 'sent_file';
 
-          $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
+          $coulumn = ( $file == @$rfi->sent_file ) ? 'sent_file' : ( $file == @$rfi->recieved_file ? 'recieved_file' : $coulumn);  
           
           @$docFile->delete();  
 
-          $payment->update([$coulumn => '']);
+          $rfi->update([$coulumn => '']);
 
           @unlink($path);
 
          return redirect()->back()->with('message', 'File Delete Successfully!');
     }
 
-    public function downloadPDF($id,$view = false){
-
-        $project = Project::find($id); 
-        $trades = $project->trades()->get();
-        $catids = @($trades->pluck('category_id'))->unique();
-        $categories = Category::whereIn('id',$catids)->get(); 
-        $pTrades = [];
-
-        $trade_ids = @$project->payments->whereNotNull('trade_id')
-                       ->pluck('trade_id');  
-        $pTrades = Trade::whereIn('id',$trade_ids)->get();  
-
-        if($categories->count() == 0){                 
-              $catids = @($pTrades->pluck('category_id'))->unique();
-              $categories = Category::whereIn('id',$catids)->get(); 
-         }
-         if($pTrades){
-            $trades = $trades->merge($pTrades);
-         }
-
-        $pdf = PDF::loadView('projects.includes.budget-pdf',
-          ['paymentCategories' => $categories,
-          'trades' => $trades,'project' => $project]
-        );
-
-        $slug = \Str::slug($project->name);
-
-        if($view){
-         // return $pdf->stream('project_'.$slug .'_budget.pdf');
-         return $pdf->setPaper('a4')->output();
-        }
-
-        return $pdf->download($slug.'-budget.pdf');
-
-    }
 
     public function sendMail(Request $request, $id){
 

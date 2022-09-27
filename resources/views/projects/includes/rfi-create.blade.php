@@ -45,7 +45,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Number 
                                                 </label>
-                                                 <input value="{{ @$number }}"class="form-control" readonly="">
+                                                 <input name="number" placeholder="RFI Number" class="form-control" required="">
                                             </div>
                                         </div>
                                     </div>  

@@ -216,7 +216,11 @@ class DocumentController extends Controller
 
                $folderPath .= "$project_slug/$trade_slug/";
           }
-          // dd($folderPath);
+           else if($document->document_type->name == DocumentType::RFI ){
+                 $folderPath = Document::RFIS."/";
+                 $folderPath .= "$project_slug/";
+          }
+
         $document->files->filter(function($file) use ($folderPath){
 
           $file->file = ($folderPath.$file->file);

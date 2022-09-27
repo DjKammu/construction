@@ -17,7 +17,7 @@ class CreateRFISTable extends Migration
             $table->id();
             $table->string('number')->required();
             $table->string('name')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nulled();
             $table->unsignedBigInteger('project_id');
             $table->date('date_sent')->nullable();
             $table->date('date_recieved')->nullable();
