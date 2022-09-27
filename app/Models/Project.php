@@ -68,6 +68,10 @@ class Project extends Model
         return $this->hasMany(RFI::class);
     } 
 
+    public function submittals(){
+        return $this->hasMany(Submittal::class);
+    } 
+
     public function project_lines(){
         return $this->hasMany(ProjectLine::class);
     }

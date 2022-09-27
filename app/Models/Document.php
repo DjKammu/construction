@@ -16,6 +16,7 @@ class Document extends Model
      CONST INVOICES  = 'invoices';
      CONST PROJECT   = 'project';
      CONST RFIS       = 'rfis';
+     CONST SUBMITTALS  = 'submittals';
 
      protected $fillable = [
      'name' , 'slug' ,'account_number',

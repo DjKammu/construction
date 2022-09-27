@@ -170,6 +170,7 @@ class ProjectController extends Controller
 
          $payments = $project->payments();
          $rfis = $project->rfis();
+         $submittals = $project->submittals();
 
           if(request()->filled('payment_subcontractor')){
                 $subcontractor = request()->payment_subcontractor;
@@ -215,10 +216,37 @@ class ProjectController extends Controller
                 
          } 
 
+
+          if(request()->filled('submittal_subcontractor')){
+                $subcontractor = request()->submittal_subcontractor;
+
+                $submittals->whereHas('subcontractor', function($q) use ($subcontractor){
+                    $q->where('id', $subcontractor);
+                });
+         }
+
+          if(request()->filled('submittal_status')){
+                $status = request()->submittal_status;
+
+                $submittals->whereHas('status', function($q) use ($status){
+                    $q->where('id', $status);
+                });
+         } 
+
+        if(request()->filled('submittal_start') && request()->filled('submittal_end')){
+                 $start = Carbon::parse(request()->submittal_start)->format('Y-m-d'); 
+                 $end = Carbon::parse(request()->submittal_end)->format('Y-m-d'); 
+                 $submittals->whereRaw("date_sent >=  date('$start')")
+                      ->whereRaw("date_recieved <=  date('$end')");
+                
+         } 
+
          $orderBy = 'created_at';  
          $orderByRFI = 'created_at';  
+         $orderBySubmittal = 'created_at';  
          $order ='DESC' ;
          $orderRFI ='DESC' ;
+         $orderSubmittal ='DESC' ;
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
@@ -236,9 +264,17 @@ class ProjectController extends Controller
              : request()->orderRFI;
         }
 
+        if(request()->filled('orderSubmittal')){
+            $orderBySubmittal = request()->filled('orderBySubmittal') ? ( !in_array(request()->orderBySubmittal, ['number','date_sent','date_recieved'] ) ? 'created_at' : request()->orderBySubmittal ) : 'created_at';
+            
+            $orderSubmittal = !in_array(\Str::lower(request()->orderSubmittal), ['desc','asc'])  ? 'ASC' 
+             : request()->orderSubmittal;
+        }
+
          $payments = $payments->orderBy($orderBy, $order)->get();
 
          $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
+         $submittals = $submittals->orderBy($orderBySubmittal, $orderSubmittal)->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -331,6 +367,10 @@ class ProjectController extends Controller
                  $folderPath = Document::RFIS."/";
                  $folderPath .= "$project_slug/";
             }
+             else if($doc->document_type->name == DocumentType::SUBMITTAL ){
+                 $folderPath = Document::SUBMITTALS."/";
+                 $folderPath .= "$project_slug/";
+            }
 
             $files = $doc->files();
 
@@ -420,6 +460,23 @@ class ProjectController extends Controller
            
          });
 
+          $submittals->filter(function($submittal){
+
+            $project = @$submittal->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $folderPath = Document::SUBMITTALS."/";
+
+            $folderPath .= "$project_slug/";
+        
+            $submittal->sent_file = @($submittal->sent_file) ?
+                          asset($folderPath.$submittal->sent_file) : '' ;
+            $submittal->recieved_file = @($submittal->recieved_file) ? 
+                          asset($folderPath.$submittal->recieved_file) : '' ;
+           
+         });
+
          $catids = @($trades->pluck('category_id'))->unique();
 
          $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
@@ -448,7 +505,8 @@ class ProjectController extends Controller
            
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
-            'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis'));
+            'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
+            'submittals'));
     }
 
     /**

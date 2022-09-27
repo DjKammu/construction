@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'RFI')
+@section('title', 'Submittal')
 
 @section('content')
 
@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left"> {{ @$project->name }} -  Edit RFI </h4>
+                        <h4 class="mt-0 text-left"> {{ @$project->name }} -  Add Submittal </h4>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.rfi.update',['id' => (@$rfi->id) ? @$rfi->id : 0 ]) }}"
+                              action="{{ route('projects.submittal',['id' => (@$project->id) ? @$project->id : 0 ]) }}"
                                enctype="multipart/form-data">
                                   @csrf
                                      <div class="row">
@@ -45,7 +45,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Number 
                                                 </label>
-                                                 <input name="number" value="{{ @$rfi->number }}"class="form-control" required="">
+                                                 <input name="number" placeholder="Submittal Number" class="form-control" required="">
                                             </div>
                                         </div>
                                     </div>  
@@ -55,7 +55,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Name 
                                                 </label>
-                                                 <input  name="name" value="{{ @$rfi->name }}" class="form-control">
+                                                 <input  name="name" value="{{ old('name')}}" class="form-control">
                                             </div>
                                         </div>
                                     </div>  
@@ -68,7 +68,7 @@
                                                 <select class="form-control" name="user_id"> 
                                                   <option value="">Select User</option>
                                                   @foreach($users as $user)
-                                                     <option value="{{ $user->id }}" {{ (@$rfi->user_id == $user->id) ? 'selected' : ''}}> {{ $user->name }}</option>
+                                                     <option value="{{ $user->id }}" {{ (@request()->st == $user->id) ? 'selected' : ''}}> {{ $user->name }}</option>
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -80,7 +80,7 @@
                                         <div class="form-group">
                                             <label class="text-dark" for="password">Date Sent
                                             </label>
-                                            <input  name="date_sent" value="{{ @$rfi->date_sent }}" type="text" class="form-control date" placeholder="Date ">
+                                            <input  name="date_sent" value="{{ old('date_sent')}}" type="text" class="form-control date" placeholder="Date ">
                                         </div>
                                      </div>
                                     </div>
@@ -90,7 +90,7 @@
                                         <div class="form-group">
                                             <label class="text-dark" for="password">Date Recieved
                                             </label>
-                                            <input  name="date_recieved" value="{{ @$rfi->date_recieved }}" type="text" class="form-control date" placeholder="Date Recieved">
+                                            <input  name="date_recieved" value="{{ old('date_recieved')}}" type="text" class="form-control date" placeholder="Date Recieved">
                                         </div>
                                      </div>
                                     </div>
@@ -103,7 +103,7 @@
                                                 <select class="form-control" name="assign_to_id"> 
                                                   <option value="">Select Assignee</option>
                                                   @foreach($assignees as $assignee)
-                                                     <option value="{{ $assignee->id }}" {{ ( @$rfi->assign_to_id == $assignee->id) ? 'selected' : ''}}> {{ $assignee->name }}</option>
+                                                     <option value="{{ $assignee->id }}" {{ (@request()->st == $assignee->id) ? 'selected' : ''}}> {{ $assignee->name }}</option>
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -116,7 +116,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Subject 
                                                 </label>
-                                                 <input  name="subject" value="{{ @$rfi->subject }}" class="form-control">
+                                                 <input  name="subject" value="{{ old('subject')}}" class="form-control">
                                             </div>
                                         </div>
                                     </div>  
@@ -130,7 +130,7 @@
                                                 <select class="form-control" name="subcontractor_id"> 
                                                   <option value="">Select Subcontractor</option>
                                                   @foreach($subcontractors as $subcontractor)
-                                                     <option value="{{ $subcontractor->id }}" {{ (@$rfi->subcontractor_id == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
+                                                     <option value="{{ $subcontractor->id }}" {{ (@request()->st == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -167,7 +167,7 @@
                                                 <select class="form-control" name="ball_in_court_id"> 
                                                   <option value="">Select Ball In Court</option>
                                                   @foreach($ballInCourts as $ballInCourt)
-                                                   <option value="{{ $ballInCourt->id }}" {{ (@$rfi->ball_in_court_id == $ballInCourt->id) ? 'selected' : ''}}> {{ $ballInCourt->name }}</option>
+                                                   <option value="{{ $ballInCourt->id }}" {{ (@request()->st == $ballInCourt->id) ? 'selected' : ''}}> {{ $ballInCourt->name }}</option>
                                                 @endforeach
                                                 </select>
                                             </div>
@@ -182,7 +182,7 @@
                                                 <select class="form-control" name="status_id"> 
                                                   <option value="">Select Status</option>
                                                   @foreach($statuses as $status)
-                                                   <option value="{{ $status->id }}" {{ ( @$rfi->status_id  == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
+                                                   <option value="{{ $status->id }}" {{ (@request()->st == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
                                                 @endforeach
                                                 </select>
                                             </div>
@@ -195,7 +195,7 @@
                                                 <label class="text-dark" for="password">Notes
                                                 </label>
                                                 <textarea  name="notes"  type="text" class="form-control" placeholder="Notes" >
-                                                 {{ @$rfi->notes }}</textarea>
+                                                 {{ old('notes')}}</textarea>
                                             </div>
                                         </div>
                                     </div> 
@@ -204,130 +204,12 @@
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
-                                        <button id="change-password-button" type="submit" class="btn btn-danger">Update RFI
+                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create Submittal
                                         </button>
                                     </div>
 
                                 </form>
                             </div>
-
-                            <div class="table-responsive">           
-                                <table id="subcontractors-table" class="table card-table dataTable no-footer" role="grid" aria-describedby="subcontractors-table_info">
-                                 <thead class="d-none">
-                                    <tr role="row">
-                                       <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 0px;"></th>
-                                    </tr>
-                                 </thead>
-                                 <tbody class="row">
-                                
-                                  @if($rfi->sent_file)
-                                   @php
-                                     $fileInfo = pathinfo($rfi->sent_file);
-                                     $extension = @$fileInfo['extension'];
-                                    
-                                  if(in_array($extension,['doc','docx','docm','dot',
-                                  'dotm','dotx'])){
-                                      $extension = 'word'; 
-                                   }
-                                   else if(in_array($extension,['csv','dbf','dif','xla',
-                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
-                                      $extension = 'excel'; 
-                                   }
-
-                                   @endphp
-
-                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
-                                       <td>
-                                            <span class="cross"> 
-                                             <form 
-                                                method="post" 
-                                                action="{{route('projects.rfi.file.destroy', $rfi->id)}}?path={{$rfi->sent_file}}"> 
-                                                 @csrf
-                                                {{ method_field('DELETE') }}
-
-                                                <button 
-                                                  type="submit"
-                                                  onclick="return confirm('Are you sure?')"
-                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete File" title="Delete File"><i class="fa fa-trash text-danger"></i> </button>
-                                              </form>
-                                            </span>
-                                             <div class="card card-table-item" 
-                                             style="width: 100%;">
-                                                <div class="card-body pb-0">
-                                                   <div class="author mt-1">
-                                                    <!-- <span class="doc_type_m">
-                                                      {{ @$proposal->subcontractor->name }} 
-                                                    </span></br> -->
-                                                    <a href="{{ asset($rfi->sent_file) }}" target="_blank">
-                                                      <p> {{ @$file->name }} </p>
-                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
-                                                      </a> 
-                                                      <!--  <span class="doc-type"> 
-                                                      {{  @$file->document->document_type->name }}</span>  -->             
-                                                   </div>
-                                                </div>
-                                             </div>
-                                       </td>
-                                    </tr>
-
-                                    @endif
-
-                                  @if($rfi->recieved_file)
-                                   @php
-                                     $fileInfo = pathinfo($rfi->recieved_file);
-                                     $extension = @$fileInfo['extension'];
-                                    
-                                  if(in_array($extension,['doc','docx','docm','dot',
-                                  'dotm','dotx'])){
-                                      $extension = 'word'; 
-                                   }
-                                   else if(in_array($extension,['csv','dbf','dif','xla',
-                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
-                                      $extension = 'excel'; 
-                                   }
-
-                                   @endphp
-
-                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
-                                       <td>
-                                            <span class="cross"> 
-                                             <form 
-                                                method="post" 
-                                                action="{{route('projects.rfi.file.destroy', $rfi->id)}}?path={{$rfi->recieved_file}}"> 
-                                                 @csrf
-                                                {{ method_field('DELETE') }}
-
-                                                <button 
-                                                  type="submit"
-                                                  onclick="return confirm('Are you sure?')"
-                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete File" title="Delete File"><i class="fa fa-trash text-danger"></i> </button>
-                                              </form>
-                                            </span>
-                                             <div class="card card-table-item" 
-                                             style="width: 100%;">
-                                                <div class="card-body pb-0">
-                                                   <div class="author mt-1">
-                                                    <!-- <span class="doc_type_m">
-                                                      {{ @$proposal->subcontractor->name }} 
-                                                    </span></br> -->
-                                                    <a href="{{ asset($rfi->recieved_file) }}" target="_blank">
-                                                      <p> {{ @$file->name }} </p>
-                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
-                                                      </a> 
-                                                      <!--  <span class="doc-type"> 
-                                                      {{  @$file->document->document_type->name }}</span>  -->             
-                                                   </div>
-                                                </div>
-                                             </div>
-                                       </td>
-                                    </tr>
-
-                                    @endif
-
-                                 </tbody>
-                              </table>
-                                </div>
-
                         </div>
                     </div>
             </div>

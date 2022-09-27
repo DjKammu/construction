@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'RFI')
+@section('title', 'Submittal')
 
 @section('content')
 
@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left"> {{ @$project->name }} -  Edit RFI </h4>
+                        <h4 class="mt-0 text-left"> {{ @$project->name }} -  Edit Submittal </h4>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.rfi.update',['id' => (@$rfi->id) ? @$rfi->id : 0 ]) }}"
+                              action="{{ route('projects.submittal.update',['id' => (@$submittal->id) ? @$submittal->id : 0 ]) }}"
                                enctype="multipart/form-data">
                                   @csrf
                                      <div class="row">
@@ -45,7 +45,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Number 
                                                 </label>
-                                                 <input name="number" value="{{ @$rfi->number }}"class="form-control" required="">
+                                                 <input name="number" value="{{ @$submittal->number }}"class="form-control" required="">
                                             </div>
                                         </div>
                                     </div>  
@@ -55,7 +55,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Name 
                                                 </label>
-                                                 <input  name="name" value="{{ @$rfi->name }}" class="form-control">
+                                                 <input  name="name" value="{{ @$submittal->name }}" class="form-control">
                                             </div>
                                         </div>
                                     </div>  
@@ -68,7 +68,7 @@
                                                 <select class="form-control" name="user_id"> 
                                                   <option value="">Select User</option>
                                                   @foreach($users as $user)
-                                                     <option value="{{ $user->id }}" {{ (@$rfi->user_id == $user->id) ? 'selected' : ''}}> {{ $user->name }}</option>
+                                                     <option value="{{ $user->id }}" {{ (@$submittal->user_id == $user->id) ? 'selected' : ''}}> {{ $user->name }}</option>
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -80,7 +80,7 @@
                                         <div class="form-group">
                                             <label class="text-dark" for="password">Date Sent
                                             </label>
-                                            <input  name="date_sent" value="{{ @$rfi->date_sent }}" type="text" class="form-control date" placeholder="Date ">
+                                            <input  name="date_sent" value="{{ @$submittal->date_sent }}" type="text" class="form-control date" placeholder="Date ">
                                         </div>
                                      </div>
                                     </div>
@@ -90,7 +90,7 @@
                                         <div class="form-group">
                                             <label class="text-dark" for="password">Date Recieved
                                             </label>
-                                            <input  name="date_recieved" value="{{ @$rfi->date_recieved }}" type="text" class="form-control date" placeholder="Date Recieved">
+                                            <input  name="date_recieved" value="{{ @$submittal->date_recieved }}" type="text" class="form-control date" placeholder="Date Recieved">
                                         </div>
                                      </div>
                                     </div>
@@ -103,7 +103,7 @@
                                                 <select class="form-control" name="assign_to_id"> 
                                                   <option value="">Select Assignee</option>
                                                   @foreach($assignees as $assignee)
-                                                     <option value="{{ $assignee->id }}" {{ ( @$rfi->assign_to_id == $assignee->id) ? 'selected' : ''}}> {{ $assignee->name }}</option>
+                                                     <option value="{{ $assignee->id }}" {{ ( @$submittal->assign_to_id == $assignee->id) ? 'selected' : ''}}> {{ $assignee->name }}</option>
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -116,7 +116,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Subject 
                                                 </label>
-                                                 <input  name="subject" value="{{ @$rfi->subject }}" class="form-control">
+                                                 <input  name="subject" value="{{ @$submittal->subject }}" class="form-control">
                                             </div>
                                         </div>
                                     </div>  
@@ -130,7 +130,7 @@
                                                 <select class="form-control" name="subcontractor_id"> 
                                                   <option value="">Select Subcontractor</option>
                                                   @foreach($subcontractors as $subcontractor)
-                                                     <option value="{{ $subcontractor->id }}" {{ (@$rfi->subcontractor_id == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
+                                                     <option value="{{ $subcontractor->id }}" {{ (@$submittal->subcontractor_id == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -167,7 +167,7 @@
                                                 <select class="form-control" name="ball_in_court_id"> 
                                                   <option value="">Select Ball In Court</option>
                                                   @foreach($ballInCourts as $ballInCourt)
-                                                   <option value="{{ $ballInCourt->id }}" {{ (@$rfi->ball_in_court_id == $ballInCourt->id) ? 'selected' : ''}}> {{ $ballInCourt->name }}</option>
+                                                   <option value="{{ $ballInCourt->id }}" {{ (@$submittal->ball_in_court_id == $ballInCourt->id) ? 'selected' : ''}}> {{ $ballInCourt->name }}</option>
                                                 @endforeach
                                                 </select>
                                             </div>
@@ -182,7 +182,7 @@
                                                 <select class="form-control" name="status_id"> 
                                                   <option value="">Select Status</option>
                                                   @foreach($statuses as $status)
-                                                   <option value="{{ $status->id }}" {{ ( @$rfi->status_id  == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
+                                                   <option value="{{ $status->id }}" {{ ( @$submittal->status_id  == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
                                                 @endforeach
                                                 </select>
                                             </div>
@@ -195,7 +195,7 @@
                                                 <label class="text-dark" for="password">Notes
                                                 </label>
                                                 <textarea  name="notes"  type="text" class="form-control" placeholder="Notes" >
-                                                 {{ @$rfi->notes }}</textarea>
+                                                 {{ @$submittal->notes }}</textarea>
                                             </div>
                                         </div>
                                     </div> 
@@ -220,9 +220,9 @@
                                  </thead>
                                  <tbody class="row">
                                 
-                                  @if($rfi->sent_file)
+                                  @if($submittal->sent_file)
                                    @php
-                                     $fileInfo = pathinfo($rfi->sent_file);
+                                     $fileInfo = pathinfo($submittal->sent_file);
                                      $extension = @$fileInfo['extension'];
                                     
                                   if(in_array($extension,['doc','docx','docm','dot',
@@ -241,7 +241,7 @@
                                             <span class="cross"> 
                                              <form 
                                                 method="post" 
-                                                action="{{route('projects.rfi.file.destroy', $rfi->id)}}?path={{$rfi->sent_file}}"> 
+                                                action="{{route('projects.submittal.file.destroy', $submittal->id)}}?path={{$submittal->sent_file}}"> 
                                                  @csrf
                                                 {{ method_field('DELETE') }}
 
@@ -258,7 +258,7 @@
                                                     <!-- <span class="doc_type_m">
                                                       {{ @$proposal->subcontractor->name }} 
                                                     </span></br> -->
-                                                    <a href="{{ asset($rfi->sent_file) }}" target="_blank">
+                                                    <a href="{{ asset($submittal->sent_file) }}" target="_blank">
                                                       <p> {{ @$file->name }} </p>
                                                       <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
                                                       </a> 
@@ -272,9 +272,9 @@
 
                                     @endif
 
-                                  @if($rfi->recieved_file)
+                                  @if($submittal->recieved_file)
                                    @php
-                                     $fileInfo = pathinfo($rfi->recieved_file);
+                                     $fileInfo = pathinfo($submittal->recieved_file);
                                      $extension = @$fileInfo['extension'];
                                     
                                   if(in_array($extension,['doc','docx','docm','dot',
@@ -293,7 +293,7 @@
                                             <span class="cross"> 
                                              <form 
                                                 method="post" 
-                                                action="{{route('projects.rfi.file.destroy', $rfi->id)}}?path={{$rfi->recieved_file}}"> 
+                                                action="{{route('projects.submittal.file.destroy', $submittal->id)}}?path={{$submittal->recieved_file}}"> 
                                                  @csrf
                                                 {{ method_field('DELETE') }}
 
@@ -310,7 +310,7 @@
                                                     <!-- <span class="doc_type_m">
                                                       {{ @$proposal->subcontractor->name }} 
                                                     </span></br> -->
-                                                    <a href="{{ asset($rfi->recieved_file) }}" target="_blank">
+                                                    <a href="{{ asset($submittal->recieved_file) }}" target="_blank">
                                                       <p> {{ @$file->name }} </p>
                                                       <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
                                                       </a> 

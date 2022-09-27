@@ -96,10 +96,10 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#rfi" role="tab"
                                                      aria-expanded="false">RFI</a>
                                               </li>
-                                              <!-- <li class="nav-item">
+                                              <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#submittal" role="tab"
                                                      aria-expanded="false">Submittal</a>
-                                              </li> -->
+                                              </li>
                                                
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
@@ -123,6 +123,7 @@
                                     @include('projects.includes.payments')
                                     @include('projects.includes.budget')
                                     @include('projects.includes.rfi')
+                                    @include('projects.includes.submittal')
                               </div>
 
                             </div>
@@ -191,8 +192,37 @@ var end =  '{{ Request::input("end")}}';
         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'start='+picker.startDate.format('YYYY-MM-DD')+'&end='+picker.endDate.format('YYYY-MM-DD')
       }
 
-      
       url = url+'#rfi';
+       window.location.href = url;
+  }); 
+   
+   var submittal_start =  '{{ Request::input("submittal_start")}}';
+  var submittal_end =  '{{ Request::input("submittal_end")}}';
+
+
+  $('input[name="daterange-submittal"]').daterangepicker({
+
+    startDate: (submittal_start) ? submittal_start :   moment().startOf('month'),
+    endDate: (submittal_end) ? submittal_end :  moment().startOf('day'),
+    locale: {
+      format: 'YYYY-MM-DD'
+    }
+  }).on('apply.daterangepicker', function(ev, picker) {
+      var fullUrl = window.location.href.split("#")[0];
+      let isStart = fullUrl.includes('submittal_start') ;
+      let isEnd = fullUrl.includes('submittal_end') ;
+      
+      var url = '/';
+      if(isStart || isEnd){ 
+          fullUrl = replaceUrlParam(fullUrl,'submittal_start',picker.startDate.format('YYYY-MM-DD'));
+          fullUrl = replaceUrlParam(fullUrl,'submittal_end',picker.endDate.format('YYYY-MM-DD'));
+          url = fullUrl;
+      }
+      else{
+        url = fullUrl+(fullUrl.includes('?')?'&':'?')+'submittal_start='+picker.startDate.format('YYYY-MM-DD')+'&submittal_end='+picker.endDate.format('YYYY-MM-DD')
+      }
+
+      url = url+'#submittal';
        window.location.href = url;
   });
 
@@ -346,6 +376,26 @@ var end =  '{{ Request::input("end")}}';
          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbyRFI='+orderBy+'&orderRFI='+order
       }
        url = url+'#rfi';
+       window.location.href = url;
+
+ }  
+
+ function sortOrderBySubmittal(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderbySubmittal') ;
+      let isSort = fullUrl.includes('orderSubmittal') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderbySubmittal',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'orderSubmittal',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbySubmittal='+orderBy+'&orderSubmittal='+order
+      }
+       url = url+'#submittal';
        window.location.href = url;
 
  }

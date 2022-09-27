@@ -237,6 +237,20 @@ Route::prefix('projects')->group(function(){
      Route::delete('rfi/{id}/file', [App\Http\Controllers\RFIController::class,'destroyFile'])->name('projects.rfi.file.destroy');
 
 
+ // Submittal Routes 
+    Route::get('{id}/submittal',[App\Http\Controllers\SubmittalController::class,'create'])->name('projects.submittal');
+
+    Route::post('{id?}/submittal',[App\Http\Controllers\SubmittalController::class,'store'])->name('projects.submittal');
+
+    Route::get('submittal/{id}',[App\Http\Controllers\SubmittalController::class,'show'])->name('projects.submittal.edit');
+
+    Route::post('submittal/{id}',[App\Http\Controllers\SubmittalController::class,'update'])->name('projects.submittal.update');
+
+     Route::delete('submittal/{id}', [App\Http\Controllers\SubmittalController::class,'destroy'])->name('projects.submittal.destroy');
+
+     Route::delete('submittal/{id}/file', [App\Http\Controllers\SubmittalController::class,'destroyFile'])->name('projects.submittal.file.destroy');
+
+
 });
 
 

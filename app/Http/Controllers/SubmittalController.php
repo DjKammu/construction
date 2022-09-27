@@ -19,13 +19,13 @@ use App\Models\BallInCourt;
 use App\Models\Assignee;
 use App\Models\Status;
 use App\Models\User;
-use App\Models\RFI;
+use App\Models\Submittal;
 use Gate;
 use Carbon\Carbon;
 
 use PDF;
 
-class RFIController extends Controller
+class SubmittalController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -69,8 +69,8 @@ class RFIController extends Controller
         $ballInCourts = BallInCourt::all(); 
         $assignees = Assignee::all(); 
         $users = User::whereNotIn('id',[1])->get();
-        $number = RFI::max('number') + 1;
-        return view('projects.includes.rfi-create',compact('id','subcontractors','project','statuses','ballInCourts','assignees','users','number'));
+        // $number = RFI::max('number') + 1;
+        return view('projects.includes.submittal-create',compact('id','subcontractors','project','statuses','ballInCourts','assignees','users'));
     }  
 
 
@@ -88,7 +88,7 @@ class RFIController extends Controller
         } 
          
         $request->validate([
-              'number' => 'required|unique:r_f_i_s,number'
+              'number' => 'required|unique:submittals,number'
         ]);
         
         $project = Project::find($id);
@@ -97,7 +97,7 @@ class RFIController extends Controller
             return redirect('/');
         }
         $data = $request->except('_token');
-        $data['number'] = RFI::max('id')+1;
+        $data['number'] = Submittal::max('id')+1;
         $data['project_id'] = (int) $id;
 
         $data['date_sent'] = ($request->filled('date_sent')) ? Carbon::createFromFormat('m-d-Y',$request->date_sent)->format('Y-m-d') : null;
@@ -109,15 +109,15 @@ class RFIController extends Controller
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::RFIS."/";
+        $folderPath = Document::SUBMITTALS."/";
 
         $folderPath .= $project_slug;
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
-        $rfi = RFI::create($data);
+        $submittal = Submittal::create($data);
        
-        $document_type = DocumentType::where('name', DocumentType::RFI)
+        $document_type = DocumentType::where('name', DocumentType::SUBMITTAL)
                          ->first();
 
         $name = @$project->name.' '.@$request->name;                
@@ -126,10 +126,10 @@ class RFIController extends Controller
         $document = $project->documents()
                    ->firstOrCreate(['project_id' => $project->id,
                     'document_type_id' => $document_type->id,
-                    'rfi_id'  => $rfi->id
+                    'submittal_id'  => $submittal->id
                      ],
                      ['name' => $name, 'slug' => $slug,
-                       'rfi_id'  => $rfi->id,
+                      'submittal_id'  => $submittal->id,
                      'project_id'       => $project->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$request->subcontractor_id
@@ -153,7 +153,7 @@ class RFIController extends Controller
                                   'year' => $year
                                   ];
 
-            $rfi->update(['sent_file' => $fileName]);
+            $submittal->update(['sent_file' => $fileName]);
 
             $document->files()->create($fileArr);
         }
@@ -175,12 +175,12 @@ class RFIController extends Controller
                                   'year' => $year
                                   ];
 
-            $rfi->update(['recieved_file' => $fileName]);
+            $submittal->update(['recieved_file' => $fileName]);
 
             $document->files()->create($fileArr);
         }
 
-      return redirect(route('projects.show',['project' => $id]).'#rfi')->with('message', 'RFI Created Successfully!');
+      return redirect(route('projects.show',['project' => $id]).'#submittal')->with('message', 'Submittal Created Successfully!');
     }
      
 
@@ -195,21 +195,21 @@ class RFIController extends Controller
          if(Gate::denies('edit')) {
            return abort('401');
         } 
-        $rfi = RFI::find($id);  
+        $submittal = Submittal::find($id);  
 
-        $project = @$rfi->project;
+        $project = @$submittal->project;
 
         $project_slug = \Str::slug($project->name);
 
-        $folderPath = Document::RFIS."/";
+        $folderPath = Document::SUBMITTALS."/";
 
         $folderPath .= "$project_slug/";
         
-        $rfi->recieved_file = @($rfi->recieved_file) ? $folderPath.$rfi->recieved_file : '';
-        $rfi->sent_file = @($rfi->sent_file) ? $folderPath.$rfi->sent_file : '';
+        $submittal->recieved_file = @($submittal->recieved_file) ? $folderPath.$submittal->recieved_file : '';
+        $submittal->sent_file = @($submittal->sent_file) ? $folderPath.$submittal->sent_file : '';
 
-        $rfi->date_sent = @($rfi->date_sent) ? Carbon::parse($rfi->date_sent)->format('m-d-Y') : '' ;
-        $rfi->date_recieved = @($rfi->date_recieved) ? Carbon::parse($rfi->date_recieved)->format('m-d-Y') : '' ;
+        $submittal->date_sent = @($submittal->date_sent) ? Carbon::parse($submittal->date_sent)->format('m-d-Y') : '' ;
+        $submittal->date_recieved = @($submittal->date_recieved) ? Carbon::parse($submittal->date_recieved)->format('m-d-Y') : '' ;
 
         $subcontractors = Subcontractor::all();
         $statuses = Status::all(); 
@@ -218,9 +218,11 @@ class RFIController extends Controller
         $users = User::whereNotIn('id',[1])->get();
         $number = null;
 
-        session()->flash('url', route('projects.show',['project' => $rfi->project_id]).'?#rfi'); 
+        session()->flash('url', route('projects.show',
+             ['project' => $submittal->project_id]).'?#submittal'); 
 
-        return view('projects.includes.rfi-edit',compact('id','rfi', 'subcontractors','project','statuses','ballInCourts','assignees','users','number'));
+        return view('projects.includes.submittal-edit',compact('id','submittal', 'subcontractors',
+          'project','statuses','ballInCourts','assignees','users','number'));
 
     }
 
@@ -249,30 +251,30 @@ class RFIController extends Controller
         } 
 
         $request->validate([
-              'number' => 'required|unique:r_f_i_s,number,'.$id
+              'number' => 'required|unique:submittals,number,'.$id
         ]);
 
-        $rfi = RFI::find($id);  
+        $submittal = Submittal::find($id);  
         $data = $request->except('_token');
 
         $data['date_sent'] = ($request->filled('date_sent')) ? Carbon::createFromFormat('m-d-Y',$request->date_sent)->format('Y-m-d') : null;
 
         $data['date_recieved'] = ($request->filled('date_recieved')) ? Carbon::createFromFormat('m-d-Y',$request->date_recieved)->format('Y-m-d') : null;
         
-         $project = @$rfi->project;
+         $project = @$submittal->project;
 
         $project_slug = \Str::slug($project->name);
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::RFIS."/";
+        $folderPath = Document::SUBMITTALS."/";
 
         $folderPath .= $project_slug;
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
        
-        $document_type = DocumentType::where('name', DocumentType::RFI)
+        $document_type = DocumentType::where('name', DocumentType::SUBMITTAL)
                          ->first();
 
         $name = @$project->name.' '.@$request->name;                
@@ -281,10 +283,10 @@ class RFIController extends Controller
          $document = $project->documents()
                    ->firstOrCreate(['project_id' => $project->id,
                     'document_type_id' => $document_type->id,
-                    'rfi_id'  => $rfi->id
+                    'submittal_id'  => $submittal->id
                      ],
                      ['name' => $name, 'slug' => $slug,
-                       'rfi_id'  => $rfi->id,
+                       'submittal_id'  => $submittal->id,
                      'project_id'       => $project->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$request->subcontractor_id
@@ -292,7 +294,7 @@ class RFIController extends Controller
                  );
 
         if($request->hasFile('sent_file')){
-               @unlink($folderPath.'/'.$rfi->sent_file);
+               @unlink($folderPath.'/'.$submittal->sent_file);
               $file = $request->file('sent_file');
 
               $date  = date('d');
@@ -312,7 +314,7 @@ class RFIController extends Controller
         }
 
         if($request->hasFile('recieved_file')){
-              @unlink($folderPath.'/'.$rfi->recieved_file);
+              @unlink($folderPath.'/'.$submittal->recieved_file);
               $file = $request->file('recieved_file');
 
               $date  = date('d');
@@ -332,10 +334,10 @@ class RFIController extends Controller
         }
 
 
-        $rfi->update($data);
+        $submittal->update($data);
 
 
-        return redirect(route('projects.show',['project' => $rfi->project_id]).'?#rfi')->with('message', 'RFI Updated Successfully!');
+        return redirect(route('projects.show',['project' => $submittal->project_id]).'?#submittal')->with('message', 'Submittal Updated Successfully!');
     }
 
     /**
@@ -350,24 +352,24 @@ class RFIController extends Controller
                return abort('401');
           } 
 
-         $rfi = RFI::find($id);
+         $submittal = Submittal::find($id);
 
-         $project = @$rfi->project;
+         $project = @$submittal->project;
 
          $project_slug = \Str::slug($project->name);
 
          $public_path = public_path().'/';
 
-         $folderPath = Document::RFIS."/";
+         $folderPath = Document::SUBMITTALS."/";
 
          $folderPath .= "$project_slug/";
 
          $path = @public_path().'/'.$folderPath;
 
-         $sent_file = @$rfi->sent_file;
-         $recieved_file = @$rfi->recieved_file;
+         $sent_file = @$submittal->sent_file;
+         $recieved_file = @$submittal->recieved_file;
          
-         $aPath = public_path().'/'. Document::RFIS."/".Document::ARCHIEVED; 
+         $aPath = public_path().'/'. Document::SUBMITTALS."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
 
         @\File::copy($path.$sent_file, $aPath.'/'.$sent_file);
@@ -377,11 +379,11 @@ class RFIController extends Controller
         @unlink($path.$recieved_file);
 
          $project->documents()
-                    ->where(['rfi_id' => $id])->delete();
+                    ->where(['submittal_id' => $id])->delete();
 
-         $rfi->delete();
+         $submittal->delete();
 
-        return redirect()->back()->with('message', 'RFI Delete Successfully!');
+        return redirect()->back()->with('message', 'Submittal Delete Successfully!');
     }
 
 
@@ -393,13 +395,13 @@ class RFIController extends Controller
 
           $path = request()->path;
 
-          $rfi = RFI::find($id);
+          $submittal = Submittal::find($id);
 
           $file = @end(explode('/', $path));
 
           $publicPath = public_path().'/';
 
-          $aPath = $publicPath.Document::RFIS."/".Document::ARCHIEVED; 
+          $aPath = $publicPath.Document::SUBMITTALS."/".Document::ARCHIEVED; 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
           @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
@@ -411,7 +413,7 @@ class RFIController extends Controller
           
           @$docFile->delete();  
 
-          $rfi->update([$coulumn => '']);
+          $submittal->update([$coulumn => '']);
 
           @unlink($path);
 
