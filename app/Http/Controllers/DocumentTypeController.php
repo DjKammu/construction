@@ -128,6 +128,11 @@ class DocumentTypeController extends Controller
         $data['slug'] = \Str::slug($request->name);
 
         $type = DocumentType::find($id);
+
+        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE, DocumentType::LIEN_RELEASE, DocumentType::RFI, DocumentType::SUBMITTAL])){
+              return redirect()->back()->withErrors('Document Type '.$type->name.' Can`t be Updated!');
+        }
+
         
          if(!$type){
             return redirect()->back();
@@ -152,7 +157,7 @@ class DocumentTypeController extends Controller
 
          $type = DocumentType::find($id);
 
-        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE, DocumentType::LIEN])){
+        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE, DocumentType::LIEN_RELEASE, DocumentType::RFI, DocumentType::SUBMITTAL])){
               return redirect()->back()->withErrors('Document Type '.$type->name.' Can`t be Deleted!');
         }
 

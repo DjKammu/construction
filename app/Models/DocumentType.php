@@ -9,10 +9,10 @@ class DocumentType extends Model
 {
     use HasFactory;
 
-    CONST BID = 'Bid';
+    CONST BID     = 'Bid';
     CONST INVOICE = 'Invoice';
-    CONST LIEN  = 'Lien';
-    CONST RFI  = 'RFI';
+    CONST LIEN_RELEASE  = 'Lien Release';
+    CONST RFI        = 'RFI';
     CONST SUBMITTAL  = 'Submittal';
 
     protected $perPage = 20;

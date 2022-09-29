@@ -30,6 +30,10 @@ class Submittal extends Model
         return $this->belongsTo(Assignee::class,'assign_to_id');
     }
 
+    public function ball_in_court(){
+        return $this->belongsTo(BallInCourt::class,'ball_in_court_id');
+    }
+
     public function status(){
         return $this->belongsTo(Status::class);
     }

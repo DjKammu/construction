@@ -497,7 +497,7 @@ body {margin-top: 0px;margin-left: 0px;}
 <P class="p11 ft10">Notary Public:</P>
 <P class="p18 ft4">{{@$project->notary_name}}</P>
 <P class="p19 "><span class="ft10">My commission expires: </span><SPAN class="ft1">{{
-\Carbon\Carbon::parse(@$project->created_at)->format('Y-m-d') }}</SPAN></P>
+\Carbon\Carbon::parse(@$project->commission_expire_date)->format('Y-m-d') }}</SPAN></P>
 </DIV>
 </DIV>
 </DIV>

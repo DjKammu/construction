@@ -61,6 +61,7 @@
                     <i class="fa fa-sort-desc"></i> </a>
                 </span> </th>
                 <th>Assign To</th>
+                <th>Ball In Court</th>
                 <th>Sent File </th>
                 <th>Recieved File </th>
                 <th>Status</th>
@@ -111,6 +112,7 @@
                <td> {{ @$submittal->date_recieved }}</td>
                <td> {{ @$submittal->assign->name }}</td>
                
+               <td> {{ @$submittal->ball_in_court->name }}</td>
                <td>
                 @if($submittal->sent_file)
                   <a href="{{ asset($submittal->sent_file) }}" target="_blank">

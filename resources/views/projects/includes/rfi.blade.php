@@ -61,6 +61,7 @@
                     <i class="fa fa-sort-desc"></i> </a>
                 </span> </th>
                 <th>Assign To</th>
+                <th>Ball in Court</th>
                 <th>Sent File </th>
                 <th>Recieved File </th>
                 <th>Status</th>
@@ -110,6 +111,7 @@
                <td> {{ @$rfi->date_sent }}</td>
                <td> {{ @$rfi->date_recieved }}</td>
                <td> {{ @$rfi->assign->name }}</td>
+               <td> {{ @$rfi->ball_in_court->name }}</td>
                
                <td>
                 @if($rfi->sent_file)
