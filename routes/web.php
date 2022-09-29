@@ -236,6 +236,9 @@ Route::prefix('projects')->group(function(){
 
      Route::delete('rfi/{id}/file', [App\Http\Controllers\RFIController::class,'destroyFile'])->name('projects.rfi.file.destroy');
 
+    Route::post('rfi/{id}/send-mail', [App\Http\Controllers\RFIController::class,'sendMail'])->
+           name('rfi.send.mail');
+
 
  // Submittal Routes 
     Route::get('{id}/submittal',[App\Http\Controllers\SubmittalController::class,'create'])->name('projects.submittal');
@@ -249,6 +252,10 @@ Route::prefix('projects')->group(function(){
      Route::delete('submittal/{id}', [App\Http\Controllers\SubmittalController::class,'destroy'])->name('projects.submittal.destroy');
 
      Route::delete('submittal/{id}/file', [App\Http\Controllers\SubmittalController::class,'destroyFile'])->name('projects.submittal.file.destroy');
+
+     Route::post('submittal/{id}/send-mail', [App\Http\Controllers\SubmittalController::class,'sendMail'])->
+           name('submittal.send.mail');
+
 
 
 });

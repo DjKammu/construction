@@ -421,23 +421,23 @@ class SubmittalController extends Controller
     }
 
 
-    public function sendMail(Request $request, $id){
+      public function sendMail(Request $request, $id){
 
        set_time_limit(0);
-        $project = Project::find($id); 
-         $slug = \Str::slug($project->name);
+        $submittal = Submittal::find($id); 
+        $slug = \Str::slug($submittal->name);
+        $files = [ 
+                  public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->recieved_file) ,public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->sent_file)
+             ];
+
         $data = [
           'heading' => '',
           'plans' => '',
-          'file' => '',
+          'file' => '' ,
+          'files' => $files ,
           'subject' => $request->subject,
           'content' => $request->message,
         ];
-       
-        $pdffile = $this->downloadPDF($id,true);
-
-        $data['pdffile'] = $pdffile;
-        $data['fileName'] = $slug.'-budget.pdf';
 
         dispatch(
           function() use ($request, $data){

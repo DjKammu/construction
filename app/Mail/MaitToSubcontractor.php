@@ -35,10 +35,11 @@ class MaitToSubcontractor extends Mailable
         $subject = $this->data['subject'];
         $plans =   $this->data['plans'];
         $file  =   $this->data['file'];
+        $files   =    @$this->data['files'];
         $pdffile  =  @$this->data['pdffile'];
         $fileName =  @$this->data['fileName'];
 
-         $setting = \App\Models\Setting::latest()->first();
+        $setting = \App\Models\Setting::latest()->first();
 
         $mail = $this->subject($subject)
             ->replyTo(@$setting->from_email)
@@ -57,7 +58,24 @@ class MaitToSubcontractor extends Mailable
         }
 
         if (isset($pdffile) && $pdffile && isset($fileName) && $fileName) {
-             $mail->attachData($pdffile,$fileName);
+            $mail =  $mail->attachData($pdffile,$fileName);
+        }
+
+        if (isset($files) && count($files) > 0) {
+            foreach ($files as $filePath) {
+                if(empty($filePath)){
+                    continue;
+                }
+                $fileName = pathinfo($filePath,PATHINFO_FILENAME);
+                $extension =  pathinfo($filePath, PATHINFO_EXTENSION);
+                if($extension == 'pdf'){
+                      $mail->attach($filePath,[ 'as' => $fileName.'.pdf',
+                           'mime' => 'application/pdf'
+                       ]);
+                }else{
+                     $mail->attach($filePath);
+                } 
+            }
         }
 
         return $mail;
