@@ -207,7 +207,7 @@ class DocumentController extends Controller
         if($document->proposal_id){
                $proposal = Proposal::find($document->proposal_id);
                $trade_slug = @\Str::slug($proposal->trade->name);
-               $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
+               $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::PROPOSALS."/");
 
                if($document->payment_id){
                      $payment = Payment::find($document->payment_id);
@@ -220,6 +220,11 @@ class DocumentController extends Controller
                  $folderPath = Document::RFIS."/";
                  $folderPath .= "$project_slug/";
           }
+          else if($document->document_type->name == DocumentType::SUBMITTAL ){
+                 $folderPath = Document::SUBMITTALS."/";
+                 $folderPath .= "$project_slug/";
+          }
+
 
         $document->files->filter(function($file) use ($folderPath){
 
@@ -599,7 +604,7 @@ class DocumentController extends Controller
             if($doc->document->proposal_id){
                  $proposal = Proposal::find($doc->document->proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
-                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
+                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::PROPOSALS."/");
 
                  if($doc->document->payment_id){
                      $payment = Payment::find($doc->document->payment_id);
@@ -608,6 +613,17 @@ class DocumentController extends Controller
 
                  $folderPath .= "$project_slug/$trade_slug/";
             }
+
+           else if($doc->document->document_type->name == DocumentType::RFI ){
+                 $folderPath = Document::RFIS."/";
+                 $folderPath .= "$project_slug/";
+          }
+          else if($doc->document->document_type->name == DocumentType::SUBMITTAL ){
+                 $folderPath = Document::SUBMITTALS."/";
+                 $folderPath .= "$project_slug/";
+          }
+
+
 
           $doc->file = url($folderPath.$doc->file);
 

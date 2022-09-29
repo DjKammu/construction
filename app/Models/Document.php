@@ -17,6 +17,7 @@ class Document extends Model
      CONST PROJECT   = 'project';
      CONST RFIS       = 'rfis';
      CONST SUBMITTALS  = 'submittals';
+     CONST LIEN_RELEASES  = 'lien-releases';
 
      protected $fillable = [
      'name' , 'slug' ,'account_number',

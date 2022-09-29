@@ -6,6 +6,7 @@
 /public/invoices/*
 /public/rfis/*
 /public/submittals/*
+/public/lien-releases/*
 /public/storage
 /storage/*.key
 /vendor

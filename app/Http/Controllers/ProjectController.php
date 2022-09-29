@@ -12,6 +12,7 @@ use App\Models\Subcontractor;
 use App\Models\Proposal;
 use App\Models\Category;
 use App\Models\Vendor;
+use App\Models\Payment;
 use App\Models\Status;
 use App\Models\Trade;
 use Carbon\Carbon;
@@ -359,7 +360,11 @@ class ProjectController extends Controller
             if($doc->proposal_id){
                  $proposal = Proposal::find($doc->proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
-                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : Document::PROPOSALS."/";
+                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::PROPOSALS."/");
+                 if($doc->document_type->name == DocumentType::LIEN_RELEASE && $doc->payment_id){
+                         $payment_id = Payment::find($doc->payment_id);
+                         $trade_slug = @\Str::slug($payment_id->trade->name);
+                 }
                  $folderPath .= "$project_slug/$trade_slug/";
             }
 
@@ -434,10 +439,15 @@ class ProjectController extends Controller
             }
 
             $folderPath .= "$project_slug/$trade_slug/";
+
+            $folderPath2 = Document::LIEN_RELEASES."/";
+            
+            $folderPath2 .= "$project_slug/$trade_slug/";
+
         
             $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
-            $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? asset($folderPath.$payment->conditional_lien_release_file) : '' ;
-            $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath.$payment->unconditional_lien_release_file) : '' ;
+            $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? asset($folderPath2.$payment->conditional_lien_release_file) : '' ;
+            $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath2.$payment->unconditional_lien_release_file) : '' ;
 
             $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
 

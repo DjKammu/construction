@@ -168,7 +168,7 @@ class PaymentController extends Controller
 
         $project_slug = \Str::slug($project->name);
 
-        $trade = Trade::find($request->trade_id);
+        $trade = Trade::find(@$data['trade_id']);
 
         $trade_slug = @$trade->slug;
 
@@ -189,11 +189,16 @@ class PaymentController extends Controller
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
+        $folderPath2 = Document::LIEN_RELEASES."/";
+
+        $folderPath2 .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
         $data['file'] = '';
 
-         $payment = Payment::create($data);
+        $payment = Payment::create($data);
        
-
         $document_type = DocumentType::where('name', DocumentType::INVOICE)
                          ->first();
 
@@ -237,7 +242,7 @@ class PaymentController extends Controller
 
         if($request->hasFile('unconditional_lien_release_file')){
               
-              $document_type = DocumentType::where('name', DocumentType::LIEN)
+              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
               $name = @$project->name.' Unconditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
@@ -261,7 +266,7 @@ class PaymentController extends Controller
               $year  = date('Y');
 
              $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
-             $file->storeAs($folderPath, $fileName, 'doc_upload');
+             $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
                                   'name' => $name,
@@ -276,7 +281,7 @@ class PaymentController extends Controller
 
         if($request->hasFile('conditional_lien_release_file')){
               
-              $document_type = DocumentType::where('name', DocumentType::LIEN)
+              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
               $name = @$project->name.' Conditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
@@ -300,7 +305,7 @@ class PaymentController extends Controller
               $year  = date('Y');
 
              $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
-             $file->storeAs($folderPath, $fileName, 'doc_upload');
+             $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
                                   'name' => $name,
@@ -388,10 +393,15 @@ class PaymentController extends Controller
         $folderPath = Document::INVOICES."/";
 
         $folderPath .= "$project_slug/$trade_slug/";
+
+        $folderPath2 = Document::LIEN_RELEASES."/";
+
+        $folderPath2 .= "$project_slug/$trade_slug/";
+
         
         $payment->file = @($payment->file) ? $folderPath.$payment->file : '';
-        $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath.$payment->unconditional_lien_release_file : '';
-        $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath.$payment->conditional_lien_release_file : '';
+        $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath2.$payment->unconditional_lien_release_file : '';
+        $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath2.$payment->conditional_lien_release_file : '';
 
         $payment->date = @($payment->date) ? Carbon::parse($payment->date)->format('m-d-Y') : '' ;
 
@@ -530,6 +540,13 @@ class PaymentController extends Controller
         $folderPath .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+
+        $folderPath2 = Document::LIEN_RELEASES."/";
+
+        $folderPath2 .= $project_slug.'/'.$trade_slug;
+        
+        \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+        
         $document_type = DocumentType::where('name', DocumentType::INVOICE)
                          ->first();
 
@@ -574,7 +591,7 @@ class PaymentController extends Controller
 
          if($request->hasFile('unconditional_lien_release_file')){
               
-              $document_type = DocumentType::where('name', DocumentType::LIEN)
+              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
               $name = @$project->name.' Unconditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
@@ -598,7 +615,7 @@ class PaymentController extends Controller
               $year  = date('Y');
 
              $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
-             $file->storeAs($folderPath, $fileName, 'doc_upload');
+             $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
                                   'name' => $name,
@@ -613,7 +630,7 @@ class PaymentController extends Controller
 
         if($request->hasFile('conditional_lien_release_file')){
               
-              $document_type = DocumentType::where('name', DocumentType::LIEN)
+              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
               $name = @$project->name.' Conditional '.@$document_type->name.' '.@$proposal->subcontractor->name;                
@@ -637,7 +654,7 @@ class PaymentController extends Controller
               $year  = date('Y');
 
              $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
-             $file->storeAs($folderPath, $fileName, 'doc_upload');
+             $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
                                   'name' => $name,
@@ -683,7 +700,12 @@ class PaymentController extends Controller
 
          $folderPath .= "$project_slug/$trade_slug/";
 
+         $folderPath2 = Document::LIEN_RELEASES."/";
+
+         $folderPath2 .= "$project_slug/$trade_slug/";
+
          $path = @public_path().'/'.$folderPath;
+         $path2 = @public_path().'/'.$folderPath2;
 
          $file = @$payment->file;
          $unconditional_lien_release_file = @$payment->unconditional_lien_release_file;
@@ -691,13 +713,16 @@ class PaymentController extends Controller
          
          $aPath = public_path().'/'. Document::INVOICES."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
+         $aPath2 = public_path().'/'. Document::LIEN_RELEASES."/".Document::ARCHIEVED; 
+         \File::makeDirectory($aPath2, $mode = 0777, true, true);
 
         @\File::copy($path.$file, $aPath.'/'.$file);
-        @\File::copy($path.$conditional_lien_release_file, $aPath.'/'.$conditional_lien_release_file);
-        @\File::copy($path.$unconditional_lien_release_file, $aPath.'/'.$unconditional_lien_release_file);
+        @\File::copy($path2.$conditional_lien_release_file, $aPath2.'/'.$conditional_lien_release_file);
+        @\File::copy($path2.$unconditional_lien_release_file, $aPath2.'/'
+          .$unconditional_lien_release_file);
         @unlink($path.$file);
-        @unlink($path.$conditional_lien_release_file);
-        @unlink($path.$unconditional_lien_release_file);
+        @unlink($path2.$conditional_lien_release_file);
+        @unlink($path2.$unconditional_lien_release_file);
 
          $project->documents()
                     ->where(['payment_id' => $id])->delete();
@@ -722,7 +747,12 @@ class PaymentController extends Controller
 
           $publicPath = public_path().'/';
 
-          $aPath = $publicPath.Document::INVOICES."/".Document::ARCHIEVED; 
+          $folder = Document::INVOICES;
+          if (str_contains($path, Document::LIEN_RELEASES)) { 
+             $folder = Document::LIEN_RELEASES;
+          }
+
+          $aPath = $publicPath.$folder."/".Document::ARCHIEVED;
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
