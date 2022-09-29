@@ -32,11 +32,11 @@
                         <h4 class="mt-0 text-left"> {{ @$project->name }} -  Edit Submittal </h4>
                     </div>
                   
-                     <div class="col-6 text-right">
+                     <!-- <div class="col-6 text-right">
                         <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
                           Send Email
                         </button>
-                    </div>
+                    </div> -->
                 </div>
 
                <div class="row">
