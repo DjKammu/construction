@@ -428,6 +428,9 @@ class RFIController extends Controller
                   public_path(Document::RFIS.'/'.\Str::slug(@$rfi->project->name).'/'.$rfi->recieved_file) ,public_path(Document::RFIS.'/'.\Str::slug(@$rfi->project->name).'/'.$rfi->sent_file)
              ];
 
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
         $data = [
           'heading' => '',
           'plans' => '',
@@ -438,8 +441,15 @@ class RFIController extends Controller
         ];
 
         dispatch(
-          function() use ($request, $data){
-           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+          function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
           }
         )->afterResponse();
 

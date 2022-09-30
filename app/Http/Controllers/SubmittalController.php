@@ -430,6 +430,9 @@ class SubmittalController extends Controller
                   public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->recieved_file) ,public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->sent_file)
              ];
 
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
         $data = [
           'heading' => '',
           'plans' => '',
@@ -438,12 +441,20 @@ class SubmittalController extends Controller
           'subject' => $request->subject,
           'content' => $request->message,
         ];
-
+        
         dispatch(
-          function() use ($request, $data){
-           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+          function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
           }
         )->afterResponse();
+
 
       return response()->json(
            [

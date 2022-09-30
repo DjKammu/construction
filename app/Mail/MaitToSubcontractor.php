@@ -30,25 +30,30 @@ class MaitToSubcontractor extends Mailable
      */
     public function build()
     {
-        $heading = $this->data['heading'];
-        $content = $this->data['content'];
-        $subject = $this->data['subject'];
-        $plans =   $this->data['plans'];
-        $file  =   $this->data['file'];
-        $files   =    @$this->data['files'];
+        
+        $heading  =  $this->data['heading'];
+        $content  =  $this->data['content'];
+        $subject  =  $this->data['subject'];
+        $plans    =  $this->data['plans'];
+        $file     =  @$this->data['file'];
+        $files    =  @$this->data['files'];
         $pdffile  =  @$this->data['pdffile'];
         $fileName =  @$this->data['fileName'];
 
-        $setting = \App\Models\Setting::latest()->first();
-
-        $mail = $this->subject($subject)
-            ->replyTo(@$setting->from_email)
+         $mail = $this->subject($subject)
             ->markdown('itb_tracker.mail', [
             'heading' => $heading,
             'content' => $content,
             'plans'   => $plans
           ]);
 
+
+        $setting = \App\Models\Setting::latest()->first();
+
+        if(@$setting->from_email){
+           $email->replyTo(@$setting->from_email);
+        }
+       
         if ($file) {
             $fileName = pathinfo($file,PATHINFO_FILENAME);
             $mail = $mail->attach($file, array(
@@ -77,6 +82,14 @@ class MaitToSubcontractor extends Mailable
                 } 
             }
         }
+        
+         if (request()->hasFile('files')) {
+              $files = request()->file('files');
+              foreach ($files as $file) {
+                  $mail->attachData($file, $file->getClientOriginalName());
+              }
+          }
+
 
         return $mail;
             

@@ -32,11 +32,11 @@
                         <h4 class="mt-0 text-left"> {{ @$project->name }} -  Edit Submittal </h4>
                     </div>
                   
-                     <!-- <div class="col-6 text-right">
+                     <div class="col-6 text-right">
                         <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
                           Send Email
                         </button>
-                    </div> -->
+                    </div>
                 </div>
 
                <div class="row">
@@ -341,7 +341,7 @@
     </div>
 </div>
 
-<div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
@@ -354,6 +354,19 @@
             <label for="recipient-name" class="col-form-label">Recipient:</label>
             <input type="email" class="form-control" id="recipient">
           </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="cc">
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="bcc">
+          </div>
+
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Subject:</label>
             <input type="text" class="form-control" id="subject">
@@ -362,6 +375,11 @@
             <label for="message-text" class="col-form-label">Message:</label>
             <textarea class="form-control" id="message"></textarea>
           </div>
+           <div class="form-group">
+            <label for="message-text" class="col-form-label">Files:</label>
+            <input type="file" id="files" name="files" multiple/>
+          </div>
+          
     
     </div>
     <div class="modal-footer">
@@ -414,12 +432,13 @@ $("input[name='type']").click(function() {
       $("#myModal").modal('show');
    }
 
-   function sendMail(){
+  function sendMail(){
    
     var recipient = $('#recipient').val();
     var subject = $('#subject').val();
     var message = $('#message').val();
-    var file = $('#file').val();
+    var cc = $('#cc').val();
+    var bcc = $('#bcc').val();
 
     const validateEmail = (email) => {
     return String(email)
@@ -428,7 +447,6 @@ $("input[name='type']").click(function() {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
-
 
     if(!recipient){
       alert('Recipient cant be blank')
@@ -451,16 +469,38 @@ $("input[name='type']").click(function() {
 
     let url =  submittalId+'/send-mail'
 
+    var formData = new FormData();
+
+    formData.append('recipient', recipient);
+    formData.append('subject', subject);
+    formData.append('message', message);
+    formData.append('cc', cc);
+    formData.append('bcc', bcc);
+    formData.append('_token', _token);
+
+    var files = $("#files").prop("files");
+
+    for(var i = 0; i < files.length; i++) {
+         formData.append('files[]', files[i]);
+    }
+    
    $.ajax({
         url: url,
         type:"POST",
-        data:{
-          recipient:recipient,
-          subject:subject,
-          message:message,
-          file:file,
-          _token: _token
-        },
+        processData: false, // important
+        contentType: false, // important
+        data: formData,
+
+        // data:{
+        //   recipient:recipient,
+        //   subject:subject,
+        //   message:message,
+        //   cc:cc,
+        //   bcc:bcc,
+        //   file:file,
+        //   files:formData,
+        //   _token: _token
+        // },
         success:function(response){
            alert(response.message); 
            $("#myModal").modal('hide');
@@ -472,6 +512,5 @@ $("input[name='type']").click(function() {
        });
 
    }
-
 </script>
 @endsection
