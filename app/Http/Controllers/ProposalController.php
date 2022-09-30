@@ -57,7 +57,7 @@ class ProposalController extends Controller
                   ->whereDoesntHave('proposals', function($q) use($trade_id,$id){
                     $q->where("trade_id",$trade_id);
                     $q->where("project_id",$id);
-                  })->get();
+                  })->orderBy('name')->get();
 
         return view('projects.includes.proposals-create',compact('project','subcontractors'));
     }  

@@ -34,7 +34,9 @@ class ITBTrackerController extends Controller
 
          $projects = Project::query();
 
-         $projects = $projects->get(); 
+         $projects = $projects
+                     ->orderBy('name')
+                     ->get(); 
 
          $projectId = (request()->filled('p')) ? request()->p : $projects->first()->id;
 

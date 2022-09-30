@@ -64,11 +64,11 @@ class SubmittalController extends Controller
             return redirect()->back();
         }
 
-        $subcontractors = Subcontractor::all();
-        $statuses = Status::all(); 
-        $ballInCourts = BallInCourt::all(); 
-        $assignees = Assignee::all(); 
-        $users = User::whereNotIn('id',[1])->get();
+        $subcontractors = Subcontractor::orderBy('name')->get();
+        $statuses = Status::orderBy('name')->get(); 
+        $ballInCourts = BallInCourt::orderBy('name')->get(); 
+        $assignees = Assignee::orderBy('name')->get(); 
+        $users = User::whereNotIn('id',[1])->orderBy('name')->get();
         // $number = RFI::max('number') + 1;
         return view('projects.includes.submittal-create',compact('id','subcontractors','project','statuses','ballInCourts','assignees','users'));
     }  
@@ -211,11 +211,11 @@ class SubmittalController extends Controller
         $submittal->date_sent = @($submittal->date_sent) ? Carbon::parse($submittal->date_sent)->format('m-d-Y') : '' ;
         $submittal->date_recieved = @($submittal->date_recieved) ? Carbon::parse($submittal->date_recieved)->format('m-d-Y') : '' ;
 
-        $subcontractors = Subcontractor::all();
-        $statuses = Status::all(); 
-        $ballInCourts = BallInCourt::all(); 
-        $assignees = Assignee::all(); 
-        $users = User::whereNotIn('id',[1])->get();
+        $subcontractors = Subcontractor::orderBy('name')->get();
+        $statuses = Status::orderBy('name')->get(); 
+        $ballInCourts = BallInCourt::orderBy('name')->get(); 
+        $assignees = Assignee::orderBy('name')->get(); 
+        $users = User::whereNotIn('id',[1])->orderBy('name')->get();
         $number = null;
 
         session()->flash('url', route('projects.show',

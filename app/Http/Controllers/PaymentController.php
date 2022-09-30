@@ -67,14 +67,14 @@ class PaymentController extends Controller
 
         $proposal = $proposalsQry->first();
 
-        $vendors = Vendor::all();
+        $vendors = Vendor::orderBy('name')->get();
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
         });
 
         //if(!@$project->proposals()->exists()){
-             $allTrades = Trade::all();
+             $allTrades = Trade::orderBy('name')->get();
        //  }
 
         $totalAmount = $this->proposalTotalAmount($proposal);
@@ -405,7 +405,7 @@ class PaymentController extends Controller
 
         $payment->date = @($payment->date) ? Carbon::parse($payment->date)->format('m-d-Y') : '' ;
 
-        $vendors = Vendor::all(); 
+        $vendors = Vendor::orderBy('name')->get(); 
 
         $totalAmount = $this->proposalTotalAmount($payment->proposal);
         $dueAmount = $this->proposalDueTotalAmount($payment->proposal);
@@ -422,7 +422,7 @@ class PaymentController extends Controller
              return $prpsl->trade;
         });
 
-        $allTrades = Trade::all();
+        $allTrades = Trade::orderBy('name')->get();
          
          session()->flash('url', route('projects.show',['project' => $payment->project_id]).'?#payments'); 
 

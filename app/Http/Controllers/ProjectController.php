@@ -75,13 +75,13 @@ class ProjectController extends Controller
             $projects->where('property_type_id', $pr);
          } 
 
-         $propertyTypes = PropertyType::all(); 
-         $projectTypes = ProjectType::all(); 
-         $statuses = Status::all(); 
+         $propertyTypes = PropertyType::orderBy('name')->get(); 
+         $projectTypes = ProjectType::orderBy('name')->get(); 
+         $statuses = Status::orderBy('name')->get(); 
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
-         $projects = $projects->paginate($perPage);
+         $projects = $projects->orderBy('name')->paginate($perPage);
 
          return view('projects.index',compact('projects','projectTypes','propertyTypes','statuses'));
     }
@@ -96,9 +96,9 @@ class ProjectController extends Controller
         if(Gate::denies('add')) {
                return abort('401');
          } 
-        $statuses = Status::all(); 
-        $propertyTypes = PropertyType::all(); 
-        $projectTypes = ProjectType::all(); 
+        $statuses = Status::orderBy('name')->get(); 
+        $propertyTypes = PropertyType::orderBy('name')->get(); 
+        $projectTypes = ProjectType::orderBy('name')->get(); 
 
         return view('projects.create',compact('projectTypes','propertyTypes','statuses'));
     }
@@ -158,16 +158,16 @@ class ProjectController extends Controller
           if(Gate::denies('edit')) {
                return abort('401');
           } 
-         $statuses = Status::all(); 
-         $propertyTypes = PropertyType::all();
-         $projectTypes = ProjectType::all();
-         $projects = Project::all()->except($id);
+         $statuses = Status::orderBy('name')->get(); 
+         $propertyTypes = PropertyType::orderBy('name')->get();
+         $projectTypes = ProjectType::orderBy('name')->get();
+         $projects = Project::orderBy('name')->get()->except($id);
          $project = Project::find($id);
-         $documentTypes = DocumentType::all();
-         $subcontractors = Subcontractor::all();
+         $documentTypes = DocumentType::orderBy('name')->get();
+         $subcontractors = Subcontractor::orderBy('name')->get();
          $vendors = Vendor::all();
          $documents = $project->documents();
-         $trades = $project->trades()->get();
+         $trades = $project->trades()->orderBy('name')->get();
 
          $payments = $project->payments();
          $rfis = $project->rfis();

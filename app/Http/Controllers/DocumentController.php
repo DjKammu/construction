@@ -540,10 +540,10 @@ class DocumentController extends Controller
          }
           
 
-         $propertyTypes = PropertyType::all(); 
-         $projectTypes = ProjectType::all(); 
-         $documentTypes = DocumentType::all(); 
-         $projects = $projects->get();
+         $propertyTypes = PropertyType::orderBy('name')->get(); 
+         $projectTypes = ProjectType::orderBy('name')->get(); 
+         $documentTypes = DocumentType::orderBy('name')->get(); 
+         $projects = $projects->orderBy('name')->get();
          // $tenants = Tenant::all();
 
          $docsIds =    ($docsIds) ? @$docsIds->unique() : []; 

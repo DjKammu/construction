@@ -93,14 +93,14 @@ class ReportController extends Controller
             $vendorIds = $project->payments()->whereNotNull('vendor_id')
                              ->pluck('vendor_id')->unique();
            
-            $project_vendors = Vendor::whereIn('id',$vendorIds)->get();
+            $project_vendors = Vendor::whereIn('id',$vendorIds) ->orderBy('name')->get();
 
         }
 
-         $projects = $projects->get();
+         $projects = $projects->orderBy('name')->get();
 
-         $projectTypes = ProjectType::all(); 
-         $propertyTypes = PropertyType::all(); 
+         $projectTypes = ProjectType::orderBy('name')->get(); 
+         $propertyTypes = PropertyType::orderBy('name')->get(); 
 
          return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments'));
     }
