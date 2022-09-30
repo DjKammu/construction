@@ -83,16 +83,14 @@ class MaitToSubcontractor extends Mailable
             }
         }
         
-         if (request()->hasFile('files')) {
+        if (request()->hasFile('files')) {
               $files = request()->file('files');
               foreach ($files as $file) {
                   $mail->attachData($file, $file->getClientOriginalName());
               }
-          }
-
+        }
 
         return $mail;
             
-
     }
 }
