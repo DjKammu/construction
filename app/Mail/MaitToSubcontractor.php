@@ -51,7 +51,7 @@ class MaitToSubcontractor extends Mailable
         $setting = \App\Models\Setting::latest()->first();
 
         if(@$setting->from_email){
-           $email->replyTo(@$setting->from_email);
+           $mail->replyTo(@$setting->from_email);
         }
        
         if ($file) {
