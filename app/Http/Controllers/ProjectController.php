@@ -128,7 +128,7 @@ class ProjectController extends Controller
         $slug = \Str::slug($request->name);
 
         $data['photo'] = '';    
-        $data['status'] = Project::ACTIVE_STATUS;
+        // $data['status'] = Project::ACTIVE_STATUS;
 
         if($request->hasFile('photo')){
                $photo = $request->file('photo');
@@ -659,4 +659,56 @@ class ProjectController extends Controller
 
         return redirect()->back()->with('message', 'Project Delete Successfully!');
     }
+
+    
+    public function getAttachment(Request $request, $id){
+
+     $project = Project::find($id);
+     $attachment = $project->attachment;
+
+     $fileInfo = pathinfo($attachment);
+     $extension = $fileInfo['extension'];
+
+     if(in_array(\Str::lower($extension),['doc','docx','docm','dot',
+    'dotm','dotx'])){
+         $extension = 'word'; 
+     }
+    else if(in_array(\Str::lower($extension),['csv','dbf','dif','xla',
+        'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+         $extension = 'excel'; 
+    }
+
+    return response()->json(
+           [
+            'status' => 200,
+            'message' => true,
+            'URL'     => url(\Storage::url($attachment)),
+            'extension'  => $extension
+           ]
+        );
+
+    } 
+
+    public function uploadAttachment(Request $request, $id){
+
+        $project = Project::find($id);
+        if($request->hasFile('attachment')){
+               $attachment = $request->file('attachment');
+               $attachmentName = \Str::slug($attachment->getClientOriginalName()).'-'.time() . '.' . $attachment->getClientOriginalExtension();
+               $path = Document::PROJECTS.'/'.Document::ATTACHMENTS;
+               $data['attachment']  = $request->file('attachment')->storeAs($path, $attachmentName,
+                'public');
+               @unlink('storage/'.$project->attachment);
+        }
+
+        $project->update($data);
+
+        return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Attachment Uploaded Successfully!'
+           ]
+        );
+    }
+
 }

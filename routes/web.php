@@ -253,8 +253,14 @@ Route::prefix('projects')->group(function(){
 
      Route::delete('submittal/{id}/file', [App\Http\Controllers\SubmittalController::class,'destroyFile'])->name('projects.submittal.file.destroy');
 
-     Route::post('submittal/{id}/send-mail', [App\Http\Controllers\SubmittalController::class,'sendMail'])->
-           name('submittal.send.mail');
+     Route::post('submittal/{id}/send-mail', [App\Http\Controllers\SubmittalController::class,'sendMail'])->name('submittal.send.mail');
+
+
+   //Attachment Routes
+
+   Route::get('{id}/attachment',[App\Http\Controllers\ProjectController::class,'getAttachment'])->name('projects.attachment');
+
+    Route::post('{id}/attachment',[App\Http\Controllers\ProjectController::class,'uploadAttachment'])->name('projects.attachment.update');         
 
 
 

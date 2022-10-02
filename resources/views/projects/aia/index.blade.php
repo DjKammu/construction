@@ -40,6 +40,10 @@
                     <div class="col-6">
                         <h4 class="mt-0 text-left">{{ @$project->name }} - Project Line</h4>
                     </div>
+
+                    <div class="col-6">
+                        <project_attachment projectid="{{ @$project->id }}"> </project_attachment>
+                    </div>
                 </div>
 
                <div class="row">
