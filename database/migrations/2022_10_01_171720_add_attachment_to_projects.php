@@ -17,7 +17,7 @@ class AddAttachmentToProjects extends Migration
             $table->text('attachment')->nullable(); 
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *

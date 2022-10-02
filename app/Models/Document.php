@@ -28,7 +28,6 @@ class Document extends Model
      'payment_id','rfi_id','submittal_id'
     ];
 
-
     public function document_type(){
 
         return $this->belongsTo(DocumentType::class);
