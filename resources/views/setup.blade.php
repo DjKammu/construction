@@ -51,6 +51,20 @@
                     </div>
                 </div>
 
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <h4 class="mt-0 text-left">FFE Modules</h4>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                   
+                    <div class="col-12">   
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("ffe.vendors.index") }}'"> FFE Vendors
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

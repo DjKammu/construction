@@ -90,6 +90,8 @@ Route::resource('ball_in_courts', App\Http\Controllers\BallInCourtController::cl
 
 Route::resource('statuses', App\Http\Controllers\StatusController::class);
 
+Route::resource('ffe/vendors', App\Http\Controllers\FFEVendorController::class,['names' => 'ffe.vendors']);
+
 
 
 // Document Routes
