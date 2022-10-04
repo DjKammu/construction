@@ -19,6 +19,7 @@ class Document extends Model
      CONST SUBMITTALS  = 'submittals';
      CONST ATTACHMENTS  = 'attachments';
      CONST LIEN_RELEASES  = 'lien-releases';
+    
 
      protected $fillable = [
      'name' , 'slug' ,'account_number',

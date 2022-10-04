@@ -63,7 +63,7 @@
                                         </div>
                                     </div>
                                      
-                                    @if(!in_array($type->name, [App\Models\DocumentType::BID, App\Models\DocumentType::INVOICE])) 
+                                    @if(!in_array($type->name, App\Models\DocumentType::$notEditable)) 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
                                         <button id="change-password-button" type="submit" class="btn btn-danger">Update Document Type

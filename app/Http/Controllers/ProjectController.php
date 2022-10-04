@@ -375,6 +375,9 @@ class ProjectController extends Controller
              else if($doc->document_type->name == DocumentType::SUBMITTAL ){
                  $folderPath = Document::SUBMITTALS."/";
                  $folderPath .= "$project_slug/";
+            } 
+            else if($doc->document_type->name == DocumentType::PROJECT_BUDGET ){
+                 $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
             }
 
             $files = $doc->files();
@@ -692,13 +695,46 @@ class ProjectController extends Controller
     public function uploadAttachment(Request $request, $id){
 
         $project = Project::find($id);
+
+        $document_type = DocumentType::where('name', DocumentType::PROJECT_BUDGET)
+                         ->first();
+
+        $name = @$project->name.' '.@$request->name.' Project Budget';  
+
+        $slug = @\Str::slug($name);                
+
+        $document = $project->documents()
+                   ->firstOrCreate(['project_id' => $project->id,
+                    'document_type_id' => $document_type->id
+                     ],
+                     ['name' => $name, 'slug' => $slug,
+                     'project_id'       => $project->id,
+                     'document_type_id' => $document_type->id
+                     ]
+        );
+
         if($request->hasFile('attachment')){
                $attachment = $request->file('attachment');
-               $attachmentName = \Str::slug($attachment->getClientOriginalName()).'-'.time() . '.' . $attachment->getClientOriginalExtension();
+               $attachmentName = $slug .'.'.$attachment->getClientOriginalExtension();
                $path = Document::PROJECTS.'/'.Document::ATTACHMENTS;
                $data['attachment']  = $request->file('attachment')->storeAs($path, $attachmentName,
                 'public');
+
+             $date  = date('d');
+             $month = date('m');
+             $year  = date('Y');
+
+             $fileName = $attachmentName;
+
+             $fileArr = ['file' => $fileName,
+                      'name' => $name. ' Sent',
+                      'date' => $date,'month' => $month,
+                      'year' => $year
+                      ];
+
                @unlink('storage/'.$project->attachment);
+               $document->files()->delete();
+               $document->files()->create($fileArr);
         }
 
         $project->update($data);

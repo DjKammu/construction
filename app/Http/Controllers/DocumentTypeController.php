@@ -129,11 +129,10 @@ class DocumentTypeController extends Controller
 
         $type = DocumentType::find($id);
 
-        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE, DocumentType::LIEN_RELEASE, DocumentType::RFI, DocumentType::SUBMITTAL])){
+        if(in_array($type->name, DocumentType::$notEditable)){
               return redirect()->back()->withErrors('Document Type '.$type->name.' Can`t be Updated!');
         }
 
-        
          if(!$type){
             return redirect()->back();
          }
@@ -157,7 +156,7 @@ class DocumentTypeController extends Controller
 
          $type = DocumentType::find($id);
 
-        if(in_array($type->name, [DocumentType::BID, DocumentType::INVOICE, DocumentType::LIEN_RELEASE, DocumentType::RFI, DocumentType::SUBMITTAL])){
+        if(in_array($type->name, DocumentType::$notEditable)){
               return redirect()->back()->withErrors('Document Type '.$type->name.' Can`t be Deleted!');
         }
 

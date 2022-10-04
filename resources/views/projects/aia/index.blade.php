@@ -9,8 +9,8 @@
       <!-- Start Main View -->
 
 <div class="col-6 text-left">
-            <button type="button" class="btn btn-danger mt-0" 
-            onclick="return window.location.href='{{ route("projects.show",['project' => @$project->id]) }}'">Back
+  <button type="button" class="btn btn-danger mt-0" 
+    onclick="return window.location.href='{{ route("projects.show",['project' => @$project->id]) }}'">Back
 </button>
 </div>
 </div>

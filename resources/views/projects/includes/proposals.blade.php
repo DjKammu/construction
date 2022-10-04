@@ -1,6 +1,9 @@
  <div class="tab-pane" id="proposals" role="tabpanel" aria-expanded="true">
                            
     <div class="row mb-2">
+        <div class="col-12">
+           <project_attachment projectid="{{ @request()->project }}"> </project_attachment>
+        </div>
         <div class="col-6">
             <h4 class="mt-0 text-left">{{ @$project->name }} - Proposals List </h4>
         </div>
