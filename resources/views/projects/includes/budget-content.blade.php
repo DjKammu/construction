@@ -14,6 +14,8 @@
                 <th>Total </th>
                 <th>Paid</th>
                 <th >Remaining  </th>
+                <th >Budget Diff  </th>
+
                 <th> %Complete </th>
                 <!-- <th> Notes </th> -->
             </tr>
@@ -22,6 +24,7 @@
          @php   
          $materialTotal = 0;
          $tradeTotal = 0;
+         $budgetDiff = 0;
          $labourTotal = 0;
          $subcontractorTotal = 0;
          $grandTotal = 0;
@@ -43,6 +46,7 @@
           $catDueTotal = 0;
           $catVendorsTotal = 0;
           $catTradeTotal = 0;
+          $catBudgetDiff = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          
@@ -127,6 +131,7 @@
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
+                      //$budgetDiff = (float) @$bid->trade_budget - $bidTotal + $budgetDiff;
                       
                       $catSubcontractorTotal = (float) @$bid->subcontractor_price + $catSubcontractorTotal;
                       $catMaterialTotal = (float) @$bid->material + $catMaterialTotal;
@@ -135,6 +140,7 @@
                       $catGrandTotal = (float) @$bidTotal + $catGrandTotal;
                       $catPaidTotal = (float) @$paid + $catPaidTotal;
                       $catDueTotal = (float) @$due + $catDueTotal;
+                      // $catbudgetDiff = (float) @$bid->trade_budget - @$bidTotal +  @$catbudgetDiff;
 
                 @endphp
 
@@ -146,6 +152,7 @@
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
                   <td>${{ \App\Models\Payment::format($paid) }}</td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
+                  <td>${{ \App\Models\Payment::format((float) @$bid->trade_budget - $bidTotal) }} </td> 
                   <td>{{ ($paid && $bidTotal) ?  sprintf('%0.2f', @$paid /@$bidTotal * 100)  : 0 }}
                    % </td> 
                   <!-- <td>{{ trim(@$notes) }}</td>  -->
@@ -157,7 +164,7 @@
                   <td></td>
                   <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
-                  <td colspan="4" style="padding:10px;"></td>
+                  <td colspan="5" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
 
@@ -189,6 +196,7 @@
                   <td>${{  \App\Models\Payment::format(@@$tPay->payment_amount_total)  }}</td>
                   <td>${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}</td>
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
+                  <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td> 100 % </td> 
                   <!-- <td>{{ trim(@$notes) }}</td>  -->
                 </tr>
@@ -200,7 +208,7 @@
                   <td></td>
                   <td></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
-                  <td colspan="4" style="padding:10px;"></td>
+                  <td colspan="5" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
               @endforeach
@@ -221,12 +229,13 @@
                   <td><b>${{ \App\Models\Payment::format($catGrandTotal + $catVendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catPaidTotal + $catVendorsTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catDueTotal) }} </b></td> 
+                  <td><b>${{ \App\Models\Payment::format($catTradeTotal - $catGrandTotal) }} </b></td> 
                   <td><b>{{ ($catGrandTotal && $catPaidTotal) || ($catVendorsTotal) ? sprintf('%0.2f', (@$catPaidTotal + $catVendorsTotal) / (@$catGrandTotal + $catVendorsTotal) * 100) : 0 }} % </b></td>
                   <!-- <td></td> -->
            </tr>
 
            <tr>
-            <td colspan="10" style="padding:10px;"></td>
+            <td colspan="11" style="padding:10px;"></td>
            </tr>
 
         @endforeach
@@ -283,6 +292,7 @@
                <td>Total </td>
                 <td>Total Paid</td>
                 <td>Remaining Payment </td>
+                 <td> Budget Diff  </td>
                 <td> % Complete </td>
                <!-- <td></td> -->
                <!-- <td></td> -->
@@ -299,6 +309,8 @@
                <td><b>${{ \App\Models\Payment::format($grandTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($paidTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($tradeTotal - $grandTotal) }}</b></td>
+
                <td><b>{{ ($paidTotal && $grandTotal)  || ($vendorsTotal) ? sprintf('%0.2f', (@$paidTotal + $vendorsTotal)/ (@$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
                <!-- <td ></td> -->
             

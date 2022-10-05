@@ -668,6 +668,7 @@ class ProjectController extends Controller
 
      $project = Project::find($id);
      $attachment = $project->attachment;
+     $attachment_name = @$project->attachment_name;
 
      $fileInfo = pathinfo($attachment);
      $extension = $fileInfo['extension'];
@@ -685,6 +686,7 @@ class ProjectController extends Controller
            [
             'status' => 200,
             'message' => true,
+            'attachment_name' => $attachment_name,
             'URL'     => url(\Storage::url($attachment)),
             'extension'  => $extension
            ]
@@ -701,13 +703,15 @@ class ProjectController extends Controller
 
         $name = @$project->name.' '.@$request->name.' Project Budget';  
 
-        $slug = @\Str::slug($name);                
+        $slug = @\Str::slug($name);
+
+        $attachment_name = $request->attachment_name;                
 
         $document = $project->documents()
                    ->firstOrCreate(['project_id' => $project->id,
                     'document_type_id' => $document_type->id
                      ],
-                     ['name' => $name, 'slug' => $slug,
+                     ['name' => $attachment_name, 'slug' => $slug,
                      'project_id'       => $project->id,
                      'document_type_id' => $document_type->id
                      ]
@@ -715,10 +719,11 @@ class ProjectController extends Controller
 
         if($request->hasFile('attachment')){
                $attachment = $request->file('attachment');
-               $attachmentName = $slug .'.'.$attachment->getClientOriginalExtension();
+               $attachmentName = @\Str::slug($attachment_name) .'.'.$attachment->getClientOriginalExtension();
                $path = Document::PROJECTS.'/'.Document::ATTACHMENTS;
                $data['attachment']  = $request->file('attachment')->storeAs($path, $attachmentName,
                 'public');
+               $data['attachment_name']  = $attachment_name;
 
              $date  = date('d');
              $month = date('m');
@@ -727,7 +732,7 @@ class ProjectController extends Controller
              $fileName = $attachmentName;
 
              $fileArr = ['file' => $fileName,
-                      'name' => $name. ' Sent',
+                      'name' => $attachment_name,
                       'date' => $date,'month' => $month,
                       'year' => $year
                       ];

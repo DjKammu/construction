@@ -37,11 +37,11 @@
 
             <div class="card-body">
               <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-4">
                         <h4 class="mt-0 text-left">{{ @$project->name }} - Project Line</h4>
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-8">
                         <project_attachment projectid="{{ @$project->id }}"> </project_attachment>
                     </div>
                 </div>

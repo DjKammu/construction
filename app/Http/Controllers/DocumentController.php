@@ -228,10 +228,6 @@ class DocumentController extends Controller
                  $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
           }
 
-
-
-
-
         $document->files->filter(function($file) use ($folderPath){
 
           $file->file = ($folderPath.$file->file);

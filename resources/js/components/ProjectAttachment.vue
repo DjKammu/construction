@@ -8,6 +8,8 @@
       <strong>Error!</strong> {{ errorMsg }}
       </div>
 
+      <input type="text" v-model="attachment_name" 
+      placeholder="Project Budget File Name">
       <input type="file" ref="fileupload" v:model="file" name="attachment" @change="onUpload">
 
        <span v-if="ifFile">
@@ -33,6 +35,7 @@
                 errorMsg : null,
                 successMsg : null,
                 attachment : [],
+                attachment_name : null,
                 extension : null,
                 URL  : null
             };
@@ -45,6 +48,7 @@
 
               var form = new FormData();
               form.append("attachment", this.attachment);
+              form.append("attachment_name", this.attachment_name);
 
               var config = {
                   header: { "Contect-type": "multipart/form-data" },
@@ -54,9 +58,7 @@
                 .then(function (response) {
 
                        let res = response.data
-                      
-                      console.log(res);
-
+                    
                       if(res.error){
                             _vm.error = true
                             _vm.errorMsg = res.message
@@ -80,8 +82,8 @@
 
               await axios.get('/projects/'+_vm.projectid+'/attachment/')
                 .then(function (response) {
-
                        let res = response.data
+                       _vm.attachment_name = res.attachment_name
                        _vm.extension = res.extension
                        _vm.URL = res.URL
                        _vm.ifFile = true
@@ -99,6 +101,10 @@
             },
 
             onUpload(event) {
+              if(!this.attachment_name){
+                alert('Enter Project Budget File name');
+                return;
+              }
               this.attachment  = event.target.files[0];
               this.uploadAttachment();
 

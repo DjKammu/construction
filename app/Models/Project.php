@@ -35,7 +35,8 @@ class Project extends Model
      'architect_city' ,'architect_state','architect_zip','contract_date',
      'project_date' ,'retainage_percentage','original_amount','project_email',
      'notary_name' ,'notary_country','notary_state','commission_expire_date',
-     'status','project_number','contract_phone','property_type_id','attachment'
+     'status','project_number','contract_phone','property_type_id','attachment',
+     'attachment_name'
     ];
 
     
