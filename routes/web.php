@@ -264,6 +264,30 @@ Route::prefix('projects')->group(function(){
 
     Route::post('{id}/attachment',[App\Http\Controllers\ProjectController::class,'uploadAttachment'])->name('projects.attachment.update');         
 
+   
+      //FFE Routes
+      Route::group(['prefix' => '{project}/ffe'], function ($project) { 
+             Route::get('/',[App\Http\Controllers\FFEController::class,'index'])->name('ffe.index');
+
+            Route::get('proposals/{trade}',[App\Http\Controllers\FFEProposalController::class,'create'])->name('projects.ffe.proposals');
+
+            Route::post('proposals/{trade}',[App\Http\Controllers\FFEProposalController::class,'store'])->name('projects.ffe.proposals');
+
+            Route::get('proposals/{id}/edit',[App\Http\Controllers\FFEProposalController::class,'show'])->name('projects.ffe.proposals.edit');
+
+            Route::get('proposals/award/{id}/{status}',[App\Http\Controllers\FFEProposalController::class,'award'])->name('projects.ffe.proposals.award');
+
+            Route::post('proposals/{id}/update',[App\Http\Controllers\FFEProposalController::class,'update'])->name('projects.ffe.proposals.update');
+
+            Route::post('proposals/{id}/upload',[App\Http\Controllers\FFEProposalController::class,'upload'])->name('projects.ffe.proposals.upload');
+
+             Route::delete('proposals/{id}', [App\Http\Controllers\FFEProposalController::class,'destroy'])->name('projects.ffe.proposals.destroy');
+
+             Route::delete('proposals/{id}/file', [App\Http\Controllers\FFEProposalController::class,'destroyFile'])->name('projects.ffe.proposals.file.destroy');
+
+
+      });
+
 
 
 });

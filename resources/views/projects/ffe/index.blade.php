@@ -4,17 +4,10 @@
 
 @section('content')
 
+
 <div class="row">
-       <!-- @include('includes.back') -->
-      <!-- Start Main View -->
-
-<div class="col-6 text-left">
-            <button type="button" class="btn btn-danger mt-0" 
-            onclick="return window.location.href='{{ route("projects.index") }}'">Back
-</button>
-</div>
-
-
+@include('includes.back', 
+['url' => route("projects.show", ['project' => request()->project])])
 
 </div>
 
@@ -44,7 +37,6 @@
               </div>
             @endif
 
-
             <div class="card-body">
                <div class="row">
                         <div class="col-md-12">
@@ -54,28 +46,13 @@
                                     <div class="nav-tabs-wrapper">
                                         <ul id="tabs" class="nav nav-tabs" role="tablist">
 
-                                            <li class="nav-item">
-                                                <a class="nav-link text-dark active"  data-toggle="tab" href="#details" role="tab"
-                                                   aria-expanded="true">Details</a>
-                                            </li>
-
-                                            <li class="nav-item">
-                                                <a class="nav-link text-dark"  data-toggle="tab" href="#documents" role="tab"
-                                                   aria-expanded="false">Documents</a>
-                                            </li>
-
-                                            <li class="nav-item">
-                                                <a class="nav-link text-dark"  data-toggle="tab" href="#trades" role="tab"
-                                                   aria-expanded="false">Trades</a>
-                                            </li> 
-                                             @if($trade)
+                                              @if(@$trade)
                                               <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#proposals" role="tab"
-                                                     aria-expanded="false">Proposals</a>
+                                                  <a class="nav-link text-dark active"  data-toggle="tab" role="tab" aria-expanded="true" href="#proposals" >Proposals</a>
                                               </li>
                                               @endif
 
-                                              @if($allProposals->count() > 0)
+                                              @if(@$allProposals)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bids" role="tab"
                                                      aria-expanded="false">Bids Tabulation</a>
@@ -92,42 +69,18 @@
                                                      aria-expanded="false">Budget</a>
                                               </li>
 
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#rfi" role="tab"
-                                                     aria-expanded="false">RFI</a>
-                                              </li>
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#submittal" role="tab"
-                                                     aria-expanded="false">Submittal</a>
-                                              </li>
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/ffe') }}"  role="tab"
-                                                     aria-expanded="false">FFE </a>
-                                              </li>
-                                               
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
-                                                     aria-expanded="false">AIA Pay App</a>
-                                              </li>
                                         </ul>
                                     </div>
                                </div>
 
                                 <div id="my-tab-content" class="tab-content">
-
-                                    @include('projects.includes.details')
-                                    @include('projects.includes.documents')
-                                    @include('projects.includes.trades')
-                                    @if($trade)
-                                    @include('projects.includes.proposals')
+                                    @if(@$trade)
+                                    @include('projects.ffe.proposals')
                                     @endif
-                                    @if($allProposals->count() > 0)
-                                    @include('projects.includes.bids')
+                                    @if(@$allProposals && @$allProposals->count() > 0)
+
                                     @endif 
-                                    @include('projects.includes.payments')
-                                    @include('projects.includes.budget')
-                                    @include('projects.includes.rfi')
-                                    @include('projects.includes.submittal')
+
                               </div>
 
                             </div>

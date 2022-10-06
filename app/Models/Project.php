@@ -93,5 +93,9 @@ class Project extends Model
         return $this->belongsTo(Status::class,'status');
     }
 
+    public function ffe_proposals(){
+        return $this->hasMany(FFEProposal::class);
+    }
+
     
 }

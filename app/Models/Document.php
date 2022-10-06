@@ -15,10 +15,11 @@ class Document extends Model
      CONST PROPOSALS = 'proposals';
      CONST INVOICES  = 'invoices';
      CONST PROJECT   = 'project';
-     CONST RFIS       = 'rfis';
-     CONST SUBMITTALS  = 'submittals';
-     CONST ATTACHMENTS  = 'attachments';
-     CONST LIEN_RELEASES  = 'lien-releases';
+     CONST RFIS          = 'rfis';
+     CONST SUBMITTALS    = 'submittals';
+     CONST ATTACHMENTS   = 'attachments';
+     CONST LIEN_RELEASES = 'lien-releases';
+     CONST FFE_PROPOSALS = 'ffe-proposals';
     
 
      protected $fillable = [
@@ -26,7 +27,8 @@ class Document extends Model
      'file','project_id',
      'document_type_id','vendor_id',
      'subcontractor_id', 'proposal_id',
-     'payment_id','rfi_id','submittal_id'
+     'payment_id','rfi_id','submittal_id',
+     'ffe_proposal_id'
     ];
 
     public function document_type(){
