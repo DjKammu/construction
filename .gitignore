@@ -7,6 +7,7 @@
 /public/rfis/*
 /public/submittals/*
 /public/lien-releases/*
+/public/ffe-proposals/*
 /public/storage
 /storage/*.key
 /vendor
