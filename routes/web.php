@@ -290,6 +290,16 @@ Route::prefix('projects')->group(function(){
              Route::delete('proposals/{id}/file', [App\Http\Controllers\FFEProposalController::class,'destroyFile'])->name('projects.ffe.proposals.file.destroy');
 
 
+             Route::get('trades/add',[App\Http\Controllers\FFETradeController::class,'createProjectTrade'])->name('projects.ffe.trades');
+
+            Route::post('trades/store',[App\Http\Controllers\FFETradeController::class,'storeProjectTrade'])->name('projects.ffe.trades.store');
+
+            Route::post('trades/multiple',[App\Http\Controllers\FFETradeController::class,'storeMultipleProjectTrade'])->name('projects.ffe.trades.multiple');
+
+             Route::delete('trades/{id}', [App\Http\Controllers\FFETradeController::class,'destroyProjectTrade'])->name('projects.ffe.trades.destroy');
+
+
+
       });
 
 

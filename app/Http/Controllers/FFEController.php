@@ -51,7 +51,7 @@ class FFEController extends Controller
          $subcontractors = Subcontractor::orderBy('name')->get();
          $vendors = Vendor::all();
          $documents = $project->documents();
-         $trades = $project->trades()->orderBy('name')->get();
+         $trades = $project->ffe_trades()->orderBy('name')->get();
 
          $payments = $project->payments();
          $rfis = $project->rfis();

@@ -97,5 +97,9 @@ class Project extends Model
         return $this->hasMany(FFEProposal::class);
     }
 
+    public function ffe_trades(){
+        return $this->belongsToMany(FFETrade::class)->withTimestamps();
+    }
+
     
 }

@@ -1,4 +1,4 @@
- <div class="tab-pane active" id="proposals" role="tabpanel" aria-expanded="true">
+ <div class="tab-pane" id="proposals" role="tabpanel" aria-expanded="true">
                            
     <div class="row mb-2">
         

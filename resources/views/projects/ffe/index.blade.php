@@ -45,10 +45,12 @@
                               <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
                                         <ul id="tabs" class="nav nav-tabs" role="tablist">
-
+                                             <li class="nav-item">
+                                                  <a class="nav-link text-dark active"  data-toggle="tab" role="tab" aria-expanded="true" href="#trades" >Trades</a>
+                                              </li>
                                               @if(@$trade)
                                               <li class="nav-item">
-                                                  <a class="nav-link text-dark active"  data-toggle="tab" role="tab" aria-expanded="true" href="#proposals" >Proposals</a>
+                                                  <a class="nav-link text-dark"  data-toggle="tab" role="tab" aria-expanded="true" href="#proposals" >Proposals</a>
                                               </li>
                                               @endif
 
@@ -74,6 +76,7 @@
                                </div>
 
                                 <div id="my-tab-content" class="tab-content">
+                                    @include('projects.ffe.trades')
                                     @if(@$trade)
                                     @include('projects.ffe.proposals')
                                     @endif

@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\FFECategory;
-use App\Models\Project;
-use App\Models\Proposal;
+use App\Models\FFEProposal;
 use App\Models\FFETrade;
+use App\Models\Project;
 use Gate;
 
 
@@ -201,11 +201,11 @@ class FFETradeController extends Controller
          } 
         $project = Project::find($id);
 
-        $trades =  Trade::whereDoesntHave("projects", function($q) use($id){
+        $trades =  FFETrade::whereDoesntHave("projects", function($q) use($id){
             $q->where("project_id",$id);
           })->get();
 
-        return view('projects.includes.trades-create',compact('trades','project'));
+        return view('projects.ffe.trades-create',compact('trades','project'));
     }
 
     /**
@@ -223,9 +223,10 @@ class FFETradeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'trade_id' => 'required|exists:trades,id'
+              'trade_id' => 'required|exists:f_f_e_trades,id'
         ]);
             
+
         $project = Project::find($id);
 
         
@@ -233,9 +234,9 @@ class FFETradeController extends Controller
             return redirect()->back();
         }          
         
-        $project->trades()->attach($request->trade_id); 
+        $project->ffe_trades()->attach($request->trade_id); 
 
-        return redirect(route('projects.show',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
+        return redirect(route('ffe.index',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
     }
 
     /**
@@ -264,11 +265,11 @@ class FFETradeController extends Controller
 
         $selectedProject = Project::find($data['project_id']);
 
-        $selectedTrades = @$selectedProject->trades()->pluck('trade_id');
+        $selectedTrades = @$selectedProject->ffe_trades()->pluck('f_f_e_trade_id');
    
-        @$project->trades()->sync($selectedTrades,false); 
+        @$project->ffe_trades()->sync($selectedTrades,false); 
 
-        return redirect(route('projects.show',['project' => $id]).'#trades')->with('message', 'Trades Assigned Successfully!');
+        return redirect(route('ffe.index',['project' => $id]).'#trades')->with('message', 'Trades Assigned Successfully!');
     }
 
 
@@ -278,25 +279,27 @@ class FFETradeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroyProjectTrade($project_id, $id)
+    public function destroyProjectTrade(Request $request, $project_id, $id)
     {
          if(Gate::denies('delete')) {
                return abort('401');
           } 
 
-         $project = Project::find($project_id);
+      
+        $project = Project::find($project_id);
 
-         $trade = $project->trades()
-                  ->where('trade_id',$id)
-                  ->firstOrFail()->pivot;     
+
+         $trade = @$project->ffe_trades()
+                  ->where('f_f_e_trade_id',$id)
+                    ->firstOrFail()->pivot;   
 
          @$trade->delete();
          
-         Proposal::where([
+         FFEProposal::where([
           ['project_id', $project_id],
           ['trade_id' , $id]
          ])->delete();    
 
-        return redirect(route('projects.show',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
+        return redirect(route('ffe.index',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
     }
 }
