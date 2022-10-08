@@ -92,6 +92,10 @@ Route::resource('statuses', App\Http\Controllers\StatusController::class);
 
 Route::resource('ffe/vendors', App\Http\Controllers\FFEVendorController::class,['names' => 'ffe.vendors']);
 
+Route::resource('ffe/trades', App\Http\Controllers\FFETradeController::class,['names' => 'ffe.trades']);
+
+Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::class,['names' => 'ffe.categories']);
+
 
 
 // Document Routes

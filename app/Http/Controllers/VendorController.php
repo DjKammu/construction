@@ -50,6 +50,14 @@ class VendorController extends Controller
             ->orWhere('notes', 'LIKE', "%{$searchTerm}%");
          }  
 
+         if(request()->filled('t')){
+            $t = request()->t;
+            $vendors->whereHas('trades', function($q) use ($t){
+                $q->where('slug', $t);
+            });
+         } 
+         
+
          $perPage = request()->filled('per_page') ? request()->per_page : (new Vendor())->perPage;
 
          $vendors = $vendors->paginate($perPage);

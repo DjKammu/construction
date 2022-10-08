@@ -14,6 +14,7 @@ class CreateFFEChangeOrdersTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('f_f_e_change_orders');
         Schema::create('f_f_e_change_orders', function (Blueprint $table) {
             $table->id();
             $table->string('type')->default(FFEChangeOrder::ADD);

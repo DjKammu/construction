@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\FFEVendor;
+use App\Models\FFETrade;
 use Gate;
 
 
@@ -49,7 +50,9 @@ class FFEVendorController extends Controller
 
          $vendors = $vendors->paginate($perPage);
 
-         return view('ffe_vendors.index',compact('vendors'));
+        $trades = FFETrade::all();
+
+         return view('ffe_vendors.index',compact('vendors','trades'));
     }
 
     /**
@@ -62,7 +65,8 @@ class FFEVendorController extends Controller
         if(Gate::denies('add')) {
                return abort('401');
          } 
-        return view('ffe_vendors.create');
+        $trades = FFETrade::all();
+        return view('ffe_vendors.create','trades');
     }
 
     /**
@@ -96,6 +100,11 @@ class FFEVendorController extends Controller
 
         $vendors = FFEVendor::create($data);
 
+         if($request->filled('trades')){            
+           $vendors->trades()->sync($request->trades);
+        } 
+
+
         return redirect('ffe/vendors')->with('message', 'FFE Vendor Created Successfully!');
     }
 
@@ -112,8 +121,8 @@ class FFEVendorController extends Controller
           } 
 
          $vendor = FFEVendor::find($id);
-        
-         return view('ffe_vendors.edit',compact('vendor'));
+          $trades = FFETrade::all();
+         return view('ffe_vendors.edit',compact('vendor','trades'));
     }
 
     /**
@@ -167,6 +176,8 @@ class FFEVendorController extends Controller
         }
 
         $vendor->update($data);
+
+        $vendor->trades()->sync($request->trades); 
         
  
         return redirect('ffe/vendors')->with('message','FFE Vendor Updated Successfully!');

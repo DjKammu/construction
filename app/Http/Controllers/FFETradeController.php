@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Models\FFECategory;
 use App\Models\Project;
 use App\Models\Proposal;
-use App\Models\Trade;
+use App\Models\FFETrade;
 use Gate;
 
 
-class TradeController extends Controller
+class FFETradeController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -33,11 +33,11 @@ class TradeController extends Controller
                return abort('401');
          } 
 
-         $trades = Trade::orderBy('account_number');
+         $trades = FFETrade::orderBy('account_number');
 
-         $trades = $trades->paginate((new Trade())->perPage); 
+         $trades = $trades->paginate((new FFETrade())->perPage); 
          
-         return view('trades.index',compact('trades'));
+         return view('ffe_trades.index',compact('trades'));
     }
 
     /**
@@ -51,9 +51,9 @@ class TradeController extends Controller
                return abort('401');
          } 
 
-        $categories =  Category::all();
+        $categories =  FFECategory::all();
 
-        return view('trades.create',compact('categories'));
+        return view('ffe_trades.create',compact('categories'));
     }  
 
 
@@ -73,9 +73,9 @@ class TradeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:trades',
-              'account_number' => 'required|unique:trades',
-              'category_id'    => 'required|exists:categories,id'
+              'name' => 'required|unique:f_f_e_trades',
+              'account_number' => 'required|unique:f_f_e_trades',
+              'category_id'    => 'required|exists:f_f_e_categories,id'
         ]);
 
         $data['slug'] = \Str::slug($request->name);
@@ -84,13 +84,13 @@ class TradeController extends Controller
         if($request->hasFile('scope')){
            $scope = $request->file('scope');
            $scopeName = $data['slug'].'-'.time() . '.' . $scope->getClientOriginalExtension();
-           $data['scope']  = $request->file('scope')->storeAs(Trade::TRADES, 
+           $data['scope']  = $request->file('scope')->storeAs(FFETrade::FEE_TRADES, 
             $scopeName, 'public');
         }
             
-        Trade::create($data);
+        FFETrade::create($data);
 
-        return redirect('trades')->with('message', 'Trade Created Successfully!');
+        return redirect('ffe/trades')->with('message', 'FFE Trade Created Successfully!');
     }
 
     /**
@@ -105,10 +105,10 @@ class TradeController extends Controller
                return abort('401');
           } 
 
-         $trade = Trade::find($id);
-         $categories =  Category::all();
+         $trade = FFETrade::find($id);
+         $categories =  FFECategory::all();
          
-         return view('trades.edit',compact('trade','categories'));
+         return view('ffe_trades.edit',compact('trade','categories'));
     }
 
     /**
@@ -138,19 +138,19 @@ class TradeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:trades,name,'.$id,
-              'account_number' => 'required|unique:trades,account_number,'.$id,
-              'category_id'    => 'required|exists:categories,id'
+              'name' => 'required|unique:f_f_e_trades,name,'.$id,
+              'account_number' => 'required|unique:f_f_e_trades,account_number,'.$id,
+              'category_id'    => 'required|exists:f_f_e_categories,id'
         ]);
 
         $data['slug'] = \Str::slug($request->name);
 
-        $trade = Trade::find($id);
+        $trade = FFETrade::find($id);
 
         if($request->hasFile('scope')){
            $scope = $request->file('scope');
            $scopeName = $data['slug'].'-'.time() . '.' . $scope->getClientOriginalExtension();
-           $data['scope']  = $request->file('scope')->storeAs(Trade::TRADES, 
+           $data['scope']  = $request->file('scope')->storeAs(FFETrade::FEE_TRADES, 
             $scopeName, 'public');
 
             @unlink('storage/'.$trade->scope);
@@ -164,7 +164,7 @@ class TradeController extends Controller
           
          $trade->update($data);
 
-        return redirect('trades')->with('message', 'Trade Updated Successfully!');
+        return redirect('ffe/trades')->with('message', 'FFE Trade Updated Successfully!');
     }
 
     /**
@@ -178,13 +178,13 @@ class TradeController extends Controller
          if(Gate::denies('delete')) {
                return abort('401');
           } 
-         $trade = Trade::find($id);
+         $trade = FFETrade::find($id);
 
          @unlink('storage/'.$trade->scope);
 
          $trade->delete();
 
-        return redirect()->back()->with('message', 'Trade Delete Successfully!');
+        return redirect()->back()->with('message', 'FFE Trade Delete Successfully!');
     }
 
 

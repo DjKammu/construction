@@ -21,4 +21,16 @@ class FFEVendor extends Model
     ];
 
 
+    public function trades(){
+    	return $this->belongsToMany(FFETrade::class)->withTimestamps();
+    } 
+
+    // public function proposals(){
+    //     return $this->hasMany(Proposal::class);
+    // }
+
+    // public function ffe_proposals(){
+    //     return $this->hasMany(FFEProposal::class);
+    // }
+
 }

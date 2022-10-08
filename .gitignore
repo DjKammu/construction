@@ -8,6 +8,7 @@
 /public/submittals/*
 /public/lien-releases/*
 /public/ffe-proposals/*
+/public/ffe-trades/*
 /public/storage
 /storage/*.key
 /vendor

@@ -35,8 +35,13 @@
                 </div>
 
                 <div class="row mb-2">
-                 
-                    <div class="col-6">
+                     <div class="col-6">
+                      <select style="height: 26px;" onchange="return window.location.href = '?t='+this.value"> 
+                      <option>Select FFE Trade</option>
+                      @foreach($trades as $trade)
+                         <option value="{{ $trade->slug }}" {{ (@request()->t == $trade->slug) ? 'selected' : ''}}> {{ $trade->name }}</option>
+                      @endforeach
+                      </select>
                       <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >
                       <button id="search">Search</button>
                     </div>

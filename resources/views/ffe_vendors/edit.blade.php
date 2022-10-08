@@ -89,6 +89,22 @@
                                                 <input  name="contact_name"  value="{{ $vendor->contact_name }}" type="text" class="form-control" placeholder="Contact Name" >
                                             </div>
                                         </div>
+
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Trades 
+                                                </label>
+                                                <select class="form-control" id="trades" name="trades[]" multiple=""> 
+                                                  @foreach($trades as $trade)
+                                                   <option value="{{ $trade->id }}" 
+
+                                                    {{ (in_array($trade->id , @$vendor->trades->pluck('id')->toArray())) ? 'selected' : ''}}>{{ $trade->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
                                        
 
                                         <div class="col-lg-6 col-md-6">

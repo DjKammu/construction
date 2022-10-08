@@ -14,9 +14,9 @@ class CreateFFEProposalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('f_f_e_proposals', function (Blueprint $table) {
-          
-      $table->id();
+        
+     Schema::create('f_f_e_proposals', function (Blueprint $table) {
+            $table->id();
             $table->bigInteger('labour_cost')->nullable();
             $table->bigInteger('material')->nullable();
             $table->bigInteger('subcontractor_price')->nullable();      

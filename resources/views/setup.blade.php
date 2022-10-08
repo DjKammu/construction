@@ -60,6 +60,10 @@
                 <div class="row mb-2">
                    
                     <div class="col-12">   
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("ffe.categories.index") }}'"> FFE Categories
+                        </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("ffe.trades.index") }}'"> FFE Trades
+                        </button>
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("ffe.vendors.index") }}'"> FFE Vendors
                         </button>
                     </div>
