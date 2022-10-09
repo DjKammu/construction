@@ -423,12 +423,20 @@ class SubmittalController extends Controller
 
       public function sendMail(Request $request, $id){
 
-       set_time_limit(0);
+        set_time_limit(0);
         $submittal = Submittal::find($id); 
         $slug = \Str::slug($submittal->name);
-        $files = [ 
-                  public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->recieved_file) ,public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->sent_file)
-             ];
+   
+        $files = [];
+
+        if($submittal->recieved_file){
+           $files[] =   public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->recieved_file);
+        }
+
+        if($submittal->sent_file){
+          $files[] =  public_path(Document::SUBMITTALS.'/'.\Str::slug(@$submittal->project->name).'/'.$submittal->sent_file);
+        } 
+              
 
         $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
         $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];

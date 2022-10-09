@@ -424,9 +424,15 @@ class RFIController extends Controller
        set_time_limit(0);
         $rfi = RFI::find($id); 
         $slug = \Str::slug($rfi->name);
-        $files = [ 
-                  public_path(Document::RFIS.'/'.\Str::slug(@$rfi->project->name).'/'.$rfi->recieved_file) ,public_path(Document::RFIS.'/'.\Str::slug(@$rfi->project->name).'/'.$rfi->sent_file)
-             ];
+        $files = [];
+
+        if($rfi->recieved_file){
+           $files[] =   public_path(Document::RFIS.'/'.\Str::slug(@$rfi->project->name).'/'.$rfi->recieved_file);
+        }
+
+        if($rfi->sent_file){
+          $files[] =  public_path(Document::RFIS.'/'.\Str::slug(@$rfi->project->name).'/'.$rfi->sent_file);
+        } 
 
         $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
         $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
