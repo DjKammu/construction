@@ -45,7 +45,9 @@ class FFEController extends Controller
          $statuses = Status::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get();
          $projectTypes = ProjectType::orderBy('name')->get();
-         $projects = Project::orderBy('name')->get()->except($id);
+         $projects = Project::has('ffe_trades')->orderBy('name')
+                     ->get()->except($id);
+                     
          $project = Project::find($id);
          $documentTypes = DocumentType::orderBy('name')->get();
          $subcontractors = Subcontractor::orderBy('name')->get();
