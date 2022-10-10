@@ -6,10 +6,10 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Project;
-use App\Models\Trade;
+use App\Models\FFETrade;
 use App\Models\Document;
 use App\Models\FFEProposal;
-use App\Models\Subcontractor;
+use App\Models\FFEVendor;
 use App\Models\DocumentType;
 use Gate;
 
@@ -46,20 +46,20 @@ class FFEProposalController extends Controller
                return abort('401');
          }
 
-        $trade = Trade::find($trade_id);  
+        $trade = FFETrade::find($trade_id);  
         $project  = Project::find($id);  
-         
+
         if(!$trade || !$project){
             return redirect()->back();
         }
 
-        $subcontractors = @$trade->subcontractors()
+        $ffe_vendors = @$trade->ffe_vendors()
                   ->whereDoesntHave('ffe_proposals', function($q) use($trade_id,$id){
-                    $q->where("trade_id",$trade_id);
+                    $q->where("f_f_e_trade_id",$trade_id);
                     $q->where("project_id",$id);
                   })->orderBy('name')->get();
 
-        return view('projects.ffe.proposals-create',compact('project','subcontractors'));
+        return view('projects.ffe.proposals-create',compact('project','ffe_vendors'));
     }  
 
 
@@ -76,7 +76,7 @@ class FFEProposalController extends Controller
                return abort('401');
         } 
         
-        $trade = Trade::find($trade_id);  
+        $trade = FFETrade::find($trade_id);  
         $project  = Project::find($id);  
          
         if(!$trade || !$project){
@@ -85,7 +85,7 @@ class FFEProposalController extends Controller
 
         $data = $request->except('_token');
 
-        $proposal = FFEProposal::where('subcontractor_id',$request->subcontractor_id)
+        $proposal = FFEProposal::where('f_f_e_vendor_id',$request->f_f_e_vendor_id)
               ->where(
                 function($query) use ($id,$trade_id){
                     (new FFEProposal)->scopeHaveProposal($query,$id,$trade_id);
@@ -97,8 +97,8 @@ class FFEProposalController extends Controller
        }
 
         $request->validate([
-              'subcontractor_id' => ['required',
-              'exists:subcontractors,id'],
+              'f_f_e_vendor_id' => ['required',
+              'exists:f_f_e_vendors,id'],
               // 'labour_cost' => 'required',
               // 'material' => 'required',
               // 'subcontractor_price' => 'required'
@@ -110,19 +110,19 @@ class FFEProposalController extends Controller
         $data['subcontractor_price'] = $data['subcontractor_price'] ?? 0;
 
         $data['project_id'] = $id;
-        $data['trade_id'] = $trade_id;
+        $data['f_f_e_trade_id'] = $trade_id;
  
         $project = Project::find($id);
 
         $project_slug = \Str::slug($project->name);
 
-        $trade = Trade::find($trade_id);
+        $trade = FFETrade::find($trade_id);
 
         $trade_slug = @$trade->slug;
 
-        $subcontractor = Subcontractor::find($request->subcontractor_id);
+        $ffe_vendor = FFEVendor::find($request->f_f_e_vendor_id);
 
-        $subcontractor_slug = $subcontractor->slug;
+        $ffe_vendor_slug = $ffe_vendor->slug;
 
         $public_path = public_path().'/';
 
@@ -139,15 +139,14 @@ class FFEProposalController extends Controller
         $document_type = DocumentType::where('name', DocumentType::BID)
                          ->first();
 
-        $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+        $name = @$project->name.' '.@$document_type->name.' '.@$proposal->vendor->name;                
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
                     ->firstOrCreate(['ffe_proposal_id' => $proposal->id],
                        ['name' => $name, 'slug' => $slug,
                        'ffe_proposal_id'      => $proposal->id,
-                       'document_type_id' => $document_type->id,
-                       'subcontractor_id' => @$proposal->subcontractor->id
+                       'document_type_id' => $document_type->id
                        ]
                    );
 
@@ -161,7 +160,7 @@ class FFEProposalController extends Controller
 
              foreach ($files as $key => $file) {
 
-                   $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+                    $fileName = $ffe_vendor_slug.'-'.time().$key.'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
                      $filesArr[] = $fileName; 
 
@@ -194,7 +193,7 @@ class FFEProposalController extends Controller
         } 
 
         $proposal = FFEProposal::find($id);  
-        $subcontractor = @$proposal->subcontractor;
+        $ffe_vendor = @$proposal->vendor;
 
         $filesCollection = ($proposal->files) ? @explode(',',$proposal->files) : [];
 
@@ -221,7 +220,7 @@ class FFEProposalController extends Controller
          
          session()->flash('url', route('ffe.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals'); 
 
-        return view('projects.ffe.proposals-edit',compact('subcontractor','proposal'));
+        return view('projects.ffe.proposals-edit',compact('ffe_vendor','proposal'));
     }
 
     /**
@@ -269,7 +268,7 @@ class FFEProposalController extends Controller
 
         $trade_slug = @$proposal->trade->slug;
 
-        $subcontractor_slug = @$proposal->subcontractor->slug;
+        $ffe_vendor_slug = @$proposal->vendor->slug;
 
         $public_path = public_path().'/';
 
@@ -288,8 +287,7 @@ class FFEProposalController extends Controller
                     ->firstOrCreate(['ffe_proposal_id' => $id],
                        ['name' => $name, 'slug' => $slug,
                        'ffe_proposal_id'      => $id,
-                       'document_type_id' => $document_type->id,
-                       'subcontractor_id' => @$proposal->subcontractor->id
+                       'document_type_id' => $document_type->id
                        ]
                    );
 
@@ -304,7 +302,7 @@ class FFEProposalController extends Controller
 
              foreach ($files as $key => $file) {
 
-                   $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+                   $fileName = $ffe_vendor_slug.'-'.time().$key.'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
                      $filesArr[] = $fileName; 
 
@@ -453,7 +451,7 @@ class FFEProposalController extends Controller
 
         $trade_slug = @\Str::slug($proposal->trade->name);
 
-        $subcontractor_slug = @\Str::slug($proposal->subcontractor->name);
+        $ffe_vendor_slug = @\Str::slug($proposal->vendor->name);
 
         $public_path = public_path().'/';
 
@@ -486,7 +484,7 @@ class FFEProposalController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $ffe_vendor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $filesArr[] = $fileName; 
@@ -508,7 +506,7 @@ class FFEProposalController extends Controller
     
 
 
-     public function destroyFile($id)
+     public function destroyFile($project, $id)
     {
          if(Gate::denies('delete')) {
                return abort('401');
@@ -516,7 +514,7 @@ class FFEProposalController extends Controller
 
           $path = request()->path;
 
-          $proposal = Proposal::find($id);
+          $proposal = FFEProposal::find($id);
 
           $file = @end(explode('/', $path));
 
@@ -538,7 +536,7 @@ class FFEProposalController extends Controller
           $files = implode(',', $files); 
 
           $documents = @$proposal->project->documents()
-                       ->where('proposal_id',$id)->first();
+                       ->where('ffe_proposal_id',$id)->first();
           $docFiles = @$documents->files()->whereFile($file)->delete();             
 
           $proposal->update(['files' => $files]);

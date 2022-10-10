@@ -36,8 +36,8 @@
       <div class="card card-user card-table-item" style="width: 100%; height: 100%;">
          <div class="card-header text-center">
             <div class="author mt-1">
-               <img class="avatar border-success" src="{{ ($proposal->subcontractor->image) ? url(\Storage::url($proposal->subcontractor->image)) : asset('img/image_placeholder.png')  }}">             
-               <h5 class="card-title">{{ @$proposal->subcontractor->name}}</h5>
+               <img class="avatar border-success" src="{{ (@$proposal->vendor->photo) ? url(\Storage::url(@$proposal->vendor->photo)) : asset('img/image_placeholder.png')  }}">             
+               <h5 class="card-title">{{ @$proposal->vendor->name}}</h5>
             </div>
          </div>
          <div class="card-body">
@@ -120,7 +120,7 @@
             <div class="btn-group-sm" role="group" aria-label="Basic example">
 
               @php  
-                 $awarded = @$project->ffe_proposals()->whereTradeId($proposal->trade_id)
+                 $awarded = @$project->ffe_proposals()->whereFFETradeId($proposal->f_f_e_trade_id)
                             ->IsAwarded()->exists();
               @endphp
             <button onclick="return window.location.href='{{ route("projects.ffe.proposals.award",

@@ -45,6 +45,8 @@ class FFEController extends Controller
          $statuses = Status::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get();
          $projectTypes = ProjectType::orderBy('name')->get();
+
+
          $projects = Project::has('ffe_trades')->orderBy('name')
                      ->get()->except($id);
                      
@@ -194,9 +196,9 @@ class FFEController extends Controller
                 $trade = request()->trade;  
          } 
         
-         $awarded = @$project->proposals()->IsAwarded()->exists();
+         $awarded = @$project->ffe_proposals()->IsAwarded()->exists();
 
-         $proposalQuery = @$project->proposals();
+         $proposalQuery = @$project->ffe_proposals();
 
          $awardedProposals = $proposalQuery->IsAwarded()->get();
 
@@ -204,7 +206,7 @@ class FFEController extends Controller
                  return $prpsl->trade;
          })->unique();
 
-         if(!@$project->proposals()->exists()){
+         if(!@$project->ffe_proposals()->exists()){
              $paymentTrades = Trade::all();
          }
 
@@ -219,8 +221,9 @@ class FFEController extends Controller
          }
     
          $allProposals = @$project->proposals()->get();
+
          $proposals = @$project->ffe_proposals()->trade($trade)->get();
-              
+      
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
          $documents = $documents->with('document_type')
@@ -387,9 +390,9 @@ class FFEController extends Controller
          $pTrades = Trade::whereIn('id',$trade_ids)->get();   
 
          $prTrades = $trades;
-
+         
          if($pTrades){
-            $trades = $trades->merge($pTrades);
+            //$trades = $trades->merge($pTrades);
          }
 
          if($paymentCategories->count() == 0){   

@@ -43,13 +43,12 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Subcontractors
+                                                <label class="text-dark" for="password">FFE Vendor
                                                 </label>
                                                 <select class="form-control"> 
                                                   <option>
-                                                      {{ @$subcontractor->name }}
+                                                      {{ @$ffe_vendor->name }}
                                                   </option>
-                                                 
                                                 </select>
                                             </div>
                                         </div>
@@ -206,7 +205,7 @@
                                             <span class="cross"> 
                                              <form 
                                                 method="post" 
-                                                action="{{route('projects.proposals.file.destroy', $proposal->id)}}?path={{$file}}"> 
+                                                action="{{route('projects.ffe.proposals.file.destroy', ['project'=> request()->project,'id' => request()->id])}}?path={{$file}}"> 
                                                  @csrf
                                                 {{ method_field('DELETE') }}
 

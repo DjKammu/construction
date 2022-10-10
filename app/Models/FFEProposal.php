@@ -17,9 +17,9 @@ class FFEProposal extends Model
     protected $perPage = 20;
 
     protected $fillable = [
-     'subcontractor_id', 'labour_cost',
+     'f_f_e_vendor_id', 'labour_cost',
      'material','subcontractor_price',
-     'notes','project_id', 'trade_id', 
+     'notes','project_id', 'f_f_e_trade_id', 
      'files','awarded','trade_budget'
     ];
 
@@ -28,14 +28,14 @@ class FFEProposal extends Model
     {
         return $query->where([
          ['project_id',$project_id],
-         ['trade_id', $trade_id]
+         ['f_f_e_trade_id', $trade_id]
         ]);
     }
     
     public function scopeTrade($query, $trade_id)
     {
         return $query->where(
-         ['trade_id' => $trade_id]);
+         ['f_f_e_trade_id' => $trade_id]);
     }
     
 
@@ -44,8 +44,8 @@ class FFEProposal extends Model
         return $query->where(['awarded' => self::AWARDED]);
     }
 
-    public function subcontractor(){
-        return $this->belongsTo(Subcontractor::class);
+    public function vendor(){
+        return $this->belongsTo(FFEVendor::class,'f_f_e_vendor_id');
     }
 
     public function project(){
@@ -53,7 +53,7 @@ class FFEProposal extends Model
     }
 
     public function trade(){
-        return $this->belongsTo(Trade::class);
+        return $this->belongsTo(FFETrade::class,'f_f_e_trade_id');
     }
 
     public function changeOrders(){

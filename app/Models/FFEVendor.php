@@ -29,8 +29,8 @@ class FFEVendor extends Model
     //     return $this->hasMany(Proposal::class);
     // }
 
-    // public function ffe_proposals(){
-    //     return $this->hasMany(FFEProposal::class);
-    // }
+    public function ffe_proposals(){
+        return $this->hasMany(FFEProposal::class);
+    }
 
 }

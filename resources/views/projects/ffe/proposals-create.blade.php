@@ -43,12 +43,12 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Subcontractors
+                                                <label class="text-dark" for="password">FFE Vendors
                                                 </label>
-                                                <select class="form-control" name="subcontractor_id"> 
-                                                  <option value=""> Select Subcontractor</option>
-                                                  @foreach($subcontractors as $subcontractor)
-                                                   <option value="{{ $subcontractor->id }}" >{{ $subcontractor->name}}
+                                                <select class="form-control" name="f_f_e_vendor_id"> 
+                                                  <option value=""> Select FFE Vendors</option>
+                                                  @foreach($ffe_vendors as $ffe_vendor)
+                                                   <option value="{{ $ffe_vendor->id }}" >{{ $ffe_vendor->name}}
                                                    </option>
                                                   @endforeach
                                                 </select>
@@ -80,9 +80,9 @@
                                          <div class="col-lg-5 col-md-6 mx-auto">
 
                                            <div class="form-group">
-                                                <label class="text-dark" for="password">Subcontractor Price 
+                                                <label class="text-dark" for="password">Vendor Price 
                                                 </label>
-                                                <input  name="subcontractor_price" value="{{ old('subcontractor_price')}}" type="number" class="form-control" placeholder="Subcontractor Price Cost" step="any">
+                                                <input  name="subcontractor_price" value="{{ old('subcontractor_price')}}" type="number" class="form-control" placeholder="Vendor Price Cost" step="any">
                                             </div>
                                         </div>
                                     </div>
