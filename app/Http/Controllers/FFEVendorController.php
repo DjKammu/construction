@@ -66,7 +66,7 @@ class FFEVendorController extends Controller
                return abort('401');
          } 
         $trades = FFETrade::all();
-        return view('ffe_vendors.create','trades');
+        return view('ffe_vendors.create',compact('trades'));
     }
 
     /**
