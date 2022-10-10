@@ -15,7 +15,6 @@ class CreateFFEVendorsTable extends Migration
     {
         Schema::create('f_f_e_vendors', function (Blueprint $table) {
             $table->id();
-
             $table->string('name')->reuired();
             $table->string('slug')->reuired();
             $table->string('city')->nullable();

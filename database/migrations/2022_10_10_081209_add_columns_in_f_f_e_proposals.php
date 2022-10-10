@@ -14,9 +14,14 @@ class AddColumnsInFFEProposals extends Migration
     public function up()
     {
         Schema::table('f_f_e_proposals', function (Blueprint $table) {
-             $table->unsignedBigInteger('f_f_e_vendor_id');
-             $table->unsignedBigInteger('f_f_e_trade_id');
+             $table->dropConstrainedForeignId('f_f_e_vendor_id');
+             $table->dropConstrainedForeignId('f_f_e_trade_id');
+        });
+
+        Schema::table('f_f_e_proposals', function (Blueprint $table) {
+             $table->unsignedBigInteger('f_f_e_vendor_id')->nullable();
              $table->foreign('f_f_e_vendor_id')->references('id')->on('f_f_e_vendors')->onDelete('cascade');
+             $table->unsignedBigInteger('f_f_e_trade_id')->nullable();
              $table->foreign('f_f_e_trade_id')->references('id')->on('f_f_e_trades')->onDelete('cascade');
         });
     }
@@ -29,7 +34,7 @@ class AddColumnsInFFEProposals extends Migration
     public function down()
     {
         Schema::table('f_f_e_proposals', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('f_f_e_vendor_id');
+             $table->dropConstrainedForeignId('f_f_e_vendor_id');
              $table->dropConstrainedForeignId('f_f_e_trade_id');
         });
     }
