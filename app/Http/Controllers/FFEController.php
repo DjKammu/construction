@@ -9,8 +9,8 @@ use App\Models\ProjectType;
 use App\Models\PropertyType;
 use App\Models\Project;
 use App\Models\Subcontractor;
-use App\Models\Proposal;
-use App\Models\Category;
+use App\Models\FFEProposal;
+use App\Models\FFECategory;
 use App\Models\Vendor;
 use App\Models\Payment;
 use App\Models\Status;
@@ -81,61 +81,10 @@ class FFEController extends Controller
                 $payments->where('status', $payment_status);
          } 
 
-         if(request()->filled('rfi_subcontractor')){
-                $subcontractor = request()->rfi_subcontractor;
 
-                $rfis->whereHas('subcontractor', function($q) use ($subcontractor){
-                    $q->where('id', $subcontractor);
-                });
-         }
-
-          if(request()->filled('rfi_status')){
-                $status = request()->rfi_status;
-
-                $rfis->whereHas('status', function($q) use ($status){
-                    $q->where('id', $status);
-                });
-         } 
-
-        if(request()->filled('start') && request()->filled('end')){
-                 $start = Carbon::parse(request()->start)->format('Y-m-d'); 
-                 $end = Carbon::parse(request()->end)->format('Y-m-d'); 
-                 $rfis->whereRaw("date_sent >=  date('$start')")
-                      ->whereRaw("date_recieved <=  date('$end')");
-                
-         } 
-
-
-          if(request()->filled('submittal_subcontractor')){
-                $subcontractor = request()->submittal_subcontractor;
-
-                $submittals->whereHas('subcontractor', function($q) use ($subcontractor){
-                    $q->where('id', $subcontractor);
-                });
-         }
-
-          if(request()->filled('submittal_status')){
-                $status = request()->submittal_status;
-
-                $submittals->whereHas('status', function($q) use ($status){
-                    $q->where('id', $status);
-                });
-         } 
-
-        if(request()->filled('submittal_start') && request()->filled('submittal_end')){
-                 $start = Carbon::parse(request()->submittal_start)->format('Y-m-d'); 
-                 $end = Carbon::parse(request()->submittal_end)->format('Y-m-d'); 
-                 $submittals->whereRaw("date_sent >=  date('$start')")
-                      ->whereRaw("date_recieved <=  date('$end')");
-                
-         } 
 
          $orderBy = 'created_at';  
-         $orderByRFI = 'created_at';  
-         $orderBySubmittal = 'created_at';  
          $order ='DESC' ;
-         $orderRFI ='DESC' ;
-         $orderSubmittal ='DESC' ;
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
@@ -145,25 +94,10 @@ class FFEController extends Controller
              : request()->order;
         }
 
-        if(request()->filled('orderRFI')){
-            $orderByRFI = request()->filled('orderbyRFI') ? ( !in_array(request()->orderbyRFI, 
-                ['number','date_sent','date_recieved'] ) ? 'created_at' : request()->orderbyRFI ) : 'created_at';
-            
-            $orderRFI = !in_array(\Str::lower(request()->orderRFI), ['desc','asc'])  ? 'ASC' 
-             : request()->orderRFI;
-        }
-
-        if(request()->filled('orderSubmittal')){
-            $orderBySubmittal = request()->filled('orderBySubmittal') ? ( !in_array(request()->orderBySubmittal, ['number','date_sent','date_recieved'] ) ? 'created_at' : request()->orderBySubmittal ) : 'created_at';
-            
-            $orderSubmittal = !in_array(\Str::lower(request()->orderSubmittal), ['desc','asc'])  ? 'ASC' 
-             : request()->orderSubmittal;
-        }
+      
 
          $payments = $payments->orderBy($orderBy, $order)->get();
 
-         $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
-         $submittals = $submittals->orderBy($orderBySubmittal, $orderSubmittal)->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -247,7 +181,7 @@ class FFEController extends Controller
             $folderPath .= "$project_type_slug/$project_slug/$document_type/";
             
             if($doc->proposal_id){
-                 $proposal = Proposal::find($doc->proposal_id);
+                 $proposal = FFEProposal::find($doc->proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
                  $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::PROPOSALS."/");
                  if($doc->document_type->name == DocumentType::LIEN_RELEASE && $doc->payment_id){
@@ -347,41 +281,10 @@ class FFEController extends Controller
            
          }); 
 
-          $rfis->filter(function($rfi){
-
-            $project = @$rfi->project;
-
-            $project_slug = \Str::slug($project->name);
-
-            $folderPath = Document::RFIS."/";
-
-            $folderPath .= "$project_slug/";
         
-            $rfi->sent_file = @($rfi->sent_file) ? asset($folderPath.$rfi->sent_file) : '' ;
-            $rfi->recieved_file = @($rfi->recieved_file) ? asset($folderPath.$rfi->recieved_file) : '' ;
-           
-         });
-
-          $submittals->filter(function($submittal){
-
-            $project = @$submittal->project;
-
-            $project_slug = \Str::slug($project->name);
-
-            $folderPath = Document::SUBMITTALS."/";
-
-            $folderPath .= "$project_slug/";
-        
-            $submittal->sent_file = @($submittal->sent_file) ?
-                          asset($folderPath.$submittal->sent_file) : '' ;
-            $submittal->recieved_file = @($submittal->recieved_file) ? 
-                          asset($folderPath.$submittal->recieved_file) : '' ;
-           
-         });
-
          $catids = @($trades->pluck('category_id'))->unique();
 
-         $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
+         $categories = $paymentCategories = FFECategory::whereIn('id',$catids)->get(); 
 
          $pTrades =  [];
          

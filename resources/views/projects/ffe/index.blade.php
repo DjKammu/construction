@@ -81,7 +81,7 @@
                                     @include('projects.ffe.proposals')
                                     @endif
                                     @if(@$allProposals && @$allProposals->count() > 0)
-
+                                     @include('projects.ffe.bids')
                                     @endif 
 
                               </div>
