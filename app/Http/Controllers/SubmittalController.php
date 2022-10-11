@@ -17,7 +17,7 @@ use App\Models\DocumentFile;
 use App\Models\Subcontractor;
 use App\Models\BallInCourt;
 use App\Models\Assignee;
-use App\Models\Status;
+use App\Models\RFISubmittalStatus;
 use App\Models\User;
 use App\Models\Submittal;
 use Gate;
@@ -65,7 +65,7 @@ class SubmittalController extends Controller
         }
 
         $subcontractors = Subcontractor::orderBy('name')->get();
-        $statuses = Status::orderBy('name')->get(); 
+        $statuses = RFISubmittalStatus::orderBy('name')->get(); 
         $ballInCourts = BallInCourt::orderBy('name')->get(); 
         $assignees = Assignee::orderBy('name')->get(); 
         $users = User::whereNotIn('id',[1])->orderBy('name')->get();
@@ -212,7 +212,7 @@ class SubmittalController extends Controller
         $submittal->date_recieved = @($submittal->date_recieved) ? Carbon::parse($submittal->date_recieved)->format('m-d-Y') : '' ;
 
         $subcontractors = Subcontractor::orderBy('name')->get();
-        $statuses = Status::orderBy('name')->get(); 
+        $statuses = RFISubmittalStatus::orderBy('name')->get(); 
         $ballInCourts = BallInCourt::orderBy('name')->get(); 
         $assignees = Assignee::orderBy('name')->get(); 
         $users = User::whereNotIn('id',[1])->orderBy('name')->get();

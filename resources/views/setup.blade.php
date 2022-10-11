@@ -46,7 +46,9 @@
                         </button>
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("ball_in_courts")}}'">Ball In Courts
                         </button>
-                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("statuses")}}'">Statuses
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("statuses")}}'"> Project Statuses
+                        </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("rfi-submittal/statuses")}}'">RFI/Submittal Statuses
                         </button>
                     </div>
                 </div>

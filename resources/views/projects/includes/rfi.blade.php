@@ -23,7 +23,7 @@
            
             <select style="height: 26px;"  name="rfi_status" onchange="return window.location.href = '?rfi_status='+this.value+'#rfi'"> 
               <option value="">Select Status</option>
-               @foreach($statuses as $status)
+               @foreach($rfi_statuses as $status)
                  <option value="{{ $status->id }}" {{ (@request()->rfi_status == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
               @endforeach
             </select>

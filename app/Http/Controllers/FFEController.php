@@ -300,7 +300,7 @@ class FFEController extends Controller
 
          if($paymentCategories->count() == 0){   
               $catids = @($pTrades->pluck('category_id'))->unique();
-              $paymentCategories = Category::whereIn('id',$catids)->get(); 
+              $paymentCategories = FFECategory::whereIn('id',$catids)->get(); 
          }
 
          $subcontractorsCount = @$project->proposals()
@@ -722,7 +722,7 @@ class FFEController extends Controller
 
          $catids = @($trades->pluck('category_id'))->unique();
 
-         $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
+         $categories = $paymentCategories = FFECategory::whereIn('id',$catids)->get(); 
 
          $pTrades =  [];
          
@@ -738,7 +738,7 @@ class FFEController extends Controller
 
          if($paymentCategories->count() == 0){   
               $catids = @($pTrades->pluck('category_id'))->unique();
-              $paymentCategories = Category::whereIn('id',$catids)->get(); 
+              $paymentCategories = FFECategory::whereIn('id',$catids)->get(); 
          }
 
          $subcontractorsCount = @$project->proposals()

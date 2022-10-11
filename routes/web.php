@@ -89,6 +89,8 @@ Route::resource('assignees', App\Http\Controllers\AssigneeController::class);
 Route::resource('ball_in_courts', App\Http\Controllers\BallInCourtController::class);
 
 Route::resource('statuses', App\Http\Controllers\StatusController::class);
+Route::resource('rfi-submittal/statuses', App\Http\Controllers\RFISubmittalStatusController::class,
+  ['names' => 'rfi-submittal.statuses']);
 
 Route::resource('ffe/vendors', App\Http\Controllers\FFEVendorController::class,['names' => 'ffe.vendors']);
 

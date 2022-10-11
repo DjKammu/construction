@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RFISubmittalStatus;
 use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\Document;
@@ -158,6 +159,7 @@ class ProjectController extends Controller
           if(Gate::denies('edit')) {
                return abort('401');
           } 
+         $rfi_statuses = RFISubmittalStatus::orderBy('name')->get(); 
          $statuses = Status::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get();
          $projectTypes = ProjectType::orderBy('name')->get();
@@ -519,7 +521,7 @@ class ProjectController extends Controller
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
-            'submittals'));
+            'submittals','rfi_statuses'));
     }
 
     /**
