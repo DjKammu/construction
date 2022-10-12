@@ -57,6 +57,10 @@
                                           <a class="nav-link text-dark"  data-toggle="tab" href="#subcontractor-payment" role="tab"
                                              aria-expanded="false">Sub Contractor / Vendor Payment</a>
                                       </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link text-dark"  data-toggle="tab" href="#project-by-status" role="tab"
+                                             aria-expanded="false">Projects By Status</a>
+                                      </li>
 
                                   </ul>
                               </div>
@@ -65,6 +69,7 @@
                           <div id="my-tab-content" class="tab-content">
                               @include('reports.project-summary')
                               @include('reports.subcontractor-payment')
+                              @include('reports.project-by-status')
                         </div>
 
                       </div>
@@ -148,6 +153,21 @@ function selectProperty(property, cLass){
        
   } 
 
+function selectPropertyByStatus(property, cLass){
+       let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
+       var status = $('.'+cLass).val();
+        
+       let url = ''; 
+       if(status){
+          url += 'st='+status+'&';
+       }
+       url += 'pr='+property;
+
+       window.location.href = path+'?'+url;
+       
+  } 
+
   function selectProject(project, cLass, cLass2){
        let path = window.location.href.split('?')[0]
        path = path.split('#')[0]
@@ -166,6 +186,26 @@ function selectProperty(property, cLass){
        window.location.href = path+'?'+url;
       
        
+  }  
+
+   function selectProjectByStatus(project, cLass, cLass2){
+       let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
+       var status = $('.'+cLass).val();
+       var property = $('.'+cLass2).val();
+        
+       let url = ''; 
+       if(status){
+          url += 'st='+status+'&';
+       }
+
+       if(property){
+          url += 'pr='+property+'&';
+       }
+       url += 'p='+project;
+
+       window.location.href = path+'?'+url;
+      
   } 
 
 function selectSubcontractor(trade, cLass, cLass2, cLass3){
@@ -237,6 +277,12 @@ function selectVendor(trade, cLass, cLass2, cLass3){
     history.replaceState(null, null, newUrl);
   });
 
+
+function projectPage(id){
+        var fullUrl = '/projects/'+id;
+        window.location.href = fullUrl;
+}
+ 
 
    $(".btn-close").click(function(){  
             $("#myModal").modal('hide');

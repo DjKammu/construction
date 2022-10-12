@@ -13,6 +13,7 @@ use App\Models\Subcontractor;
 use App\Models\Proposal;
 use App\Models\Category;
 use App\Models\Vendor;
+use App\Models\Status;
 use App\Models\Trade;
 use Gate;
 use PDF;
@@ -58,6 +59,11 @@ class ReportController extends Controller
            $project_vendors = [];
          
         
+        if(request()->filled('st')){
+            $st = request()->st;
+            $projects->where('status', $st);
+         } 
+
         if(request()->filled('pt')){
             $pt = request()->pt;
             $projects->whereHas('project_type', function($q) use ($pt){
@@ -101,8 +107,9 @@ class ReportController extends Controller
 
          $projectTypes = ProjectType::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get(); 
+         $statuses = Status::orderBy('name')->get();
 
-         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments'));
+         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses'));
     }
 
     /**
@@ -227,23 +234,65 @@ class ReportController extends Controller
 
     }
 
+
+    public function getreportByStatus(){
+          
+          $projects = Project::query();
+
+    
+        if(request()->filled('st')){
+            $st = request()->st;
+            $projects->where('status', $st);
+         } 
+
+        if(request()->filled('pt')){
+            $pt = request()->pt;
+            $projects->whereHas('project_type', function($q) use ($pt){
+                $q->where('slug', $pt);
+            });
+         } 
+         
+         if(request()->filled('pr')){
+            $pr = request()->pr;
+            $projects->where('property_type_id', $pr);
+         } 
+
+          
+        if(request()->filled('p')){
+            $p = request()->p;
+            $projects->where('id', $p);
+        }
+
+         $projects = $projects->orderBy('name')->get();
+
+        return compact('projects');
+
+    }
+
     public function getReport($id,$type,$sc = null, $view = null){
 
-        $v = request()->v;
-        
-        $data = @extract($this->getreportDetails($id,$sc,$v));
 
+        $v = request()->v;
+
+        $categories = $payments = $trades = $project = $projects = [];
+
+        if($type == 'project-by-status'){ 
+         $data = @extract($this->getreportByStatus());
+        }else{
+          $data = @extract($this->getreportDetails($id,$sc,$v));
+        }
+        
        // return View('reports.'.$type.'-pdf',
-       //    ['categories' => $categories,'payments' => $payments,
+       //    ['projects' => $projects, 'categories' => $categories,'payments' => $payments,
        //    'trades' => $trades,'project' => $project,'sc' => $sc]
        //  );
       
         $pdf = PDF::loadView('reports.'.$type.'-pdf',
-          ['categories' => $categories,'payments' => $payments,
+          ['projects' => $projects, 'categories' => $categories,'payments' => $payments,
           'trades' => $trades,'project' => $project,'sc' => $sc]
         );
 
-        $slug = \Str::slug($project->name);
+        $slug = \Str::slug(@$project->name);
 
         if($type == 'subcontractor-payment'){
             $type = (@$sc) ?  'Subcontractor' : 'Vendor';

@@ -89,7 +89,7 @@ class Project extends Model
         return $this->hasOne(CloseProject::class);
     }
 
-    public function status(){
+    public function p_status(){
         return $this->belongsTo(Status::class,'status');
     }
 
