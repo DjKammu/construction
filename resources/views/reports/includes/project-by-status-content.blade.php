@@ -32,19 +32,19 @@ table.payments-table thead>tr>th{
             </thead>
             <tbody>
 
-           <tr>
+          
 
             @foreach($projects as $project)
-
+              <tr>
               <td>{{ $project->id }}</td>
                 <td ><a   href="{{ url('projects/'.$project->id )}}">
                   {{ $project->name }} </a>  </td>
                 <td>{{ @$project->project_type->name }}</td>
                 <td>{{ $project->p_status->name }}</td>
-
+               </tr>
             @endforeach
 
-           </tr>
+          
 
             </tbody>
         </table>
