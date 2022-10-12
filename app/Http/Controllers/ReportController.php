@@ -64,6 +64,11 @@ class ReportController extends Controller
             $projects->where('status', $st);
          } 
 
+         if(request()->filled('p') &&  request()->t == 'project-by-status'){
+            $p = request()->p;
+            $projects->where('id', $p);
+         } 
+
         if(request()->filled('pt')){
             $pt = request()->pt;
             $projects->whereHas('project_type', function($q) use ($pt){
