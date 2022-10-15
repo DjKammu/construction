@@ -7,7 +7,6 @@ aria-expanded="true">
         <h4 class="mt-0 text-left"> {{ @$project->name }} - Project Detail</h4>
     </div>
 </div>
-
  <form   method="post" 
           action="{{ route('projects.update',$project->id) }}" enctype="multipart/form-data">
           <input type="hidden" name="_method" value="PUT">
