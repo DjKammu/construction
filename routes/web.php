@@ -202,6 +202,8 @@ Route::prefix('projects')->group(function(){
 
      Route::delete('{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'destroy'])->name('projects.project-lines.destroy');
 
+     Route::get('delete/{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'deleteLines'])->name('projects.project-lines.delete');
+
      Route::get('{id}/applications', [App\Http\Controllers\ProjectApplicationController::class,'create'])->name('projects.applications'); 
 
     Route::get('{id}/applications/edit', [App\Http\Controllers\ProjectApplicationController::class,'edit'])->name('projects.applications.edit'); 

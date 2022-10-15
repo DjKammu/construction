@@ -231,4 +231,29 @@ class ProjectLineController extends Controller
     }
 
 
+    public function deleteLines($id){
+         
+         if(Gate::denies('delete')) {
+               return abort('401');
+          } 
+
+        $project  = Project::find($id);  
+
+
+        $project_lines = $project->project_lines();
+
+        $applications = @$project->applications();  
+        
+        $applications->delete();
+
+        return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Applications Lines Delete Successfully!'
+           ]
+        );
+
+    }
+
+
 }
