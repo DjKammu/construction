@@ -16,6 +16,7 @@ use App\Models\Vendor;
 use App\Models\Payment;
 use App\Models\Status;
 use App\Models\Trade;
+use App\Models\User;
 use Carbon\Carbon;
 use Gate;
 
@@ -100,8 +101,9 @@ class ProjectController extends Controller
         $statuses = Status::orderBy('name')->get(); 
         $propertyTypes = PropertyType::orderBy('name')->get(); 
         $projectTypes = ProjectType::orderBy('name')->get(); 
+        $users = User::orderBy('name')->get(); 
 
-        return view('projects.create',compact('projectTypes','propertyTypes','statuses'));
+        return view('projects.create',compact('projectTypes','propertyTypes','statuses','users'));
     }
 
     /**
@@ -170,6 +172,7 @@ class ProjectController extends Controller
          $vendors = Vendor::all();
          $documents = $project->documents();
          $trades = $project->trades()->orderBy('name')->get();
+         $users = User::orderBy('name')->get();
 
          $payments = $project->payments();
          $rfis = $project->rfis();
@@ -521,7 +524,7 @@ class ProjectController extends Controller
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
-            'submittals','rfi_statuses'));
+            'submittals','rfi_statuses','users'));
     }
 
     /**

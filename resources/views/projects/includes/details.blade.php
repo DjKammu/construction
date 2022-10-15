@@ -55,7 +55,23 @@ aria-expanded="true">
                                                 </select>
                                             </div>
                                         </div> 
-                                    
+                                      
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Manage By
+                                                </label>
+
+                                                <select class="form-control" name="user_id"> 
+                                                  <option> Select User</option>
+                                                  @foreach($users as $user)
+                                                   <option value="{{ $user->id }}" {{ 
+                                                    (@$project->user_id == $user->id) ? 'selected=""' : ''}}>{{ $user->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div> 
+                                        
                                        <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Address
