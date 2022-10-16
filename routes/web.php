@@ -59,6 +59,10 @@ Route::post('/profile', [App\Http\Controllers\HomeController::class, 'updateProf
 Route::post('/password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('password');
 
 
+Route::get('favourites',[ App\Http\Controllers\HomeController::class,'favourites'])->name('favourites');
+
+Route::get('make-favourite',[ App\Http\Controllers\HomeController::class,'makeFavourite'])->name('make.favourite');
+
 
 // Setup Routes
 
@@ -100,7 +104,6 @@ Route::resource('ffe/vendors', App\Http\Controllers\FFEVendorController::class,[
 Route::resource('ffe/trades', App\Http\Controllers\FFETradeController::class,['names' => 'ffe.trades']);
 
 Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::class,['names' => 'ffe.categories']);
-
 
 
 // Document Routes

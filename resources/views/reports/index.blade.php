@@ -4,6 +4,8 @@
 
 
 @section('content')
+  @include('includes.favourite')
+
       <!-- Start Main View -->
   <div class="card p-2">
     <div class="row">

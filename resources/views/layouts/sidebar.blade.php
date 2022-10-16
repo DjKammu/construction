@@ -157,6 +157,19 @@
             </li>
 
             @endcan
+
+            @can('view')
+
+            <!-- Property Types -->
+             <li class="{{ Request::is('favourites*') ? 'active' : '' }}">
+                <a href="{{ route('favourites') }}">
+                    <!-- <i class="nc-icon nc-bank"></i> -->
+                    <i class="fa fa-heart"></i>
+                    <p>Favourite</p>
+                </a>
+            </li>
+
+            @endcan
            
               @can('add_users')
              <!-- Property Types -->

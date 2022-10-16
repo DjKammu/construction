@@ -6,6 +6,7 @@ use App\Models\Subcontractor;
 use Illuminate\Http\Request;
 use App\Models\DocumentType;
 use App\Models\ProjectType;
+use App\Models\FavouriteUrl;
 use App\Models\Category;
 use App\Models\Vendor;
 use App\Models\Trade;
@@ -117,6 +118,39 @@ class HomeController extends Controller
     public function setup(){
 
         return view('setup');
+    }
+
+    public function favourites(Request $request){
+
+       $user = Auth::user();
+
+       $status = 1;
+      
+       $favourites =  FavouriteUrl::where(function($q){
+            $q->where('user_id', auth()->user()->id); 
+            $q->where('status',1); 
+        })->get();
+
+      return view('favourites',compact('favourites'));
+
+    }
+
+
+    public function makeFavourite(Request $request){
+
+      
+       $user = Auth::user();
+
+       $status = ($request->status == 'true' ) ? 1 : 0;
+      
+        FavouriteUrl::updateOrCreate(
+            ['url' =>$request->url, 'user_id' => $user->id],
+            ['url' =>$request->url, 'user_id' => $user->id,'status' => (int) $status]
+        );
+
+        return redirect()->back()->with('message', 'Favourite URL '.( $status == 1 ? "Added" : "Removed").' Successfully!');
+
+
     }
 
 }

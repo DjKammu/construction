@@ -91,6 +91,11 @@
     $(".alert").fadeTo(2000, 500).slideUp(500, function(){
         $(".alert").slideUp(500);
     });
+     
+    function makeFavourite(val, url){
+      let fullUrl = '/make-favourite/?status='+val.checked+'&url='+url
+       window.location.href = fullUrl;
+    } 
 
    </script>
                  
