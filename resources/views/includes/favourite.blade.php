@@ -5,6 +5,6 @@ $isFavourite = @\App\Models\FavouriteUrl::where(function($q){
 	            $q->where('url', request()->getRequestUri()); 
               })->pluck('status')->first();      
 @endphp	
-<input type="checkbox" onchange="makeFavourite(this, '{{ urlencode(request()->getRequestUri()) }}' )" {{ ($isFavourite) ? 'checked' : ''}} > Make this page favourite 
+<input type="checkbox" id="favourite-url" onchange="makeFavourite(this)" {{ ($isFavourite) ? 'checked' : ''}} > Make this page favourite 
 </div>
 

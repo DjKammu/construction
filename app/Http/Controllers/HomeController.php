@@ -150,7 +150,27 @@ class HomeController extends Controller
 
         return redirect()->back()->with('message', 'Favourite URL '.( $status == 1 ? "Added" : "Removed").' Successfully!');
 
-
     }
+
+     public function getFavourite(Request $request){
+
+       $user = Auth::user();
+
+       $url = $request->url;
+
+       $favourites =  FavouriteUrl::where(function($q) use ($url){
+            $q->where('user_id', auth()->user()->id); 
+            $q->where('url',$url); 
+        })->pluck('status')->first();
+
+         return response()->json(
+           [
+            'status' => 200,
+            'data' => $favourites
+           ]
+        );
+        
+    }
+
 
 }

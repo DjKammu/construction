@@ -84,7 +84,6 @@
        
   </body>
 
-
    @yield('pagescript')
      
     <script type="text/javascript">
@@ -92,10 +91,30 @@
         $(".alert").slideUp(500);
     });
      
-    function makeFavourite(val, url){
-      let fullUrl = '/make-favourite/?status='+val.checked+'&url='+url
+    function makeFavourite(val){
+      
+      let fullUrl = '/make-favourite/?status='+val.checked+'&url='+encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)
+
        window.location.href = fullUrl;
     } 
+     
+      var eventData = {
+         url : window.location.pathname+window.location.search+window.location.hash,
+        _token: '{{ csrf_token() }}'
+    };
+ 
+    $.ajax({
+        url: "/favourite",
+        type: "POST",
+        data:eventData,
+        success: function (response) { 
+            if(response.data == 1){
+                $('#favourite-url').prop('checked',true); 
+            }
+          
+        }
+    });
+
 
    </script>
                  

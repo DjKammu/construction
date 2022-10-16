@@ -63,6 +63,8 @@ Route::get('favourites',[ App\Http\Controllers\HomeController::class,'favourites
 
 Route::get('make-favourite',[ App\Http\Controllers\HomeController::class,'makeFavourite'])->name('make.favourite');
 
+Route::post('favourite',[ App\Http\Controllers\HomeController::class,'getFavourite'])->name('get.favourite');
+
 
 // Setup Routes
 
