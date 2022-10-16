@@ -50,6 +50,8 @@
                         </button>
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("rfi-submittal/statuses")}}'">RFI/Submittal Statuses
                         </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("property-groups")}}'">Property Groups
+                        </button>
                     </div>
                 </div>
 

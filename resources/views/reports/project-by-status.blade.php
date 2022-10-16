@@ -4,31 +4,45 @@ aria-expanded="true">
 
 <div class="row mb-2">
     <div class="col-9">
-      <select class="st" style="height: 26px;" onchange="return window.location.href = '?st='+this.value+'&t=project-by-status#project-by-status'"> 
+      <select class="st" id="status"  style="height: 26px;" onchange="return window.location.href = '?st='+this.value+'&t=project-by-status#project-by-status'"> 
        <option value="">Select Status</option>
        @foreach($statuses as $status)
            <option value="{{ $status->id }}" {{ (@request()->st == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
        @endforeach
       </select>
        
-      <select class="pr" style="height: 26px;" onchange="selectPropertyByStatus(this.value+'&t=project-by-status#project-by-status','st')"> 
+      <select class="pr" id="property" style="height: 26px;" onchange="selectPropertyByStatus(this.value+'&t=project-by-status#project-by-status','st')"> 
        <option value="">Select Property</option>
        @foreach($propertyTypes as $type)
            <option value="{{ $type->id }}" {{ (@request()->pr == $type->id) ? 'selected' : ''}}> {{ $type->name }}</option>
        @endforeach
       </select>
 
-      <select style="height: 26px;" onchange="selectProjectByStatus(this.value+'&t=project-by-status#project-by-status','st','pr')"> 
+      <select id="project" style="height: 26px;" onchange="selectProjectByStatus(this.value+'&t=project-by-status#project-by-status','st','pr')"> 
       <option value="">Select Project</option>
       @foreach($projects as $pr)
          <option value="{{ $pr->id }}" {{ (@request()->p == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
+      @endforeach
+      </select> 
+
+      <select id="manage-by" style="height: 26px;" onchange="selectByStatus('&t=project-by-status#project-by-status')"> 
+      <option value="">Select Manage By</option>
+      @foreach($users as $pr)
+         <option value="{{ $pr->id }}" {{ (@request()->u == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
+      @endforeach
+      </select> 
+
+      <select id="property-group" style="height: 26px;" onchange="selectByStatus('&t=project-by-status#project-by-status')"> 
+      <option value="">Select Property Group</option>
+      @foreach($propertyGroups as $pr)
+         <option value="{{ $pr->id }}" {{ (@request()->pg == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
       @endforeach
       </select>
 
      
 
     </div>
-    @if(@request()->st && @request()->t == 'project-by-status' )
+    @if((@request()->st || @request()->pr || @request()->p || @request()->u || @request()->pg ) && @request()->t == 'project-by-status' )
        
        </br> 
        </br> 

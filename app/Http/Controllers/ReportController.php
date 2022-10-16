@@ -8,13 +8,15 @@ use App\Models\DocumentType;
 use App\Models\Document;
 use App\Models\ProjectType;
 use App\Models\PropertyType;
-use App\Models\Project;
+use App\Models\PropertyGroup;
 use App\Models\Subcontractor;
 use App\Models\Proposal;
 use App\Models\Category;
+use App\Models\Project;
 use App\Models\Vendor;
 use App\Models\Status;
 use App\Models\Trade;
+use App\Models\User;
 use Gate;
 use PDF;
 
@@ -67,6 +69,16 @@ class ReportController extends Controller
          if(request()->filled('p') &&  request()->t == 'project-by-status'){
             $p = request()->p;
             $projects->where('id', $p);
+         }  
+
+         if(request()->filled('pg') &&  request()->t == 'project-by-status'){
+            $pg = request()->pg;
+            $projects->where('property_group_id', $pg);
+         } 
+         
+         if(request()->filled('u') &&  request()->t == 'project-by-status'){
+            $u = request()->u;
+            $projects->where('user_id', $u);
          } 
 
         if(request()->filled('pt')){
@@ -108,13 +120,16 @@ class ReportController extends Controller
 
         }
 
+
          $projects = $projects->orderBy('name')->get();
 
          $projectTypes = ProjectType::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get(); 
          $statuses = Status::orderBy('name')->get();
+         $users = User::orderBy('name')->get();
+         $propertyGroups = PropertyGroup::orderBy('name')->get();
 
-         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses'));
+         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses','users','propertyGroups'));
     }
 
     /**
@@ -262,11 +277,21 @@ class ReportController extends Controller
             $projects->where('property_type_id', $pr);
          } 
 
-          
-        if(request()->filled('p')){
+        if(request()->filled('p') &&  request()->t == 'project-by-status'){
             $p = request()->p;
             $projects->where('id', $p);
-        }
+         }  
+
+         if(request()->filled('pg') &&  request()->t == 'project-by-status'){
+            $pg = request()->pg;
+            $projects->where('property_group_id', $pg);
+         } 
+         
+         if(request()->filled('u') &&  request()->t == 'project-by-status'){
+            $u = request()->u;
+            $projects->where('user_id', $u);
+         } 
+
 
          $projects = $projects->orderBy('name')->get();
 

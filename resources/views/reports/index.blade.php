@@ -206,6 +206,42 @@ function selectPropertyByStatus(property, cLass){
 
        window.location.href = path+'?'+url;
       
+  }   
+
+   function selectByStatus(link, type = ''){
+       let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
+       
+       if(type){
+        type = '-'+type;
+       }
+       var status = $('#status'+type).val();
+       var property = $('#property'+type).val();
+       var project = $('#project'+type).val();
+       var manageby = $('#manage-by'+type).val();
+       var propertygroup = $('#property-group'+type).val();
+        
+       let url = ''; 
+       if(status){
+          url += 'st='+status+'&';
+       }
+
+       if(property){
+          url += 'pr='+property+'&';
+       }
+       if(project){
+          url += 'p='+project+'&';
+       }
+       if(manageby){
+          url += 'u='+manageby+'&';
+       }
+       if(propertygroup){
+          url += 'pg='+propertygroup+'&';
+       }
+       url = url+link;
+
+       window.location.href = path+'?'+url;
+      
   } 
 
 function selectSubcontractor(trade, cLass, cLass2, cLass3){
