@@ -63,6 +63,10 @@ class Project extends Model
 
     public function payments(){
         return $this->hasMany(Payment::class);
+    }
+
+     public function ffe_payments(){
+        return $this->hasMany(FFEPayment::class);
     } 
 
      public function rfis(){

@@ -310,6 +310,23 @@ Route::prefix('projects')->group(function(){
 
              Route::delete('trades/{id}', [App\Http\Controllers\FFETradeController::class,'destroyProjectTrade'])->name('projects.ffe.trades.destroy');
 
+             
+            Route::get('payments/create',[App\Http\Controllers\FFEPaymentController::class,'create'])->name('projects.ffe.payments');
+
+            Route::post('{id?}/payments',[App\Http\Controllers\FFEPaymentController::class,'store'])->name('projects.ffe.payments.store');
+
+            Route::get('payments/{id}',[App\Http\Controllers\FFEPaymentController::class,'show'])->name('projects.ffe.payments.edit');
+
+            Route::post('payments/{id}',[App\Http\Controllers\FFEPaymentController::class,'update'])->name('projects.ffe.payments.update');
+
+             Route::delete('payments/{id}', [App\Http\Controllers\FFEPaymentController::class,'destroy'])->name('projects.ffe.payments.destroy');
+
+             Route::delete('payments/{id}/file', [App\Http\Controllers\FFEPaymentController::class,'destroyFile'])->name('projects.ffe.payments.file.destroy');
+
+             Route::get('{id}/download', [App\Http\Controllers\FFEPaymentController::class,'downloadPDF'])->name('projects.ffe.download');
+
+             Route::post('{id}/send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
+
 
 
       });

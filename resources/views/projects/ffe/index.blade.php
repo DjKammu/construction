@@ -83,6 +83,7 @@
                                     @if(@$allProposals && @$allProposals->count() > 0)
                                      @include('projects.ffe.bids')
                                     @endif 
+                                     @include('projects.ffe.payments')
 
                               </div>
 

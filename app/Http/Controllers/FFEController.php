@@ -57,7 +57,7 @@ class FFEController extends Controller
          $documents = $project->documents();
          $trades = $project->ffe_trades()->orderBy('name')->get();
 
-         $payments = $project->payments();
+         $payments = $project->ffe_payments();
          $rfis = $project->rfis();
          $submittals = $project->submittals();
 
@@ -260,7 +260,7 @@ class FFEController extends Controller
             $folderPath = Document::INVOICES."/";
 
             if(@!$trade_slug){
-                 $vendor  = Vendor::find($payment->vendor_id);
+                 $vendor  = FFEVendor::find($payment->f_f_e_vendor_id);
                  $trade_slug = @$vendor->slug;
             }
 
@@ -275,11 +275,12 @@ class FFEController extends Controller
             $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? asset($folderPath2.$payment->conditional_lien_release_file) : '' ;
             $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath2.$payment->unconditional_lien_release_file) : '' ;
 
-            $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
+            $payment->remaining = (new FFEPaymentController)->proposalDueAmount($payment->proposal,$payment->id);
 
             return $payment->file;
            
          }); 
+
 
         
          $catids = @($trades->pluck('category_id'))->unique();
