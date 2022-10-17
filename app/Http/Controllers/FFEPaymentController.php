@@ -138,11 +138,11 @@ class FFEPaymentController extends Controller
                    //      }
                    //  },
                    'payment_amount' => ['required',
-                        function ($attribute, $value, $fail) use ($totalDueMount){
-                          if (request()->type  != FFEPayment::VENDOR && !request()->filled('vendor_id') && $value > $totalDueMount ) {
-                              $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                          }
-                      }
+                      //   function ($attribute, $value, $fail) use ($totalDueMount){
+                      //     if (request()->type  != FFEPayment::VENDOR && !request()->filled('vendor_id') && $value > $totalDueMount ) {
+                      //         $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
+                      //     }
+                      // }
                     ]
                   // 'status' => 'required'
               ]
