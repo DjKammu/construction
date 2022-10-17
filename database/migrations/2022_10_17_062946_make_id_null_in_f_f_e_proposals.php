@@ -14,8 +14,8 @@ class MakeIdNullInFFEProposals extends Migration
     public function up()
     {
         Schema::table('f_f_e_proposals', function (Blueprint $table) {
-            $table->unsignedBigInteger('subcontractor_id')->change()->nullable(true);
-            $table->unsignedBigInteger('trade_id')->change()->nullable(true);
+            // $table->unsignedBigInteger('subcontractor_id')->change()->nullable(true);
+            // $table->unsignedBigInteger('trade_id')->change()->nullable(true);
         });
     }
 
@@ -27,8 +27,8 @@ class MakeIdNullInFFEProposals extends Migration
     public function down()
     {
         Schema::table('f_f_e_proposals', function (Blueprint $table) {
-           $table->unsignedBigInteger('subcontractor_id')->change()->nullable(false);
-           $table->unsignedBigInteger('trade_id')->change()->nullable(false);
+           // $table->unsignedBigInteger('subcontractor_id')->change()->nullable(false);
+           // $table->unsignedBigInteger('trade_id')->change()->nullable(false);
         });
     }
 }
