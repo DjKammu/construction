@@ -29,7 +29,7 @@ aria-expanded="true">
                                                 </label>
 
                                                 <select class="form-control" name="project_type_id"> 
-                                                  <option> Select Project Type</option>
+                                                  <option value=""> Select Project Type</option>
                                                   @foreach($projectTypes as $type)
                                                    <option value="{{ $type->id }}" {{ 
                                                     ($project->project_type_id == $type->id) ? 'selected=""' : ''}}>{{ $type->name}}
@@ -45,7 +45,7 @@ aria-expanded="true">
                                                 </label>
 
                                                 <select class="form-control" name="property_type_id"> 
-                                                  <option> Select Property</option>
+                                                  <option value=""> Select Property</option>
                                                   @foreach($propertyTypes as $type)
                                                    <option value="{{ $type->id }}" {{ 
                                                     ($project->property_type_id == $type->id) ? 'selected=""' : ''}}>{{ $type->name}}
@@ -61,7 +61,7 @@ aria-expanded="true">
                                                 </label>
 
                                                 <select class="form-control" name="user_id"> 
-                                                  <option> Select User</option>
+                                                  <option value=""> Select User</option>
                                                   @foreach($users as $user)
                                                    <option value="{{ $user->id }}" {{ 
                                                     (@$project->user_id == $user->id) ? 'selected=""' : ''}}>{{ $user->name}}
