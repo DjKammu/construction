@@ -148,7 +148,7 @@ class HomeController extends Controller
             ['url' =>$request->url, 'user_id' => $user->id,'status' => (int) $status]
         );
 
-        return redirect()->back()->with('message', 'Favourite URL '.( $status == 1 ? "Added" : "Removed").' Successfully!');
+        return redirect($request->url)->with('message', 'Favourite URL '.( $status == 1 ? "Added" : "Removed").' Successfully!');
 
     }
 
