@@ -67,7 +67,7 @@ class ProjectController extends Controller
           if(request()->filled('st')){
             $st = request()->st;
             // $projects->where('status', $st);
-            $projects->whereHas('status', function($q) use ($st){
+            $projects->whereHas('p_status', function($q) use ($st){
                 $q->where('id', $st);
             });
 
