@@ -43,20 +43,21 @@
 
                                    @if(@$proposal)
 
-                                   <!-- <div class="row">
+                                   <div class="row">
                                     <div class="col-lg-5 col-md-6 mx-auto">
                                         <div class="form-group">
-                                          <input type="radio" name="type" checked="checked" value="subcontractor" />
-                                          <label class="text-dark" for="password">Subcontractor
+                                          <input type="radio" name="non_contract" checked="checked" 
+                                          div="subcontractor" value="0" />
+                                          <label class="text-dark" for="password">Contract Vendor
                                           </label>
                                           
-                                          <input type="radio" name="type" value="vendor" />
-                                          <label class="text-dark" for="password">Vendor
+                                          <input type="radio" name="non_contract"   div="vendor" value="1" />
+                                          <label class="text-dark" for="password">Non Contract Vendor
                                           </label>
                                           
                                      </div>
                                      </div>
-                                    </div> -->
+                                    </div>
                                     
                                     <div class="subcontractor-vendor" id="subcontractor">
                                       <div class="row">
@@ -78,15 +79,6 @@
 
                                       <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
-                                            <!-- <div class="form-group">
-                                                <label class="text-dark" for="password">Subcontractor
-                                                </label>
-                                                <select class="form-control" name="subcontractor_id"> 
-                                                   <option value="{{ @$proposal->subcontractor_id }}" >{{ @$proposal->subcontractor->name}}
-                                                   </option>
-                                                </select>
-                                            </div> -->
-
                                             <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
@@ -155,17 +147,7 @@
                                               </div>
                                           </div>
                                         </div>
-                                        <div class="row">
-                                          <div class="col-lg-5 col-md-6 mx-auto">
-                                              <div class="form-group">
-                                                  <label class="text-dark" for="password">Vendor Material
-                                                  </label>
-                                                  <select id="materials" class="form-control" name="material_id"> 
-                                                    <option value="">Select Material</option>
-                                                  </select>
-                                              </div>
-                                          </div>
-                                        </div>
+                                      
 
                                     </div> 
 
@@ -320,29 +302,29 @@ $( document ).ready(function() {
       format: 'M-D-Y'
   });
 
-$("input[name='type']").click(function() {
-      var id = $(this).val();
+$("input[name='non_contract']").click(function() {
+      var id = $(this).attr('div');
       $(".subcontractor-vendor").hide();
       $("#" + id).show();
   });
 
 
 
- $('select[name="vendor_id"]').change(function(){
-      let vendorId = $(this).val();
-      $.ajax({
-            url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
-            type: "GET",
-            success: function (response) {
-                var html = '<option value="">Select Material</option>';
-                for (let i = 0; i < response.length; i++) {
-                  html += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
-                }
-                $('#materials').html(html);
-            }
-        });
+ // $('select[name="vendor_id"]').change(function(){
+ //      let vendorId = $(this).val();
+ //      $.ajax({
+ //            url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
+ //            type: "GET",
+ //            success: function (response) {
+ //                var html = '<option value="">Select Material</option>';
+ //                for (let i = 0; i < response.length; i++) {
+ //                  html += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
+ //                }
+ //                $('#materials').html(html);
+ //            }
+ //        });
     
- });
+ // });
 
 });
 

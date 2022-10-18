@@ -108,22 +108,14 @@ class FFEPaymentController extends Controller
 
         $data = $request->except('_token');
 
-     
-       // $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
+        $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
         if($id == 0){
              
              $request->validate([
                    'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
                    'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
-                   'payment_amount' => ['required',
-                      //   function ($attribute, $value, $fail) use ($totalDueMount){
-                      //     if ( $value > $totalDueMount ) {
-                      //         $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                      //     }
-                      // }
-                    ]
-                  // 'status' => 'required'
+                   'payment_amount' => ['required']
               ]
           );
 
@@ -132,23 +124,16 @@ class FFEPaymentController extends Controller
             $request->validate([
                    'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
                    'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
-                   // 'vendor_id' => function ($attribute, $value, $fail){
-                   //      if (!$value &&  request()->type  == Payment::VENDOR) {
-                   //          $fail('Vendor Id is required');
-                   //      }
-                   //  },
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
-                          if ( $value > $totalDueMount ) {
+                          if (request()->type  == false && $value > $totalDueMount ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                           }
                       }
                     ]
-                  // 'status' => 'required'
               ]
           );
         }
-         
 
         $project_id = @$proposal->project->id;
         $project_id = (!$project_id) ? $request->project_id : $project_id;
@@ -337,8 +322,8 @@ class FFEPaymentController extends Controller
          $total =  $this->proposalTotalAmount($proposal);  
      
          $payments = FFEPayment::whereFfeProposalId(@$proposal->id)
-                    // ->whereNull('f_f_e_vendor_id')
-                    ->sum('payment_amount');
+                    ->where('non_contract','0')
+                  ->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
 
@@ -350,7 +335,7 @@ class FFEPaymentController extends Controller
          $total =  $this->proposalTotalAmount($proposal);  
 
          $payments = FFEPayment::whereFfeProposalId(@$proposal->id)
-         // ->whereNull('f_f_e_vendor_id')                   
+         ->where('non_contract','0')                   
          ->where('id','<=', $payment_id)->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
@@ -400,11 +385,11 @@ class FFEPaymentController extends Controller
        
         //dd($totalAmount);
 
-        $proposalsQry = $project->proposals()->IsAwarded();
+        $proposalsQry = $project->ffe_proposals()->IsAwarded();
 
         $proposals = $proposalsQry->get();
 
-        ($request->filled('trade')) ? $proposalsQry->where('trade_id', $request->trade) : '';
+        ($request->filled('trade')) ? $proposalsQry->where('f_f_e_trade_id', $request->trade) : '';
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
@@ -451,17 +436,17 @@ class FFEPaymentController extends Controller
         $totalDueMount =  $this->proposalDueTotalAmount($payment->proposal);
 
         $data = $request->except('_token');
-
+        
+        $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
          if($payment->proposal){
 
-               
              $request->validate([
                    'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
                    'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
-                          if ($value > $totalDueMount ) {
+                          if (request()->type  == false && $value > $totalDueMount ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                           }
                       }
@@ -476,19 +461,7 @@ class FFEPaymentController extends Controller
             $request->validate([
                    'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
                    'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
-                   // 'vendor_id' => function ($attribute, $value, $fail){
-                   //      if (!$value &&  request()->type  == Payment::VENDOR) {
-                   //          $fail('Vendor Id is required');
-                   //      }
-                   //  },
-                   'payment_amount' => ['required',
-                        function ($attribute, $value, $fail) use ($totalDueMount){
-                          if ( request()->filled('ffe_proposal_id') && $value > $totalDueMount ) {
-                              $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                          }
-                      }
-                    ]
-                  // 'status' => 'required'
+                   'payment_amount' => ['required']
               ]
           );
 

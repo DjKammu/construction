@@ -42,28 +42,29 @@
 
                                   @if(@$payment->proposal()->exists())
 
-                                   <!-- <div class="row">
+                                   <div class="row">
                                     <div class="col-lg-5 col-md-6 mx-auto">
                                         <div class="form-group">
-                                          <input type="radio" name="type" {{ (!@$payment->f_f_e_vendor_id) ? 'checked="checked"' : '' }} value="subcontractor" />
-                                          <label class="text-dark" for="password">Subcontractor
+                                          <input type="radio" name="non_contract" 
+                                          div="subcontractor" value="0"  {{ (@$payment->non_contract == '0' ) ? 'checked="checked"' : '' }}  />
+                                          <label class="text-dark" for="password">Contract Vendor
                                           </label>
                                           
-                                          <input type="radio" name="type" {{ (@$payment->f_f_e_vendor_id) ? 'checked="checked"' : '' }} value="vendor" />
-                                          <label class="text-dark" for="password">Vendor
+                                          <input type="radio" name="non_contract" name="non_contract" 
+                                          div="vendor" {{ (@$payment->non_contract == '1') ? 'checked="checked"' : '' }} value="1" />
+                                          <label class="text-dark" for="password">Non Contract Vendor
                                           </label>
-                                          
                                      </div>
                                      </div>
-                                    </div> -->
+                                    </div>
                                     
-                                    <div class="subcontractor-vendor" id="subcontractor" style="display: {{  ((@$payment->ffe_proposal_id)) ? 'block' : 'none' }};" >
+                                    <div class="subcontractor-vendor" id="subcontractor" style="display: {{  ((@$payment->non_contract == '0')) ? 'block' : 'none' }};" >
                                       <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password"> Trades
                                                 </label>
-                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="subcontractor_trade_id"> 
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="f_f_e_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
                                                    @$payment->proposal->trade_id == $trade->id ? 'selected' : '' 
@@ -115,7 +116,7 @@
                                     </div> 
 
                                      <div class="subcontractor-vendor" id="vendor" 
-                                    style="display: {{  ((@$payment->f_f_e_vendor_id) && (@$payment->subcontractor_id)) ? 'block' : 'none' }};"   >
+                                    style="display: {{(@$payment->non_contract == '1')  ? 'block' : 'none' }};"   >
                                           <div class="row">
                                            <div class="col-lg-5 col-md-6 mx-auto">
                                               <div class="form-group">
@@ -149,18 +150,7 @@
                                               </div>
                                           </div>
                                         </div> 
-
-                                         <div class="row">
-                                          <div class="col-lg-5 col-md-6 mx-auto">
-                                              <div class="form-group">
-                                                  <label class="text-dark" for="password">Vendor Material
-                                                  </label>
-                                                  <select id="materials" class="form-control" name="material_id"> 
-                                                    <option value="">Select Material</option>
-                                                  </select>
-                                              </div>
-                                          </div>
-                                        </div>
+                                        
                                     </div> 
 
 
@@ -490,34 +480,34 @@ $('.date').datetimepicker({
      format: 'M-D-Y'
 });
 
-$("input[name='type']").click(function() {
-      var id = $(this).val();
+$("input[name='non_contract']").click(function() {
+      var id = $(this).attr('div');
       $(".subcontractor-vendor").hide();
       $("#" + id).show();
   });
 
- var selVendorId = "{{ @$payment->vendor_id}}";
+//  var selVendorId = "{{ @$payment->vendor_id}}";
 
- $('select[name="vendor_id"]').change(function(){
-    let vendorId = $(this).val();
-    materialsHtml(vendorId);
-});
+//  $('select[name="vendor_id"]').change(function(){
+//     let vendorId = $(this).val();
+//     materialsHtml(vendorId);
+// });
 
-function materialsHtml(vendorId){
+// function materialsHtml(vendorId){
 
-     $.ajax({
-          url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
-          type: "GET",
-          success: function (response) {
-              var html = '<option value="">Select Material</option>';
-              for (let i = 0; i < response.length; i++) {
-                let selected = ( response[i].vendor_id == selVendorId) ? 'selected' : '';
-                html += '<option value="'+response[i].id+'"  '+selected+'>'+response[i].name+'</option>';
-              }
-              $('#materials').html(html);
-          }
-      });
-}
+//      $.ajax({
+//           url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
+//           type: "GET",
+//           success: function (response) {
+//               var html = '<option value="">Select Material</option>';
+//               for (let i = 0; i < response.length; i++) {
+//                 let selected = ( response[i].vendor_id == selVendorId) ? 'selected' : '';
+//                 html += '<option value="'+response[i].id+'"  '+selected+'>'+response[i].name+'</option>';
+//               }
+//               $('#materials').html(html);
+//           }
+//       });
+// }
 
 materialsHtml(selVendorId);
 
