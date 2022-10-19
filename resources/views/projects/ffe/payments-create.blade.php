@@ -82,12 +82,9 @@
                                             <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="f_f_e_vendor_id"> 
-                                                    <option value="">Select Vendor</option>
-                                                    @foreach(@$vendors as $vendor)
-                                                     <option value="{{ $vendor->id }}">{{ $vendor->name}}
+                                                   <select class="form-control" name="f_f_e_vendor_id"> 
+                                                     <option value="{{ @$proposal->f_f_e_vendor_id }}" >{{ @$proposal->vendor->name}}
                                                      </option>
-                                                    @endforeach
                                                   </select>
                                               </div>
 

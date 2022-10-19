@@ -82,12 +82,8 @@
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
                                                   <select class="form-control" name="f_f_e_vendor_id"> 
-                                                    <option value="">Select Vendor</option>
-                                                    @foreach(@$vendors as $vendor)
-                                                     <option value="{{ $vendor->id }}" {{ 
-                                                      ($payment->f_f_e_vendor_id == $vendor->id ) ? 'selected' : ''}} >{{ $vendor->name}}
+                                                     <option value="{{ @$payment->f_f_e_vendor_id }}" >{{ @$payment->vendor->name}}
                                                      </option>
-                                                    @endforeach
                                                   </select>
                                               </div>
                                         </div>

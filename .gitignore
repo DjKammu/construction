@@ -10,6 +10,7 @@
 /public/ffe-proposals/*
 /public/ffe-trades/*
 /public/storage
+/public/images
 /storage/*.key
 /vendor
 .env
