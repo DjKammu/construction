@@ -30,6 +30,6 @@ class FFETrade extends Model
     }
 
     public function category(){
-        return $this->hasOne(Category::class);
+        return $this->hasOne(FFECategory::class);
     }
 }

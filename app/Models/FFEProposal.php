@@ -61,6 +61,6 @@ class FFEProposal extends Model
     }
 
     public function payment(){
-         return $this->hasMany(Payment::class);
+         return $this->hasMany(FFEPayment::class,'ffe_proposal_id');
     }
 }

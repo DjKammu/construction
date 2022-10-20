@@ -68,7 +68,7 @@
                                               
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
-                                                     aria-expanded="false">Budget</a>
+                                                     aria-expanded="false">FFE Budget</a>
                                               </li>
 
                                         </ul>
@@ -83,7 +83,8 @@
                                     @if(@$allProposals && @$allProposals->count() > 0)
                                      @include('projects.ffe.bids')
                                     @endif 
-                                     @include('projects.ffe.payments')
+                                    @include('projects.ffe.payments')
+                                    @include('projects.ffe.budget')
 
                               </div>
 
