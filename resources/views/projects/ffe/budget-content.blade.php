@@ -48,7 +48,7 @@
           $catTradeTotal = 0;
           $catBudgetDiff = 0;
 
-         $catTrades = @$trades->where('category_id', $cat->id);
+         $catTrades = @$pTrades->where('category_id', $cat->id);
          
          @endphp
             <tr >
