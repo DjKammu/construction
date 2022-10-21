@@ -49,7 +49,7 @@
           $catBudgetDiff = 0;
 
          $catTrades = @$pTrades->where('category_id', $cat->id);
-         
+
          @endphp
             <tr >
               <td>{{ $cat->account_number }}</td>
@@ -64,11 +64,12 @@
               $changeOrderTotal = 0;
               $bids = @$project->ffe_proposals()->trade($trd->id)->IsAwarded()
                      ->get();
-              $tradePayments = @$project->ffe_payments()->where('non_contract','0')
+              $tradePayments = @$project->ffe_payments()->where('non_contract','1')
               ->selectRaw('sum(payment_amount) as payment_amount_total, f_f_e_vendor_id')
                ->where('f_f_e_trade_id',$trd->id)
                ->groupBy('f_f_e_vendor_id')
              ->get();
+
 
               @endphp
             
@@ -202,7 +203,9 @@
                 </tr>
 
                 <tr>
-                  <td colspan="3" style="padding:10px;"></td>
+                  <td colspan="" style="padding:10px;"></td>
+                  <td colspan="" style="padding:10px;"> <span class="doc_type_m">Non Contract</span> </td>
+                  <td colspan="" style="padding:10px;"></td>
                   <td><span class="doc_type_m">{{ @$tPay->vendor->name }} {{ 
                 (@$tPay->material) ? '('.@$tPay->material->name .')' : ""}}</span></td>
                   <td></td>

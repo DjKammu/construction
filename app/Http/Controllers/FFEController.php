@@ -304,7 +304,7 @@ class FFEController extends Controller
               $catids = @($pTrades->pluck('category_id'))->unique();
               $paymentCategories = FFECategory::whereIn('id',$catids)->get(); 
          }
-
+        
          $subcontractorsCount = @$project->proposals()
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
