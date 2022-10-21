@@ -4,7 +4,9 @@
 
 @section('content')
 
-@include('includes.back')
+@include('includes.back',
+['url' => route('ffe.index',['project' => request()->project ]) , 'to' => 'To FFE'])
+
 
       <!-- Start Main View -->
   <div class="card p-2">
