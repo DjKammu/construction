@@ -722,36 +722,40 @@ class FFEPaymentController extends Controller
     public function downloadPDF($id,$view = false){
 
         $project = Project::find($id); 
-        $trades = $project->trades()->get();
+        $trades = $project->ffe_trades()->get();
+
         $catids = @($trades->pluck('category_id'))->unique();
-        $categories = Category::whereIn('id',$catids)->get(); 
+        $categories = FFECategory::whereIn('id',$catids)->get(); 
         $pTrades = [];
 
-        $trade_ids = @$project->payments->whereNotNull('trade_id')
-                       ->pluck('trade_id');  
-        $pTrades = Trade::whereIn('id',$trade_ids)->get();  
+        $trade_ids = @$project->ffe_payments->whereNotNull('f_f_e_trade_id')
+       ->pluck('f_f_e_trade_id'); 
+
+        $pTrades = FFETrade::whereIn('id',$trade_ids)->get();  
 
         if($categories->count() == 0){                 
               $catids = @($pTrades->pluck('category_id'))->unique();
-              $categories = Category::whereIn('id',$catids)->get(); 
+              $categories = FFECategory::whereIn('id',$catids)->get(); 
          }
+
          if($pTrades){
             $trades = $trades->merge($pTrades);
          }
 
-        $pdf = PDF::loadView('projects.includes.budget-pdf',
+        $pdf = PDF::loadView('projects.ffe.budget-pdf',
           ['paymentCategories' => $categories,
-          'trades' => $trades,'project' => $project]
+          'trades' => $trades,'pTrades' => $pTrades,
+          'project' => $project]
         );
 
         $slug = \Str::slug($project->name);
 
         if($view){
-         // return $pdf->stream('project_'.$slug .'_budget.pdf');
+         //return $pdf->stream('project_'.$slug .'_ffe_budget.pdf');
          return $pdf->setPaper('a4')->output();
         }
 
-        return $pdf->download($slug.'-budget.pdf');
+        return $pdf->download($slug.'-ffe-budget.pdf');
 
     }
 
@@ -760,6 +764,10 @@ class FFEPaymentController extends Controller
        set_time_limit(0);
         $project = Project::find($id); 
          $slug = \Str::slug($project->name);
+
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
         $data = [
           'heading' => '',
           'plans' => '',
@@ -768,14 +776,22 @@ class FFEPaymentController extends Controller
           'content' => $request->message,
         ];
        
+
         $pdffile = $this->downloadPDF($id,true);
 
         $data['pdffile'] = $pdffile;
-        $data['fileName'] = $slug.'-budget.pdf';
-
+        $data['fileName'] = $slug.'ffe-budget.pdf';
+        
         dispatch(
-          function() use ($request, $data){
-           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+          function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
           }
         )->afterResponse();
 

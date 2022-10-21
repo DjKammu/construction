@@ -200,6 +200,9 @@ var end =  '{{ Request::input("end")}}';
     var subject = $('#subject').val();
     var message = $('#message').val();
     var file = $('#file').val();
+     var cc = $('#cc').val();
+    var bcc = $('#bcc').val();
+
 
     const validateEmail = (email) => {
     return String(email)
@@ -229,7 +232,7 @@ var end =  '{{ Request::input("end")}}';
 
     let _token   =   "{{ csrf_token() }}";
 
-    let url = '/projects/'+projectId+'/send-mail'
+    let url = '/projects/'+projectId+'/ffe/send-mail'
 
    $.ajax({
         url: url,
@@ -239,6 +242,8 @@ var end =  '{{ Request::input("end")}}';
           subject:subject,
           message:message,
           file:file,
+          cc:cc,
+          bcc:bcc,
           _token: _token
         },
         success:function(response){

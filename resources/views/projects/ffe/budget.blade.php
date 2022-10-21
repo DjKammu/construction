@@ -5,12 +5,12 @@
         </div>
       
          <div class="col-6 text-right">
-          <!--   <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
+            <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
             	Send Email
             </button>
 
             <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/{{ @$project->id }}/download'">Download
-            </button> -->
+            </button>
             <input type="hidden" id="file" value="{{ route('projects.download',@$project->id ) .'?v=1' }}">
         </div>
     </div>
@@ -31,6 +31,19 @@
             <label for="recipient-name" class="col-form-label">Recipient:</label>
             <input type="email" class="form-control" id="recipient">
           </div>
+             <div class="form-group">
+            <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="cc">
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="bcc">
+          </div>
+
+
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Subject:</label>
             <input type="text" class="form-control" id="subject">

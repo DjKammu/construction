@@ -325,7 +325,7 @@ Route::prefix('projects')->group(function(){
 
              Route::get('{id}/download', [App\Http\Controllers\FFEPaymentController::class,'downloadPDF'])->name('projects.ffe.download');
 
-             Route::post('{id}/send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
+             Route::post('send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
 
 
 
