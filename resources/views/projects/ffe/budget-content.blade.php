@@ -8,8 +8,8 @@
                 <th >Category&Trade</th>
                 <th >Trade Budget</th>
                 <th>Material</th>
-                <th>Labor</th>
-                <th>Subcontractor</th>
+                <!-- <th>Labor</th> -->
+                <th>Vendor</th>
                 <!-- <th>Vendors</th> -->
                 <th>Total </th>
                 <th>Paid</th>
@@ -147,7 +147,7 @@
 
                   <td>${{  @\App\Models\Payment::format(@$bid->trade_budget)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
-                  <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
+                  <!-- <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td> -->
                   <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</br> <span class="doc_type_m">{{ ($changeOrderTotal > 0) ? 'Change Orders - $'. @\App\Models\Payment::format($changeOrderTotal) : ''  }}</span></td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
@@ -191,7 +191,7 @@
                     <td ></td>
                    
                   <td>${{  @\App\Models\Payment::format(@$tPay->payment_amount_total)  }}</td>
-                  <td>${{  @\App\Models\Payment::format(0.00)  }}</td>
+                  <!-- <td>${{  @\App\Models\Payment::format(0.00)  }}</td> -->
                   <td>${{  @\App\Models\Payment::format(0.00)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format(@@$tPay->payment_amount_total)  }}</td>
@@ -208,7 +208,7 @@
                   <td colspan="" style="padding:10px;"></td>
                   <td><span class="doc_type_m">{{ @$tPay->vendor->name }} {{ 
                 (@$tPay->material) ? '('.@$tPay->material->name .')' : ""}}</span></td>
-                  <td></td>
+                  <!-- <td></td> -->
                   <td></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="5" style="padding:10px;"></td>
@@ -226,7 +226,7 @@
                  </td>
                   <td><b>${{ \App\Models\Payment::format($catTradeTotal) }}</b></td>
                   <td><b>${{ \App\Models\Payment::format($catMaterialTotal + $catVendorsTotal) }}</b></td>
-                  <td><b>${{ \App\Models\Payment::format($catLabourTotal) }}</b></td>
+                  <!-- <td><b>${{ \App\Models\Payment::format($catLabourTotal) }}</b></td> -->
                   <td><b>${{ \App\Models\Payment::format($catSubcontractorTotal) }}</b></td>
                   <!-- <td></td> -->
                   <td><b>${{ \App\Models\Payment::format($catGrandTotal + $catVendorsTotal) }}</b></td>
@@ -238,7 +238,7 @@
            </tr>
 
            <tr>
-            <td colspan="11" style="padding:10px;"></td>
+            <td colspan="10" style="padding:10px;"></td>
            </tr>
 
         @endforeach
@@ -290,7 +290,7 @@
                <td></td>
                <td>Trade Budget</td>
                <td> Material</td>
-               <td> Labor</td>
+               <!-- <td> Labor</td> -->
                <td> Subcontractor</td>
                <td>Total </td>
                 <td>Total Paid</td>
@@ -306,7 +306,7 @@
                <td></td>
                <td><b>${{ \App\Models\Payment::format($tradeTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($materialTotal + $vendorsTotal)}}</b></td>
-               <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
+               <!-- <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td> -->
                <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
                <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($grandTotal + $vendorsTotal) }}</b></td>
