@@ -92,28 +92,52 @@
     });
      
     function makeFavourite(val){
+
+      let label = $('#label').val();  
       
-      let fullUrl = '/make-favourite/?status='+val.checked+'&url='+encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)
+      let fullUrl = '/make-favourite/?status='+val.checked+'&url='+encodeURIComponent(window.location.pathname+window.location.search+window.location.hash)+'&label='+encodeURIComponent(label)
 
        window.location.href = fullUrl;
     } 
-     
-      var eventData = {
-         url : window.location.pathname+window.location.search+window.location.hash,
-        _token: '{{ csrf_token() }}'
-    };
- 
-    $.ajax({
-        url: "/favourite",
-        type: "POST",
-        data:eventData,
-        success: function (response) { 
-            if(response.data == 1){
-                $('#favourite-url').prop('checked',true); 
-            }
-          
-        }
+
+     function getFavourite(){
+
+          var eventData = {
+                 url : window.location.pathname+window.location.search+window.location.hash,
+                _token: '{{ csrf_token() }}'
+            };
+         
+            $.ajax({
+                url: "/favourite",
+                type: "POST",
+                data:eventData,
+                success: function (response) { 
+                    if(response.data != null  && response.data.status == 1){
+                        $('#favourite-url').prop('checked',true); 
+                        $('#label').val(response.data.label)
+                    }else{
+                         $('#favourite-url').prop('checked',false); 
+                        $('#label').val(null)
+                    }
+                  
+                }
+            });
+     }
+
+     var historyurl =[];
+
+     $(document).click(function() {
+     historyurl.push(location.hash); 
+     if(historyurl.length > 2){ 
+       historyurl.splice(0,historyurl.length-2)
+     }; 
+     if(location.hash != historyurl[0]){
+        getFavourite();
+     }
+
     });
+
+    getFavourite();
 
 
    </script>

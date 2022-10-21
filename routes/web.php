@@ -65,6 +65,10 @@ Route::get('make-favourite',[ App\Http\Controllers\HomeController::class,'makeFa
 
 Route::post('favourite',[ App\Http\Controllers\HomeController::class,'getFavourite'])->name('get.favourite');
 
+Route::post('favourite/{id}',[ App\Http\Controllers\HomeController::class,'updateFavourite'])->name('update.favourite');
+
+Route::delete('favourite/{id}',[ App\Http\Controllers\HomeController::class,'deleteFavourite'])->name('delete.favourite');
+
 
 // Setup Routes
 

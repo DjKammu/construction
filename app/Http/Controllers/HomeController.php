@@ -137,7 +137,6 @@ class HomeController extends Controller
 
 
     public function makeFavourite(Request $request){
-
       
        $user = Auth::user();
 
@@ -145,10 +144,49 @@ class HomeController extends Controller
       
         FavouriteUrl::updateOrCreate(
             ['url' =>$request->url, 'user_id' => $user->id],
-            ['url' =>$request->url, 'user_id' => $user->id,'status' => (int) $status]
+            ['url' =>$request->url, 'user_id' => $user->id,'status' => (int) $status,
+            'label' => $request->label]
         );
 
         return redirect($request->url)->with('message', 'Favourite URL '.( $status == 1 ? "Added" : "Removed").' Successfully!');
+
+    }
+
+    public function deleteFavourite (Request $request,$id){
+      
+       $user = Auth::user();
+
+       $url  = FavouriteUrl::where(['id' => $id, 'user_id' => $user->id]);
+        
+      $return = redirect()->back();
+        
+      if($url->exists()){
+       $url->delete();
+        $return = redirect()->back()->with('message', 'Favourite URL Deleted Successfully!');
+      }else{
+       $return = redirect()->back()->withErrors('URL Can`t be Deleted!');
+      }
+     
+      return $return;
+
+    }
+
+     public function updateFavourite(Request $request,$id){
+      
+       $user = Auth::user();
+
+       $url  = FavouriteUrl::where(['id' => $id, 'user_id' => $user->id]);
+        
+      $return = redirect()->back();
+        
+      if($url->exists()){
+        $url->update(['label' => $request->label ]);
+        $return = redirect()->back()->with('message', 'Favourite URL Updated Successfully!');
+      }else{
+       $return = redirect()->back()->withErrors('URL Can`t be Updated!');
+      }
+     
+      return $return;
 
     }
 
@@ -158,15 +196,15 @@ class HomeController extends Controller
 
        $url = $request->url;
 
-       $favourites =  FavouriteUrl::where(function($q) use ($url){
+       $favourite =  FavouriteUrl::where(function($q) use ($url){
             $q->where('user_id', auth()->user()->id); 
             $q->where('url',$url); 
-        })->pluck('status')->first();
+        })->select('status','label')->first();
 
          return response()->json(
            [
             'status' => 200,
-            'data' => $favourites
+            'data' => $favourite
            ]
         );
         

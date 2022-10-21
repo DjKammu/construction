@@ -10,6 +10,6 @@ class FavouriteUrl extends Model
     use HasFactory;
 
      protected $fillable = [
-     'status' , 'url' ,'user_id'
+     'status' , 'url' ,'user_id', 'label'
     ];
 }
