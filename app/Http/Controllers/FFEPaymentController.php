@@ -443,9 +443,9 @@ class FFEPaymentController extends Controller
          if($payment->proposal){
 
              $request->validate([
-                   'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
+                   'f_f_e_trade_id'  => 'required|exists:f_f_e_trades,id',
                    'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
-                   'payment_amount' => ['required',
+                   'payment_amount'  => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount, $payment){
                           if (request()->type  == false && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
@@ -460,9 +460,9 @@ class FFEPaymentController extends Controller
         }else{
 
             $request->validate([
-                   'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
+                   'f_f_e_trade_id'  => 'required|exists:f_f_e_trades,id',
                    'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
-                   'payment_amount' => ['required']
+                   'payment_amount'  =>  ['required']
               ]
           );
 
@@ -470,8 +470,6 @@ class FFEPaymentController extends Controller
         }
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
-
-        dd($data);
 
         $project = @$payment->project;
 
