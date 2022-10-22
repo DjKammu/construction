@@ -65,10 +65,10 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password"> Trades
                                                 </label>
-                                                <select class="form-control" name="0_f_f_e_trade_id"> 
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_f_f_e_trade_id">
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   @$payment->proposal->f_f_e_trade_id == $trade->id ? 'selected' : '' 
+                                                   @$payment->f_f_e_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
