@@ -65,7 +65,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password"> Trades
                                                 </label>
-                                                <select class="form-control" name="f_f_e_trade_id"> 
+                                                <select class="form-control" name="0_f_f_e_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
                                                    @$payment->proposal->f_f_e_trade_id == $trade->id ? 'selected' : '' 
@@ -82,7 +82,7 @@
                                            <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="f_f_e_vendor_id"> 
+                                                  <select class="form-control" name="0_f_f_e_vendor_id"> 
                                                      <option value="{{ @$payment->f_f_e_vendor_id }}" >{{ @$payment->vendor->name}}
                                                      </option>
                                                   </select>
@@ -119,7 +119,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Trades
                                                   </label>
-                                                  <select class="form-control" name="f_f_e_trade_id"> 
+                                                  <select class="form-control" name="1_f_f_e_trade_id"> 
                                                     @foreach($allTrades as $trade)
                                                      <option value="{{ $trade->id }}" {{ 
                                                    $payment->f_f_e_trade_id == $trade->id ? 'selected' : '' 
@@ -136,7 +136,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="f_f_e_vendor_id"> 
+                                                  <select class="form-control" name="1_f_f_e_vendor_id"> 
                                                     <option value="">Select Vendor</option>
                                                     @foreach(@$vendors as $vendor)
                                                      <option value="{{ $vendor->id }}" {{ 
@@ -160,7 +160,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select class="form-control" name="f_f_e_trade_id"> 
+                                                <select class="form-control" name="1_f_f_e_trade_id"> 
                                                   @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
                                                    $payment->f_f_e_trade_id == $trade->id ? 'selected' : '' 
@@ -177,7 +177,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Vendor
                                                 </label>
-                                                <select class="form-control" name="f_f_e_vendor_id"> 
+                                                <select class="form-control" name="1_f_f_e_vendor_id"> 
                                                   <option value="">Select Vendor</option>
                                                   @foreach(@$vendors as $vendor)
                                                    <option value="{{ $vendor->id }}" {{ ($payment->f_f_e_vendor_id == $vendor->id ) ? 'selected' : ''}}>{{ $vendor->name}}

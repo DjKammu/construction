@@ -113,8 +113,8 @@ class FFEPaymentController extends Controller
         if($id == 0){
              
              $request->validate([
-                   'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
-                   'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   $non_contract.'_f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
                    'payment_amount' => ['required']
               ]
           );
@@ -122,11 +122,11 @@ class FFEPaymentController extends Controller
         }else{
 
             $request->validate([
-                   'f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
-                   'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   $non_contract.'_f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
                    'payment_amount' => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount){
-                          if (request()->type  == false && $value > $totalDueMount ) {
+                          if (request()->non_contract  == false && $value > $totalDueMount ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                           }
                       }
@@ -134,6 +134,9 @@ class FFEPaymentController extends Controller
               ]
           );
         }
+
+        $data['f_f_e_trade_id'] = $data[$non_contract.'_f_f_e_trade_id'];
+        $data['f_f_e_vendor_id'] = $data[$non_contract.'_f_f_e_vendor_id'];
 
         $project_id = @$proposal->project->id;
         $project_id = (!$project_id) ? $request->project_id : $project_id;
@@ -439,15 +442,14 @@ class FFEPaymentController extends Controller
         
         $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
-
-         if($payment->proposal){
+        if($payment->proposal){
 
              $request->validate([
-                   'f_f_e_trade_id'  => 'required|exists:f_f_e_trades,id',
-                   'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   $non_contract.'_f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
                    'payment_amount'  => ['required',
                         function ($attribute, $value, $fail) use ($totalDueMount, $payment){
-                          if (request()->type  == false && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
+                          if (request()->non_contract  == false && $value > ((float) $totalDueMount + $payment->payment_amount) ) {
                               $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
                           }
                       }
@@ -456,18 +458,19 @@ class FFEPaymentController extends Controller
               ]
           );
 
-
         }else{
 
             $request->validate([
-                   'f_f_e_trade_id'  => 'required|exists:f_f_e_trades,id',
-                   'f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   $non_contract.'_f_f_e_trade_id'  => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
                    'payment_amount'  =>  ['required']
               ]
           );
 
-
         }
+
+        $data['f_f_e_trade_id'] = $data[$non_contract.'_f_f_e_trade_id'];
+        $data['f_f_e_vendor_id'] = $data[$non_contract.'_f_f_e_vendor_id'];
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
 

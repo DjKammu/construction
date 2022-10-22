@@ -66,7 +66,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="f_f_e_trade_id"> 
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_f_f_e_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
                                                    $proposal->f_f_e_trade_id == $trade->id ? 'selected' : '' 
@@ -83,7 +83,7 @@
                                             <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                   <select class="form-control" name="f_f_e_vendor_id"> 
+                                                   <select class="form-control" name="0_f_f_e_vendor_id"> 
                                                      <option value="{{ @$proposal->f_f_e_vendor_id }}" >{{ @$proposal->vendor->name}}
                                                      </option>
                                                   </select>
@@ -120,7 +120,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Trades
                                                   </label>
-                                                  <select class="form-control" name="vendor_trade_id"> 
+                                                  <select class="form-control" name="1_f_f_e_trade_id"> 
                                                     @foreach($allTrades as $trade)
                                                      <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                      </option>
@@ -135,7 +135,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="vendor_id"> 
+                                                  <select class="form-control" name="1_f_f_e_vendor_id"> 
                                                     <option value="">Select Vendor</option>
                                                     @foreach(@$vendors as $vendor)
                                                      <option value="{{ $vendor->id }}">{{ $vendor->name}}
@@ -157,7 +157,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select class="form-control" name="f_f_e_trade_id"> 
+                                                <select class="form-control" name="1_f_f_e_trade_id"> 
                                                   @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                    </option>
@@ -172,7 +172,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="f_f_e_vendor_id"> 
+                                                  <select class="form-control" name="1_f_f_e_vendor_id"> 
                                                     <option value="">Select Vendor</option>
                                                     @foreach(@$vendors as $vendor)
                                                      <option value="{{ $vendor->id }}">{{ $vendor->name}}
