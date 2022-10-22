@@ -141,7 +141,7 @@ class FFEController extends Controller
          })->unique();
 
          if(!@$project->ffe_proposals()->exists()){
-             $paymentTrades = Trade::all();
+             $paymentTrades = FFETrade::all();
          }
 
          $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
