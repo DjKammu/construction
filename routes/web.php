@@ -102,12 +102,18 @@ Route::resource('statuses', App\Http\Controllers\StatusController::class);
 
 Route::resource('property-groups', App\Http\Controllers\PropertyGroupController::class);
 
+Route::resource('inspection-types', App\Http\Controllers\InspectionTypeController::class);
+
+Route::resource('report-authorities', App\Http\Controllers\InspectionTypeController::class);
+
 Route::resource('rfi-submittal/statuses', App\Http\Controllers\RFISubmittalStatusController::class,
   ['names' => 'rfi-submittal.statuses']);
 
 Route::resource('ffe/vendors', App\Http\Controllers\FFEVendorController::class,['names' => 'ffe.vendors']);
 
 Route::resource('ffe/trades', App\Http\Controllers\FFETradeController::class,['names' => 'ffe.trades']);
+
+Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::class,['names' => 'ffe.categories']);
 
 Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::class,['names' => 'ffe.categories']);
 
