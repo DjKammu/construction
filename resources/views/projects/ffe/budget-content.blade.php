@@ -163,7 +163,7 @@
                   <td colspan="2" style="padding:10px;"></td>
                   <td></td>
                   <td></td>
-                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
+                  <td><span class="doc_type_m">{{ @$bid->vendor->name }}</span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="5" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
