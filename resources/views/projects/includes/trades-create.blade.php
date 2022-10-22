@@ -5,7 +5,7 @@
 @section('content')
 
 @include('includes.back', 
-['url' => route("projects.show", ['project' => request()->project]),
+['url' => route("projects.show", ['project' => request()->id]),
 'to' => 'to Project'])
 
 
