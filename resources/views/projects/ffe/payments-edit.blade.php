@@ -68,7 +68,7 @@
                                                 <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="f_f_e_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   @$payment->proposal->trade_id == $trade->id ? 'selected' : '' 
+                                                   @$payment->proposal->f_f_e_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
@@ -122,7 +122,7 @@
                                                   <select class="form-control" name="f_f_e_trade_id"> 
                                                     @foreach($allTrades as $trade)
                                                      <option value="{{ $trade->id }}" {{ 
-                                                   $payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   $payment->f_f_e_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                      </option>
                                                     @endforeach
@@ -163,7 +163,7 @@
                                                 <select class="form-control" name="f_f_e_trade_id"> 
                                                   @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   $payment->trade_id == $trade->id ? 'selected' : '' 
+                                                   $payment->f_f_e_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
