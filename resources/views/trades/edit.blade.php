@@ -82,9 +82,28 @@
                                    <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                @if(!empty($trade->scope))
-                                                <img style="width: 200px;" src="{{ url(\Storage::url($trade->scope)) }}" />
-                                                @endif
+                                                 @if($trade->scope)
+                                                 @php
+                                                   $fileInfo = pathinfo($trade->scope);
+                                                   $extension = @$fileInfo['extension'];
+                                                  
+                                                if(in_array($extension,['doc','docx','docm','dot',
+                                                'dotm','dotx'])){
+                                                    $extension = 'word'; 
+                                                 }
+                                                 else if(in_array($extension,['csv','dbf','dif','xla',
+                                                'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                                    $extension = 'excel'; 
+                                                 }
+                                                 @endphp
+                                                 
+                                                  <a href="{{ url(\Storage::url($trade->scope)) }}" target="_blank">
+                                                  <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                  </a> 
+                                                  {{$trade->scope }}
+
+                                                 @endif
+
                                             </div>
                                         </div>
                                     </div> 
