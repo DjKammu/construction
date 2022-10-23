@@ -46,7 +46,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Name 
                                                 </label>
-                                                <input  name="name" value="{{ old('name')}}" type="text" class="form-control" placeholder="Property Name" required="">
+                                                <input  name="name" value="{{ old('name')}}" type="text" class="form-control" placeholder="Inspection Type" required="">
                                             </div>
                                         </div>
                                     </div>
