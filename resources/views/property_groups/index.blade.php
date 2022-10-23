@@ -60,7 +60,7 @@
                         <tr class="text-danger">
                             <th>Acc. No.</th>
                             <th>Name</th>
-                            <th>Projects</th>
+                            <th>Properties</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
@@ -70,8 +70,8 @@
                          <tr>
                            <td> {{ $property_group->account_number }}</td>
                            <td>{{ $property_group->name }}</td>
-                           <td>{!! @$property_group->projects->map(function ($project, $key) {
-                               return sprintf('<a target="_blank" href="projects/%s">%s</a>', @$project->id, $project->name);
+                           <td>{!! @$property_group->properties->map(function ($project, $key) {
+                               return sprintf('<a target="_blank" href="properties/%s">%s</a>', @$project->id, $project->name);
                            })->join(' , ') !!}
                           </td>
                            <td>        

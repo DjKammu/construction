@@ -66,11 +66,11 @@
                                         
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Projects 
+                                                <label class="text-dark" for="password">Properties 
                                                 </label>
-                                                <select class="form-control" id="projects" name="projects[]" multiple=""> 
-                                                  @foreach($projects as $project)
-                                                   <option value="{{ $project->id }}" >{{ $project->name}}
+                                                <select class="form-control" id="properties" name="properties[]" multiple=""> 
+                                                  @foreach($properties as $propertie)
+                                                   <option value="{{ $propertie->id }}" >{{ $propertie->name}}
                                                    </option>
                                                   @endforeach
                                                 </select>
@@ -100,8 +100,8 @@
 @section('pagescript')
   <script>
 
-  $("#projects").select2({
-      placeholder: "Select Projects",
+  $("#properties").select2({
+      placeholder: "Select Properties",
       allowClear: true
   });
 </script>

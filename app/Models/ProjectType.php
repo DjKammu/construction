@@ -12,7 +12,7 @@ class ProjectType extends Model
     protected $perPage = 20;
 
     protected $fillable = [
-     'name' , 'slug' ,'account_number'
+     'name' , 'slug' ,'account_number','property_group_id'
     ];
 
     public function projects(){

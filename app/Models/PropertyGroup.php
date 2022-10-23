@@ -13,8 +13,8 @@ class PropertyGroup extends Model
      'name' , 'slug' ,'account_number'
     ];
 
-    public function projects(){
-    	return $this->hasMany(Project::class);
+    public function properties(){
+    	return $this->hasMany(PropertyType::class);
     } 
 
 }

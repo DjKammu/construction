@@ -73,7 +73,8 @@ class ReportController extends Controller
 
          if(request()->filled('pg') &&  request()->t == 'project-by-status'){
             $pg = request()->pg;
-            $projects->where('property_group_id', $pg);
+            @$propertyIds = PropertyType::where('property_group_id', $pg)->pluck('id');
+            $projects->whereIn('property_type_id', $propertyIds);
          } 
          
          if(request()->filled('u') &&  request()->t == 'project-by-status'){

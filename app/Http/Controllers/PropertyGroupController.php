@@ -7,7 +7,7 @@ use App\Models\ProjectPropertyGroup;
 use App\Models\PropertyGroup;
 use App\Models\DocumentType;
 use App\Models\Proposal;
-use App\Models\Project;
+use App\Models\PropertyType;
 use Gate;
 
 
@@ -42,12 +42,7 @@ class PropertyGroupController extends Controller
             ->orWhere('account_number', 'LIKE', "%{$searchTerm}%");
          }  
 
-        if(request()->filled('t')){
-            $t = request()->t;
-            $property_groups->whereHas('trades', function($q) use ($t){
-                $q->where('slug', $t);
-            });
-         } 
+     
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new PropertyGroup())->perPage;
 
@@ -67,9 +62,9 @@ class PropertyGroupController extends Controller
                return abort('401');
          } 
 
-        $projects = Project::whereNull('property_group_id')->get(); 
+        $properties = PropertyType::whereNull('property_group_id')->get(); 
 
-        return view('property_groups.create',compact('projects'));
+        return view('property_groups.create',compact('properties'));
     }
 
     /**
@@ -95,11 +90,9 @@ class PropertyGroupController extends Controller
 
         $propertyGroup = PropertyGroup::create($data);
         
-        if($request->filled('projects')){
-
-            $projects = $request->projects;
-
-            Project::whereIn('id',$projects)
+        if($request->filled('properties')){
+            $properties = $request->properties;
+            PropertyType::whereIn('id',$properties)
              ->update(['property_group_id' => $propertyGroup->id]);
         } 
 
@@ -119,10 +112,10 @@ class PropertyGroupController extends Controller
           } 
 
          $propertyGroup = PropertyGroup::find($id);
-         $projects = Project::whereNull('property_group_id')
+         $properties = PropertyType::whereNull('property_group_id')
                         ->orWhere('property_group_id', $id)->get();             
         
-         return view('property_groups.edit',compact('propertyGroup','projects'));
+         return view('property_groups.edit',compact('propertyGroup','properties'));
     }
 
     /**
@@ -163,13 +156,14 @@ class PropertyGroupController extends Controller
        
         $propertyGroup->update($data);
         
-       if($request->filled('projects')){
-
-            $projects = $request->projects;
-
-            Project::whereIn('id',$projects)
+       if($request->filled('properties')){
+        $properties = $request->properties;
+             PropertyType::whereIn('id',$properties)
              ->update(['property_group_id' => $propertyGroup->id]);
+        }else{
+            $propertyGroup->properties()->update(['property_group_id' => null]);
         }  
+
 
  
         return redirect('property-groups')->with('message','Property Group Updated Successfully!');
@@ -188,11 +182,8 @@ class PropertyGroupController extends Controller
                return abort('401');
           } 
 
-        $subcontractor = Subcontractor::find($id);
-
-         // @unlink('storage/'.$subcontractor->image);
-
-         $subcontractor->delete();
+         $propertyGroup = PropertyGroup::find($id);
+         $propertyGroup->delete();
 
         return redirect()->back()->with('message', 'Property Group Delete Successfully!');
     }
