@@ -22,7 +22,7 @@
                    {{implode(',',$errors->all() )}}
                 </div>
              @endif
-
+             
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-6">
