@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Property')
+@section('title', 'Report Company')
 
 @section('content')
 
@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Add Property</h4>
+                        <h4 class="mt-0 text-left">Add Report Company</h4>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('properties.store') }}">
+                              action="{{ route('report-companies.store') }}">
                                   @csrf
 
                                     <!-- Current Password -->
@@ -46,7 +46,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Name 
                                                 </label>
-                                                <input  name="name" value="{{ old('name')}}" type="text" class="form-control" placeholder="Property Name" required="">
+                                                <input  name="name" value="{{ old('name')}}" type="text" class="form-control" placeholder="Report Company Name" required="">
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +65,7 @@
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
-                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create Property
+                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create Report Company
                                         </button>
                                     </div>
 

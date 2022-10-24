@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Property')
+@section('title', 'Report Company')
 
 @section('content')
       <!-- Start Main View -->
@@ -26,10 +26,10 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Properties List</h4>
+                        <h4 class="mt-0 text-left">Report Companies List</h4>
                     </div>
                     <div class="col-6 text-right">
-                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='properties/create'">Add Property
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='report-companies/create'">Add Report Company
                         </button>
                     </div>
                 </div>
@@ -46,17 +46,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                          @foreach($propertyTypes as $type)
+                          @foreach($reportCompanies as $reportCompany)
                          <tr>
-                           <td> {{ $type->account_number }}</td>
-                           <td>{{ $type->name }}</td>
+                           <td> {{ $reportCompany->account_number }}</td>
+                           <td>{{ $reportCompany->name }}</td>
                            <td>        
-                            <button onclick="return window.location.href='properties/{{$type->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Property Type" title="Edit Property Type">            <i class="fa fa-edit text-success"></i>        </button> 
+                            <button onclick="return window.location.href='report-companies/{{$reportCompany->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Property Type" title="Edit Property Type">            <i class="fa fa-edit text-success"></i>        </button> 
                           </td>
                           <td>
                              <form 
                               method="post" 
-                              action="{{route('properties.destroy',$type->id)}}"> 
+                              action="{{route('report-companies.destroy',$reportCompany->id)}}"> 
                                @csrf
                               {{ method_field('DELETE') }}
 
@@ -72,7 +72,7 @@
                         </tbody>
                     </table>
                 </div>
-                 {!! $propertyTypes->render() !!}
+                 {!! $reportCompanies->render() !!}
             </div>
         </div>
     </div>

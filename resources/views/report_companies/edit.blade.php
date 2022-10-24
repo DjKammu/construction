@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'Property')
+@section('title', 'Report Company')
 
 @section('content')
 
@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left">Edit Property</h4>
+                        <h4 class="mt-0 text-left">Edit Report Company</h4>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('properties.update',$type->id) }}">
+                              action="{{ route('report-companies.update',$reportCompany->id) }}">
                               <input type="hidden" name="_method" value="PUT">
                                   @csrf
 
@@ -47,7 +47,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Name 
                                                 </label>
-                                                <input  name="name" value="{{ $type->name }}" type="text" class="form-control" placeholder="Property Name" required="">
+                                                <input  name="name" value="{{ $reportCompany->name }}" type="text" class="form-control" placeholder="Report Company Name" required="">
                                             </div>
                                         </div>
                                     </div>
@@ -58,14 +58,14 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Account Number 
                                                 </label>
-                                                <input  name="account_number" type="text" class="form-control" value="{{ $type->account_number }}" placeholder="Account Number" required="">
+                                                <input  name="account_number" type="text" class="form-control" value="{{ $reportCompany->account_number }}" placeholder="Account Number" required="">
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
-                                        <button id="change-password-button" type="submit" class="btn btn-danger">Update Property
+                                        <button id="change-password-button" type="submit" class="btn btn-danger">Update Report Company
                                         </button>
                                     </div>
 

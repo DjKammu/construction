@@ -54,6 +54,8 @@
                         </button>
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("inspection-types")}}'">Inspection Type
                         </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("report-companies")}}'">Report Company
+                        </button>
                     </div>
                 </div>
 

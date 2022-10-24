@@ -104,7 +104,7 @@ Route::resource('property-groups', App\Http\Controllers\PropertyGroupController:
 
 Route::resource('inspection-types', App\Http\Controllers\InspectionTypeController::class);
 
-Route::resource('report-authorities', App\Http\Controllers\InspectionTypeController::class);
+Route::resource('report-companies', App\Http\Controllers\ReportCompanyController::class);
 
 Route::resource('rfi-submittal/statuses', App\Http\Controllers\RFISubmittalStatusController::class,
   ['names' => 'rfi-submittal.statuses']);
