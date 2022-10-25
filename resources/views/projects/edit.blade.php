@@ -88,7 +88,11 @@
                                               
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
-                                                     aria-expanded="false">Budget</a>
+                                                     aria-expanded="false">Project Budget</a>
+                                              </li>
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#construction-cost" role="tab"
+                                                     aria-expanded="false">Total Construction Cost</a>
                                               </li>
 
                                               <li class="nav-item">
@@ -125,6 +129,7 @@
                                     @endif 
                                     @include('projects.includes.payments')
                                     @include('projects.includes.budget')
+                                    @include('projects.includes.construction-cost')
                                     @include('projects.includes.rfi')
                                     @include('projects.includes.submittal')
                               </div>
