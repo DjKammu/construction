@@ -536,7 +536,10 @@ p.p32  {
 @php 
  $total = $line->billed_to_date + $line->work_completed + ($line->materials_stored > 0) ?? $line->materials_stored ;
  $retainage =  $line->project_line->retainage;
+  $percentage = 0;
+ if(@$line->project_line->value != 0){
  $percentage = number_format($total/ $line->project_line->value*100, 1);
+}
  $retainage_value =  ($total * $retainage/100);
  $exclude_retainage =  $line->project_line->value - (float) $total;
 
