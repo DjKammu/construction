@@ -77,7 +77,15 @@
                       <button type="submit" id="search">Search</button>
                     </form>
                     </div>
-                    <div class="col-3 text-right">
+                    <div class="col-1 text-right">
+                       <label>Sort By </label>
+                      <select style="height: 26px;" name="per_page"  onchange="sortBy(this.value)"> 
+                        <option value="">Sort By</option>
+                        <option value="start_date,ASC" {{ (request()->orderby == 'start_date' && request()->order == 'ASC' ) ? 'selected' : ''}}>Date ASC</option>
+                        <option value="start_date,DESC" {{ (request()->orderby == 'start_date' && request()->order == 'DESC' ) ? 'selected' : ''}}>Date DESC</option>
+                        </select>
+                    </div> 
+                    <div class="col-2 text-right">
                        <label>Per Page </label>
                       <select style="height: 26px;" name="per_page"  onchange="selectPerpage(this.value)"> 
                         <option value="">Per Page</option>
@@ -173,6 +181,42 @@
        window.location.href = fullUrl.replace(isPerpage, perPage)
      }
   } 
+
+   function replaceUrlParam(url, paramName, paramValue)
+    {
+        if (paramValue == null) {
+            paramValue = '';
+        }
+        var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
+        if (url.search(pattern)>=0) {
+            return url.replace(pattern,'$1' + paramValue + '$2');
+        }
+        url = url.replace(/[?#]$/,'');
+        return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
+    }
+
+     function sortBy(val){
+     val = val.split(',');
+     let orderBy = val[0];
+     let order = val[1];
+      // return; 
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderby') ;
+      let isSort = fullUrl.includes('order') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderby',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'order',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderby='+orderBy+'&order='+order
+      }
+      window.location.href = url;
+
+ }
+
 
 
 </script>

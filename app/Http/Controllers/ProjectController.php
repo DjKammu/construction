@@ -81,9 +81,20 @@ class ProjectController extends Controller
          $projectTypes = ProjectType::orderBy('name')->get(); 
          $statuses = Status::orderBy('name')->get(); 
 
+         $orderBy = 'name';  
+         $order ='DESC' ;
+         
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
-         $projects = $projects->orderBy('name')->paginate($perPage);
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['start_date','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+
+         $projects = $projects->orderBy($orderBy,$order)->paginate($perPage);
 
          return view('projects.index',compact('projects','projectTypes','propertyTypes','statuses'));
     }
