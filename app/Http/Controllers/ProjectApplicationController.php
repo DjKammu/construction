@@ -398,7 +398,6 @@ class ProjectApplicationController extends Controller
        } 
        else{
 
-
             $applications = $application->application_lines()
                       ->select('*', 'application_lines.id as id')
                       ->with('project_line')
@@ -411,8 +410,11 @@ class ProjectApplicationController extends Controller
                 $app->description = $app->project_line->description;
                 $app->value = $app->project_line->value;
                 $total = (float) $app->work_completed + (float) $app->billed_to_date;
-                $app->total_percentage = number_format($total/ $app->value*100, 1);
 
+                $app->total_percentage = 0;
+                if(@$app->value != 0){
+                   $app->total_percentage = number_format($total/ $app->value*100, 1);
+                }
                  if($edit == false){
                   $app->billed_to_date = $total;
                   $app->stored_to_date = (float) $app->materials_stored + (float) $app->stored_to_date;
@@ -472,7 +474,10 @@ class ProjectApplicationController extends Controller
                 $changeOrder->description = $changeOrder->description;
                 $changeOrder->value = $changeOrder->value;
                 $total = (float) @$line->work_completed + (float) @$line->billed_to_date;
-                $changeOrder->total_percentage = number_format($total/ $changeOrder->value*100, 1);
+                $changeOrder->total_percentage = 0;
+                if(@$changeOrder->value != 0){
+                  $changeOrder->total_percentage = number_format($total/ $changeOrder->value*100, 1);
+                }
                 $changeOrder->billed_to_date =  @$line->billed_to_date ?? 0;
                 $changeOrder->stored_to_date =  @$line->stored_to_date ?? 0;
                 $changeOrder->work_completed =  @$line->work_completed ?? 0;
