@@ -254,7 +254,10 @@ class ProjectApplicationController extends Controller
                         $currentDuePayment = $currentDuePayment + $total - (float) ($total * $retainage/100);
 
                         $totalBilled = (float) $line['work_completed'] + (float) $line['billed_to_date'];
-                        $percentage = @number_format(@$totalBilled / @$line->project_line->value*100, 1);
+                        $percentage = 0;
+                        if(@$line->project_line->value != 0){
+                          $percentage = @number_format(@$totalBilled / @$line->project_line->value*100, 1);
+                        }
 
                       if( ($percentage < 100) && ($closeProject)){
                           $closeProject = false;
@@ -301,8 +304,10 @@ class ProjectApplicationController extends Controller
                        $changeOrdercurrentDue =  $changeOrdercurrentDue + $total - (float) ($total * @$retainage/100);
 
                         $totalBilled = (float) $cLine['work_completed'] + (float) $cLine['billed_to_date'];
-                        $percentage = number_format($totalBilled / $changeOrder->value*100, 1);
-
+                         $percentage = 0;
+                        if(@$changeOrder->value != 0){
+                          $percentage = number_format($totalBilled / $changeOrder->value*100, 1);
+                        }
                       if( ((float) $percentage >= 100) && (!$changeOrdercloseProject)){
                           $changeOrdercloseProject = true;
                       }
