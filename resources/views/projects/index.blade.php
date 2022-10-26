@@ -78,7 +78,7 @@
                     </form>
                     </div>
                     <div class="col-1 text-right">
-                       <label>Sort By </label>
+                       <label>Start Date </label>
                       <select style="height: 26px;" name="per_page"  onchange="sortBy(this.value)"> 
                         <option value="">Sort By</option>
                         <option value="start_date,ASC" {{ (request()->orderby == 'start_date' && request()->order == 'ASC' ) ? 'selected' : ''}}>Date ASC</option>
