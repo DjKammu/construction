@@ -82,7 +82,7 @@ class ProjectController extends Controller
          $statuses = Status::orderBy('name')->get(); 
 
          $orderBy = 'name';  
-         $order ='DESC' ;
+         $order ='ASC' ;
          
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
@@ -93,7 +93,7 @@ class ProjectController extends Controller
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
              : request()->order;
         }
-
+        
          $projects = $projects->orderBy($orderBy,$order)->paginate($perPage);
 
          return view('projects.index',compact('projects','projectTypes','propertyTypes','statuses'));

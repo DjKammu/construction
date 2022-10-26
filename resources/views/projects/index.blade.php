@@ -77,7 +77,7 @@
                       <button type="submit" id="search">Search</button>
                     </form>
                     </div>
-                    <div class="col-1 text-right">
+                    <div class="col-1" style="padding: 0;">
                        <label>Start Date </label>
                       <select style="height: 26px;" name="per_page"  onchange="sortBy(this.value)"> 
                         <option value="">Sort By</option>

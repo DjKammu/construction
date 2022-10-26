@@ -231,7 +231,7 @@ class ProjectLineController extends Controller
     }
 
 
-    public function deleteLines($id){
+    public function deleteLines(Request $request, $id){
          
          if(Gate::denies('delete')) {
                return abort('401');
@@ -239,17 +239,45 @@ class ProjectLineController extends Controller
 
         $project  = Project::find($id);  
 
-
         $project_lines = $project->project_lines();
 
         $applications = @$project->applications();  
+        $changeOrderApplications = @$project->changeOrderApplications();  
+        $closeProject = @$project->closeProject(); 
+
+        $password = $request->password;
+
+        $user = \Auth::user();
+
+        if(!\Hash::check($password, $user->password)) { 
+          return response()->json(
+               [
+                'status' => 200,
+                'error' => true,
+                'message' => 'Password not matched!'
+               ]
+            );
+        }
+
+        if(@$applications->exists() == false){
+
+             return response()->json(
+             [
+              'status' => 200,
+              'error' => true,
+              'message' => 'Application can`t be Deleted!'
+             ]
+          );
+        }
         
         $applications->delete();
+        $changeOrderApplications->delete();
+        $closeProject->delete();
 
         return response()->json(
            [
             'status' => 200,
-            'message' => 'Applications Lines Delete Successfully!'
+            'message' => 'Application Delete Successfully!'
            ]
         );
 

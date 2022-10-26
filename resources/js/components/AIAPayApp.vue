@@ -157,11 +157,14 @@
                   <button v-if="closeProject==false" type="button" class="btn btn-danger mt-0" @click="createApplication" >
                             Create Application #{{ parseInt(applications_count) + 1 }}
                   </button> 
-
                   <button v-else type="button" class="btn btn-danger mt-0" @click="projectClose" >
                             Close Project
                   </button>
                   
+                  <button  v-if="applications_count == 1" type="button" class="btn btn-warning mt-0" @click="resetApplication" >
+                           Reset Application
+                  </button>
+
                 </span>
 
                 </span>
@@ -628,6 +631,38 @@
                }
 
               $('#closeProjectModal').modal('show')
+
+            },
+            async resetApplication(){
+              let password = prompt("By doing reset application line will be deleted.\n\nAre you sure you want to  reset the project?\n\nEnter user password for reset application");
+               
+               if(!password){
+                    return
+               }
+
+              let _vm = this;
+
+              await axios.post('/projects/delete/'+_vm.projectid+'/project-lines',{
+                     'password' : password
+                  }).then(function (response) {
+                           let res = response.data
+                          if(res.error){
+                                _vm.error = true
+                                _vm.errorMsg = res.message
+                           }else{
+                              _vm.success = true
+                              _vm.successMsg = res.message
+                               _vm.loadLines();
+                           }
+
+                           setTimeout(()=>{
+                             _vm.clearMsg()
+                          },2000);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
 
             },
             async  saveCloseProject() {
