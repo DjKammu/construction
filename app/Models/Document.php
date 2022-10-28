@@ -14,6 +14,7 @@ class Document extends Model
      CONST PROJECTS  = 'projects';
      CONST PROPOSALS = 'proposals';
      CONST INVOICES  = 'invoices';
+     CONST BILLS     = 'bills';
      CONST PROJECT   = 'project';
      CONST RFIS          = 'rfis';
      CONST SUBMITTALS    = 'submittals';
@@ -28,7 +29,7 @@ class Document extends Model
      'document_type_id','vendor_id',
      'subcontractor_id', 'proposal_id',
      'payment_id','rfi_id','submittal_id',
-     'ffe_proposal_id'
+     'ffe_proposal_id','bill_id','ffe_bill_id',
     ];
 
     public function document_type(){

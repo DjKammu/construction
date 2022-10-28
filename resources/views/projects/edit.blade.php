@@ -82,6 +82,11 @@
                                               @endif 
 
                                               <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#bills" role="tab"
+                                                     aria-expanded="false">Bills</a>
+                                              </li>
+
+                                              <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
                                               </li>
@@ -128,6 +133,7 @@
                                     @include('projects.includes.bids')
                                     @endif 
                                     @include('projects.includes.payments')
+                                    @include('projects.includes.bills')
                                     @include('projects.includes.budget')
                                     @include('projects.includes.construction-cost')
                                     @include('projects.includes.rfi')

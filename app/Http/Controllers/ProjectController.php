@@ -186,6 +186,7 @@ class ProjectController extends Controller
          $users = User::orderBy('name')->get();
 
          $payments = $project->payments();
+         $bills = $project->bills();
          $rfis = $project->rfis();
          $submittals = $project->submittals();
 
@@ -289,6 +290,7 @@ class ProjectController extends Controller
         }
 
          $payments = $payments->orderBy($orderBy, $order)->get();
+         $bills    = $bills->orderBy($orderBy, $order)->get();
 
          $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
          $submittals = $submittals->orderBy($orderBySubmittal, $orderSubmittal)->get();
@@ -472,6 +474,38 @@ class ProjectController extends Controller
 
             return $payment->file;
            
+         });
+
+          $bills->filter(function($bill){
+
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $folderPath = Document::BILLS."/";
+
+            if(@!$trade_slug){
+                 $vendor  = Vendor::find($bill->vendor_id);
+                 $trade_slug = @$vendor->slug;
+            }
+
+            $folderPath .= "$project_slug/$trade_slug/";
+
+            // $folderPath2 = Document::LIEN_RELEASES."/";
+            
+            // $folderPath2 .= "$project_slug/$trade_slug/";
+
+        
+            $bill->file = @($bill->file) ? asset($folderPath.$bill->file) : '' ;
+            
+            // $bill->remaining = (new PaymentController)->proposalDueAmount($bill->proposal,$bill->id);
+
+            return $bill->file;
+           
          }); 
 
           $rfis->filter(function($rfi){
@@ -535,7 +569,7 @@ class ProjectController extends Controller
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
-            'submittals','rfi_statuses','users'));
+            'submittals','rfi_statuses','users','bills'));
     }
 
     /**

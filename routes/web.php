@@ -211,6 +211,26 @@ Route::post('projects/payments/{id}',[App\Http\Controllers\PaymentController::cl
 
 
 Route::prefix('projects')->group(function(){
+
+     Route::get('{id}/bills',[App\Http\Controllers\BillController::class,'create'])
+     ->name('projects.bills');
+
+    Route::post('{id?}/bills',[App\Http\Controllers\BillController::class,'store'])
+    ->name('projects.bills');
+    
+    Route::get('bills/{id}',[App\Http\Controllers\BillController::class,'show'])
+    ->name('projects.bills.edit');
+   
+     Route::get('bills/{id}/bill-stattus', [App\Http\Controllers\BillController::class,'billStatus'])->name('projects.bills.status');
+
+    Route::post('bills/{id}',[App\Http\Controllers\BillController::class,'update'])->name('projects.bills.update');
+
+     Route::delete('bills/{id}', [App\Http\Controllers\BillController::class,'destroy'])->name('projects.bills.destroy');
+
+     Route::delete('bills/{id}/file', [App\Http\Controllers\BillController::class,'destroyFile'])->name('projects.bills.file.destroy');
+
+
+
  
    Route::get('{id}/get-project-lines', [App\Http\Controllers\ProjectLineController::class,'index'])->name('projects.get-project-lines');
 

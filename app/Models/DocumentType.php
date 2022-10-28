@@ -11,6 +11,7 @@ class DocumentType extends Model
 
     CONST BID     = 'Bid';
     CONST INVOICE = 'Invoice';
+    CONST BILL = 'Bill';
     CONST LIEN_RELEASE  = 'Lien Release';
     CONST RFI        = 'RFI';
     CONST SUBMITTAL  = 'Submittal';
@@ -25,7 +26,7 @@ class DocumentType extends Model
     public static $notEditable = [
       self::BID, self::INVOICE, 
       self::LIEN_RELEASE, self::RFI, 
-      self::SUBMITTAL, self::PROJECT_BUDGET
+      self::SUBMITTAL, self::PROJECT_BUDGET,self::BILL
     ];
 
      public function documents(){
