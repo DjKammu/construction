@@ -7,7 +7,6 @@ class Bill extends Model
 {
     use HasFactory;
 
-
     CONST DEPOSIT_PAID_TEXT     = 'Deposit Paid';
     CONST PROGRESS_PAYMENT_TEXT = 'Progress Payment';
     CONST RETAINAGE_PAID_TEXT   = 'Retainage Paid';
