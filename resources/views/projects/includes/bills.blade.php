@@ -13,12 +13,39 @@
      <div class="row mb-2">
         <div class="col-12">
             <form>
-            <select style="height: 26px;"  name="payment_status" onchange="return window.location.href = '?payment_status='+this.value+'#payments'"> 
+              <select style="height: 26px;" name="bill_vendor" onchange="return window.location.href = '?bill_vendor='+this.value+'#bills'"> 
+              <option value="">Select Vendor</option>
+              @foreach($vendors as $vendor)
+                 <option value="{{ $vendor->id }}" {{ (@request()->bill_vendor == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
+              @endforeach
+            </select> 
+            <select style="height: 26px;" name="bill_subcontractor" onchange="return window.location.href = '?bill_subcontractor='+this.value+'#bills'"> 
+              <option value="">Select Subcontractor</option>
+              @foreach($paymentSubcontractors as $subcontractor)
+                 <option value="{{ $subcontractor->id }}" {{ (@request()->bill_subcontractor == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
+              @endforeach
+            </select>
+            <select style="height: 26px;" name="bill_trade" onchange="return window.location.href = '?bill_trade='+this.value+'#bills'"> 
+              <option value="">Select Trade</option>
+              @foreach($paymentTrades as $trade)
+                 <option value="{{ $trade->id }}" {{ (@request()->bill_trade == $trade->id) ? 'selected' : ''}}> {{ $trade->name }}</option>
+              @endforeach
+            </select>
+
+            <select style="height: 26px;"  name="bill_status" onchange="return window.location.href = '?bill_status='+this.value+'#bills'"> 
               <option value="">Select Status</option>
-              <option value="{{\App\Models\Payment::DEPOSIT_PAID_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::DEPOSIT_PAID_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::DEPOSIT_PAID_TEXT  }}</option>
-              <option value="{{ \App\Models\Payment::PROGRESS_PAYMENT_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::PROGRESS_PAYMENT_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::PROGRESS_PAYMENT_TEXT  }}</option>
-              <option value="{{ \App\Models\Payment::RETAINAGE_PAID_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::RETAINAGE_PAID_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::RETAINAGE_PAID_TEXT  }}</option>
-              <option value="{{ \App\Models\Payment::FINAL_PAYMENT_STATUS }}" {{ @request()->payment_status == \App\Models\Payment::FINAL_PAYMENT_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::FINAL_PAYMENT_TEXT  }}</option>
+              <option value="{{\App\Models\Payment::DEPOSIT_PAID_STATUS }}" {{ @request()->bill_status == \App\Models\Payment::DEPOSIT_PAID_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::DEPOSIT_PAID_TEXT  }}</option>
+              <option value="{{ \App\Models\Payment::PROGRESS_PAYMENT_STATUS }}" {{ @request()->bill_status == \App\Models\Payment::PROGRESS_PAYMENT_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::PROGRESS_PAYMENT_TEXT  }}</option>
+              <option value="{{ \App\Models\Payment::RETAINAGE_PAID_STATUS }}" {{ @request()->bill_status == \App\Models\Payment::RETAINAGE_PAID_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::RETAINAGE_PAID_TEXT  }}</option>
+              <option value="{{ \App\Models\Payment::FINAL_PAYMENT_STATUS }}" {{ @request()->bill_status == \App\Models\Payment::FINAL_PAYMENT_STATUS ? 'selected' : ''}}>{{\App\Models\Payment::FINAL_PAYMENT_TEXT  }}</option>
+            </select>
+
+            <select style="height: 26px;"  name="bill_paid_status" onchange="return window.location.href = '?bill_paid_status='+this.value+'#bills'"> 
+              <option value="">Select Status</option>
+              <option value="{{\App\Models\Bill::PAID_BILL_STATUS }}" {{ @request()->bill_paid_status == \App\Models\Bill::PAID_BILL_STATUS ? 'selected' : ''}}>
+              {{\App\Models\Bill::PAID_BILL_TEXT  }}</option>
+              <option value="{{ \App\Models\Bill::UNPAID_BILL_STATUS }}" 
+              {{ @request()->bill_paid_status == \App\Models\Bill::UNPAID_BILL_STATUS ? 'selected' : ''}}>{{\App\Models\Bill::UNPAID_BILL_TEXT  }}</option>
             </select>
           </form>
         </div>

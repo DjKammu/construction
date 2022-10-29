@@ -11,6 +11,8 @@ class Bill extends Model
     CONST PROGRESS_PAYMENT_TEXT = 'Progress Payment';
     CONST RETAINAGE_PAID_TEXT   = 'Retainage Paid';
     CONST FINAL_PAYMENT_TEXT    = 'Final Payment';
+    CONST PAID_BILL_TEXT        = 'Paid';
+    CONST UNPAID_BILL_TEXT      = 'Unpaid';
 
     CONST DEPOSIT_PAID_STATUS     = 'deposit';
     CONST PROGRESS_PAYMENT_STATUS = 'progress';

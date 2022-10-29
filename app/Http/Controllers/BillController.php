@@ -196,7 +196,7 @@ class BillController extends Controller
 
         // \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
 
-        $data['file'] = '';
+        $data['file'] = '+';
 
         $bill = Bill::create($data);
        
@@ -239,6 +239,11 @@ class BillController extends Controller
             $bill->update(['file' => $fileName]);
 
             $document->files()->create($fileArr);
+        }
+
+        if($request->bill_status == 1){
+           $bill_status =  Bill::PAID_BILL_STATUS;
+           $this->updateBillStatus($bill,$bill_status);
         }
 
         
@@ -478,7 +483,7 @@ class BillController extends Controller
                    ->firstOrCreate(['bill_id' => $bill->id,
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
-                     'bill_id'       => $bill->id,
+                     'bill_id'          => $bill->id,
                      'proposal_id'      => $id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$proposal->subcontractor->id
@@ -729,6 +734,37 @@ class BillController extends Controller
             $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
             
             @\File::copy($publicPath.$folderPath.$bill->file, $publicPath.$invoicePath.$bill->file);
+             
+            $document_type = DocumentType::where('name', DocumentType::INVOICE)
+                         ->first();
+
+            $name = @$project->name.' '.@$document_type->name; 
+
+            $slug = @\Str::slug($name);                
+
+            $document = $project->documents()
+               ->firstOrCreate(['payment_id' => $payment->id,
+                'document_type_id' => $document_type->id
+                 ],
+                 ['name' => $name, 'slug' => $slug,
+                 'payment_id'       => $payment->id,
+                 'proposal_id'      => @$bill->proposal_id,
+                 'document_type_id' => $document_type->id,
+                 'subcontractor_id' => @$bill->subcontractor_id
+                 ]
+             );
+
+            $date  = date('d');
+            $month = date('m');
+            $year  = date('Y');
+
+            $fileArr = ['file' => $bill->file,
+                        'name' => $name,
+                        'date' => $date,'month' => $month,
+                        'year' => $year
+                        ];
+
+                  $document->files()->create($fileArr);
 
           }
 
@@ -762,6 +798,10 @@ class BillController extends Controller
 
             // @unlink($publicPath.$folderPath.$bill->file);
             @unlink($publicPath.$invoicePath.$bill->file);
+
+            $docFile  = DocumentFile::whereFile($bill->file)->firstOrFail();
+          
+            @$docFile->delete();  
 
           }
           

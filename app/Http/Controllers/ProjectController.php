@@ -208,6 +208,31 @@ class ProjectController extends Controller
          if(request()->filled('payment_status')){
                 $payment_status = request()->payment_status;
                 $payments->where('status', $payment_status);
+         }   
+
+         if(request()->filled('bill_subcontractor')){
+                $bill_subcontractor = request()->bill_subcontractor;
+                $bills->where('subcontractor_id', $bill_subcontractor);
+         } 
+
+         if(request()->filled('bill_vendor')){
+                $bill_vendor = request()->bill_vendor;
+                $bills->where('vendor_id', $bill_vendor);
+         } 
+
+         if(request()->filled('bill_trade')){
+                $bill_trade = request()->bill_trade;
+                $bills->where('trade_id', $bill_trade);
+         } 
+
+         if(request()->filled('bill_status')){
+                $bill_status = request()->bill_status;
+                $bills->where('status', $bill_status);
+         }
+
+          if(request()->filled('bill_paid_status')){
+                $bill_paid_status = request()->bill_paid_status;
+                $bills->where('bill_status', $bill_paid_status);
          } 
 
          if(request()->filled('rfi_subcontractor')){

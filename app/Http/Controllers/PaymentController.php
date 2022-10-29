@@ -558,7 +558,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
                      'payment_id'       => $payment->id,
-                     'proposal_id'      => $id,
+                     // 'proposal_id'      => $id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$proposal->subcontractor->id
                      ]
@@ -602,7 +602,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'payment_id'       => $payment->id,
-                           'proposal_id'      => $id,
+                           // 'proposal_id'      => $id,
                            'document_type_id' => $document_type->id,
                            'subcontractor_id' => @$proposal->subcontractor->id
                            ]
@@ -641,7 +641,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'payment_id'       => $payment->id,
-                           'proposal_id'      => $id,
+                           // 'proposal_id'      => $id,
                            'document_type_id' => $document_type->id,
                            'subcontractor_id' => @$proposal->subcontractor->id
                            ]

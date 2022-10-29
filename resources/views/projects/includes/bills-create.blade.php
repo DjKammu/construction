@@ -263,6 +263,18 @@
                                         </div>
                                     </div>
 
+                                         <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <input type="checkbox"
+                                                 name="bill_status" value="1">
+                                                <label class="text-dark" for="password">
+                                                  <b>Mark as Paid</b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <!-- <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
