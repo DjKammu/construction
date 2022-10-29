@@ -73,7 +73,7 @@ class BillController extends Controller
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
         });
-
+        
         //if(!@$project->proposals()->exists()){
              $allTrades = Trade::orderBy('name')->get();
        //  }
