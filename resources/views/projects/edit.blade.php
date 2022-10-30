@@ -244,6 +244,11 @@ var end =  '{{ Request::input("end")}}';
 
    function sendEmailPopup(){   
       $("#myModal").modal('show');
+   } 
+
+   function sendEmailPopup2(type){
+      $('#type').val(type);   
+      $("#myModal2").modal('show');
    }
 
    function sendMail(){
@@ -252,6 +257,8 @@ var end =  '{{ Request::input("end")}}';
     var subject = $('#subject').val();
     var message = $('#message').val();
     var file = $('#file').val();
+    var cc = $('#cc').val();
+    var bcc = $('#bcc').val();
 
     const validateEmail = (email) => {
     return String(email)
@@ -291,12 +298,78 @@ var end =  '{{ Request::input("end")}}';
           subject:subject,
           message:message,
           file:file,
+          cc:cc,
+          bcc:bcc,
           _token: _token
         },
         success:function(response){
            alert(response.message); 
            $("#myModal").modal('hide');
            location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+
+   } 
+
+
+ function sendMail2(){
+   
+    var recipient = $('#recipient2').val();
+    var subject = $('#subject2').val();
+    var message = $('#message2').val();
+    var file = $('#file2').val();
+    var cc = $('#cc2').val();
+    var bcc = $('#bcc2').val();
+
+    const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+
+    if(!recipient){
+      alert('Recipient cant be blank')
+      return
+    }else if(!validateEmail(recipient)) {
+        alert('Recipient is invalid')
+      return
+  
+    }else if(!subject){
+      alert('Subject cant be blank')
+      return
+    } else if(!message){
+      alert('Message cant be blank')
+      return
+    }
+    
+    let projectId = '{{ @$project->id }}';
+
+    let _token   =   "{{ csrf_token() }}";
+
+    let url = '/projects/'+projectId+'/total/send-mail'
+
+   $.ajax({
+        url: url,
+        type:"POST",
+        data:{
+          recipient:recipient,
+          subject:subject,
+          message:message,
+          file:file,
+          cc:cc,
+          bcc:bcc,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           $("#myModal").modal('hide');
+            location.reload();
         },
         error: function(error) {
           alert(error);

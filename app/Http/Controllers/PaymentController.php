@@ -15,6 +15,8 @@ use App\Models\Category;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
 use App\Models\Subcontractor;
+use App\Models\FFETrade;
+use App\Models\FFECategory;
 use Gate;
 use Carbon\Carbon;
 
@@ -809,6 +811,69 @@ class PaymentController extends Controller
 
     }
 
+    public function totalDownloadPDF($id,$view = false){
+
+        $project = Project::find($id); 
+        $trades = $project->trades()->get();
+        $catids = @($trades->pluck('category_id'))->unique();
+        $categories = Category::whereIn('id',$catids)->get(); 
+        $pTrades = [];
+
+        $trade_ids = @$project->payments->whereNotNull('trade_id')
+                       ->pluck('trade_id');  
+        $pTrades = Trade::whereIn('id',$trade_ids)->get();  
+
+        if($categories->count() == 0){                 
+              $catids = @($pTrades->pluck('category_id'))->unique();
+              $categories = Category::whereIn('id',$catids)->get(); 
+         }
+         if($pTrades){
+            $trades = $trades->merge($pTrades);
+         }
+
+        $ffe_trades = $project->ffe_trades()->get();
+
+        $ffe_catids = @($ffe_trades->pluck('category_id'))->unique();
+        $ffe_categories = FFECategory::whereIn('id',$ffe_catids)->get(); 
+        $ffe_pTrades = [];
+
+        $ffe_trade_ids = @$project->ffe_payments->whereNotNull('f_f_e_trade_id')
+       ->pluck('f_f_e_trade_id'); 
+
+        $ffe_pTrades = FFETrade::whereIn('id',$ffe_trade_ids)->get();  
+
+        if($ffe_categories->count() == 0){                 
+              $catids = @($ffe_pTrades->pluck('category_id'))->unique();
+              $ffe_categories = FFECategory::whereIn('id',$catids)->get(); 
+         }
+
+         if($ffe_pTrades){
+            $ffe_trades = $ffe_trades->merge($ffe_pTrades);
+         }
+
+        $t = ( request()->t == 1 ) ? 'details' : 'summary'; 
+
+        $pdf = PDF::loadView('projects.includes.construction-cost-'.$t.'-pdf',
+          ['paymentCategories' => $categories,
+          'ffePaymentCategories' => $ffe_categories,
+          'ffe_pTrades' => $ffe_pTrades,'trades' => $trades,
+          'pTrades' => $pTrades,
+          'project' => $project]
+        );
+
+        //$view = true;
+
+        $slug = \Str::slug($project->name); 
+
+        if($view){
+         //return $pdf->stream('project_'.$slug .'_budget.pdf');
+         return $pdf->setPaper('a4')->output();
+        }
+
+        return $pdf->download($slug.'-'.$t.'.pdf');
+
+    }
+
     public function sendMail(Request $request, $id){
 
        set_time_limit(0);
@@ -824,13 +889,70 @@ class PaymentController extends Controller
        
         $pdffile = $this->downloadPDF($id,true);
 
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
+
+
         $data['pdffile'] = $pdffile;
         $data['fileName'] = $slug.'-budget.pdf';
 
         dispatch(
-          function() use ($request, $data){
-           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+           function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
           }
+
+        )->afterResponse();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Sent Successfully!'
+           ]
+       );
+
+    } 
+
+    public function totalSendMail(Request $request, $id){
+
+       set_time_limit(0);
+        $project = Project::find($id); 
+         $slug = \Str::slug($project->name);
+        $data = [
+          'heading' => '',
+          'plans' => '',
+          'file' => '',
+          'subject' => $request->subject,
+          'content' => $request->message,
+        ];
+
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+       
+        $pdffile = $this->totalDownloadPDF($id,true);
+ 
+        $data['pdffile'] = $pdffile;
+        $data['fileName'] = $slug.'-budget.pdf';
+
+        dispatch(
+           function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
+          }
+
         )->afterResponse();
 
       return response()->json(

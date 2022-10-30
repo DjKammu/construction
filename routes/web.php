@@ -212,6 +212,8 @@ Route::post('projects/payments/{id}',[App\Http\Controllers\PaymentController::cl
 
 Route::prefix('projects')->group(function(){
 
+     // Bills Route
+
      Route::get('{id}/bills',[App\Http\Controllers\BillController::class,'create'])
      ->name('projects.bills');
 
@@ -229,9 +231,13 @@ Route::prefix('projects')->group(function(){
 
      Route::delete('bills/{id}/file', [App\Http\Controllers\BillController::class,'destroyFile'])->name('projects.bills.file.destroy');
 
+    // Total Construction Cost
+
+    Route::get('{id}/total/download', [App\Http\Controllers\PaymentController::class,'totalDownloadPDF'])->name('projects.total.download');
+
+    Route::post('{id}/total/send-mail', [App\Http\Controllers\PaymentController::class,'totalSendMail'])->name('projects.total.send.mail');
 
 
- 
    Route::get('{id}/get-project-lines', [App\Http\Controllers\ProjectLineController::class,'index'])->name('projects.get-project-lines');
 
     Route::get('{id}/aia-pay-app', [App\Http\Controllers\ProjectLineController::class,'create'])->name('projects.aia-pay-app');

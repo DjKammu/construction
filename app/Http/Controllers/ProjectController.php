@@ -10,6 +10,8 @@ use App\Models\ProjectType;
 use App\Models\PropertyType;
 use App\Models\Project;
 use App\Models\Subcontractor;
+use App\Models\FFECategory;
+use App\Models\FFETrade;
 use App\Models\Proposal;
 use App\Models\Category;
 use App\Models\Vendor;
@@ -183,6 +185,7 @@ class ProjectController extends Controller
          $vendors = Vendor::all();
          $documents = $project->documents();
          $trades = $project->trades()->orderBy('name')->get();
+         $ffe_trades = $project->ffe_trades()->orderBy('name')->get();
          $users = User::orderBy('name')->get();
 
          $payments = $project->payments();
@@ -569,11 +572,26 @@ class ProjectController extends Controller
 
          $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
 
+         $ffe_catids = @($ffe_trades->pluck('category_id'))->unique();
+
+         $ffe_categories = $ffePaymentCategories = FFECategory::whereIn('id',$catids)->get(); 
+
          $pTrades =  [];
+         $ffe_pTrades =  [];
          
          $trade_ids = @$project->payments->whereNotNull('trade_id')
                        ->pluck('trade_id');  
-         $pTrades = Trade::whereIn('id',$trade_ids)->get();   
+
+         $pTrades = Trade::whereIn('id',$trade_ids)->get(); 
+
+         $ffe_trade_ids = @$project->ffe_payments->whereNotNull('f_f_e_trade_id')
+                       ->pluck('f_f_e_trade_id'); 
+
+          $ffe_pTrades = FFETrade::whereIn('id',$ffe_trade_ids)->get();   
+      
+         if($ffe_pTrades){
+            $ffe_trades = $ffe_trades->merge($ffe_pTrades);
+         }
 
          $prTrades = $trades;
 
@@ -586,6 +604,11 @@ class ProjectController extends Controller
               $paymentCategories = Category::whereIn('id',$catids)->get(); 
          }
 
+         if($ffePaymentCategories->count() == 0){   
+              $catids = @($ffe_trades->pluck('category_id'))->unique();
+              $ffePaymentCategories = FFECategory::whereIn('id',$catids)->get(); 
+         }
+         
          $subcontractorsCount = @$project->proposals()
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
@@ -594,7 +617,8 @@ class ProjectController extends Controller
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
-            'submittals','rfi_statuses','users','bills'));
+            'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',
+            'ffe_pTrades'));
     }
 
     /**

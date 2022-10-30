@@ -32,6 +32,17 @@
             <input type="email" class="form-control" id="recipient">
           </div>
           <div class="form-group">
+            <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="cc">
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="bcc">
+          </div>
+          <div class="form-group">
             <label for="recipient-name" class="col-form-label">Subject:</label>
             <input type="text" class="form-control" id="subject">
           </div>
