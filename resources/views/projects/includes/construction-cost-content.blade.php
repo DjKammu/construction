@@ -1,5 +1,5 @@
 <div class="table-responsive">
-   <!-- <h4 class="mt-0 text-center">  </h4> -->
+  <!-- <h4 class="mt-0 text-center">  </h4> -->
     <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
