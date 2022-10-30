@@ -3,7 +3,6 @@
         <div class="col-6">
             <h4 class="mt-0 text-left">{{ @$project->name }} - Total Construction Cost</h4>
         </div>
-      
         <div class="card-body">   
          <div class="nav-tabs-navigation">
               <div class="nav-tabs-wrapper">
