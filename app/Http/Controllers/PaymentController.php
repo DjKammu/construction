@@ -937,9 +937,11 @@ class PaymentController extends Controller
         $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
        
         $pdffile = $this->totalDownloadPDF($id,true);
+
+        $t = ( request()->t == 1 ) ? 'details' : 'summary'; 
  
         $data['pdffile'] = $pdffile;
-        $data['fileName'] = $slug.'-budget.pdf';
+        $data['fileName'] = $slug.'-'.$t.'.pdf';
 
         dispatch(
            function() use ($request, $data, $ccUsers, $bccUsers){

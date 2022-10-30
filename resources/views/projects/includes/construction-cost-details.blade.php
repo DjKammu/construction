@@ -14,6 +14,6 @@
     </div>
 
 <div id="proposals-list" class="row py-3">
- @include('projects.includes.construction-cost-details')
+ @include('projects.includes.construction-cost-content')
  </div>
 </div>
