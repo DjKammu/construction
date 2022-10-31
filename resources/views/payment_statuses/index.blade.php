@@ -50,7 +50,6 @@
                               <a href="javascript:void(0)" onclick="sortOrderBy('name', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
                             </span>
                           </th>
-                            <!-- <th>Projects</th> -->
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
