@@ -14,7 +14,6 @@
                 <th>Paid</th>
                 <th >Remaining  </th>
                 <th >Budget Diff  </th>
-
                 <th> %Complete </th>
                 <!-- <th> Notes </th> -->
             </tr>
