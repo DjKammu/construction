@@ -653,6 +653,9 @@ i.fa.fa-sort-asc{
 .table-responsive.table-payments{
   overflow: auto;
 }
+table .row-border{
+    border: 2px solid;
+}
 </style>
 
 @endsection

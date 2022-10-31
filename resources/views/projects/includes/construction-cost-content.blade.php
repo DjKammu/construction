@@ -282,7 +282,7 @@
 
          @endif
 
-             <tr>
+             <tr class="row-border">
                <td><b> Construction Project Total</b></td>
                <td></td>
                <td><b>${{ \App\Models\Payment::format($tradeTotal)}}</b></td>
@@ -576,7 +576,7 @@
          @endif
 
           
-            <tr>
+            <tr class="row-border">
                <td><b>FFE Total</b></td>
                <td></td>
                <td><b>${{ \App\Models\Payment::format($ffeTradeTotal)}}</b></td>
@@ -610,8 +610,8 @@
                <!-- <td></td> -->
                <!-- <td></td>
            </tr> -->
-            <tr>
-               <td><b>Projeect Grand Total</b></td>
+            <tr class="row-border">
+               <td><b>Project Grand Total</b></td>
                <td></td>
                <td><b>${{ \App\Models\Payment::format($ffeTradeTotal + $tradeTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($ffeMaterialTotal + $ffeVendorsTotal + $materialTotal + $vendorsTotal)}}</b></td>
