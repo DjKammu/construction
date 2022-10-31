@@ -53,7 +53,7 @@ class FFEController extends Controller
          $project = Project::find($id);
          $documentTypes = DocumentType::orderBy('name')->get();
          $subcontractors = Subcontractor::orderBy('name')->get();
-         $vendors = FFEVendor::all();
+         $vendors = FFEVendor::orderBy('name')->get();
          $documents = $project->documents();
          $trades = $project->ffe_trades()->orderBy('name')->get();
 
@@ -138,15 +138,15 @@ class FFEController extends Controller
 
          $paymentTrades = @$awardedProposals->map(function($prpsl){
                  return $prpsl->trade;
-         })->unique();
+         })->unique()->sortByDesc('name');
 
          if(!@$project->ffe_proposals()->exists()){
-             $paymentTrades = FFETrade::all();
+             $paymentTrades = FFETrade::orderBy('name')->get();
          }
 
          $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
                  return $prpsl->subcontractor;
-         })->unique();
+         })->unique()->sortByDesc('name');
          
          if(request()->filled('proposal_trade')){
                 $proposal_trade = request()->proposal_trade;

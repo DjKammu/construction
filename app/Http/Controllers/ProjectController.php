@@ -182,7 +182,7 @@ class ProjectController extends Controller
          $project = Project::find($id);
          $documentTypes = DocumentType::orderBy('name')->get();
          $subcontractors = Subcontractor::orderBy('name')->get();
-         $vendors = Vendor::all();
+         $vendors = Vendor::orderBy('name')->get();
          $documents = $project->documents();
          $trades = $project->trades()->orderBy('name')->get();
          $ffe_trades = $project->ffe_trades()->orderBy('name')->get();
@@ -362,15 +362,16 @@ class ProjectController extends Controller
 
          $paymentTrades = @$awardedProposals->map(function($prpsl){
                  return $prpsl->trade;
-         })->unique();
+         })->unique()->sortByDesc('name');
 
          if(!@$project->proposals()->exists()){
-             $paymentTrades = Trade::all();
+             $paymentTrades = Trade::orderBy('name')->get();
          }
 
          $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
                  return $prpsl->subcontractor;
-         })->unique();
+         })->unique()->sortByDesc('name');
+
          
          if(request()->filled('proposal_trade')){
                 $proposal_trade = request()->proposal_trade;

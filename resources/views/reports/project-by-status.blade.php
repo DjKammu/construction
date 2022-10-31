@@ -26,7 +26,7 @@ aria-expanded="true">
       </select> 
 
       <select id="manage-by" style="height: 26px;" onchange="selectByStatus('&t=project-by-status#project-by-status')"> 
-      <option value="">Select Manage By</option>
+      <option value="">Select Managed By</option>
       @foreach($users as $pr)
          <option value="{{ $pr->id }}" {{ (@request()->u == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
       @endforeach
