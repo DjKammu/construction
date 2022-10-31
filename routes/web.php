@@ -106,6 +106,8 @@ Route::resource('inspection-types', App\Http\Controllers\InspectionTypeControlle
 
 Route::resource('report-companies', App\Http\Controllers\ReportCompanyController::class);
 
+Route::resource('payment-statuses', App\Http\Controllers\PaymentStatusController::class);
+
 Route::resource('rfi-submittal/statuses', App\Http\Controllers\RFISubmittalStatusController::class,
   ['names' => 'rfi-submittal.statuses']);
 
