@@ -80,7 +80,7 @@
                                     @if(@$trade)
                                     @include('projects.ffe.proposals')
                                     @endif
-                                    @if(@$allProposals && @$allProposals->count() > 0)
+                                    @if(@$allProposals)
                                      @include('projects.ffe.bids')
                                     @endif 
                                     @include('projects.ffe.payments')
