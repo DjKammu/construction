@@ -574,6 +574,10 @@ class BillController extends Controller
          $project->documents()
                     ->where(['bill_id' => $id])->delete();
 
+          if($bill->bill_status == Bill::PAID_BILL_STATUS){
+             $this->updateBillStatus($bill,Bill::UNPAID_BILL_STATUS,true);
+          }
+
          $bill->delete();
 
         return redirect()->back()->with('message', 'Bill Delete Successfully!');
@@ -697,9 +701,9 @@ class BillController extends Controller
       return redirect()->back()->with('message', 'Status Updated Successfully!');   
     }
 
-    public function updateBillStatus($bill, $bill_status){
+    public function updateBillStatus($bill, $bill_status, $force = false){
 
-      if($bill->bill_status == $bill_status){
+      if($bill->bill_status == $bill_status && !$force){
         return;
       }
 
