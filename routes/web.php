@@ -347,7 +347,8 @@ Route::prefix('projects')->group(function(){
             Route::post('trades/multiple',[App\Http\Controllers\FFETradeController::class,'storeMultipleProjectTrade'])->name('projects.ffe.trades.multiple');
 
              Route::delete('trades/{id}', [App\Http\Controllers\FFETradeController::class,'destroyProjectTrade'])->name('projects.ffe.trades.destroy');
-
+              
+            // Payments Route  
              
             Route::get('payments/create',[App\Http\Controllers\FFEPaymentController::class,'create'])->name('projects.ffe.payments');
 
@@ -365,6 +366,23 @@ Route::prefix('projects')->group(function(){
 
              Route::post('send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
 
+            // Logs Route 
+
+            Route::get('logs/create',[App\Http\Controllers\FFEProcurementLogController::class,'create'])->name('projects.ffe.logs');
+
+            Route::post('{id?}/logs',[App\Http\Controllers\FFEProcurementLogController::class,'store'])->name('projects.ffe.logs.store');
+
+            Route::get('logs/{id}',[App\Http\Controllers\FFEProcurementLogController::class,'show'])->name('projects.ffe.logs.edit');
+
+            Route::post('logs/{id}',[App\Http\Controllers\FFEProcurementLogController::class,'update'])->name('projects.ffe.logs.update');
+
+             Route::delete('logs/{id}', [App\Http\Controllers\FFEProcurementLogController::class,'destroy'])->name('projects.ffe.logs.destroy');
+
+             Route::delete('logs/{id}/file', [App\Http\Controllers\FFEProcurementLogController::class,'destroyFile'])->name('projects.ffe.logs.file.destroy');
+
+             Route::get('{id}/logs/download', [App\Http\Controllers\FFEProcurementLogController::class,'downloadPDF'])->name('projects.ffe.logs.download');
+
+             Route::post('logs/send-mail', [App\Http\Controllers\FFEProcurementLogController::class,'sendMail'])->name('projects.ffe.logs.send.mail');
 
 
       });

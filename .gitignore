@@ -9,6 +9,7 @@
 /public/lien-releases/*
 /public/ffe-proposals/*
 /public/ffe-trades/*
+/public/received-shipments/*
 /public/bills/*
 /public/storage
 /public/images

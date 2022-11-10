@@ -69,6 +69,11 @@
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">FFE Budget</a>
+                                              </li> 
+
+                                               <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
+                                                     aria-expanded="false">FFE Procurement Log</a>
                                               </li>
 
                                         </ul>
@@ -85,6 +90,7 @@
                                     @endif 
                                     @include('projects.ffe.payments')
                                     @include('projects.ffe.budget')
+                                    @include('projects.ffe.logs')
 
                               </div>
 
@@ -364,6 +370,26 @@ var end =  '{{ Request::input("end")}}';
          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbySubmittal='+orderBy+'&orderSubmittal='+order
       }
        url = url+'#submittal';
+       window.location.href = url;
+
+ } 
+
+ function sortOrderByLog(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderbySubmittal') ;
+      let isSort = fullUrl.includes('orderLog') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderbySubmittal',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'orderLog',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderByLog='+orderBy+'&orderLog='+order
+      }
+       url = url+'#logs';
        window.location.href = url;
 
  }

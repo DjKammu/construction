@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DocumentType;
-use App\Models\Document;
-use App\Models\ProjectType;
-use App\Models\PropertyType;
-use App\Models\Project;
+use App\Models\PaymentStatus;
 use App\Models\Subcontractor;
+use App\Models\DocumentType;
+use App\Models\PropertyType;
 use App\Models\FFEProposal;
 use App\Models\FFECategory;
+use App\Models\ProjectType;
 use App\Models\FFEVendor;
-use App\Models\Payment;
-use App\Models\Status;
 use App\Models\FFETrade;
+use App\Models\Document;
+use App\Models\Payment;
+use App\Models\Project;
+use App\Models\Status;
 use Carbon\Carbon;
 use Gate;
 
@@ -60,20 +61,17 @@ class FFEController extends Controller
          $payments = $project->ffe_payments();
          $rfis = $project->rfis();
          $submittals = $project->submittals();
+         $logs = $project->ffe_logs();
 
-          if(request()->filled('payment_subcontractor')){
-                $subcontractor = request()->payment_subcontractor;
-                $payments->where('subcontractor_id', $subcontractor);
-         } 
 
          if(request()->filled('payment_vendor')){
                 $payment_vendor = request()->payment_vendor;
-                $payments->where('vendor_id', $payment_vendor);
+                $payments->where('f_f_e_vendor_id', $payment_vendor);
          } 
 
          if(request()->filled('payment_trade')){
                 $payment_trade = request()->payment_trade;
-                $payments->where('trade_id', $payment_trade);
+                $payments->where('f_f_e_trade_id', $payment_trade);
          } 
 
          if(request()->filled('payment_status')){
@@ -85,6 +83,9 @@ class FFEController extends Controller
 
          $orderBy = 'created_at';  
          $order ='DESC' ;
+
+         $orderByLog = 'created_at';  
+         $orderLog ='DESC' ;
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
@@ -93,11 +94,17 @@ class FFEController extends Controller
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
              : request()->order;
         }
+       
+       if(request()->filled('orderLog')){
+            $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped'] ) ? 'date_shipped' : request()->orderby ) : 'created_at';
+            
+            $orderLog = !in_array(\Str::lower(request()->orderLog), ['desc','asc'])  ? 'ASC' 
+             : request()->orderLog;
+        }
 
       
-
          $payments = $payments->orderBy($orderBy, $order)->get();
-
+         $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -247,6 +254,35 @@ class FFEController extends Controller
          });
 
 
+          $logs->filter(function($log){
+
+            $project = @$log->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $folderPath = Document::RECEIVED_SHIPMENTS."/";
+
+            $folderPath .= "$project_slug/";
+            
+            $files = $log->received_shipment_attachment;
+
+            $files = @array_filter(explode(',',$files));
+
+            $filesArr = [];
+            
+            if(!empty($files)){
+               foreach (@$files as $key => $file) {
+                   $filesArr[] = asset($folderPath.$file);
+                }  
+            } 
+
+            $log->received_shipment_attachment = @($filesArr) ? @implode(',',$filesArr) : '' ;
+         
+            return $log->received_shipment_attachment;
+           
+         });
+        
+
           $payments->filter(function($payment){
 
             $project = @$payment->project;
@@ -309,11 +345,12 @@ class FFEController extends Controller
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
+          $paymentStatuses = PaymentStatus::orderBy('name')->get();                          
            
          return view('projects.ffe.index',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
-            'submittals'));
+            'submittals','logs','paymentStatuses'));
 
 
     }

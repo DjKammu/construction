@@ -104,6 +104,9 @@ class Project extends Model
     public function ffe_proposals(){
         return $this->hasMany(FFEProposal::class);
     }
+    public function ffe_logs(){
+        return $this->hasMany(FFEProcurementLog::class);
+    }
 
     public function ffe_trades(){
         return $this->belongsToMany(FFETrade::class)->withTimestamps();
