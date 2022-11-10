@@ -79,6 +79,17 @@ class FFEController extends Controller
                 $payments->where('status', $payment_status);
          } 
 
+         if(request()->filled('log_vendor')){
+                $log_vendor = request()->log_vendor;
+                $logs->where('ffe_vendor_id', $log_vendor);
+         } 
+        if(request()->filled('log_status')){
+                $log_status = request()->log_status;
+                $logs->whereHas('status', function($q) use ($log_status){
+                    $q->where('id', $log_status);
+                });
+         } 
+
 
 
          $orderBy = 'created_at';  
@@ -96,8 +107,7 @@ class FFEController extends Controller
         }
        
        if(request()->filled('orderLog')){
-            $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped'] ) ? 'date_shipped' : request()->orderby ) : 'created_at';
-            
+            $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped'] ) ? 'date_shipped' : request()->orderByLog ) : 'created_at';
             $orderLog = !in_array(\Str::lower(request()->orderLog), ['desc','asc'])  ? 'ASC' 
              : request()->orderLog;
         }
