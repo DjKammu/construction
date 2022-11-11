@@ -184,7 +184,6 @@
             <input type="text" class="form-control" id="bcc2">
           </div>
 
-
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Subject:</label>
             <input type="text" class="form-control" id="subject2">
