@@ -31,13 +31,12 @@
           </form>
         </div>
         <div class="col-6 text-right">
-           <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
+           <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailLogsPopup()">
               Send Email
             </button>
 
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/{{ @$project->id }}/download'">Download
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/download/logs'">Download
             </button>
-            <input type="hidden" id="file" value="{{ route('projects.download',@$project->id ) .'?v=1' }}">
         </div>
 
     </div>
@@ -159,6 +158,53 @@
         </table>
 
 </div>
+
+ <div id="myModalLogs" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Send Mail</h3>
+    </div>
+    <div class="modal-body">
+     
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="email" class="form-control" id="recipient2">
+          </div>
+             <div class="form-group">
+            <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="cc2">
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="bcc2">
+          </div>
+
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Subject:</label>
+            <input type="text" class="form-control" id="subject2">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message2"></textarea>
+          </div>
+    
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-close" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary" onclick="sendMailLogs()">Send</button>
+    </div>
+    </div>
+    </div>
+
+</div>
+
+
 </div>
 
 

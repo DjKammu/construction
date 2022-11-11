@@ -362,7 +362,7 @@ Route::prefix('projects')->group(function(){
 
              Route::delete('payments/{id}/file', [App\Http\Controllers\FFEPaymentController::class,'destroyFile'])->name('projects.ffe.payments.file.destroy');
 
-             Route::get('{id}/download', [App\Http\Controllers\FFEPaymentController::class,'downloadPDF'])->name('projects.ffe.download');
+             Route::get('budget/download', [App\Http\Controllers\FFEPaymentController::class,'downloadPDF'])->name('projects.ffe.download');
 
              Route::post('send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
 
@@ -380,9 +380,9 @@ Route::prefix('projects')->group(function(){
 
              Route::delete('logs/{id}/file', [App\Http\Controllers\FFEProcurementLogController::class,'destroyFile'])->name('projects.ffe.logs.file.destroy');
 
-             Route::get('{id}/logs/download', [App\Http\Controllers\FFEProcurementLogController::class,'downloadPDF'])->name('projects.ffe.logs.download');
+             Route::get('download/logs', [App\Http\Controllers\FFEProcurementLogController::class,'downloadPDF'])->name('projects.ffe.logs.download');
 
-             Route::post('logs/send-mail', [App\Http\Controllers\FFEProcurementLogController::class,'sendMail'])->name('projects.ffe.logs.send.mail');
+             Route::post('send-mail-logs', [App\Http\Controllers\FFEProcurementLogController::class,'sendMail'])->name('projects.ffe.logs.send.mail');
 
 
       });

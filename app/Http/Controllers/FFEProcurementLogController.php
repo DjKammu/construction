@@ -413,40 +413,20 @@ class FFEProcurementLogController extends Controller
     public function downloadPDF($id,$view = false){
 
         $project = Project::find($id); 
-        $trades = $project->ffe_trades()->get();
+        $logs = $project->ffe_logs()->get();
 
-        $catids = @($trades->pluck('category_id'))->unique();
-        $categories = FFECategory::whereIn('id',$catids)->get(); 
-        $pTrades = [];
-
-        $trade_ids = @$project->ffe_payments->whereNotNull('f_f_e_trade_id')
-       ->pluck('f_f_e_trade_id'); 
-
-        $pTrades = FFETrade::whereIn('id',$trade_ids)->get();  
-
-        if($categories->count() == 0){                 
-              $catids = @($pTrades->pluck('category_id'))->unique();
-              $categories = FFECategory::whereIn('id',$catids)->get(); 
-         }
-
-         if($pTrades){
-            $trades = $trades->merge($pTrades);
-         }
-
-        $pdf = PDF::loadView('projects.ffe.budget-pdf',
-          ['paymentCategories' => $categories,
-          'trades' => $trades,'pTrades' => $pTrades,
-          'project' => $project]
+        $pdf = PDF::loadView('projects.ffe.logs-pdf',
+          ['logs' => $logs]
         );
 
         $slug = \Str::slug($project->name);
 
         if($view){
-         //return $pdf->stream('project_'.$slug .'_ffe_budget.pdf');
+       //  return $pdf->stream('project_'.$slug .'_ffe_budget.pdf');
          return $pdf->setPaper('a4')->output();
         }
 
-        return $pdf->download($slug.'-ffe-budget.pdf');
+        return $pdf->download($slug.'-ffe-logs.pdf');
 
     }
 

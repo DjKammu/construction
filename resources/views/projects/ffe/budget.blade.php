@@ -9,7 +9,7 @@
             	Send Email
             </button>
 
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/{{ @$project->id }}/download'">Download
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/budget/download'">Download
             </button>
             <input type="hidden" id="file" value="{{ route('projects.download',@$project->id ) .'?v=1' }}">
         </div>
