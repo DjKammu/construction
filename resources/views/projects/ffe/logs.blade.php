@@ -15,13 +15,6 @@
                  <option value="{{ $vendor->id }}" {{ (@request()->log_vendor == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
               @endforeach
             </select> 
-           
-            <!-- <select style="height: 26px;" name="log_trade" onchange="return window.location.href = '?log_trade='+this.value+'#logs'"> 
-              <option value="">Select Trade</option>
-              @foreach($paymentTrades as $trade)
-                 <option value="{{ $trade->id }}" {{ (@request()->log_trade == $trade->id) ? 'selected' : ''}}> {{ $trade->name }}</option>
-              @endforeach
-            </select> -->
             <select style="height: 26px;"  name="log_status" onchange="return window.location.href = '?log_status='+this.value+'#logs'"> 
               <option value="">Select Status</option>
               @foreach($paymentStatuses as $status)
