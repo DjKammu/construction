@@ -109,6 +109,11 @@
                                                      aria-expanded="false">Submittal</a>
                                               </li>
                                               <li class="nav-item">
+                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
+                                                     aria-expanded="false">Procurement Log</a>
+                                              </li>
+
+                                              <li class="nav-item">
                                                   <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/ffe') }}"  role="tab"
                                                      aria-expanded="false">FFE </a>
                                               </li>
@@ -138,6 +143,7 @@
                                     @include('projects.includes.construction-cost')
                                     @include('projects.includes.rfi')
                                     @include('projects.includes.submittal')
+                                    @include('projects.includes.logs')
                               </div>
 
                             </div>
@@ -249,6 +255,10 @@ var end =  '{{ Request::input("end")}}';
    function sendEmailPopup2(type){
       $('#type').val(type);   
       $("#myModal2").modal('show');
+   }
+
+   function sendEmailLogsPopup(){
+      $("#myModalLogs").modal('show');
    }
 
    function sendMail(){
@@ -378,6 +388,70 @@ var end =  '{{ Request::input("end")}}';
 
    }
 
+
+ function sendMailLogs(){
+   
+    var recipient = $('#recipient3').val();
+    var subject = $('#subject3').val();
+    var message = $('#message3').val();
+    var file = $('#file3').val();
+    var cc = $('#cc3').val();
+    var bcc = $('#bcc3').val();
+
+    const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+
+    if(!recipient){
+      alert('Recipient cant be blank')
+      return
+    }else if(!validateEmail(recipient)) {
+        alert('Recipient is invalid')
+      return
+  
+    }else if(!subject){
+      alert('Subject cant be blank')
+      return
+    } else if(!message){
+      alert('Message cant be blank')
+      return
+    }
+    
+    let projectId = '{{ @$project->id }}';
+
+    let _token   =   "{{ csrf_token() }}";
+
+    let url = '/projects/'+projectId+'/send-mail-logs'
+
+   $.ajax({
+        url: url,
+        type:"POST",
+        data:{
+          recipient:recipient,
+          subject:subject,
+          message:message,
+          file:file,
+          cc:cc,
+          bcc:bcc,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           $("#myModalLogs").modal('hide');
+            location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+
+   }
+
   function selectPerpage(perPage){
        var fullUrl = window.location.href;
        let isPerpage = '{{ Request::input("per_page")}}';
@@ -484,6 +558,27 @@ var end =  '{{ Request::input("end")}}';
          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbySubmittal='+orderBy+'&orderSubmittal='+order
       }
        url = url+'#submittal';
+       window.location.href = url;
+
+ } 
+
+
+ function sortOrderByLog(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderByLog') ;
+      let isSort = fullUrl.includes('orderLog') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderByLog',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'orderLog',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderByLog='+orderBy+'&orderLog='+order
+      }
+       url = url+'#logs';
        window.location.href = url;
 
  }

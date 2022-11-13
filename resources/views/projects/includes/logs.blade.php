@@ -1,13 +1,13 @@
 <div class="tab-pane" id="logs" role="tabpanel" aria-expanded="true">
    <div class="row mb-2">
          <div class="col-6">
-            <h4 class="mt-0 text-left">{{ @$project->name }} - FFE Procurement Log </h4>
+            <h4 class="mt-0 text-left">{{ @$project->name }} - Procurement Log </h4>
         </div>
         <div class="col-6 text-right">
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.ffe.logs",['project' => request()->project ])  }}'">Add Procurement Log
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.logs",['id' => request()->project ])  }}'">Add Procurement Log
             </button>
         </div>
-        <div class="col-6"> 
+        <div class="col-8"> 
          <form>
             <select style="height: 26px;" name="log_vendor" onchange="return window.location.href = '?log_vendor='+this.value+'#logs'"> 
               <option value="">Select Vendor</option>
@@ -15,13 +15,13 @@
                  <option value="{{ $vendor->id }}" {{ (@request()->log_vendor == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
               @endforeach
             </select> 
-           
-            <!-- <select style="height: 26px;" name="log_trade" onchange="return window.location.href = '?log_trade='+this.value+'#logs'"> 
-              <option value="">Select Trade</option>
-              @foreach($paymentTrades as $trade)
-                 <option value="{{ $trade->id }}" {{ (@request()->log_trade == $trade->id) ? 'selected' : ''}}> {{ $trade->name }}</option>
+            <select style="height: 26px;" name="log_vendor" onchange="return window.location.href = '?log_subcontractor='+this.value+'#logs'"> 
+              <option value="">Select Subcontractor</option>
+              @foreach($subcontractors as $subcontractor)
+                 <option value="{{ $subcontractor->id }}" {{ (@request()->log_subcontractor == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
               @endforeach
-            </select> -->
+            </select> 
+           
             <select style="height: 26px;"  name="log_status" onchange="return window.location.href = '?log_status='+this.value+'#logs'"> 
               <option value="">Select Status</option>
               @foreach($paymentStatuses as $status)
@@ -30,12 +30,12 @@
             </select>
           </form>
         </div>
-        <div class="col-6 text-right">
+        <div class="col-4 text-right">
            <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailLogsPopup()">
               Send Email
             </button>
 
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/download/logs'">Download
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ request()->project }}/download-logs'">Download
             </button>
         </div>
 
@@ -134,13 +134,13 @@
             </td>  
             <td>{{ @$log->status->name }}</td>
             <td>        
-                    <button onclick="return window.location.href='ffe/logs/{{$log->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
+                    <button onclick="return window.location.href='logs/{{$log->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
                     </button> 
                   </td>
               <td>
                  <form 
                   method="post" 
-                  action="{{route('projects.ffe.logs.destroy',[ 'project' => request()->project ,
+                  action="{{route('projects.logs.destroy',[
                   'id' => $log->id]).'#logs'}}"> 
                    @csrf
                   {{ method_field('DELETE') }}
@@ -170,27 +170,27 @@
      
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <input type="email" class="form-control" id="recipient2">
+            <input type="email" class="form-control" id="recipient3">
           </div>
              <div class="form-group">
             <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
             </small></label>
-            <input type="text" class="form-control" id="cc2">
+            <input type="text" class="form-control" id="cc3">
           </div>
 
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
             </small></label>
-            <input type="text" class="form-control" id="bcc2">
+            <input type="text" class="form-control" id="bcc3">
           </div>
 
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Subject:</label>
-            <input type="text" class="form-control" id="subject2">
+            <input type="text" class="form-control" id="subject3">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message2"></textarea>
+            <textarea class="form-control" id="message3"></textarea>
           </div>
     
     </div>

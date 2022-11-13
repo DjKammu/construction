@@ -316,7 +316,25 @@ Route::prefix('projects')->group(function(){
 
    Route::get('{id}/attachment',[App\Http\Controllers\ProjectController::class,'getAttachment'])->name('projects.attachment');
 
-    Route::post('{id}/attachment',[App\Http\Controllers\ProjectController::class,'uploadAttachment'])->name('projects.attachment.update');         
+    Route::post('{id}/attachment',[App\Http\Controllers\ProjectController::class,'uploadAttachment'])->name('projects.attachment.update');    
+
+     // Logs Route 
+
+    Route::get('{id}/logs',[App\Http\Controllers\ProcurementLogController::class,'create'])->name('projects.logs');
+
+    Route::post('{id}/logs',[App\Http\Controllers\ProcurementLogController::class,'store'])->name('projects.logs.store');
+
+    Route::get('logs/{id}',[App\Http\Controllers\ProcurementLogController::class,'show'])->name('projects.logs.edit');
+
+    Route::post('logs/{id}',[App\Http\Controllers\ProcurementLogController::class,'update'])->name('projects.logs.update');
+
+     Route::delete('logs/{id}', [App\Http\Controllers\ProcurementLogController::class,'destroy'])->name('projects.logs.destroy');
+
+     Route::delete('logs/{id}/file', [App\Http\Controllers\ProcurementLogController::class,'destroyFile'])->name('projects.logs.file.destroy');
+
+     Route::get('{id}/download-logs', [App\Http\Controllers\ProcurementLogController::class,'downloadPDF'])->name('projects.logs.download');
+
+     Route::post('{id}/send-mail-logs', [App\Http\Controllers\ProcurementLogController::class,'sendMail'])->name('projects.logs.send.mail');     
 
    
       //FFE Routes

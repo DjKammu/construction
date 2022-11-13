@@ -4,23 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Mail\MaitToSubcontractor;
 use Illuminate\Validation\Rule; 
-use App\Models\FFEProcurementLog;
+use App\Models\ProcurementLog;
 use Illuminate\Http\Request;
-use App\Models\Project;
-use App\Models\FFETrade;
-use App\Models\Document;
-use App\Models\FFEProposal;
-use App\Models\FFEVendor;
-use App\Models\FFECategory;
+use App\Models\Subcontractor;
+use App\Models\PaymentStatus;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
-use App\Models\PaymentStatus;
+use App\Models\Document;
+use App\Models\Proposal;
+use App\Models\Category;
+use App\Models\Project;
+use App\Models\Vendor;
+use App\Models\Trade;
 use Gate;
 use Carbon\Carbon;
 
 use PDF;
 
-class FFEProcurementLogController extends Controller
+class ProcurementLogController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -59,12 +60,13 @@ class FFEProcurementLogController extends Controller
             return redirect()->back();
         }
 
-        $vendors = FFEVendor::orderBy('name')->get();
+        $vendors = Vendor::orderBy('name')->get();
 
-        $allTrades = FFETrade::orderBy('name')->get();
+        $allTrades = Trade::orderBy('name')->get();
         $statuses = PaymentStatus::orderBy('name')->get(); 
+        $subcontractors = Subcontractor::orderBy('name')->get();
 
-        return view('projects.ffe.logs-create',compact('id','statuses','vendors','allTrades'));
+        return view('projects.includes.logs-create',compact('project','id','statuses','vendors','allTrades','subcontractors'));
     }  
 
 
@@ -75,7 +77,7 @@ class FFEProcurementLogController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $project_id, $id)
+    public function store(Request $request, $project_id)
     {
           if(Gate::denies('add')) {
                return abort('401');
@@ -86,12 +88,11 @@ class FFEProcurementLogController extends Controller
             return redirect('/');
         }
         $data = $request->except('_token');
-
-             
-         $request->validate([
+    
+        $request->validate([
                    'date' => 'required|date'
               ]
-          );
+        );
      
         $data['project_id']  = (int) $project_id;
 
@@ -118,7 +119,7 @@ class FFEProcurementLogController extends Controller
 
         $data['received_shipment_attachment'] = '';
 
-        $log = FFEProcurementLog::create($data);
+        $log = ProcurementLog::create($data);
        
         $document_type = DocumentType::where('name', DocumentType::RECEIVED_SHIPMENT)
                          ->first();
@@ -128,11 +129,11 @@ class FFEProcurementLogController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                   ->firstOrCreate(['ffe_log_id' => $log->id,
+                   ->firstOrCreate(['log_id' => $log->id,
                     'document_type_id' => $document_type->id
                      ],
                      ['name' => $name, 'slug' => $slug,
-                     'ffe_log_id'       => $log->id,
+                     'log_id'       => $log->id,
                      'project_id'       => $project_id,
                      'document_type_id' => $document_type->id
                      ]
@@ -165,9 +166,7 @@ class FFEProcurementLogController extends Controller
         }
 
 
-
-        
-        return redirect(route('ffe.index',['project' => $project_id]).'#logs')->with('message', 'FFE Log Created Successfully!');
+        return redirect(route('projects.show',['id' => $project_id]).'#logs')->with('message', 'Log Created Successfully!');
     }
      
     /**
@@ -176,13 +175,13 @@ class FFEProcurementLogController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $project, $id)
+    public function show(Request $request, $id)
     {
          if(Gate::denies('edit')) {
            return abort('401');
         } 
 
-        $log = FFEProcurementLog::find($id);  
+        $log = ProcurementLog::find($id);  
 
         $log->date = @($log->date) ? Carbon::parse($log->date)->format('m-d-Y') : '' ;
         $log->po_sent = @($log->po_sent) ? Carbon::parse($log->po_sent)->format('m-d-Y') : '' ;
@@ -190,9 +189,10 @@ class FFEProcurementLogController extends Controller
         $log->tentative_date_delivery = @($log->tentative_date_delivery) ? Carbon::parse($log->tentative_date_delivery)->format('m-d-Y') : '' ;
         $log->date_received = @($log->date_received) ? Carbon::parse($log->date_received)->format('m-d-Y') : '' ;
 
-        $vendors = FFEVendor::orderBy('name')->get();
-        $allTrades = FFETrade::orderBy('name')->get();
+        $vendors = Vendor::orderBy('name')->get();
+        $allTrades = Trade::orderBy('name')->get();
         $statuses = PaymentStatus::orderBy('name')->get(); 
+        $subcontractors = Subcontractor::orderBy('name')->get();
 
          $filesCollection = ($log->received_shipment_attachment) ? @explode(',',$log->received_shipment_attachment) : [];
 
@@ -212,7 +212,7 @@ class FFEProcurementLogController extends Controller
            
          })->implode(',');
 
-        return view('projects.ffe.logs-edit',compact('project','log','vendors','allTrades','statuses'));
+        return view('projects.includes.logs-edit',compact('log','subcontractors','vendors','allTrades','statuses'));
     }
 
     /**
@@ -233,7 +233,7 @@ class FFEProcurementLogController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $project, $id)
+    public function update(Request $request, $id)
     {
         if(Gate::denies('update')) {
                return abort('401');
@@ -242,7 +242,7 @@ class FFEProcurementLogController extends Controller
         $data = $request->except('_token');
 
   
-        $log = FFEProcurementLog::find($id);
+        $log = ProcurementLog::find($id);
 
         $request->validate([
                  'date' => 'required|date'
@@ -280,11 +280,11 @@ class FFEProcurementLogController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                   ->firstOrCreate(['ffe_log_id' => $log->id,
+                   ->firstOrCreate(['log_id' => $log->id,
                     'document_type_id' => $document_type->id
                      ],
                      ['name' => $name, 'slug' => $slug,
-                     'ffe_log_id'       => $log->id,
+                     'log_id'       => $log->id,
                      'project_id'       => $log->project_id,
                      'document_type_id' => $document_type->id
                      ]
@@ -320,7 +320,7 @@ class FFEProcurementLogController extends Controller
         $log->update($data);
 
         
-        return redirect(route('ffe.index',['project' => $log->project_id]).'?#logs')->with('message', 'FFE Log Updated Successfully!');
+        return redirect(route('projects.show',['project' => $log->project_id]).'?#logs')->with('message', 'Log Updated Successfully!');
     }
 
     /**
@@ -329,14 +329,13 @@ class FFEProcurementLogController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($project, $id)
+    public function destroy($id)
     {
          if(Gate::denies('delete')) {
                return abort('401');
           } 
           
-
-         $log = FFEProcurementLog::find($id);
+         $log = ProcurementLog::find($id);
           
          $project = @$log->project;
 
@@ -361,15 +360,15 @@ class FFEProcurementLogController extends Controller
          }
 
          $project->documents()
-                    ->where(['ffe_log_id' => $id])->delete();
+                    ->where(['log_id' => $id])->delete();
 
          $log->delete();
 
-        return redirect()->back()->with('message', 'FFE Log Delete Successfully!');
+        return redirect()->back()->with('message', 'Log Delete Successfully!');
     }
 
 
-     public function destroyFile($project, $id)
+     public function destroyFile( $id)
     {
          if(Gate::denies('delete')) {
                return abort('401');
@@ -377,7 +376,7 @@ class FFEProcurementLogController extends Controller
 
           $path = request()->path;
 
-          $log = FFEProcurementLog::find($id);
+          $log = ProcurementLog::find($id);
 
           $file = @end(explode('/', $path));
 
@@ -412,10 +411,11 @@ class FFEProcurementLogController extends Controller
 
     public function downloadPDF($id,$view = false){
 
-        $project = Project::find($id); 
-        $logs = $project->ffe_logs()->get();
 
-        $pdf = PDF::loadView('projects.ffe.logs-pdf',
+        $project = Project::find($id); 
+        $logs = $project->logs()->get();
+
+        $pdf = PDF::loadView('projects.includes.logs-pdf',
           ['logs' => $logs]
         );
 
@@ -426,7 +426,7 @@ class FFEProcurementLogController extends Controller
          return $pdf->setPaper('a4')->output();
         }
 
-        return $pdf->download($slug.'-ffe-logs.pdf');
+        return $pdf->download($slug.'-project-logs.pdf');
 
     }
 
@@ -451,7 +451,7 @@ class FFEProcurementLogController extends Controller
         $pdffile = $this->downloadPDF($id,true);
 
         $data['pdffile'] = $pdffile;
-        $data['fileName'] = $slug.'ffe-log.pdf';
+        $data['fileName'] = $slug.'log.pdf';
         
         dispatch(
           function() use ($request, $data, $ccUsers, $bccUsers){

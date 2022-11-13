@@ -61,6 +61,10 @@ class Project extends Model
         return $this->hasMany(Proposal::class);
     }
 
+     public function logs(){
+        return $this->hasMany(ProcurementLog::class);
+    }
+
     public function payments(){
         return $this->hasMany(Payment::class);
     }

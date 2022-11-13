@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\RFISubmittalStatus;
 use Illuminate\Http\Request;
-use App\Models\DocumentType;
-use App\Models\Document;
-use App\Models\ProjectType;
-use App\Models\PropertyType;
-use App\Models\Project;
+use App\Models\PaymentStatus;
 use App\Models\Subcontractor;
+use App\Models\DocumentType;
+use App\Models\PropertyType;
+use App\Models\ProjectType;
 use App\Models\FFECategory;
 use App\Models\FFETrade;
-use App\Models\Proposal;
+use App\Models\Document;
 use App\Models\Category;
-use App\Models\Vendor;
+use App\Models\Proposal;
+use App\Models\Project;
 use App\Models\Payment;
 use App\Models\Status;
+use App\Models\Vendor;
 use App\Models\Trade;
 use App\Models\User;
 use Carbon\Carbon;
@@ -192,6 +193,23 @@ class ProjectController extends Controller
          $bills = $project->bills();
          $rfis = $project->rfis();
          $submittals = $project->submittals();
+         $logs = $project->logs();
+
+         if(request()->filled('log_vendor')){
+                $log_vendor = request()->log_vendor;
+                $logs->where('vendor_id', $log_vendor);
+         } 
+        if(request()->filled('log_subcontractor')){
+                $log_subcontractor = request()->log_subcontractor;
+                $logs->where('subcontractor_id', $log_subcontractor);
+         } 
+        if(request()->filled('log_status')){
+                $log_status = request()->log_status;
+                $logs->whereHas('status', function($q) use ($log_status){
+                    $q->where('id', $log_status);
+                });
+         } 
+
 
           if(request()->filled('payment_subcontractor')){
                 $subcontractor = request()->payment_subcontractor;
@@ -293,6 +311,8 @@ class ProjectController extends Controller
          $order ='DESC' ;
          $orderRFI ='DESC' ;
          $orderSubmittal ='DESC' ;
+         $orderByLog = 'created_at';  
+         $orderLog ='DESC' ;
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
@@ -316,6 +336,15 @@ class ProjectController extends Controller
             $orderSubmittal = !in_array(\Str::lower(request()->orderSubmittal), ['desc','asc'])  ? 'ASC' 
              : request()->orderSubmittal;
         }
+
+        if(request()->filled('orderLog')){
+            $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped'] ) ? 'date_shipped' : request()->orderByLog ) : 'created_at';
+            $orderLog = !in_array(\Str::lower(request()->orderLog), ['desc','asc'])  ? 'ASC' 
+             : request()->orderLog;
+        }
+
+         $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
+
 
          $payments = $payments->orderBy($orderBy, $order)->get();
          $bills    = $bills->orderBy($orderBy, $order)->get();
@@ -569,6 +598,36 @@ class ProjectController extends Controller
            
          });
 
+
+          $logs->filter(function($log){
+
+            $project = @$log->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $folderPath = Document::RECEIVED_SHIPMENTS."/";
+
+            $folderPath .= "$project_slug/";
+            
+            $files = $log->received_shipment_attachment;
+
+            $files = @array_filter(explode(',',$files));
+
+            $filesArr = [];
+            
+            if(!empty($files)){
+               foreach (@$files as $key => $file) {
+                   $filesArr[] = asset($folderPath.$file);
+                }  
+            } 
+
+            $log->received_shipment_attachment = @($filesArr) ? @implode(',',$filesArr) : '' ;
+         
+            return $log->received_shipment_attachment;
+           
+         });
+
+
          $catids = @($trades->pluck('category_id'))->unique();
 
          $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
@@ -614,12 +673,13 @@ class ProjectController extends Controller
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
+        $paymentStatuses = PaymentStatus::orderBy('name')->get();                                   
            
          return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
             'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',
-            'ffe_pTrades'));
+            'ffe_pTrades','logs','paymentStatuses'));
     }
 
     /**
