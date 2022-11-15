@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'FFE Payment')
+@section('title', 'FFE Bill')
 
 @section('content')
 
@@ -30,7 +30,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left"> {{ @$proposal->project->name }} -  Make FEE Payment </h4>
+                        <h4 class="mt-0 text-left"> {{ @$proposal->project->name }} -  FFE Make Bill </h4>
                     </div>
                 </div>
 
@@ -38,13 +38,14 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.ffe.payments.store',['id' => (@$proposal->id) ? @$proposal->id : 0 , 'project' => request()->project ]) }}"
+                              action="{{ route('projects.ffe.bills.store',['project' => request()->project,'id' => (@$proposal->id) ? @$proposal->id : 0 ]) }}"
                                enctype="multipart/form-data">
                                   @csrf
 
                                    @if(@$proposal)
 
-                                   <div class="row">
+
+                                  <div class="row">
                                     <div class="col-lg-5 col-md-6 mx-auto">
                                         <div class="form-group">
                                           <input type="radio" name="non_contract" checked="checked" 
@@ -59,6 +60,7 @@
                                      </div>
                                      </div>
                                     </div>
+
                                     
                                     <div class="subcontractor-vendor" id="subcontractor">
                                       <div class="row">
@@ -66,10 +68,10 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_f_f_e_trade_id"> 
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_ffe_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   $proposal->f_f_e_trade_id == $trade->id ? 'selected' : '' 
+                                                   $proposal->ffe_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
@@ -78,19 +80,20 @@
                                         </div>
                                     </div> 
 
-                                      <div class="row">
+                                       <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
                                                    <select class="form-control" name="0_ffe_vendor_id"> 
-                                                     <option value="{{ @$proposal->ffe_vendor_id }}" >{{ @$proposal->vendor->name}}
+                                                     <option value="{{ @$proposal->f_f_e_vendor_id }}" >{{ @$proposal->vendor->name}}
                                                      </option>
                                                   </select>
                                               </div>
 
                                         </div>
                                        </div>
+
                                            <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -120,7 +123,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Trades
                                                   </label>
-                                                  <select class="form-control" name="1_f_f_e_trade_id"> 
+                                                  <select class="form-control" name="1_ffe_trade_id"> 
                                                     @foreach($allTrades as $trade)
                                                      <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                      </option>
@@ -145,7 +148,7 @@
                                               </div>
                                           </div>
                                         </div>
-                                      
+                                   
 
                                     </div> 
 
@@ -157,7 +160,7 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select class="form-control" name="1_f_f_e_trade_id"> 
+                                                <select class="form-control" name="1_ffe_trade_id"> 
                                                   @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                    </option>
@@ -172,7 +175,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="1_f_f_e_vendor_id"> 
+                                                  <select class="form-control" name="1_ffe_vendor_id"> 
                                                     <option value="">Select Vendor</option>
                                                     @foreach(@$vendors as $vendor)
                                                      <option value="{{ $vendor->id }}">{{ $vendor->name}}
@@ -253,31 +256,22 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+                                         <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Unconditional Lien Release File
+                                                <input type="checkbox"
+                                                 name="bill_status" value="1">
+                                                <label class="text-dark" for="password">
+                                                  <b>Mark as Paid</b>
                                                 </label>
-                                                <input  name="unconditional_lien_release_file"  type="file" >
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-lg-5 col-md-6 mx-auto">
-                                            <div class="form-group">
-                                                <label class="text-dark" for="password">Conditional Lien Release File
-                                                </label>
-                                                <input  name="conditional_lien_release_file"  type="file" >
-                                            </div>
-                                        </div>
-                                    </div>
-
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
                                       <input type="hidden" name="project_id" value="{{ $id }}" />
-                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create FFE Payment
+                                        <button id="change-password-button" type="submit" class="btn btn-danger">Create Bill
                                         </button>
                                     </div>
 
@@ -305,7 +299,6 @@ $("input[name='non_contract']").click(function() {
       $(".subcontractor-vendor").hide();
       $("#" + id).show();
   });
-
 
 });
 

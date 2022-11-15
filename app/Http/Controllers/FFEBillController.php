@@ -6,22 +6,21 @@ use App\Mail\MaitToSubcontractor;
 use Illuminate\Validation\Rule; 
 use Illuminate\Http\Request;
 use App\Models\Project;
-use App\Models\Trade;
+use App\Models\FFETrade;
 use App\Models\Document;
-use App\Models\Proposal;
-use App\Models\Bill;
-use App\Models\Payment;
-use App\Models\Vendor;
-use App\Models\Category;
+use App\Models\FFEProposal;
+use App\Models\FFEBill;
+use App\Models\FFEPayment;
+use App\Models\FFEVendor;
+use App\Models\FFECategory;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
-use App\Models\Subcontractor;
 use Gate;
 use Carbon\Carbon;
 
 use PDF;
 
-class BillController extends Controller
+class FFEBillController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -60,27 +59,27 @@ class BillController extends Controller
             return redirect()->back();
         }
 
-        $proposalsQry = $project->proposals()->IsAwarded();
+        $proposalsQry = $project->ffe_proposals()->IsAwarded();
 
         $proposals = $proposalsQry->get();
 
-        ($request->filled('trade')) ? $proposalsQry->where('trade_id', $request->trade) : '';
+        ($request->filled('trade')) ? $proposalsQry->where('f_f_e_trade_id', $request->trade) : '';
 
         $proposal = $proposalsQry->first();
 
-        $vendors = Vendor::orderBy('name')->get();
+        $vendors = FFEVendor::orderBy('name')->get();
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
         });
 
         //if(!@$project->proposals()->exists()){
-             $allTrades = Trade::orderBy('name')->get();
+             $allTrades = FFETrade::orderBy('name')->get();
        //  }
         $totalAmount = $this->proposalTotalAmount($proposal);
         $dueAmount = $this->proposalDueTotalAmount($proposal);
 
-        return view('projects.includes.bills-create',compact('id','proposal','vendors','trades','allTrades','totalAmount','dueAmount'));
+        return view('projects.ffe.bills-create',compact('id','proposal','vendors','trades','allTrades','totalAmount','dueAmount'));
     }  
 
 
@@ -91,14 +90,14 @@ class BillController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request,$project, $id)
     {
           if(Gate::denies('add')) {
                return abort('401');
         } 
 
         
-        $proposal  = Proposal::find($id);  
+        $proposal  = FFEProposal::find($id);  
          
         if(!$proposal &&  $id == null){
             return redirect('/');
@@ -107,58 +106,36 @@ class BillController extends Controller
         $totalDueMount =  $this->proposalDueTotalAmount($proposal);
 
         $data = $request->except('_token');
-
-       $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
+        
+        $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
         if($id == 0){
              
              $request->validate([
-                   $type.'_trade_id' => 'required|exists:trades,id',
-                   'vendor_id' => 'required|exists:vendors,id',
-                   'payment_amount' => ['required',
-                      //   function ($attribute, $value, $fail) use ($totalDueMount){
-                      //     if (!request()->filled('vendor_id') && $value > $totalDueMount ) {
-                      //         $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                      //     }
-                      // }
-                    ]
-                  // 'status' => 'required'
+                   $non_contract.'_ffe_trade_id' => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_ffe_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   'payment_amount' => ['required']
               ]
           );
-
-          $data['trade_id'] = $data[$type.'_trade_id'];
 
         }else{
 
             $request->validate([
-                  'subcontractor_id' => ['required',
-                  'exists:subcontractors,id'],
-                   $type.'_trade_id' => 'required|exists:trades,id',
-                   'vendor_id' => function ($attribute, $value, $fail){
-                        if (!$value &&  request()->type  == Payment::VENDOR) {
-                            $fail('Vendor Id is required');
-                        }
-                    },
-                   'payment_amount' => ['required',
-                      //   function ($attribute, $value, $fail) use ($totalDueMount){
-                      //     if (request()->type  != Payment::VENDOR && !request()->filled('vendor_id') && $value > $totalDueMount ) {
-                      //         $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                      //     }
-                      // }
-                    ]
-                  // 'status' => 'required'
+                   $non_contract.'_ffe_trade_id' => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_ffe_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   'payment_amount' => ['required']
               ]
           );
-       
-         $data['trade_id'] = $data[$type.'_trade_id'];
         }
-        
+
+        $data['ffe_trade_id'] = $data[$non_contract.'_ffe_trade_id'];
+        $data['ffe_vendor_id'] = $data[$non_contract.'_ffe_vendor_id'];
 
         $project_id = @$proposal->project->id;
         $project_id = (!$project_id) ? $request->project_id : $project_id;
 
         $data['project_id']  = (int) $project_id;
-        $data['proposal_id'] = ($id > 0) ? $id : null ;
+        $data['ffe_proposal_id'] = ($id > 0) ? $id : null ;
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
         
@@ -168,18 +145,9 @@ class BillController extends Controller
 
         $project_slug = \Str::slug($project->name);
 
-        $trade = Trade::find(@$data['trade_id']);
+        $trade = FFETrade::find(@$data['ffe_trade_id']);
 
         $trade_slug = @$trade->slug;
-
-        $subcontractor = Subcontractor::find(@$request->subcontractor_id);
-
-        $subcontractor_slug = @$subcontractor->slug;
-
-        if(@!$proposal){
-             $vendor  = Vendor::find($request->vendor_id);
-             $subcontractor_slug = @$vendor->slug;
-        }
 
         $public_path = public_path().'/';
 
@@ -189,31 +157,26 @@ class BillController extends Controller
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
-        // $folderPath2 = Document::LIEN_RELEASES."/";
 
-        // $folderPath2 .= $project_slug.'/'.$trade_slug;
+        $data['file'] = '';
 
-        // \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
-
-        $data['file'] = ' ';
-
-        $bill = Bill::create($data);
+        $bill = FFEBill::create($data);
        
         $document_type = DocumentType::where('name', DocumentType::BILL)
                          ->first();
 
-        $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+        $name = @$project->name.' '.@$document_type->name;                
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                   ->firstOrCreate(['bill_id' => $bill->id,
+                   ->firstOrCreate(['ffe_bill_id' => $bill->id,
                     'document_type_id'        => $document_type->id
                      ],
                      ['name' => $name, 'slug' => $slug,
-                     'bill_id'       => $bill->id,
-                     'proposal_id'      => $id,
-                     'document_type_id' => $document_type->id,
-                     'subcontractor_id' => @$proposal->subcontractor->id
+                     'ffe_bill_id'       => $bill->id,
+                     'ffe_proposal_id'   => $id,
+                     'project_id'        => $project_id,
+                     'document_type_id' => $document_type->id
                      ]
                  );
 
@@ -226,7 +189,7 @@ class BillController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $trade_slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -241,12 +204,12 @@ class BillController extends Controller
         }
 
         if($request->bill_status == 1){
-           $bill_status =  Bill::PAID_BILL_STATUS;
+           $bill_status =  FFEBill::PAID_BILL_STATUS;
            $this->updateBillStatus($bill,$bill_status);
         }
 
         
-        return redirect(route('projects.show',['project' => $project_id]).'#bills')->with('message', 'Bill Created Successfully!');
+        return redirect(route('ffe.index',['project' => $project_id]).'#bills')->with('message', 'FFE Bill Created Successfully!');
     }
      
     public function proposalTotalAmount($proposal){
@@ -259,7 +222,7 @@ class BillController extends Controller
          }
 
          foreach(@$proposal->changeOrders as $k => $order){
-           if($order->type == \App\Models\ChangeOrder::ADD ){
+           if($order->type == \App\Models\FFEChangeOrder::ADD ){
              $total += $order->subcontractor_price;
            }
            else{
@@ -274,8 +237,9 @@ class BillController extends Controller
 
          $total =  $this->proposalTotalAmount($proposal);  
      
-         $payments = Payment::whereProposalId(@$proposal->id)
-                    ->whereNull('vendor_id')->sum('payment_amount');
+         $payments = FFEPayment::whereFfeProposalId(@$proposal->id)
+                    ->where('non_contract','0')
+                  ->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
 
@@ -286,8 +250,8 @@ class BillController extends Controller
 
          $total =  $this->proposalTotalAmount($proposal);  
 
-         $payments = Payment::whereProposalId(@$proposal->id)
-         ->whereNull('vendor_id')                   
+         $payments = FFEPayment::whereFfeProposalId(@$proposal->id)
+         ->where('non_contract','0')                   
          ->where('id','<=', $payment_id)->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
@@ -300,13 +264,12 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, $projectId, $id)
     {
          if(Gate::denies('edit')) {
            return abort('401');
         } 
-        $bill = Bill::find($id);  
-        $subcontractor = @$bill->subcontractor;
+        $bill = FFEBill::find($id);  
 
         $project = @$bill->project;
 
@@ -320,41 +283,31 @@ class BillController extends Controller
 
         $folderPath .= "$project_slug/$trade_slug/";
 
-        // $folderPath2 = Document::LIEN_RELEASES."/";
-
-        // $folderPath2 .= "$project_slug/$trade_slug/";
-
         
         $bill->file = @($bill->file) ? $folderPath.$bill->file : '';
 
-        // $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath2.$payment->unconditional_lien_release_file : '';
-        // $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath2.$payment->conditional_lien_release_file : '';
 
         $bill->date = @($bill->date) ? Carbon::parse($bill->date)->format('m-d-Y') : '' ;
 
-        $vendors = Vendor::orderBy('name')->get(); 
+        $vendors = FFEVendor::orderBy('name')->get(); 
 
         $totalAmount = $this->proposalTotalAmount($bill->proposal);
         $dueAmount = $this->proposalDueTotalAmount($bill->proposal);
        
-        //dd($totalAmount);
-
-        $proposalsQry = $project->proposals()->IsAwarded();
+        $proposalsQry = $project->ffe_proposals()->IsAwarded();
 
         $proposals = $proposalsQry->get();
 
-        ($request->filled('trade')) ? $proposalsQry->where('trade_id', $request->trade) : '';
+        ($request->filled('trade')) ? $proposalsQry->where('ffe_trade_id', $request->trade) : '';
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
         });
 
-        $allTrades = Trade::orderBy('name')->get();
+        $allTrades = FFETrade::orderBy('name')->get();
          
-         session()->flash('url', route('projects.show',['project' => $bill->project_id]).'?#bills'); 
 
-
-        return view('projects.includes.bills-edit',compact('subcontractor','bill','vendors','totalAmount','dueAmount','trades','allTrades'));
+        return view('projects.ffe.bills-edit',compact('bill','vendors','totalAmount','dueAmount','trades','allTrades'));
     }
 
     /**
@@ -375,7 +328,7 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $project, $id)
     {
         if(Gate::denies('update')) {
                return abort('401');
@@ -383,64 +336,37 @@ class BillController extends Controller
 
         $data = $request->except('_token');
 
-        $bill = Bill::find($id);
+        $bill = FFEBill::find($id);
 
         $totalDueMount =  $this->proposalDueTotalAmount($bill->proposal);
      
         $data = $request->except('_token');
 
-         $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
+         $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
-         if($bill->proposal){
+        if($bill->proposal){
 
-           $request->validate([
-                // 'subcontractor_id' => ['required',
-                // 'exists:subcontractors,id'],
-                 $type.'_trade_id'  => 'required|exists:trades,id',
-                 'vendor_id' => function ($attribute, $value, $fail){
-                      if (!$value &&  request()->type  == Payment::VENDOR) {
-                          $fail('Vendor Id is required');
-                      }
-                  },
-                'payment_amount' => ['required',
-                    //   function ($attribute, $value, $fail) use ($totalDueMount,$payment){
-                    //     if (request()->type  != Payment::VENDOR &&  $value > ((float) $totalDueMount + $payment->payment_amount) ) {
-                    //         $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                    //     }
-                    // }
-                  ]
-                //'payment_amount' => 'required|lte:'.((int) $totalDueMount + $payment->payment_amount),
-                // 'status' => 'required'
-            // ],[
-            //   'payment_amount.lte' => 'The payment amount must be less than or equal '.$totalDueMount.'.'
-            ]
-        );
-          
-          $data['trade_id'] = $data[$type.'_trade_id'];
-          $data['vendor_id'] = (request()->type  == Payment::SUBCONTRACTOR) 
-                               ? null :  $data['vendor_id'] ;
-    
-        // dd($data);
+             $request->validate([
+                   $non_contract.'_ffe_trade_id' => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_ffe_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   'payment_amount'  => ['required']
+              ]
+          );
 
         }else{
 
             $request->validate([
-                    $type.'_trade_id'  => 'required|exists:trades,id',
-                   'vendor_id' => 'required|exists:vendors,id',
-                   'payment_amount' => ['required',
-                      //   function ($attribute, $value, $fail) use ($totalDueMount){
-                      //     if ( !request()->filled('vendor_id') && $value > $totalDueMount ) {
-                      //         $fail('Error! The payment amount must be less than or equal '.$totalDueMount.'.');
-                      //     }
-                      // }
-                    ]
-                  // 'status' => 'required'
+                   $non_contract.'_ffe_trade_id'  => 'required|exists:f_f_e_trades,id',
+                   $non_contract.'_ffe_vendor_id' => 'required|exists:f_f_e_vendors,id',
+                   'payment_amount'  =>  ['required']
               ]
-          );  
-
-          $data['trade_id'] = $data[$type.'_trade_id'];
+          );
 
         }
+
+        $data['ffe_trade_id'] = $data[$non_contract.'_ffe_trade_id'];
+        $data['ffe_vendor_id'] = $data[$non_contract.'_ffe_vendor_id'];
+
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
 
@@ -451,13 +377,6 @@ class BillController extends Controller
 
         $trade_slug = @$bill->trade->slug;
 
-        $subcontractor_slug = @$bill->subcontractor->slug;
-
-         if(@!$bill->proposal){
-             $vendor  = Vendor::find($request->vendor_id);
-             $subcontractor_slug  =  @$vendor->slug;
-        }
-
         $public_path = public_path().'/';
 
         $folderPath = Document::BILLS."/";
@@ -465,12 +384,6 @@ class BillController extends Controller
         $folderPath .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
-
-        // $folderPath2 = Document::LIEN_RELEASES."/";
-
-        // $folderPath2 .= $project_slug.'/'.$trade_slug;
-        
-        // \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
         
         $document_type = DocumentType::where('name', DocumentType::BILL)
                          ->first();
@@ -479,11 +392,11 @@ class BillController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                   ->firstOrCreate(['bill_id' => $bill->id,
+                   ->firstOrCreate(['ffe_bill_id' => $bill->id,
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
-                     'bill_id'          => $bill->id,
-                     'proposal_id'      => $id,
+                     'ffe_bill_id'          => $bill->id,
+                     'ffe_proposal_id'      => $id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$proposal->subcontractor->id
                      ]
@@ -498,7 +411,7 @@ class BillController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $trade_slug.'-'.time().'.'. $file->getClientOriginalExtension();
 
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
@@ -518,7 +431,7 @@ class BillController extends Controller
         $bill->update($data);
 
         
-        return redirect(route('projects.show',['project' => $bill->project_id]).'?#bills')->with('message', 'Bill Updated Successfully!');
+        return redirect(route('ffe.index',['project' => $bill->project_id]).'?#bills')->with('message', 'FFE Bill Updated Successfully!');
     }
 
     /**
@@ -527,13 +440,13 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($project, $id)
     {
          if(Gate::denies('delete')) {
                return abort('401');
           } 
 
-         $bill = Bill::find($id);
+         $bill = FFEBill::find($id);
 
          $project = @$bill->project;
 
@@ -547,40 +460,26 @@ class BillController extends Controller
 
          $folderPath .= "$project_slug/$trade_slug/";
 
-         // $folderPath2 = Document::LIEN_RELEASES."/";
-
-         // $folderPath2 .= "$project_slug/$trade_slug/";
-
          $path = @public_path().'/'.$folderPath;
-         // $path2 = @public_path().'/'.$folderPath2;
 
          $file = @$payment->file;
-         // $unconditional_lien_release_file = @$payment->unconditional_lien_release_file;
-         // $conditional_lien_release_file = @$payment->conditional_lien_release_file;
          
          $aPath = public_path().'/'. Document::BILLS."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
-         // $aPath2 = public_path().'/'. Document::LIEN_RELEASES."/".Document::ARCHIEVED; 
-         // \File::makeDirectory($aPath2, $mode = 0777, true, true);
-
         @\File::copy($path.$file, $aPath.'/'.$file);
-        // @\File::copy($path2.$conditional_lien_release_file, $aPath2.'/'.$conditional_lien_release_file);
-        // @\File::copy($path2.$unconditional_lien_release_file, $aPath2.'/'
-          // .$unconditional_lien_release_file);
+
         @unlink($path.$file);
-        // @unlink($path2.$conditional_lien_release_file);
-        // @unlink($path2.$unconditional_lien_release_file);
 
          $project->documents()
-                    ->where(['bill_id' => $id])->delete();
+                    ->where(['ffe_bill_id' => $id])->delete();
 
-          if($bill->bill_status == Bill::PAID_BILL_STATUS){
-             $this->updateBillStatus($bill,Bill::UNPAID_BILL_STATUS,true);
-          }
+        if($bill->bill_status == FFEBill::PAID_BILL_STATUS){
+           $this->updateBillStatus($bill,FFEBill::UNPAID_BILL_STATUS,true);
+        }
 
          $bill->delete();
 
-        return redirect()->back()->with('message', 'Bill Delete Successfully!');
+        return redirect()->back()->with('message', 'FFE Bill Delete Successfully!');
     }
 
 
@@ -592,7 +491,7 @@ class BillController extends Controller
 
           $path = request()->path;
 
-          $bill = Bill::find($id);
+          $bill = FFEBill::find($id);
 
           $file = @end(explode('/', $path));
 
@@ -694,9 +593,9 @@ class BillController extends Controller
     }
 
     public function billStatus(Request $request, $id){
-      $bill = Bill::find($id);
+      $bill = FFEBill::find($id);
       $bill_status = $request->bill_status;
-      $bill_status = ($bill_status == 'true') ? Bill::PAID_BILL_STATUS : Bill::UNPAID_BILL_STATUS;
+      $bill_status = ($bill_status == 'true') ? FFEBill::PAID_BILL_STATUS : FFEBill::UNPAID_BILL_STATUS;
       $this->updateBillStatus($bill,$bill_status);
       return redirect()->back()->with('message', 'Status Updated Successfully!');   
     }
@@ -707,16 +606,16 @@ class BillController extends Controller
         return;
       }
 
-      if($bill_status == Bill::PAID_BILL_STATUS){
+      if($bill_status == FFEBill::PAID_BILL_STATUS){
           $data = $bill->toArray();
-          $data['bill_id'] = $data['id'];
+          $data['ffe_bill_id'] = $data['id'];
           unset($data['id']);
-          unset($data['payment_id']);
+          unset($data['ffe_payment_id']);
           unset($data['bill_status']);
           unset($data['created_at']);
           unset($data['updated_at']);
 
-          $payment  = Payment::create($data);
+          $payment  = FFEPayment::create($data);
 
           if($bill->file){
 
@@ -746,14 +645,13 @@ class BillController extends Controller
             $slug = @\Str::slug($name);                
 
             $document = $project->documents()
-               ->firstOrCreate(['payment_id' => $payment->id,
+               ->firstOrCreate(['ffe_payment_id' => $payment->id,
                 'document_type_id' => $document_type->id
                  ],
                  ['name' => $name, 'slug' => $slug,
-                 'payment_id'       => $payment->id,
-                 'proposal_id'      => @$bill->proposal_id,
-                 'document_type_id' => $document_type->id,
-                 'subcontractor_id' => @$bill->subcontractor_id
+                 'ffe_payment_id'       => $payment->id,
+                 'ffe_proposal_id'      => @$bill->proposal_id,
+                 'document_type_id' => $document_type->id
                  ]
              );
 
@@ -767,7 +665,7 @@ class BillController extends Controller
                         'year' => $year
                         ];
 
-            $document->files()->create($fileArr);
+                  $document->files()->create($fileArr);
 
           }
 
@@ -775,9 +673,9 @@ class BillController extends Controller
           
           return true;
       }
-      else if ($bill_status == Bill::UNPAID_BILL_STATUS){
+      else if ($bill_status == FFEBill::UNPAID_BILL_STATUS){
 
-           Payment::where('bill_id',$bill->id)->delete();
+           FFEPayment::where('ffe_bill_id',$bill->id)->delete();
 
           if($bill->file){
 
@@ -797,9 +695,6 @@ class BillController extends Controller
 
             $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
             
-            // @\File::copy($publicPath.$folderPath.$bill->file, $publicPath.$invoicePath.$bill->file);
-
-            // @unlink($publicPath.$folderPath.$bill->file);
             @unlink($publicPath.$invoicePath.$bill->file);
 
             $docFile  = DocumentFile::whereFile($bill->file)->firstOrFail();

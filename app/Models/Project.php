@@ -75,6 +75,10 @@ class Project extends Model
 
     public function bills(){
         return $this->hasMany(Bill::class);
+    } 
+
+    public function ffe_bills(){
+        return $this->hasMany(FFEBill::class);
     }
 
      public function rfis(){

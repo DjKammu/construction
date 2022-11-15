@@ -62,6 +62,7 @@ class FFEController extends Controller
          $rfis = $project->rfis();
          $submittals = $project->submittals();
          $logs = $project->ffe_logs();
+         $bills = $project->ffe_bills();
 
 
          if(request()->filled('payment_vendor')){
@@ -89,7 +90,28 @@ class FFEController extends Controller
                     $q->where('id', $log_status);
                 });
          } 
+         
 
+
+         if(request()->filled('bill_vendor')){
+                $bill_vendor = request()->bill_vendor;
+                $bills->where('ffe_vendor_id', $bill_vendor);
+         } 
+
+         if(request()->filled('bill_trade')){
+                $bill_trade = request()->bill_trade;
+                $bills->where('ffe_trade_id', $bill_trade);
+         } 
+
+         if(request()->filled('bill_status')){
+                $bill_status = request()->bill_status;
+                $bills->where('status', $bill_status);
+         }
+
+          if(request()->filled('bill_paid_status')){
+                $bill_paid_status = request()->bill_paid_status;
+                $bills->where('bill_status', $bill_paid_status);
+         } 
 
 
          $orderBy = 'created_at';  
@@ -111,6 +133,8 @@ class FFEController extends Controller
             $orderLog = !in_array(\Str::lower(request()->orderLog), ['desc','asc'])  ? 'ASC' 
              : request()->orderLog;
         }
+
+         $bills    = $bills->orderBy($orderBy, $order)->get();
 
       
          $payments = $payments->orderBy($orderBy, $order)->get();
@@ -325,6 +349,32 @@ class FFEController extends Controller
 
             return $payment->file;
            
+         });  
+
+        $bills->filter(function($bill){
+
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $folderPath = Document::BILLS."/";
+
+            if(@!$trade_slug){
+                 $vendor  = Vendor::find($bill->vendor_id);
+                 $trade_slug = @$vendor->slug;
+            }
+
+            $folderPath .= "$project_slug/$trade_slug/";
+
+
+            $bill->file = @($bill->file) ? asset($folderPath.$bill->file) : '' ;
+          
+            return $bill->file;
+           
          }); 
 
         
@@ -360,7 +410,7 @@ class FFEController extends Controller
          return view('projects.ffe.index',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
             'categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
-            'submittals','logs','paymentStatuses'));
+            'submittals','logs','paymentStatuses','bills'));
 
 
     }

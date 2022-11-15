@@ -65,6 +65,10 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
                                               </li>
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#bills" role="tab"
+                                                     aria-expanded="false">Bills</a>
+                                              </li>
                                               
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
@@ -88,6 +92,7 @@
                                     @if(@$allProposals)
                                      @include('projects.ffe.bids')
                                     @endif 
+                                    @include('projects.ffe.bills')
                                     @include('projects.ffe.payments')
                                     @include('projects.ffe.budget')
                                     @include('projects.ffe.logs')

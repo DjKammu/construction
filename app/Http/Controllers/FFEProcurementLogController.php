@@ -89,7 +89,7 @@ class FFEProcurementLogController extends Controller
 
              
          $request->validate([
-                   'date' => 'required|date'
+                   'date' => 'required|date_format:m-d-Y'
               ]
           );
      
@@ -245,7 +245,7 @@ class FFEProcurementLogController extends Controller
         $log = FFEProcurementLog::find($id);
 
         $request->validate([
-                 'date' => 'required|date'
+                 'date' => 'required|date_format:m-d-Y'
             ]
         );
    

@@ -90,7 +90,7 @@ class ProcurementLogController extends Controller
         $data = $request->except('_token');
     
         $request->validate([
-                   'date' => 'required|date'
+                   'date' => 'required|date_format:m-d-Y'
               ]
         );
      
@@ -166,7 +166,7 @@ class ProcurementLogController extends Controller
         }
 
 
-        return redirect(route('projects.show',['id' => $project_id]).'#logs')->with('message', 'Log Created Successfully!');
+        return redirect(route('projects.show',['project' => $project_id]).'#logs')->with('message', 'Log Created Successfully!');
     }
      
     /**
@@ -245,7 +245,7 @@ class ProcurementLogController extends Controller
         $log = ProcurementLog::find($id);
 
         $request->validate([
-                 'date' => 'required|date'
+                 'date' => 'required|date_format:m-d-Y'
             ]
         );
    

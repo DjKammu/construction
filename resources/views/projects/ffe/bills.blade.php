@@ -1,10 +1,10 @@
 <div class="tab-pane" id="bills" role="tabpanel" aria-expanded="true">
    <div class="row mb-2">
          <div class="col-6">
-            <h4 class="mt-0 text-left">{{ @$project->name }} - Bills List </h4>
+            <h4 class="mt-0 text-left">{{ @$project->name }} - FFE Bills List </h4>
         </div>
         <div class="col-6 text-right">
-            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.bills",['id' => request()->project ])  }}'">Add Bill
+            <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("projects.ffe.bills",['project' => request()->project ])  }}'">Add FFE Bill
             </button>
         </div>
 
@@ -18,12 +18,6 @@
                  <option value="{{ $vendor->id }}" {{ (@request()->bill_vendor == $vendor->id) ? 'selected' : ''}}> {{ $vendor->name }}</option>
               @endforeach
             </select> 
-            <select style="height: 26px;" name="bill_subcontractor" onchange="return window.location.href = '?bill_subcontractor='+this.value+'#bills'"> 
-              <option value="">Select Subcontractor</option>
-              @foreach($paymentSubcontractors as $subcontractor)
-                 <option value="{{ $subcontractor->id }}" {{ (@request()->bill_subcontractor == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
-              @endforeach
-            </select>
             <select style="height: 26px;" name="bill_trade" onchange="return window.location.href = '?bill_trade='+this.value+'#bills'"> 
               <option value="">Select Trade</option>
               @foreach($paymentTrades as $trade)
@@ -75,10 +69,9 @@
                 </span></th>
 
                 <th>Trade</th>
-                <th>Subcontractor/Vendor</th>
+                <th>Vendor</th>
                 <th>Amount Paid</th>
                 <th>Contract Amount </th>
-                <!-- <th>Remaining Amount </th> -->
                 <th>Invoice</th>
                 <th>Status</th>
                 <th>Edit</th>
@@ -115,7 +108,6 @@
                <td> ${{ \App\Models\Payment::format($bill->payment_amount) }}</td>
 
                <td> {{ (@$bill->vendor ) ? '-' :  '$'.\App\Models\Payment::format($bill->total_amount) }}</td>
-               <!-- <td>  {{ (@$bill->vendor ) ? '-' :  '$'.\App\Models\Payment::format($bill->remaining) }} </td> -->
                <td>
                 @if($bill->file)
                 <a href="{{ asset($bill->file) }}" target="_blank">
@@ -128,13 +120,14 @@
             </td>
                <td>{{ @\App\Models\Payment::$statusArr[$bill->status] }}</td>
                   <td>        
-                    <button onclick="return window.location.href='bills/{{$bill->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
+                    <button onclick="return window.location.href='ffe/bills/{{$bill->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
                     </button> 
                   </td>
               <td>
                  <form 
                   method="post" 
-                  action="{{route('projects.bills.destroy',['id' => $bill->id]).'#bills'}}"> 
+                  action="{{route('projects.ffe.bills.destroy',['project' => request()->project,
+                  'id' => $bill->id]).'#bills'}}"> 
                    @csrf
                   {{ method_field('DELETE') }}
 

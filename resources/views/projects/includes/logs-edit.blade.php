@@ -63,7 +63,7 @@
                                            <div class="form-group">
                                                 <label class="text-dark" for="password"> Item 
                                                 </label>
-                                                <input  name="item" value="{{ @$log->date }}" type="text" class="form-control" placeholder="Item" >
+                                                <input  name="item" value="{{ @$log->item }}" type="text" class="form-control" placeholder="Item" >
                                             </div>
                                         </div>
                                     </div> 

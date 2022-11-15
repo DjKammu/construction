@@ -403,6 +403,26 @@ Route::prefix('projects')->group(function(){
              Route::post('send-mail-logs', [App\Http\Controllers\FFEProcurementLogController::class,'sendMail'])->name('projects.ffe.logs.send.mail');
 
 
+             // Bills Route
+
+           Route::get('bills/create',[App\Http\Controllers\FFEBillController::class,'create'])
+           ->name('projects.ffe.bills');
+
+          Route::post('{id?}/bills',[App\Http\Controllers\FFEBillController::class,'store'])
+          ->name('projects.ffe.bills.store');
+          
+          Route::get('bills/{id}',[App\Http\Controllers\FFEBillController::class,'show'])
+          ->name('projects.bills.edit');
+         
+           Route::get('bills/{id}/bill-stattus', [App\Http\Controllers\FFEBillController::class,'billStatus'])->name('projects.ffe.bills.status');
+
+          Route::post('bills/{id}',[App\Http\Controllers\FFEBillController::class,'update'])->name('projects.ffe.bills.update');
+
+           Route::delete('bills/{id}', [App\Http\Controllers\FFEBillController::class,'destroy'])->name('projects.ffe.bills.destroy');
+
+           Route::delete('bills/{id}/file', [App\Http\Controllers\FFEBillController::class,'destroyFile'])->name('projects.ffe.bills.file.destroy');
+           
+
       });
 
 
