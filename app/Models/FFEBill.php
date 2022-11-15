@@ -51,7 +51,7 @@ class FFEBill extends Model
     }
 
     public function trade(){
-        return $this->belongsTo(FFETrade::class,'ffe_vendor_id');
+        return $this->belongsTo(FFETrade::class,'ffe_trade_id');
     }
 
     public function proposal(){

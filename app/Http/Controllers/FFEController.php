@@ -359,14 +359,7 @@ class FFEController extends Controller
 
             $trade_slug = @\Str::slug($bill->trade->name);
 
-            $project_type_slug = @$project->project_type->slug;
-
             $folderPath = Document::BILLS."/";
-
-            if(@!$trade_slug){
-                 $vendor  = Vendor::find($bill->vendor_id);
-                 $trade_slug = @$vendor->slug;
-            }
 
             $folderPath .= "$project_slug/$trade_slug/";
 
