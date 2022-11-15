@@ -483,31 +483,6 @@ $("input[name='non_contract']").click(function() {
       $("#" + id).show();
   });
 
-//  var selVendorId = "{{ @$payment->vendor_id}}";
-
-//  $('select[name="vendor_id"]').change(function(){
-//     let vendorId = $(this).val();
-//     materialsHtml(vendorId);
-// });
-
-// function materialsHtml(vendorId){
-
-//      $.ajax({
-//           url: "{{ route('vendor.materials')}}"+'?vendor_id='+vendorId,
-//           type: "GET",
-//           success: function (response) {
-//               var html = '<option value="">Select Material</option>';
-//               for (let i = 0; i < response.length; i++) {
-//                 let selected = ( response[i].vendor_id == selVendorId) ? 'selected' : '';
-//                 html += '<option value="'+response[i].id+'"  '+selected+'>'+response[i].name+'</option>';
-//               }
-//               $('#materials').html(html);
-//           }
-//       });
-// }
-
-materialsHtml(selVendorId);
-
 });
 
 </script>

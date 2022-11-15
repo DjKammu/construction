@@ -83,8 +83,8 @@
                                             <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                   <select class="form-control" name="0_ffe_vendor_id"> 
-                                                     <option value="{{ @$proposal->ffe_vendor_id }}" >{{ @$proposal->vendor->name}}
+                                                   <select class="form-control" name="0_f_f_e_vendor_id"> 
+                                                     <option value="{{ @$proposal->f_f_e_vendor_id }}" >{{ @$proposal->vendor->name}}
                                                      </option>
                                                   </select>
                                               </div>
@@ -135,7 +135,7 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="1_ffe_vendor_id"> 
+                                                  <select class="form-control" name="1_f_f_e_vendor_id"> 
                                                     <option value="">Select Vendor</option>
                                                     @foreach(@$vendors as $vendor)
                                                      <option value="{{ $vendor->id }}">{{ $vendor->name}}

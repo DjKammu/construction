@@ -421,7 +421,6 @@ Route::prefix('projects')->group(function(){
            Route::delete('bills/{id}', [App\Http\Controllers\FFEBillController::class,'destroy'])->name('projects.ffe.bills.destroy');
 
            Route::delete('bills/{id}/file', [App\Http\Controllers\FFEBillController::class,'destroyFile'])->name('projects.ffe.bills.file.destroy');
-           
 
       });
 

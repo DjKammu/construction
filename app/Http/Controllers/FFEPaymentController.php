@@ -111,7 +111,8 @@ class FFEPaymentController extends Controller
         $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
         if($id == 0){
-             
+
+             $non_contract = 1; 
              $request->validate([
                    $non_contract.'_f_f_e_trade_id' => 'required|exists:f_f_e_trades,id',
                    $non_contract.'_f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
@@ -459,7 +460,8 @@ class FFEPaymentController extends Controller
           );
 
         }else{
-
+              
+            $non_contract = 1; 
             $request->validate([
                    $non_contract.'_f_f_e_trade_id'  => 'required|exists:f_f_e_trades,id',
                    $non_contract.'_f_f_e_vendor_id' => 'required|exists:f_f_e_vendors,id',
