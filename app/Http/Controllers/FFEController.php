@@ -363,7 +363,6 @@ class FFEController extends Controller
 
             $folderPath .= "$project_slug/$trade_slug/";
 
-
             $bill->file = @($bill->file) ? asset($folderPath.$bill->file) : '' ;
           
             return $bill->file;

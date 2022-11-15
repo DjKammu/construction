@@ -31,10 +31,21 @@ class FFECategoryController extends Controller
                return abort('401');
          } 
 
-         $categories = FFECategory::orderBy('account_number');
+         $categories = FFECategory::query();
 
-         $categories = $categories->paginate((new FFECategory())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
          
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $categories = $categories->orderBy($orderBy,$order)->paginate((new FFECategory())->perPage);
+
          return view('ffe_categories.index',compact('categories'));
     }
 

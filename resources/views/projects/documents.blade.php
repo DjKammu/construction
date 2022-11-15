@@ -112,7 +112,7 @@
                                @foreach($documents as $document)
                                @php
                                  $fileInfo = pathinfo($document->file);
-                                 $extension = $fileInfo['extension'];
+                                 $extension = @$fileInfo['extension'];
                                 
                               if(in_array($extension,['doc','docx','docm','dot',
                               'dotm','dotx'])){

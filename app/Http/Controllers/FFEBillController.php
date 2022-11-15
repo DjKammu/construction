@@ -593,7 +593,7 @@ class FFEBillController extends Controller
 
     }
 
-    public function billStatus(Request $request, $id){
+    public function billStatus(Request $request, $project, $id){
       $bill = FFEBill::find($id);
       $bill_status = $request->bill_status;
       $bill_status = ($bill_status == 'true') ? FFEBill::PAID_BILL_STATUS : FFEBill::UNPAID_BILL_STATUS;
@@ -606,12 +606,15 @@ class FFEBillController extends Controller
       if($bill->bill_status == $bill_status && !$force){
         return;
       }
-
       if($bill_status == FFEBill::PAID_BILL_STATUS){
           $data = $bill->toArray();
           $data['ffe_bill_id'] = $data['id'];
+          $data['f_f_e_trade_id'] = $data['ffe_trade_id'];
+          $data['f_f_e_vendor_id'] = $data['ffe_vendor_id'];
           unset($data['id']);
           unset($data['ffe_payment_id']);
+          unset($data['ffe_trade_id']);
+          unset($data['ffe_vendor_id']);
           unset($data['bill_status']);
           unset($data['created_at']);
           unset($data['updated_at']);
