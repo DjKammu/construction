@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\PaymentStatus;
+use App\Models\ProcurementStatus;
 use Gate;
 
 
-class PaymentStatusController extends Controller
+class ProcurementStatusController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -30,7 +30,7 @@ class PaymentStatusController extends Controller
                return abort('401');
          } 
 
-         $statuses = PaymentStatus::query();
+         $statuses = ProcurementStatus::query();
 
          $orderBy = 'account_number';  
          $order ='ASC' ;
@@ -43,9 +43,9 @@ class PaymentStatusController extends Controller
              : request()->order;
         }
         
-         $statuses = $statuses->orderBy($orderBy,$order)->paginate((new PaymentStatus())->perPage);
+         $statuses = $statuses->orderBy($orderBy,$order)->paginate((new ProcurementStatus())->perPage);
          
-         return view('payment_statuses.index',compact('statuses'));
+         return view('procurement_statuses.index',compact('statuses'));
     }
 
     /**
@@ -59,7 +59,7 @@ class PaymentStatusController extends Controller
                return abort('401');
          } 
 
-        return view('payment_statuses.create');
+        return view('procurement_statuses.create');
     }
 
     /**
@@ -77,15 +77,15 @@ class PaymentStatusController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:payment_statuses',
-              'account_number' => 'required|unique:payment_statuses',
+              'name' => 'required|unique:procurement_statuses',
+              'account_number' => 'required|unique:procurement_statuses',
         ]);
 
         $data['slug'] = \Str::slug($request->name);
             
-        PaymentStatus::create($data);
+        ProcurementStatus::create($data);
 
-        return redirect('payment-statuses')->with('message', 'Payment Status Created Successfully!');
+        return redirect('procurement-statuses')->with('message', 'Procurement Status Created Successfully!');
     }
 
     /**
@@ -100,8 +100,8 @@ class PaymentStatusController extends Controller
                return abort('401');
           } 
 
-         $status = PaymentStatus::find($id);
-         return view('payment_statuses.edit',compact('status'));
+         $status = ProcurementStatus::find($id);
+         return view('procurement_statuses.edit',compact('status'));
     }
 
     /**
@@ -131,13 +131,13 @@ class PaymentStatusController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:payment_statuses,name,'.$id,
-              'account_number' => 'required|unique:payment_statuses,account_number,'.$id,
+              'name' => 'required|unique:procurement_statuses,name,'.$id,
+              'account_number' => 'required|unique:procurement_statuses,account_number,'.$id,
         ]);
 
         $data['slug'] = \Str::slug($request->name);
          
-         $status = PaymentStatus::find($id);
+         $status = ProcurementStatus::find($id);
          $slug = $data['slug'];
          $oldSlug = $status->slug;
         
@@ -148,7 +148,7 @@ class PaymentStatusController extends Controller
 
          $status->update($data);
 
-        return redirect('payment-statuses')->with('message', 'Payment Status Updated Successfully!');
+        return redirect('procurement-statuses')->with('message', 'Procurement Status Updated Successfully!');
     }
 
     /**
@@ -163,10 +163,10 @@ class PaymentStatusController extends Controller
                return abort('401');
           } 
 
-         $status = PaymentStatus::find($id);
+         $status = ProcurementStatus::find($id);
 
          $status->delete();       
 
-        return redirect()->back()->with('message', 'Payment Status Delete Successfully!');
+        return redirect()->back()->with('message', 'Procurement Status Delete Successfully!');
     }
 }

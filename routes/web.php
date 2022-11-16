@@ -108,6 +108,8 @@ Route::resource('report-companies', App\Http\Controllers\ReportCompanyController
 
 Route::resource('payment-statuses', App\Http\Controllers\PaymentStatusController::class);
 
+Route::resource('procurement-statuses', App\Http\Controllers\ProcurementStatusController::class);
+
 Route::resource('rfi-submittal/statuses', App\Http\Controllers\RFISubmittalStatusController::class,
   ['names' => 'rfi-submittal.statuses']);
 

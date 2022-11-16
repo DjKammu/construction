@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\MaitToSubcontractor;
 use Illuminate\Validation\Rule; 
 use App\Models\FFEProcurementLog;
+use App\Models\ProcurementStatus;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\FFETrade;
@@ -63,8 +64,9 @@ class FFEProcurementLogController extends Controller
 
         $allTrades = FFETrade::orderBy('name')->get();
         $statuses = PaymentStatus::orderBy('name')->get(); 
+        $procurementStatus = ProcurementStatus::orderBy('name')->get(); 
 
-        return view('projects.ffe.logs-create',compact('id','statuses','vendors','allTrades'));
+        return view('projects.ffe.logs-create',compact('id','statuses','vendors','allTrades','procurementStatus'));
     }  
 
 
@@ -193,6 +195,7 @@ class FFEProcurementLogController extends Controller
         $vendors = FFEVendor::orderBy('name')->get();
         $allTrades = FFETrade::orderBy('name')->get();
         $statuses = PaymentStatus::orderBy('name')->get(); 
+        $procurementStatus = ProcurementStatus::orderBy('name')->get(); 
 
          $filesCollection = ($log->received_shipment_attachment) ? @explode(',',$log->received_shipment_attachment) : [];
 
@@ -212,7 +215,7 @@ class FFEProcurementLogController extends Controller
            
          })->implode(',');
 
-        return view('projects.ffe.logs-edit',compact('project','log','vendors','allTrades','statuses'));
+        return view('projects.ffe.logs-edit',compact('procurementStatus','project','log','vendors','allTrades','statuses'));
     }
 
     /**

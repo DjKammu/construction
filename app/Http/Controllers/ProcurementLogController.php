@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use App\Models\ProcurementLog;
 use Illuminate\Http\Request;
 use App\Models\Subcontractor;
+use App\Models\ProcurementStatus;
 use App\Models\PaymentStatus;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
@@ -64,9 +65,10 @@ class ProcurementLogController extends Controller
 
         $allTrades = Trade::orderBy('name')->get();
         $statuses = PaymentStatus::orderBy('name')->get(); 
+        $procurementStatus = ProcurementStatus::orderBy('name')->get(); 
         $subcontractors = Subcontractor::orderBy('name')->get();
 
-        return view('projects.includes.logs-create',compact('project','id','statuses','vendors','allTrades','subcontractors'));
+        return view('projects.includes.logs-create',compact('project','id','statuses','vendors','allTrades','subcontractors','procurementStatus'));
     }  
 
 
@@ -147,8 +149,6 @@ class ProcurementLogController extends Controller
              $year  = date('Y');
            
              foreach ($files as $key => $file) {
-
-
                     $fileName = $slug.'-'.@\Str::slug(DocumentType::RECEIVED_SHIPMENT).'-'.time().$key.'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
                     $filesArr[] = $fileName; 
@@ -158,7 +158,6 @@ class ProcurementLogController extends Controller
                                   'date' => $date,'month' => $month,
                                   'year' => $year
                                   ];
-
                }
 
             $document->files()->createMany($fileArr);
@@ -193,6 +192,7 @@ class ProcurementLogController extends Controller
         $allTrades = Trade::orderBy('name')->get();
         $statuses = PaymentStatus::orderBy('name')->get(); 
         $subcontractors = Subcontractor::orderBy('name')->get();
+        $procurementStatus = ProcurementStatus::orderBy('name')->get(); 
 
          $filesCollection = ($log->received_shipment_attachment) ? @explode(',',$log->received_shipment_attachment) : [];
 
@@ -212,7 +212,7 @@ class ProcurementLogController extends Controller
            
          })->implode(',');
 
-        return view('projects.includes.logs-edit',compact('log','subcontractors','vendors','allTrades','statuses'));
+        return view('projects.includes.logs-edit',compact('procurementStatus','log','subcontractors','vendors','allTrades','statuses'));
     }
 
     /**

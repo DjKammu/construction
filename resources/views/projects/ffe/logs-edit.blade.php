@@ -118,6 +118,21 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                     <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Procurement Status
+                                                </label>
+                                                <select class="form-control" name="procurement_status_id"> 
+                                                  <option value="">Select Procurement Status</option>
+                                                     @foreach($procurementStatus as $status)
+                                                       <option value="{{ $status->id }}" {{ (@$log->procurement_status_id == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                     <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">

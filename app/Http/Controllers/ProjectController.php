@@ -184,7 +184,7 @@ class ProjectController extends Controller
          $documentTypes = DocumentType::orderBy('name')->get();
          $subcontractors = Subcontractor::orderBy('name')->get();
          $vendors = Vendor::orderBy('name')->get();
-         $documents = $project->documents();
+         $documents = @$project->documents();
          $trades = $project->trades()->orderBy('name')->get();
          $ffe_trades = $project->ffe_trades()->orderBy('name')->get();
          $users = User::orderBy('name')->get();

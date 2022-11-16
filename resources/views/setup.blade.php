@@ -58,6 +58,8 @@
                         </button>
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("payment-statuses")}}'">Payment Status
                         </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{url("procurement-statuses")}}'">Procurement Status
+                        </button>
                     </div>
                 </div>
 
