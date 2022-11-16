@@ -11,6 +11,8 @@
 
 </div>
 
+@include('includes.favourite')
+
   <div class="card p-2">
     <div class="row">
         <div class="col-md-12">

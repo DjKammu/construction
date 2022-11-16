@@ -15,6 +15,7 @@
                 <th>Subcontractor</th>
                 <th>Lead Time</th>
                 <th>Tentative Date Delivery</th>
+                <th>Payment Status</th>
             </tr>
             </thead>
             <tbody>

@@ -23,7 +23,7 @@
             </select> 
            
             <select style="height: 26px;"  name="log_status" onchange="return window.location.href = '?log_status='+this.value+'#logs'"> 
-              <option value="">Select Status</option>
+              <option value="">Select Payment Status</option>
               @foreach($paymentStatuses as $status)
                  <option value="{{ $status->id }}" {{ (@$log->log_status == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
               @endforeach
@@ -89,7 +89,8 @@
                 <th>Tentative Date Delivery</th>
                 <!-- <th>Store Place</th> -->
                 <th>Received Shipment Attachment</th>
-                <th>Status</th>
+                <th>Payment Status</th>
+                <th>Notes</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -133,6 +134,7 @@
                  @endif
             </td>  
             <td>{{ @$log->status->name }}</td>
+            <td>{{ @$log->notes }}</td>
             <td>        
                     <button onclick="return window.location.href='logs/{{$log->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
                     </button> 

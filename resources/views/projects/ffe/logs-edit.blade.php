@@ -107,10 +107,10 @@
                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Status
+                                                <label class="text-dark" for="password">Payment Status
                                                 </label>
                                                 <select class="form-control" name="status_id"> 
-                                                  <option value="">Select Status</option>
+                                                  <option value="">Select Payment Status</option>
                                                      @foreach($statuses as $status)
                                                        <option value="{{ $status->id }}" {{ (@$log->status_id == $status->id) ? 'selected' : ''}}> {{ $status->name }}</option>
                                                     @endforeach
