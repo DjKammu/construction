@@ -17,6 +17,7 @@ class DocumentType extends Model
     CONST SUBMITTAL     = 'Submittal';
     CONST RECEIVED_SHIPMENT  = 'Received Shipment';
     CONST PROJECT_BUDGET     = 'Project Budget';
+    CONST PURCHASE_ORDER     = 'Purchase Order';
 
     protected $perPage = 20;
 
@@ -28,7 +29,8 @@ class DocumentType extends Model
       self::BID, self::INVOICE, 
       self::LIEN_RELEASE, self::RFI, 
       self::SUBMITTAL, self::PROJECT_BUDGET,
-      self::BILL,self::RECEIVED_SHIPMENT
+      self::BILL,self::RECEIVED_SHIPMENT,
+      self::PURCHASE_ORDER
     ];
 
      public function documents(){

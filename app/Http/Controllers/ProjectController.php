@@ -602,19 +602,15 @@ class ProjectController extends Controller
           $logs->filter(function($log){
 
             $project = @$log->project;
-
             $project_slug = \Str::slug($project->name);
-
-            $folderPath = Document::RECEIVED_SHIPMENTS."/";
-
-            $folderPath .= "$project_slug/";
-            
+            $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
+            $folderPath2 = Document::INVOICES."/$project_slug/";
+            $folderPath3 = Document::PURCHASE_ORDERS."/$project_slug/";
+          
             $files = $log->received_shipment_attachment;
-
             $files = @array_filter(explode(',',$files));
 
             $filesArr = [];
-            
             if(!empty($files)){
                foreach (@$files as $key => $file) {
                    $filesArr[] = asset($folderPath.$file);
@@ -622,8 +618,10 @@ class ProjectController extends Controller
             } 
 
             $log->received_shipment_attachment = @($filesArr) ? @implode(',',$filesArr) : '' ;
-         
-            return $log->received_shipment_attachment;
+            $log->invoice = @($log->invoice) ? asset($folderPath2.$log->invoice) : '' ;
+            $log->po_sent_file = @($log->po_sent_file) ? asset($folderPath3.$log->po_sent_file) : '';
+        
+            return $log;
            
          });
 

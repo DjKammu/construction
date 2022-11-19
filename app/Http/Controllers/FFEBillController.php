@@ -463,7 +463,7 @@ class FFEBillController extends Controller
 
          $path = @public_path().'/'.$folderPath;
 
-         $file = @$payment->file;
+         $file = @$bill->file;
          
          $aPath = public_path().'/'. Document::BILLS."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);

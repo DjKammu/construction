@@ -118,7 +118,19 @@ class FFEProcurementLogController extends Controller
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
+        $folderPath2 = Document::INVOICES."/";
+
+        $folderPath2 .= $project_slug;
+        
+        \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
+        $folderPath3 = Document::PURCHASE_ORDERS."/".$project_slug;
+        
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
+
         $data['received_shipment_attachment'] = '';
+        $data['invoice'] = '';
+        $data['po_sent_file'] = '';
 
         $log = FFEProcurementLog::create($data);
        
@@ -167,8 +179,87 @@ class FFEProcurementLogController extends Controller
         }
 
 
+         if($request->hasFile('invoice')){
+              
+              $document_type = DocumentType::where('name', DocumentType::INVOICE)
+                         ->first();
 
-        
+              $name = @$project->name.' '.@$document_type->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['ffe_log_id' => $log->id,
+                    'document_type_id' => $document_type->id
+                     ],
+                     ['name' => $name, 'slug' => $slug,
+                     'ffe_log_id'       => $log->id,
+                     'project_id'       => $project_id,
+                     'document_type_id' => $document_type->id
+                     ]);
+
+              $file = $request->file('invoice');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+
+             $file->storeAs($folderPath2, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                          'name' => $name,
+                          'date' => $date,
+                          'month' => $month,
+                          'year' => $year
+                          ];
+
+
+            $document->files()->create($fileArr);
+            $log->update(['invoice' => $fileName]);
+        } 
+
+         if($request->hasFile('po_sent_file')){
+              
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+
+              $name = @$project->name.' '.@$document_type->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['ffe_log_id' => $log->id,
+                    'document_type_id' => $document_type->id
+                     ],
+                     ['name' => $name, 'slug' => $slug,
+                     'ffe_log_id'       => $log->id,
+                     'project_id'       => $project_id,
+                     'document_type_id' => $document_type->id
+                     ]);
+
+              $file = $request->file('po_sent_file');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                          'name' => $name,
+                          'date' => $date,
+                          'month' => $month,
+                          'year' => $year
+                          ];
+
+
+            $document->files()->create($fileArr);
+            $log->update(['po_sent_file' => $fileName]);
+        }
+
+
         return redirect(route('ffe.index',['project' => $project_id]).'#logs')->with('message', 'FFE Log Created Successfully!');
     }
      
@@ -197,23 +288,28 @@ class FFEProcurementLogController extends Controller
         $statuses = PaymentStatus::orderBy('name')->get(); 
         $procurementStatus = ProcurementStatus::orderBy('name')->get(); 
 
-         $filesCollection = ($log->received_shipment_attachment) ? @explode(',',$log->received_shipment_attachment) : [];
+        $filesCollection = ($log->received_shipment_attachment) ? @explode(',',$log->received_shipment_attachment) : [];
 
-         $log->received_shipment_attachment = @collect($filesCollection)->map(function($file) use ($log){
+        $project = @$log->project;
 
-            $project = @$log->project;
+        $project_slug = \Str::slug($project->name);
 
-            $project_slug = \Str::slug($project->name);
 
-            $folderPath = Document::RECEIVED_SHIPMENTS."/";
+        $log->received_shipment_attachment = @collect($filesCollection)->map(function($file) use ($project_slug){
 
-            $folderPath .= "$project_slug/";
-            
+            $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
+
             $file = @($file) ? $folderPath.$file : '' ;
 
             return $file;
            
          })->implode(',');
+
+        $folderPath2 = Document::INVOICES."/$project_slug/";
+        $folderPath3 = Document::PURCHASE_ORDERS."/$project_slug/";
+
+        $log->invoice = @($log->invoice) ? ($folderPath2.$log->invoice) : '' ;
+        $log->po_sent_file = @($log->po_sent_file) ? ($folderPath3.$log->po_sent_file) : '';
 
         return view('projects.ffe.logs-edit',compact('procurementStatus','project','log','vendors','allTrades','statuses'));
     }
@@ -274,7 +370,18 @@ class FFEProcurementLogController extends Controller
         $folderPath .= $project_slug;
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
-       
+
+
+        $folderPath2 = Document::INVOICES."/";
+
+        $folderPath2 .= $project_slug;
+        
+        \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
+        $folderPath3 = Document::PURCHASE_ORDERS."/".$project_slug;
+        
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
+
         $document_type = DocumentType::where('name', DocumentType::RECEIVED_SHIPMENT)
                          ->first();
 
@@ -320,9 +427,88 @@ class FFEProcurementLogController extends Controller
             $data['received_shipment_attachment'] = implode(',',$filesArr);
         }
 
+
+         if($request->hasFile('invoice')){
+               @unlink($folderPath2.'/'.$log->invoice);
+              $document_type = DocumentType::where('name', DocumentType::INVOICE)
+                         ->first();
+
+              $name = @$project->name.' '.@$document_type->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['ffe_log_id' => $log->id,
+                    'document_type_id' => $document_type->id
+                     ],
+                     ['name' => $name, 'slug' => $slug,
+                     'ffe_log_id'       => $log->id,
+                     'project_id'       => $log->project_id,
+                     'document_type_id' => $document_type->id
+                     ]);
+
+              $file = $request->file('invoice');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+
+             $file->storeAs($folderPath2, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                          'name' => $name,
+                          'date' => $date,
+                          'month' => $month,
+                          'year' => $year
+                          ];
+
+
+            $document->files()->create($fileArr);
+            $data['invoice'] =  $fileName;
+        }
+       
+       if($request->hasFile('po_sent_file')){
+               @unlink($folderPath3.'/'.$log->po_sent_file);
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+
+              $name = @$project->name.' '.@$document_type->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['ffe_log_id' => $log->id,
+                    'document_type_id' => $document_type->id
+                     ],
+                     ['name' => $name, 'slug' => $slug,
+                     'ffe_log_id'       => $log->id,
+                     'project_id'       => $log->project_id,
+                     'document_type_id' => $document_type->id
+                     ]);
+
+              $file = $request->file('po_sent_file');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                          'name' => $name,
+                          'date' => $date,
+                          'month' => $month,
+                          'year' => $year
+                          ];
+
+            $document->files()->create($fileArr);
+            $data['po_sent_file'] =  $fileName;
+        }
+
         $log->update($data);
 
-        
         return redirect(route('ffe.index',['project' => $log->project_id]).'?#logs')->with('message', 'FFE Log Updated Successfully!');
     }
 
@@ -338,7 +524,6 @@ class FFEProcurementLogController extends Controller
                return abort('401');
           } 
           
-
          $log = FFEProcurementLog::find($id);
           
          $project = @$log->project;
@@ -363,6 +548,17 @@ class FFEProcurementLogController extends Controller
             @unlink($path.$file);
          }
 
+        $folderPath2 = Document::INVOICES."/$project_slug/";
+        $folderPath3 = Document::PURCHASE_ORDERS."/$project_slug/";
+         
+        $invoice = @$log->invoice;
+        $po_sent_file = @$log->po_sent_file;
+        @\File::copy($folderPath2.$invoice, $aPath.'/'.$invoice);
+        @\File::copy($folderPath3.$po_sent_file, $aPath.'/'.$po_sent_file);
+
+        @unlink($folderPath2.$invoice);
+        @unlink($folderPath3.$po_sent_file);
+
          $project->documents()
                     ->where(['ffe_log_id' => $id])->delete();
 
@@ -386,27 +582,37 @@ class FFEProcurementLogController extends Controller
 
           $publicPath = public_path().'/';
 
+          $coulumn = 'received_shipment_attachment';
+
+          $coulumn = ( $file == @$log->invoice ) ? 'invoice' : ( $file == @$log->po_sent_file ? 'po_sent_file' : $coulumn);  
+
           $folder = Document::RECEIVED_SHIPMENTS;
-        
+
+          $folder = ( $file == @$log->invoice ) ? Document::INVOICES : ( $file == @$log->po_sent_file ? Document::PURCHASE_ORDERS : $folder); 
+            
+            
           $aPath = $publicPath.$folder."/".Document::ARCHIEVED;
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
-           @\File::copy($publicPath.$path, $aPath.'/'.$file);
+          @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          
-          $files = @array_filter(explode(',',$log->received_shipment_attachment));
+          $docFile  = DocumentFile::whereFile($file)->first();
+          (@$docFile) ?  @$docFile->delete() : '';
+         
+          if($coulumn == 'received_shipment_attachment'){
+             $files = @array_filter(explode(',',$log->received_shipment_attachment));
 
-          if (($key = array_search($file, $files)) !== false) {
-              unset($files[$key]);
+              if (($key = array_search($file, $files)) !== false) {
+                  unset($files[$key]);
+              }
+
+              $files = implode(',', $files); 
+              $log->update(['received_shipment_attachment' => $files]);
+
+          }else{
+            $log->update([$coulumn => '']);
           }
-
-          $files = implode(',', $files); 
-
-          $docFile  = DocumentFile::whereFile($file)->firstOrFail();
-          $docFile->delete();
-      
-          $log->update(['received_shipment_attachment' => $files]);
 
           @unlink($path);
 

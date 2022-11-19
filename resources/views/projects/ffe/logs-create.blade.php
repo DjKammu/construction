@@ -41,22 +41,7 @@
                               action="{{ route('projects.ffe.logs.store',['id' => (@$log->id) ? @$log->id : 0 , 'project' => request()->project ]) }}"
                                enctype="multipart/form-data">
                                   @csrf
- 
-                                     <!--  <div class="row">
-                                        <div class="col-lg-5 col-md-6 mx-auto">
-                                            <div class="form-group">
-                                                <label class="text-dark" for="password">Trades
-                                                </label>
-                                                <select class="form-control" name="1_f_f_e_trade_id"> 
-                                                  @foreach($allTrades as $trade)
-                                                   <option value="{{ $trade->id }}" >{{ $trade->name}}
-                                                   </option>
-                                                  @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div> 
- -->                                
+                        
                                   <div class="row">
                                      <div class="col-lg-5 col-md-6 mx-auto">
                                         <div class="form-group">
@@ -196,6 +181,26 @@
                                                 <label class="text-dark" for="password">Received Shipment Attachment
                                                 </label>
                                                 <input  name="files[]"  type="file" multiple="">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Invoice
+                                                </label>
+                                                <input  name="invoice"  type="file">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">PO Sent File
+                                                </label>
+                                                <input  name="po_sent_file"  type="file">
                                             </div>
                                         </div>
                                     </div>

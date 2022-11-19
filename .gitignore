@@ -11,6 +11,7 @@
 /public/ffe-trades/*
 /public/received-shipments/*
 /public/bills/*
+/public/purchase-orders/*
 /public/storage
 /public/images
 /storage/*.key

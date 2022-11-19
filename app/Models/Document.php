@@ -22,6 +22,7 @@ class Document extends Model
      CONST LIEN_RELEASES = 'lien-releases';
      CONST FFE_PROPOSALS = 'ffe-proposals';
      CONST RECEIVED_SHIPMENTS = 'received-shipments';
+     CONST PURCHASE_ORDERS = 'purchase-orders';
     
 
      protected $fillable = [

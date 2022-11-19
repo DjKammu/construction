@@ -204,7 +204,25 @@
                                             </div>
                                         </div>
                                     </div>
-                                   
+                                   <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Invoice
+                                                </label>
+                                                <input  name="invoice"  type="file">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">PO Sent File
+                                                </label>
+                                                <input  name="po_sent_file"  type="file">
+                                            </div>
+                                        </div>
+                                    </div>
                                    <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
@@ -290,6 +308,109 @@
                                     </tr>
 
                                     @endforeach
+                                    @endif
+
+                                    @if($log->invoice)
+
+                                   @php
+                                     $fileInfo = pathinfo($log->invoice);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.logs.file.destroy', ['id' => request()->id])}}?path={{$log->invoice}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Property Type" title="Delete Property Type"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($log->invoice) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
+                                    @endif 
+                                    @if($log->po_sent_file)
+
+                                   @php
+                                     $fileInfo = pathinfo($log->po_sent_file);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.logs.file.destroy', ['id' => request()->id])}}?path={{$log->po_sent_file}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Property Type" title="Delete Property Type"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($log->po_sent_file) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
                                     @endif
                                  </tbody>
                               </table>

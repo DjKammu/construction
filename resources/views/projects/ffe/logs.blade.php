@@ -82,6 +82,8 @@
                 <th>Tentative Date Delivery</th>
                 <!-- <th>Store Place</th> -->
                 <th>Received Shipment Attachment</th>
+                <th>Invoice</th>
+                <th>PO Attachment</th>
                 <th>Payment Status</th>
                 <th>Notes</th>
                 <th>Edit</th>
@@ -124,6 +126,58 @@
                       src="{{ asset('img/'.$extension.'.png') }}">
                       </a>
                  @endforeach
+                 @endif
+            </td> 
+
+             <td>
+                @if(!empty($log->invoice))
+                
+                      @php
+                         $fileInfo = pathinfo($log->invoice); 
+                           $extension = @$fileInfo['extension'];
+                        
+                            if(in_array($extension,['doc','docx','docm','dot',
+                          'dotm','dotx'])){
+                              $extension = 'word'; 
+                           }
+                           else if(in_array($extension,['csv','dbf','dif','xla',
+                          'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                              $extension = 'excel'; 
+                           }
+                          if(!$extension){
+                            $extension = 'pdf';
+                          }
+                      @endphp
+                        <a href="{{ url($log->invoice) }}" target="_blank">
+                      <img class="avatar border-gray proposal_file" 
+                      src="{{ asset('img/'.$extension.'.png') }}">
+                      </a>
+                 @endif
+            </td>   
+
+             <td>
+                @if(!empty($log->po_sent_file))
+                
+                      @php
+                         $fileInfo = pathinfo($log->po_sent_file); 
+                           $extension = @$fileInfo['extension'];
+                        
+                            if(in_array($extension,['doc','docx','docm','dot',
+                          'dotm','dotx'])){
+                              $extension = 'word'; 
+                           }
+                           else if(in_array($extension,['csv','dbf','dif','xla',
+                          'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                              $extension = 'excel'; 
+                           }
+                          if(!$extension){
+                            $extension = 'pdf';
+                          }
+                      @endphp
+                        <a href="{{ url($log->po_sent_file) }}" target="_blank">
+                      <img class="avatar border-gray proposal_file" 
+                      src="{{ asset('img/'.$extension.'.png') }}">
+                      </a>
                  @endif
             </td>  
             <td>{{ @$log->status->name }}</td>

@@ -294,10 +294,10 @@ class FFEController extends Controller
 
             $project_slug = \Str::slug($project->name);
 
-            $folderPath = Document::RECEIVED_SHIPMENTS."/";
-
-            $folderPath .= "$project_slug/";
-            
+            $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
+            $folderPath2 = Document::INVOICES."/$project_slug/";
+            $folderPath3 = Document::PURCHASE_ORDERS."/$project_slug/";
+          
             $files = $log->received_shipment_attachment;
 
             $files = @array_filter(explode(',',$files));
@@ -311,8 +311,10 @@ class FFEController extends Controller
             } 
 
             $log->received_shipment_attachment = @($filesArr) ? @implode(',',$filesArr) : '' ;
+            $log->invoice = @($log->invoice) ? asset($folderPath2.$log->invoice) : '' ;
+            $log->po_sent_file = @($log->po_sent_file) ? asset($folderPath3.$log->po_sent_file) : '';
          
-            return $log->received_shipment_attachment;
+            return $log;
            
          });
         
