@@ -31,9 +31,20 @@ class ProjectTypeController extends Controller
                return abort('401');
          } 
 
-         $projectTypes = ProjectType::orderBy('account_number');
+         $projectTypes = ProjectType::query();
 
-         $projectTypes = $projectTypes->paginate((new ProjectType())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $projectTypes = $projectTypes->orderBy($orderBy,$order)->paginate((new ProjectType())->perPage); 
          
          return view('project_types.index',compact('projectTypes'));
     }

@@ -31,9 +31,20 @@ class InspectionTypeController extends Controller
                return abort('401');
          } 
 
-         $inspetionTypes = InspectionType::orderBy('account_number');
+         $inspetionTypes = InspectionType::query();
 
-         $inspetionTypes = $inspetionTypes->paginate((new InspectionType())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $inspetionTypes = $inspetionTypes->orderBy($orderBy,$order)->paginate((new InspectionType())->perPage); 
          
          return view('inspection_types.index',compact('inspetionTypes'));
     }

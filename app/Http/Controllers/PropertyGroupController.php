@@ -34,8 +34,19 @@ class PropertyGroupController extends Controller
                return abort('401');
          } 
 
-         $property_groups = PropertyGroup::orderBy('name');
+         $property_groups = PropertyGroup::query();
 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
          if(request()->filled('s')){
             $searchTerm = request()->s;
             $property_groups->where('name', 'LIKE', "%{$searchTerm}%") 
@@ -46,7 +57,7 @@ class PropertyGroupController extends Controller
 
          $perPage = request()->filled('per_page') ? request()->per_page : (new PropertyGroup())->perPage;
 
-         $property_groups = $property_groups->paginate($perPage);
+         $property_groups = $property_groups->orderBy($orderBy,$order)->paginate($perPage);
 
          return view('property_groups.index',compact('property_groups'));
     }

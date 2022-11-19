@@ -31,9 +31,20 @@ class CategoryController extends Controller
                return abort('401');
          } 
 
-         $categories = Category::orderBy('account_number');
+         $categories = Category::query();
 
-         $categories = $categories->paginate((new Category())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $categories = $categories->orderBy($orderBy,$order)->paginate((new Category())->perPage); 
          
          return view('categories.index',compact('categories'));
     }

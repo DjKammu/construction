@@ -30,9 +30,20 @@ class BallInCourtController extends Controller
                return abort('401');
          } 
 
-         $ballInCourts = BallInCourt::orderBy('account_number');
+         $ballInCourts = BallInCourt::query();
 
-         $ballInCourts = $ballInCourts->paginate((new BallInCourt())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $ballInCourts = $ballInCourts->orderBy($orderBy,$order)->paginate((new BallInCourt())->perPage); 
          
          return view('ball_in_courts.index',compact('ballInCourts'));
     }

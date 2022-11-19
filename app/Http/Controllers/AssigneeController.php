@@ -30,9 +30,20 @@ class AssigneeController extends Controller
                return abort('401');
          } 
 
-         $assignees = Assignee::orderBy('account_number');
+         $assignees = Assignee::query();
 
-         $assignees = $assignees->paginate((new Assignee())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+         }
+        
+         $assignees = $assignees->orderBy($orderBy,$order)->paginate((new Assignee())->perPage); 
          
          return view('assignees.index',compact('assignees'));
     }

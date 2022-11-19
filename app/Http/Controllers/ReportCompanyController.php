@@ -31,9 +31,20 @@ class ReportCompanyController extends Controller
                return abort('401');
          } 
 
-         $reportCompanies = ReportCompany::orderBy('account_number');
+         $reportCompanies = ReportCompany::query();
 
-         $reportCompanies = $reportCompanies->paginate((new ReportCompany())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $reportCompanies = $reportCompanies->orderBy($orderBy,$order)->paginate((new ReportCompany())->perPage); 
          
          return view('report_companies.index',compact('reportCompanies'));
     }

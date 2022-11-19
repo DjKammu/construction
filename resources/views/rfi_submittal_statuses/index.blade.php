@@ -38,8 +38,14 @@
                     <table id="project-types-table" class="table table-hover text-center">
                         <thead>
                         <tr class="text-danger">
-                            <th>Acc. No.</th>
-                            <th>RFI/Submittal Status</th>
+                            <th>Acc. No.<span class="sorting-outer">
+                              <a href="javascript:void(0)" onclick="sortOrderBy('account_number', 'ASC')"><i class="fa fa-sort-asc"></i></a>
+                              <a href="javascript:void(0)" onclick="sortOrderBy('account_number', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
+                            </span></th>
+                            <th>RFI/Submittal Status <span class="sorting-outer">
+                              <a href="javascript:void(0)" onclick="sortOrderBy('name', 'ASC')"><i class="fa fa-sort-asc"></i></a>
+                              <a href="javascript:void(0)" onclick="sortOrderBy('name', 'DESC')"><i class="fa fa-sort-desc"></i> </a>
+                            </span></th>
                             <!-- <th>Projects</th> -->
                             <th>Edit</th>
                             <th>Delete</th>
@@ -77,5 +83,71 @@
         </div>
     </div>
 </div>
+
+@endsection
+@section('pagescript')
+
+<script type="text/javascript">
+  
+    function sortOrderBy(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderby') ;
+      let isSort = fullUrl.includes('order') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderby',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'order',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderby='+orderBy+'&order='+order
+      }
+      window.location.href = url;
+
+ } 
+
+
+  function replaceUrlParam(url, paramName, paramValue)
+    {
+        if (paramValue == null) {
+            paramValue = '';
+        }
+        var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
+        if (url.search(pattern)>=0) {
+            return url.replace(pattern,'$1' + paramValue + '$2');
+        }
+        url = url.replace(/[?#]$/,'');
+        return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
+    }
+
+
+
+</script>
+<style type="text/css">
+  
+i.fa.fa-sort-desc {
+    position: relative;
+    left: -8px;
+    cursor: pointer;
+    top: 1px;
+}
+i.fa.fa-sort-asc{
+  position: relative;
+    left: 4px;
+    cursor: pointer;
+    top: -2px;
+}
+.sorting-outer{
+  position: absolute;
+}
+.sorting-outer a{
+  color: #ef8157 ;
+}
+.table-responsive.table-payments{
+  overflow: auto;
+}
+</style>
 
 @endsection

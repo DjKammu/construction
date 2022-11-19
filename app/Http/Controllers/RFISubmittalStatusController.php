@@ -30,9 +30,20 @@ class RFISubmittalStatusController extends Controller
                return abort('401');
          } 
 
-         $statuses = RFISubmittalStatus::orderBy('account_number');
+         $statuses = RFISubmittalStatus::query();
 
-         $statuses = $statuses->paginate((new RFISubmittalStatus())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $statuses = $statuses->orderBy($orderBy,$order)->paginate((new RFISubmittalStatus())->perPage); 
          
          return view('rfi_submittal_statuses.index',compact('statuses'));
     }

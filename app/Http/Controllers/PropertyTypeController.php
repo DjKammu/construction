@@ -31,9 +31,20 @@ class PropertyTypeController extends Controller
                return abort('401');
          } 
 
-         $propertyTypes = PropertyType::orderBy('account_number');
+         $propertyTypes = PropertyType::query();
 
-         $propertyTypes = $propertyTypes->paginate((new PropertyType())->perPage); 
+         $orderBy = 'account_number';  
+         $order ='ASC' ;
+         
+         if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
+        
+         $propertyTypes = $propertyTypes->orderBy($orderBy,$order)->paginate((new PropertyType())->perPage); 
          
          return view('properties.index',compact('propertyTypes'));
     }
