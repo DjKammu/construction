@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -46,7 +45,7 @@ class ITBTrackerController extends Controller
            
          $trades = $trades->filter(function($trade) use ($projectId) {
                 
-                $subcontractors = $trade->subcontractors->filter(function($sc) use ($projectId,$trade){
+                $trade->subcontractors->filter(function($sc) use ($projectId,$trade){
                            $itb_tracker = ITBTracker::where([
                                'project_id' => $projectId, 'trade_id' => $trade->id , 
                                'subcontractors_id' => $sc->id 

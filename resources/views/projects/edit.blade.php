@@ -121,6 +121,10 @@
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
                                                      aria-expanded="false">AIA Pay App</a>
+                                              </li> 
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#tracker" role="tab"
+                                                     aria-expanded="false">ITB Tracker</a>
                                               </li>
                                         </ul>
                                     </div>
@@ -144,6 +148,7 @@
                                     @include('projects.includes.rfi')
                                     @include('projects.includes.submittal')
                                     @include('projects.includes.logs')
+                                    @include('projects.includes.tracker')
                               </div>
 
                             </div>
@@ -605,6 +610,103 @@ function proposalPage(id){
 }
    
 
+   var senders = [];
+$('.subcontractor').click(function() {
+    var checked = ($(this).val());
+    if ($(this).is(':checked')) {
+      senders.push(checked);
+    } else {
+      senders.splice($.inArray(checked, senders),1);
+    }
+  });
+
+function sendMailTracker(){
+   
+   if(senders.length == 0 ){
+      alert('Select atleast one');
+      return;
+    }
+
+    let projectId =  '{{ @$project->id }}';
+    let _token   =   "{{ csrf_token() }}";
+
+   $.ajax({
+        url: "{{ route('send.mail')}}",
+        type:"POST",
+        data:{
+          projectId:projectId,
+          senders:senders,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+  
+}
+
+function selectSign(val, id){
+ 
+   if(val == null ){
+      alert('Select for Contract Sign');
+      return;
+    }
+
+    let tracker_id = id;
+    let _token   =   "{{ csrf_token() }}";
+
+   $.ajax({
+        url: "{{ route('contract.signed')}}",
+        type:"POST",
+        data:{
+          tracker_id:tracker_id,
+          value :val,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           // location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+  
+}
+
+function selectBid(val, id){
+ 
+   if(val == null ){
+      alert('Select for Bid Recieved');
+      return;
+    }
+
+    let tracker_id = id;
+    let _token   =   "{{ csrf_token() }}";
+
+   $.ajax({
+        url: "{{ route('bid.recieved')}}",
+        type:"POST",
+        data:{
+          tracker_id:tracker_id,
+          value :val,
+          _token: _token
+        },
+        success:function(response){
+           alert(response.message); 
+           // location.reload();
+        },
+        error: function(error) {
+          alert(error);
+        }
+       });
+  
+}
+
 </script>
 <style type="text/css">
   
@@ -751,6 +853,13 @@ i.fa.fa-sort-asc{
 table .row-border{
     border: 2px solid;
 }
+
+  #category-types-table{
+    font-size: 12px;
+  }
+  .checkbox{
+    margin-right: 4px;
+  }
 </style>
 
 @endsection

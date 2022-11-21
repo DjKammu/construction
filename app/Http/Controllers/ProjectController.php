@@ -20,6 +20,7 @@ use App\Models\FFEBill;
 use App\Models\Project;
 use App\Models\Payment;
 use App\Models\Status;
+use App\Models\ITBTracker;
 use App\Models\Vendor;
 use App\Models\Trade;
 use App\Models\Bill;
@@ -419,7 +420,8 @@ class ProjectController extends Controller
 
          $documents = $documents->with('document_type')
                     ->paginate($perPage);
-
+        
+       
 
         $documents->filter(function($doc){
 
@@ -667,6 +669,24 @@ class ProjectController extends Controller
            
          });
 
+        $ITBtrades = $trades->filter(function($tr) use ($id) {
+            
+                $tr->subcontractors->filter(function($sc) use ($id,$tr){
+                           $itb_tracker = ITBTracker::where([
+                               'project_id' => $id, 'trade_id' => $tr->id , 
+                               'subcontractors_id' => $sc->id 
+                               ])->first();
+
+                            $sc->mail_sent = $itb_tracker->mail_sent ?? false;
+                            $sc->bid_recieved  = $itb_tracker->bid_recieved ?? false;
+                            $sc->contract_sign = $itb_tracker->contract_sign ?? false;
+                            $sc->tracker_id = $itb_tracker->id ?? false;
+
+                            return $sc;                           
+                });
+                return $tr;
+            }); 
+
 
          $catids = @($trades->pluck('category_id'))->unique();
 
@@ -713,13 +733,13 @@ class ProjectController extends Controller
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max(); 
-        $paymentStatuses = PaymentStatus::orderBy('name')->get();                                   
-           
-         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','awarded',
-            'categories','subcontractorsCount','allProposals','payments','paymentTrades',
+        $paymentStatuses = PaymentStatus::orderBy('name')->get();
+
+         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals',
+            'awarded','categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
             'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',
-            'ffe_pTrades','logs','paymentStatuses'));
+            'ffe_pTrades','logs','paymentStatuses','ITBtrades'));
     }
 
     /**
