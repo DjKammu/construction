@@ -15,6 +15,10 @@ use App\Models\Document;
 use App\Models\Proposal;
 use App\Models\Payment;
 use App\Models\Vendor;
+use App\Models\FFEBill;
+use App\Models\Bill;
+use App\Models\FFEProposal;
+use App\Models\FFEPayment;
 use Gate;
 
 
@@ -214,8 +218,45 @@ class DocumentController extends Controller
                      $trade_slug = @\Str::slug($payment->trade->name);
                  }
 
-               $folderPath .= "$project_slug/$trade_slug/";
-          }
+              if($document->document_type->name == DocumentType::BILL && $document->bill_id){
+                     $bill = Bill::find($document->bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
+                 $folderPath .= "$project_slug/$trade_slug/";
+
+            }
+            else if($document->ffe_proposal_id){
+                 $proposal = FFEProposal::find($document->ffe_proposal_id);
+                 $trade_slug = @\Str::slug($proposal->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::FFE_PROPOSALS."/");
+                 if($document->document_type->name == DocumentType::LIEN_RELEASE && $document->ffe_payment_id){
+                         $payment_id = FFEPayment::find($document->ffe_payment_id);
+                         $trade_slug = @\Str::slug($payment_id->trade->name);
+                 }
+
+                 if($document->document_type->name == DocumentType::BILL && $document->ffe_bill_id){
+                     $bill = FFEBill::find($document->ffe_bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
+                 $folderPath .= "$project_slug/$trade_slug/";
+
+            }
+            else if($document->log_id || $document->ffe_log_id ){
+                 if($document->document_type->name == DocumentType::INVOICE){
+                    $folderPath = Document::INVOICES."/$project_slug/";
+                 }
+                 if($document->document_type->name == DocumentType::RECEIVED_SHIPMENT){
+                    $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
+                 }
+                 if($document->document_type->name == DocumentType::PURCHASE_ORDER){
+                    $folderPath = Document::PURCHASE_ORDERS."/$project_slug/";
+                 }
+            }
+
            else if($document->document_type->name == DocumentType::RFI ){
                  $folderPath = Document::RFIS."/";
                  $folderPath .= "$project_slug/";
@@ -443,7 +484,6 @@ class DocumentController extends Controller
         
           @\File::copy($publicPath.$path, $aPath.'/'.$file->file); 
           
-
           @unlink($path);
 
           @$file->delete();
@@ -613,7 +653,43 @@ class DocumentController extends Controller
                      $trade_slug = @\Str::slug($payment->trade->name);
                  }
 
+             if($doc->document->document_type->name == DocumentType::BILL && $doc->document->bill_id){
+                     $bill = Bill::find($doc->document->bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
                  $folderPath .= "$project_slug/$trade_slug/";
+
+            }
+            else if($doc->document->ffe_proposal_id){
+                 $proposal = FFEProposal::find($doc->document->ffe_proposal_id);
+                 $trade_slug = @\Str::slug($proposal->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::FFE_PROPOSALS."/");
+                 if($doc->document->document_type->name == DocumentType::LIEN_RELEASE && $doc->document->ffe_payment_id){
+                         $payment_id = FFEPayment::find($doc->document->ffe_payment_id);
+                         $trade_slug = @\Str::slug($payment_id->trade->name);
+                 }
+
+                 if($doc->document->document_type->name == DocumentType::BILL && $doc->document->ffe_bill_id){
+                     $bill = FFEBill::find($doc->document->ffe_bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
+                 $folderPath .= "$project_slug/$trade_slug/";
+
+            }
+            else if($doc->document->log_id || $doc->document->ffe_log_id ){
+                 if($doc->document->document_type->name == DocumentType::INVOICE){
+                    $folderPath = Document::INVOICES."/$project_slug/";
+                 }
+                 if($doc->document->document_type->name == DocumentType::RECEIVED_SHIPMENT){
+                    $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
+                 }
+                 if($doc->document->document_type->name == DocumentType::PURCHASE_ORDER){
+                    $folderPath = Document::PURCHASE_ORDERS."/$project_slug/";
+                 }
             }
 
            else if($doc->document->document_type->name == DocumentType::RFI ){

@@ -101,7 +101,7 @@
                                     </div> 
 
                                      <div class="subcontractor-vendor" id="vendor" 
-                                    style="display: {{  (@$payment->non_contract == '1') ? 'block' : 'none' }};"   >
+                                    style="display: {{  (@$bill->non_contract == '1') ? 'block' : 'none' }};"   >
                                           <div class="row">
                                            <div class="col-lg-5 col-md-6 mx-auto">
                                               <div class="form-group">

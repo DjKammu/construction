@@ -609,13 +609,13 @@ class BillController extends Controller
 
            @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $docFile  = DocumentFile::whereFile($file)->firstOrFail();
+          $docFile  = DocumentFile::whereFile($file)->first();
+          (@$docFile) ?  @$docFile->delete() : ''; 
 
           $coulumn = 'file';
 
           // $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
           
-          @$docFile->delete();  
 
           $bill->update([$coulumn => '']);
 
