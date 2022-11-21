@@ -70,6 +70,7 @@
                   <a href="javascript:void(0)" onclick="sortOrderByLog('po_sent', 'DESC')">
                     <i class="fa fa-sort-desc"></i> </a>
                 </span></th> 
+                <th>PO Attachment</th>
                 <th >Date Shipped <span class="sorting-outer">
                   <a href="javascript:void(0)" onclick="sortOrderByLog('date_shipped', 'ASC')">
                     <i class="fa fa-sort-asc" o ></i></a>
@@ -82,16 +83,16 @@
                   <a href="javascript:void(0)" onclick="sortOrderByLog('date_received', 'DESC')">
                     <i class="fa fa-sort-desc"></i> </a>
                 </span></th>
+                <th>Received Shipment Attachment</th>
 
                 <th>Vendor</th>
                 <!-- <th>Subcontractor</th> -->
                 <th>Lead Time</th>
                 <th>Tentative Date Delivery</th>
                 <!-- <th>Store Place</th> -->
-                <th>Received Shipment Attachment</th>
                     <th>Invoice</th>
-                <th>PO Attachment</th>
                 <th>Payment Status</th>
+                <th>Procurement Status</th>
                 <th>Notes</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -104,11 +105,35 @@
                <td> {{ @$log->date }}</td>
                <td> {{ @$log->item }}</td>
                <td> {{ @$log->po_sent }}</td>
+               <td>
+                @if(!empty($log->po_sent_file))
+                
+                      @php
+                         $fileInfo = pathinfo($log->po_sent_file); 
+                           $extension = @$fileInfo['extension'];
+                        
+                            if(in_array($extension,['doc','docx','docm','dot',
+                          'dotm','dotx'])){
+                              $extension = 'word'; 
+                           }
+                           else if(in_array($extension,['csv','dbf','dif','xla',
+                          'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                              $extension = 'excel'; 
+                           }
+                          if(!$extension){
+                            $extension = 'pdf';
+                          }
+                      @endphp
+                        <a href="{{ url($log->po_sent_file) }}" target="_blank">
+                      <img class="avatar border-gray proposal_file" 
+                      src="{{ asset('img/'.$extension.'.png') }}">
+                      </a>
+                 @endif
+            </td> 
+
                <td> {{ @$log->date_shipped }}</td>
                <td> {{ @$log->date_received }}</td>
-               <td> {{ @$log->vendor->name }}</td>
-               <td> {{ @$log->lead_time }}</td>
-               <td> {{ @$log->tentative_date_delivery }}</td>
+              
                <td>
                 @if(!empty($log->received_shipment_attachment))
                  @foreach(@explode(',',$log->received_shipment_attachment) as $file)
@@ -136,6 +161,10 @@
                  @endif
             </td>  
 
+             <td> {{ @$log->vendor->name }}</td>
+               <td> {{ @$log->lead_time }}</td>
+               <td> {{ @$log->tentative_date_delivery }}</td>
+
               <td>
                 @if(!empty($log->invoice))
                 
@@ -162,33 +191,9 @@
                  @endif
             </td>   
 
-             <td>
-                @if(!empty($log->po_sent_file))
-                
-                      @php
-                         $fileInfo = pathinfo($log->po_sent_file); 
-                           $extension = @$fileInfo['extension'];
-                        
-                            if(in_array($extension,['doc','docx','docm','dot',
-                          'dotm','dotx'])){
-                              $extension = 'word'; 
-                           }
-                           else if(in_array($extension,['csv','dbf','dif','xla',
-                          'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
-                              $extension = 'excel'; 
-                           }
-                          if(!$extension){
-                            $extension = 'pdf';
-                          }
-                      @endphp
-                        <a href="{{ url($log->po_sent_file) }}" target="_blank">
-                      <img class="avatar border-gray proposal_file" 
-                      src="{{ asset('img/'.$extension.'.png') }}">
-                      </a>
-                 @endif
-            </td> 
 
             <td>{{ @$log->status->name }}</td>
+            <td>{{ @$log->procurement_status->name }}</td>
             <td>{{ @$log->notes }}</td>
             <td>        
                     <button onclick="return window.location.href='logs/{{$log->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        

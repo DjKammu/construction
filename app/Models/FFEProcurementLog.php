@@ -35,4 +35,8 @@ class FFEProcurementLog extends Model
     public function status(){
         return $this->belongsTo(PaymentStatus::class,'status_id');
     }
+
+    public function procurement_status(){
+        return $this->belongsTo(ProcurementStatus::class,'procurement_status_id');
+    }
 }
