@@ -436,6 +436,8 @@ Route::prefix('projects')->group(function(){
 Route::resource('calendar', App\Http\Controllers\CalendarController::class);
 Route::get('get-projects', [App\Http\Controllers\CalendarController::class,'getProjects'])
      ->name('calendar.projects');
+
+// ITBTracker Route
 Route::resource('itb-tracker', App\Http\Controllers\ITBTrackerController::class);
 
 Route::post('send-mail', [App\Http\Controllers\ITBTrackerController::class,'sendMail'])->
@@ -447,6 +449,17 @@ Route::post('bid-recieved', [App\Http\Controllers\ITBTrackerController::class,'b
            name('bid.recieved');
 Route::post('contract-signed', [App\Http\Controllers\ITBTrackerController::class,'contractSigned'])->
            name('contract.signed');
+
+// FFE ITBTracker Route
+           
+Route::post('ffe/send-mail', [App\Http\Controllers\FFEITBTrackerController::class,'sendMail'])->
+           name('ffe.send.mail');
+
+Route::post('ffe/send-mail-pdf', [App\Http\Controllers\FFEITBTrackerController::class,'sendMailWithPdf'])->
+           name('ffe.send.mail.pdf');
+Route::post('ffe/bid-recieved', [App\Http\Controllers\FFEITBTrackerController::class,'bidRecieved'])
+->name('ffe.bid.recieved');
+Route::post('ffe/contract-signed', [App\Http\Controllers\FFEITBTrackerController::class,'contractSigned'])->name('ffe.contract.signed');
 
 //Vendor 
 

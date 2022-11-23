@@ -1,3 +1,4 @@
+   <div class="tab-pane" id="tracker" role="tabpanel" aria-expanded="true">
       <!-- Start Main View -->
   <div class="card p-2">
     <div class="row">
@@ -18,35 +19,17 @@
                 </div>
              @endif
 
-            <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-6">
-                        <h4 class="mt-0 text-left">Projects List</h4>
-                    </div>
-                </div>
-
-                <div class="row mb-2">
-                   <div class="col-9">
-                       <select style="height: 26px;" onchange="selectProject(this.value,'pt')"> 
-                      <option value="">Select Project</option>
-                      @foreach($projects as $pr)
-                         <option value="{{ $pr->id }}" {{ ($projectId == $pr->id) ? 'selected' : ''}}> {{ $pr->name }}</option>
-                      @endforeach
-                      </select>
-                    </div>
-                </div>
-                <!-- Categories Table -->
-            </div>
         </div>
        <div class="col-md-12">
 
          <div class="card-body">
                 <div class="row mb-2">
                      <div class="col-6">
-                         <h4 class="mt-0 text-left">Trades List</h4>
+                         <h4 class="mt-0 text-left">ITB Tracker - Trades List</h4>
                      </div>
                       <div class="col-6 text-right">
-                        <button type="button" class="btn btn-danger mt-0"  onclick="sendMail()">Send Mail
+                        <button type="button" class="btn btn-danger mt-0"  
+                        onclick="sendMailTracker()">Send Mail
                         </button>
                     </div>
 
@@ -58,7 +41,7 @@
                         <tr class="text-danger">
                             <th>Acc. No.</th>
                             <th>Trade</th>
-                            <th>Subcontractors</th>
+                            <th>Vendors</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Email Sent </th>
@@ -67,7 +50,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                          @foreach($trades as $trade)
+                          @foreach($ITBtrades as $trade)
                            
                            @php
                              $subcontractorHtml = '';
@@ -76,7 +59,7 @@
                              $mailSentHtml = '';
                              $bidHtml = '';
                              $signedHtml = '';
-                             foreach($trade->subcontractors as $tsk =>  $subcontractor){
+                             foreach($trade->ffe_vendors as $tsk =>  $subcontractor){
                                $checked = ($subcontractor->mail_sent == true ) ? 'checked=checked' : '';
                                $selectedTrueBid = $subcontractor->bid_recieved == \App\Models\ITBTracker::TRUE ? "selected" : "";
                                $selectedFalseBid = $subcontractor->bid_recieved == \App\Models\ITBTracker::FALSE ? "selected" : "";
@@ -84,9 +67,9 @@
                                $selectedFalseSigned = $subcontractor->contract_sign == \App\Models\ITBTracker::FALSE ? "selected" : "";
                                $subcontractorHtml .=  "<input class='checkbox subcontractor' type='checkbox' value='$trade->id,$subcontractor->id'   $checked ><span>$subcontractor->name</span> </br>";
 
-                               $emailHtml .= " $subcontractor->email_1 </br>";
+                               $emailHtml .= " $subcontractor->email </br>";
                                $mobileHtml .= " $subcontractor->mobile </br>";
-                               $mailSentHtml .= \App\Models\ITBTracker::$ITBArr[$subcontractor->mail_sent]."
+                               $mailSentHtml .= @\App\Models\ITBTracker::$ITBArr[$subcontractor->mail_sent]."
                                 </br>"; 
                                 $bidHtml .= "
                                  <select onchange='selectBid(this.value,$subcontractor->tracker_id)'> 
@@ -135,4 +118,5 @@
               </div>
             </div>  
     </div>
+</div>
 </div>

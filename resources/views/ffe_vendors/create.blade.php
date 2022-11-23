@@ -70,14 +70,14 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Zip Code 
                                                 </label>
-                                                <input  name="zip_code"  value="{{ old('zip_code')}}" type="text" class="form-control" placeholder="Zip Code" >
+                                                <input  name="zip"  value="{{ old('zip')}}" type="text" class="form-control" placeholder="Zip Code" >
                                             </div>
                                         </div> 
                                         <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Email
                                                 </label>
-                                                <input  name="email_1"  value="{{ old('email')}}" type="email" class="form-control" placeholder="Email" >
+                                                <input  name="email"  value="{{ old('email')}}" type="email" class="form-control" placeholder="Email" >
                                             </div>
                                         </div> 
                                        
