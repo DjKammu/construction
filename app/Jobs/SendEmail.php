@@ -69,6 +69,7 @@ class SendEmail implements ShouldQueue
             if($project->plans_url){
                // $content .= '<br/><a href='.$project->plans_url.'>PLANS</a>';
             }
+             
 
             $subject = @ucwords($project->name);
             $file = @$trade->scope ? realpath(public_path(\Storage::url($trade->scope))) : '';
@@ -78,8 +79,10 @@ class SendEmail implements ShouldQueue
               'heading' => $heading,
               'content' => $content,
               'plans'   => @$project->plans_url,
+              'project_email' =>($project->project_email_user) ?  @$project->projectEmailUser : '',
               'file' => $file
             ];
+
 
             $mail = \Mail::to($email)->send(new MaitToSubcontractor($data));
 

@@ -167,6 +167,22 @@
                                                 <input  name="plans_url"  value="{{ old('plans_url')}}" type="text" class="form-control" placeholder="Plans URL" >
                                             </div>
                                         </div>
+
+                                         <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Project Email (From Users)
+                                                </label>
+
+                                                <select class="form-control" name="project_email_user"> 
+                                                  <option value=""> Select Project Email User</option>
+                                                  @foreach($users as $user)
+                                                   <option value="{{ $user->id }}" {{ 
+                                                    (@$project->project_email_user == $user->id) ? 'selected=""' : ''}}>{{ $user->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                            </div>
+                                        </div> 
                                         
                                         <div class="col-lg-6 col-md-6">
                                             <div class="form-group">

@@ -77,6 +77,7 @@ class FFESendEmail implements ShouldQueue
               'heading' => $heading,
               'content' => $content,
               'plans'   => @$project->plans_url,
+              'project_email' =>($project->project_email_user) ?  @$project->projectEmailUser : '',
               'file' => $file
             ];
             

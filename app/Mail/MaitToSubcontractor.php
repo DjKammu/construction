@@ -39,12 +39,15 @@ class MaitToSubcontractor extends Mailable
         $files    =  @$this->data['files'];
         $pdffile  =  @$this->data['pdffile'];
         $fileName =  @$this->data['fileName'];
+        $projectEmail =  @$this->data['project_email'];
 
+        
          $mail = $this->subject($subject)
             ->markdown('itb_tracker.mail', [
-            'heading' => $heading,
-            'content' => $content,
-            'plans'   => $plans
+            'heading'     => $heading,
+            'content'     => $content,
+            'projectEmail'=> $projectEmail,
+            'plans'       => $plans
           ]);
 
 
