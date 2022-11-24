@@ -18,7 +18,7 @@ class ProcurementLog extends Model
      'tentative_date_delivery','date_received',
      'store_place','received_shipment_attachment',
      'notes','procurement_status_id','invoice',
-     'po_sent_file'
+     'po_sent_file','lead_time_weeks'
     ];
 
     public function project(){

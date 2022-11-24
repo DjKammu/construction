@@ -92,13 +92,29 @@
                                         </div>
                                        
 
-                                    <div class="row">
+                                   <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
-
-                                           <div class="form-group">
-                                                <label class="text-dark" for="password"> Lead Time
+                                          <div class="row">
+                                           <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password"> Lead Time Weeks
                                                 </label>
-                                                <input  name="lead_time" value="{{ @$log->lead_time }}" type="text" class="form-control" placeholder="Lead Time" step="any"step="any">
+                                                <select class="form-control" name="lead_time_weeks"> 
+                                                <option value="">Select Week</option>
+                                                @for($i = 1; $i <= 52; $i++)
+                                                 <option value="{{ $i }}" {{ (@$log->lead_time_weeks == $i) ? 'selected' : ''}} >{{ $i }} {{ (1 == $i) ? 'Week' : 'Weeks'}}
+                                                 </option> 
+                                                @endfor
+                                              </select>
+                                            </div>
+                                            </div>
+                                             <div class="col-lg-6 col-md-6">
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Lead Time Notes
+                                                </label>
+                                                <input  name="lead_time" value="{{ @$log->lead_time }}" type="text" class="form-control" placeholder="Lead Time Notes" step="any"step="any">
+                                            </div>
+                                            </div>
                                             </div>
                                         </div>
                                     </div> 

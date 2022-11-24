@@ -87,7 +87,12 @@
 
                 <th>Vendor</th>
                 <!-- <th>Subcontractor</th> -->
-                <th>Lead Time</th>
+                <th>Lead Time<span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderByLog('lead_time_weeks', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderByLog('lead_time_weeks', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span></th>
                 <th>Tentative Date Delivery</th>
                 <!-- <th>Store Place</th> -->
                     <th>Invoice</th>
@@ -162,7 +167,9 @@
             </td>  
 
              <td> {{ @$log->vendor->name }}</td>
-               <td> {{ @$log->lead_time }}</td>
+               <td>{{ @$log->lead_time_weeks }} {{ (@$log->lead_time_weeks ) ? ((1 == @$log->lead_time_weeks ) ? 'Week' : 'Weeks') : '' }}
+                <span class="doc_type_m">{{ @$log->lead_time }}</span>
+              </td>
                <td> {{ @$log->tentative_date_delivery }}</td>
 
               <td>

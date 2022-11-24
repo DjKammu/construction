@@ -343,7 +343,7 @@ class ProjectController extends Controller
         }
 
         if(request()->filled('orderLog')){
-            $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped'] ) ? 'date_shipped' : request()->orderByLog ) : 'created_at';
+            $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped','lead_time_weeks'] ) ? 'date_shipped' : request()->orderByLog ) : 'created_at';
             $orderLog = !in_array(\Str::lower(request()->orderLog), ['desc','asc'])  ? 'ASC' 
              : request()->orderLog;
         }
