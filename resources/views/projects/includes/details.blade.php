@@ -11,7 +11,6 @@ aria-expanded="true">
           action="{{ route('projects.update',$project->id) }}" enctype="multipart/form-data">
           <input type="hidden" name="_method" value="PUT">
               @csrf
-                
                 <!-- Current Password -->
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6">
