@@ -90,9 +90,10 @@ class ProcurementLogController extends Controller
             return redirect('/');
         }
         $data = $request->except('_token');
-    
+
+
         $request->validate([
-                   'date' => 'required|date_format:m-d-Y'
+                   'date' => 'required'
               ]
         );
      
@@ -106,7 +107,7 @@ class ProcurementLogController extends Controller
         $data['tentative_date_delivery'] = ($request->filled('tentative_date_delivery')) ? Carbon::createFromFormat('m-d-Y',$request->tentative_date_delivery)->format('Y-m-d') : null;
 
         $data['date_received'] = ($request->filled('date_received')) ? Carbon::createFromFormat('m-d-Y',$request->date_received)->format('Y-m-d') : null;
-        
+  
         $project = Project::find($project_id);
 
         $project_slug = \Str::slug($project->name);
@@ -343,7 +344,8 @@ class ProcurementLogController extends Controller
         $log = ProcurementLog::find($id);
 
         $request->validate([
-                 'date' => 'required|date_format:m-d-Y'
+                 //'date' => 'required|date_format:m-d-Y'
+                 'date' => 'required'
             ]
         );
    
