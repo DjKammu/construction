@@ -6,6 +6,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\ProjectLine;
+use App\Models\ChangeOrderApplicationLine;
 use Gate;
 use Carbon\Carbon;
 use PDF;
@@ -273,6 +274,50 @@ class ProjectLineController extends Controller
         $applications->delete();
         $changeOrderApplications->delete();
         $closeProject->delete();
+
+        return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Application Delete Successfully!'
+           ]
+        );
+
+    }
+
+  public function undoLine(Request $request, $id){
+         
+         if(Gate::denies('delete')) {
+               return abort('401');
+          } 
+
+        $project  = Project::find($id);  
+
+        $applications = @$project->applications();  
+
+        $applications_count = @$applications->count();
+
+        $last_application = @$applications->latest()->first();
+        
+        $changeOrderApplicationsLines  = ChangeOrderApplicationLine::select('id')
+                                          ->where('app_no', $applications_count)
+                                          ->whereIn('change_order_application_id', 
+                                          @$project->changeOrderApplications()->pluck('id')
+                                          );                        
+  
+
+        if(@$applications->exists() == false){
+
+             return response()->json(
+             [
+              'status' => 200,
+              'error' => true,
+              'message' => 'Application can`t be Deleted!'
+             ]
+          );
+        }
+        
+        $last_application->delete();
+        $changeOrderApplicationsLines->delete();
 
         return response()->json(
            [

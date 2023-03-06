@@ -165,6 +165,10 @@
                            Reset Application
                   </button>
 
+                  <button  v-if="applications_count > 1" type="button" class="btn btn-warning mt-0" @click="undoApplication" >
+                           Undo
+                  </button>
+
                 </span>
 
                 </span>
@@ -631,6 +635,35 @@
                }
 
               $('#closeProjectModal').modal('show')
+
+            },
+            async undoApplication(){
+               let applications_count = this.applications_count
+               if (!confirm("Are you sure to undo application "+ applications_count +"!")) {
+                  return;
+                }
+
+                  let _vm = this;
+
+                await axios.get('/projects/undo/'+_vm.projectid+'/project-lines')
+                .then(function (response) {
+                           let res = response.data
+                          if(res.error){
+                                _vm.error = true
+                                _vm.errorMsg = res.message
+                           }else{
+                              _vm.success = true
+                              _vm.successMsg = res.message
+                               _vm.loadLines();
+                           }
+
+                           setTimeout(()=>{
+                             _vm.clearMsg()
+                          },2000);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
 
             },
             async resetApplication(){
