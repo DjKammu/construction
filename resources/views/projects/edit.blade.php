@@ -860,6 +860,13 @@ table .row-border{
   .checkbox{
     margin-right: 4px;
   }
+  #construction-cost-content{
+    table-layout: fixed;
+  }
+
+  #construction-cost-summary-content{
+    table-layout: fixed;
+  }
 </style>
 
 @endsection
