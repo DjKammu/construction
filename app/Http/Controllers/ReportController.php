@@ -107,7 +107,7 @@ class ReportController extends Controller
 
             $project_subcontractors = @$proposals->map(function($prpsl){
                      return $prpsl->subcontractor;
-            })->unique();
+            })->unique()->sort();
 
             // $project_trades = $proposals->map(function($prpsl){
             //      return $prpsl->trade;
