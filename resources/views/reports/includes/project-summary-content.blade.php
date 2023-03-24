@@ -306,7 +306,7 @@ table.payments-table thead>tr>th{
                <td></td>
                <td><b>${{ \App\Models\Payment::format($materialTotal + $vendorsTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
-               <td><b>ds${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($subcontractorTotal) }}</b></td>
                <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($grandTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($paidTotal + $vendorsTotal) }}</b></td>
