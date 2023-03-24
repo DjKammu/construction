@@ -686,16 +686,7 @@ class ProjectController extends Controller
                 });
                 return $tr;
             }); 
-
-
-         $catids = @($trades->pluck('category_id'))->unique();
-
-         $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
-
-         $ffe_catids = @($ffe_trades->pluck('category_id'))->unique();
-
-         $ffe_categories = $ffePaymentCategories = FFECategory::whereIn('id',$catids)->get(); 
-
+         
          $pTrades =  [];
          $ffe_pTrades =  [];
          
@@ -718,6 +709,15 @@ class ProjectController extends Controller
          if($pTrades){
             $trades = $trades->merge($pTrades);
          }
+
+         $catids = @($trades->pluck('category_id'))->unique();
+
+         $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
+
+         $ffe_catids = @($ffe_trades->pluck('category_id'))->unique();
+
+         $ffe_categories = $ffePaymentCategories = FFECategory::whereIn('id',$ffe_catids)->get(); 
+
 
          if($paymentCategories->count() == 0){   
               $catids = @($pTrades->pluck('category_id'))->unique();
