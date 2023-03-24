@@ -27,7 +27,7 @@
             }
 
             table.payments-table{
-                  font-size: 12px;
+                  font-size: 10px;
                   font-family: Arial;
                   border-bottom: 1px solid #dee2e6;
                   border-right: 1px solid #dee2e6;
@@ -50,6 +50,7 @@
                  right:0;
             }
             .table {
+               table-layout: fixed;
                 width: 100%;
                 margin-bottom: 1rem;
                 color: #212529;
