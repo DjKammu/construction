@@ -867,6 +867,10 @@ table .row-border{
   #construction-cost-summary-content{
     table-layout: fixed;
   }
+
+  table{
+    table-layout: fixed;
+  }
 </style>
 
 @endsection

@@ -141,7 +141,7 @@ table.payments-table thead>tr>th{
 
                       $materialTotal = (float) @$bid->material + $materialTotal;
                       $labourTotal = (float) @$bid->labour_cost + $labourTotal;
-                      $subcontractorTotal = (float) $catSubcontractorTotal + $subcontractorTotal + $changeOrderTotal;
+                      $subcontractorTotal = (float) @$bid->subcontractor_price + $subcontractorTotal + $changeOrderTotal;
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
@@ -157,7 +157,7 @@ table.payments-table thead>tr>th{
 
                   <td>${{  @\App\Models\Payment::format($bid->material)  }}</td>
                   <td>${{  @\App\Models\Payment::format($bid->labour_cost)  }}</td>
-                  <td>${{  @\App\Models\Payment::format($catSubcontractorTotal) }}
+                  <td>${{  @\App\Models\Payment::format(@$bid->subcontractor_price) }}
                   </br> <span class="doc_type_m">{{ ($changeOrderTotal > 0) ? 'Change Orders - $'. @\App\Models\Payment::format($changeOrderTotal) : ''  }}</span></td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>

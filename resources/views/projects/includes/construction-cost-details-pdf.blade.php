@@ -50,7 +50,7 @@
                  right:0;
             }
             .table {
-               table-layout: fixed;
+                table-layout: fixed;
                 width: 100%;
                 margin-bottom: 1rem;
                 color: #212529;
