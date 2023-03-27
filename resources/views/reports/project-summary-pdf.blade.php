@@ -76,7 +76,7 @@
     <body>
         <!-- Define header and footer blocks before your content -->
         <header>
-            <h4>Project Summary </h4>
+            <h4>Project {{ @$project->name }} Summary </h4>
         </header>
 
         <footer>

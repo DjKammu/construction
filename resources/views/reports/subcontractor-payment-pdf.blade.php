@@ -50,7 +50,6 @@
                  right:0;
             }
             .table {
-                table-layout: fixed;
                 width: 100%;
                 margin-bottom: 1rem;
                 color: #212529;
@@ -76,7 +75,7 @@
     <body>
         <!-- Define header and footer blocks before your content -->
         <header>
-            <h4>{{ (@$sc) ?  'Subcontractor' : 'Vendor' }} Summary </h4>
+            <h4>{{ (@$sc) ?  'Subcontractor '.@$subcontractor->name  : 'Vendor '.@$vendor->name }}   Summary </h4>
         </header>
 
         <footer>

@@ -317,10 +317,13 @@ class ReportController extends Controller
        //    ['projects' => $projects, 'categories' => $categories,'payments' => $payments,
        //    'trades' => $trades,'project' => $project,'sc' => $sc]
        //  );
+
+       $vendor = Vendor::find($v);
+       $subcontractor = Subcontractor::find($sc);
       
         $pdf = PDF::loadView('reports.'.$type.'-pdf',
           ['projects' => $projects, 'categories' => $categories,'payments' => $payments,
-          'trades' => $trades,'project' => $project,'sc' => $sc]
+          'trades' => $trades,'project' => $project,'sc' => $sc,'subcontractor' => $subcontractor,'vendor' => $vendor]
         );
 
         $slug = \Str::slug(@$project->name);
@@ -329,6 +332,8 @@ class ReportController extends Controller
             $type = (@$sc) ?  'Subcontractor' : 'Vendor';
             $type  = \Str::slug($type);
         }
+
+        // $view = true;
         
         if($view){
          // return $pdf->stream('project_'.$slug .'_budget.pdf');

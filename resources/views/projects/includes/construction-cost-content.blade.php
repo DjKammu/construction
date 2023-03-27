@@ -630,5 +630,22 @@
          
 
             </tbody>
+            <thead>
+            <tr class="text-danger">
+                <th></th>
+                <th ></th>
+                <th >Trade Budget</th>
+                <th>Material</th>
+                <th>Labor</th>
+                <th>Subcontractor</th>
+                <!-- <th>Vendors</th> -->
+                <th>Total </th>
+                <th>Paid</th>
+                <th >Remaining  </th>
+                <th >Budget Diff  </th>
+                <th> %Complete </th>
+                <!-- <th> Notes </th> -->
+            </tr>
+            </thead>
         </table>
 </div>

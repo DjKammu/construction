@@ -35,6 +35,13 @@ class TradeController extends Controller
 
          $trades = Trade::query();
 
+         if(request()->filled('s')){
+            $searchTerm = request()->s;
+            $trades->where('name', 'LIKE', "%{$searchTerm}%") 
+            ->orWhere('account_number', 'LIKE', "%{$searchTerm}%");
+         } 
+
+
          $orderBy = 'account_number';  
          $order ='ASC' ;
          

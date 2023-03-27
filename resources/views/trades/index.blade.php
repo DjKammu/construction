@@ -33,6 +33,16 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="row mb-2">
+                 
+                    <div class="col-6">
+                      
+                      <input type="text" name="s" value="{{ @request()->s }}" id="inputSearch" >
+                      <button id="search">Search</button>
+                    </div>
+               
+                </div>
                 <!-- Categories Table -->
                 <div class="table-responsive">
                     <table id="project-types-table" class="table table-hover text-center">
@@ -89,7 +99,24 @@
 @section('pagescript')
 
 <script type="text/javascript">
-  
+    $(document).ready(function(){
+
+      $('#search').click(function(){
+            var search = $('#inputSearch').val();
+
+            if(!search){
+             // alert('Please enter to search');
+            }
+            window.location.href = '?s='+search;
+      });
+
+      $(document).keyup(function(event) {
+        if (event.keyCode === 13) {
+            $("#search").click();
+        }
+    });
+  });
+    
     function sortOrderBy(orderBy,order){
        
       var fullUrl = window.location.href.split("#")[0];
@@ -124,8 +151,8 @@
     }
 
 
-
 </script>
+
 <style type="text/css">
   
 i.fa.fa-sort-desc {
