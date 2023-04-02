@@ -41,7 +41,7 @@ aria-expanded="true">
 
     </div>
     @if(@request()->p && ( @request()->sc || @request()->v ) && @request()->t == 'subcontractor-payment' )
-      
+    
        <div class="col-8" >
           <h5 class="mt-0 text-left"> {{ $project->name }} {{ (@request()->sc) ? @$subcontractor->name  : @$vendor->name }} Payment Summary</h5>
       </div>

@@ -134,8 +134,6 @@ class ReportController extends Controller
          $users = User::orderBy('name')->get();
          $propertyGroups = PropertyGroup::orderBy('name')->get();
 
-         dd($subcontractor);
-
          return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses','users','propertyGroups','subcontractor','vendor'));
     }
 
