@@ -93,7 +93,7 @@ class ReportController extends Controller
             $pr = request()->pr;
             $projects->where('property_type_id', $pr);
          } 
-
+         $vendor = $subcontractor = null;
           
         if(request()->filled('p')){
             $p = request()->p;
@@ -119,6 +119,10 @@ class ReportController extends Controller
            
             $project_vendors = Vendor::whereIn('id',$vendorIds) ->orderBy('name')->get();
 
+            $vendor = Vendor::find($v);
+            $subcontractor = Subcontractor::find($sc);
+
+
         }
 
 
@@ -130,7 +134,7 @@ class ReportController extends Controller
          $users = User::orderBy('name')->get();
          $propertyGroups = PropertyGroup::orderBy('name')->get();
 
-         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses','users','propertyGroups'));
+         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses','users','propertyGroups','subcontractor','vendor'));
     }
 
     /**
