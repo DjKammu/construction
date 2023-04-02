@@ -75,7 +75,7 @@
     <body>
         <!-- Define header and footer blocks before your content -->
         <header>
-            <h4>{{ (@$sc) ?  'Subcontractor '.@$subcontractor->name  : 'Vendor '.@$vendor->name }}   Summary </h4>
+            <h4>{{ @$project->name }} {{ (@$sc) ?  @$subcontractor->name  : @$vendor->name }}  Payment Summary </h4>
         </header>
 
         <footer>

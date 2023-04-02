@@ -329,7 +329,7 @@ class ReportController extends Controller
         $slug = \Str::slug(@$project->name);
 
         if($type == 'subcontractor-payment'){
-            $type = (@$sc) ?  'Subcontractor' : 'Vendor';
+            $type = ((@$sc) ?  @$subcontractor->name  : @$vendor->name ).' Payment Summary';
             $type  = \Str::slug($type);
         }
 
