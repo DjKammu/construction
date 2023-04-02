@@ -218,7 +218,7 @@ class ProjectController extends Controller
 
           if(request()->filled('payment_subcontractor')){
                 $subcontractor = request()->payment_subcontractor;
-                $payments->where('subcontractor_id', $subcontractor);
+                $payments->where('subcontractor_id', $subcontractor)->where('vendor_id',null);
          } 
 
          if(request()->filled('payment_vendor')){

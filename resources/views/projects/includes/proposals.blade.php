@@ -19,7 +19,7 @@
         <div class="col-5">
        
             <select class="form-control" onchange="return window.location.href='?trade='+this.value+'#proposals'" name="trade"> 
-              @foreach($trades as $trd)
+              @foreach($prTrades as $trd)
                <option value="{{ $trd->id }}" 
                 {{ ($trd->id == $trade) ? 'selected=""' : ''}}
                 >{{ $trd->name}}
