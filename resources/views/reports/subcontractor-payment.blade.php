@@ -27,8 +27,8 @@ aria-expanded="true">
 
       <select style="height: 26px;" onchange="selectSubcontractor(this.value+'&t=subcontractor-payment#subcontractor-payment','pt2','pr2','p')" > 
       <option value="">Select Subcontractor</option>
-      @foreach($project_subcontractors as $subcontractor)
-         <option value="{{ $subcontractor->id }}" {{ (@request()->sc == $subcontractor->id) ? 'selected' : ''}}> {{ $subcontractor->name }}</option>
+      @foreach($project_subcontractors as $sc)
+         <option value="{{ $subcontractor->id }}" {{ (@request()->sc == $sc->id) ? 'selected' : ''}}> {{ $sc->name }}</option>
       @endforeach
       </select>
 

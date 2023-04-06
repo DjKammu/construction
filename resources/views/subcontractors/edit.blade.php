@@ -142,6 +142,48 @@
                                                 <input  name="image"  type="file">
                                             </div>
                                         </div>
+
+                                         <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Replace 
+                                                </label>
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-6">
+                                                     What
+
+                                                     <select class="form-control" id="what" name="what"> 
+                                                      <option value="">Select What</option>
+                                                      @foreach(@$subcontractor->trades as $trade)
+                                                       <option value="{{ $trade->id }}" 
+                                                        >{{ $trade->name}}
+                                                       </option>
+                                                      @endforeach
+                                                    </select>
+
+                                                    </div>   
+                                                    <div class="col-lg-6 col-md-6">
+                                                      With
+
+                                                      <select class="form-control" id="with" 
+                                                      name="with"> 
+                                                      <option value="">Select With</option>
+                                                      @foreach($trades as $trade)
+                                                       @php
+                                                        if(in_array($trade->id , @$subcontractor->trades->pluck('id')->toArray())){
+                                                          continue;
+                                                        }
+                                                       @endphp
+                                                       <option value="{{ $trade->id }}" 
+                                                        >{{ $trade->name}}
+                                                       </option>
+                                                      @endforeach
+                                                    </select>
+
+                                                    </div>   
+                                                </div>
+                                            </div>
+                                        </div>
+
                                          <div class="col-lg-6 col-md-6">
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Notes 
@@ -188,6 +230,14 @@
 
 
    $("#trades").select2({
+      placeholder: "Select Trades",
+      allowClear: true
+  });
+   $("#what").select2({
+      placeholder: "Select Trades",
+      allowClear: true
+  });
+  $("#with").select2({
       placeholder: "Select Trades",
       allowClear: true
   });

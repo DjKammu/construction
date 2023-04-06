@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Subcontractor;
 use App\Models\DocumentType;
+use App\Models\ITBTracker;
 use App\Models\Proposal;
+use App\Models\Document;
+use App\Models\Project;
+use App\Models\Payment;
 use App\Models\Trade;
+use App\Models\Bill;
 use Gate;
 
 
 class SubcontractorController extends Controller
 {
+
+    CONST DOC_UPLOAD = 'doc_upload';
+
     /**
      * Create a new controller instance.
      *
@@ -196,15 +204,142 @@ class SubcontractorController extends Controller
 
         $subcontractor->update($data);
         
-        $subcontractor->trades()->sync($request->trades); 
+        $subcontractor->trades()->sync($request->trades,false); 
 
-        Proposal::where('subcontractor_id', $id)
-                 ->whereNotIn('trade_id',$request->trades)
-                 ->delete();    
+        if($request->filled(['with','what'])){
+            $this->replceTrade($subcontractor);
+        }
+
+
+        // Proposal::where('subcontractor_id', $id)
+        //          ->whereNotIn('trade_id',$request->trades)
+        //          ->delete();    
  
         return redirect('subcontractors')->with('message','Subcontractor Updated Successfully!');
     }
 
+     public function replceTrade($subcontractor){
+         $id = $subcontractor->id;
+         $request = request();
+         $what = $request->what;
+         $with = $request->with;
+         $where = ['subcontractors_id' => $id, 
+                    'trade_id' => $what];
+         $update = ['trade_id' => $with];
+
+         $proposalQuery = @Proposal::where(['subcontractor_id' => $id, 
+                    'trade_id' => $what]);
+
+         $project_ids = $proposalQuery->pluck('project_id');
+
+         $proposal_ids = $proposalQuery->pluck('id');
+         
+         $subcontractor->trades()->detach($what); 
+         $subcontractor->trades()->attach($with); 
+
+         ITBTracker::where($where)
+                 ->update($update); 
+         $where = ['subcontractor_id' => $id, 
+                    'trade_id' => $what];        
+         Proposal::where($where)
+                 ->update($update); 
+
+         foreach ($project_ids as $key => $pr) {
+                $project = Project::find($pr);
+                @$project->trades()->sync($with,false);
+         }   
+         
+         $public_path = public_path().'/';
+
+         $whatTrade = Trade::find($what);
+         $withTrade = Trade::find($with);
+
+         foreach ($proposal_ids as $key => $pr) {
+
+            $proposal = Proposal::find($pr);
+
+            $project_slug = \Str::slug(@$proposal->project->name);
+
+            $files = $proposal->files;
+
+            $files = @array_filter(explode(',',$files));
+
+            $dir = Document::PROPOSALS;
+            $folderPath = $dir.'/'.$project_slug.'/'.$withTrade->slug;
+            $oldFolderPath = $dir.'/'.$project_slug.'/'.$whatTrade->slug;
+
+           \File::makeDirectory($folderPath, $mode = 0777, true, true);
+
+            foreach ($files as $k => $file) {
+                   @\File::copy($public_path.$oldFolderPath.'/'.$file,$public_path.$folderPath.'/'.$file); 
+                    @\File::delete($public_path.$oldFolderPath.'/'.$file);
+            }
+         }
+
+         $paymentQry = Payment::where($where);  
+         $payment_ids = $paymentQry->pluck('id');
+         $paymentQry->update($update);
+
+         foreach ($payment_ids as $key => $pr) {
+
+            $payment = Payment::find($pr);
+
+            $project_slug = \Str::slug(@$payment->project->name);
+
+            $file = $payment->file;
+            $conditional_lien_release_file = $payment->conditional_lien_release_file;
+            $unconditional_lien_release_file = $payment->unconditional_lien_release_file;
+
+            $dir = Document::INVOICES;
+            $folderPath = $dir.'/'.$project_slug.'/'.$withTrade->slug;
+            $oldFolderPath = $dir.'/'.$project_slug.'/'.$whatTrade->slug;
+
+           \File::makeDirectory($folderPath, $mode = 0777, true, true);
+
+            @\File::copy($public_path.$oldFolderPath.'/'.$file,$public_path.$folderPath.'/'.$file); 
+            @\File::delete($public_path.$oldFolderPath.'/'.$file);
+
+            $dir = Document::LIEN_RELEASES;
+            $folderPath = $dir.'/'.$project_slug.'/'.$withTrade->slug;
+            $oldFolderPath = $dir.'/'.$project_slug.'/'.$whatTrade->slug;
+
+           \File::makeDirectory($folderPath, $mode = 0777, true, true);
+
+            @\File::copy($public_path.$oldFolderPath.'/'.$conditional_lien_release_file,$public_path.$folderPath.'/'.$conditional_lien_release_file); 
+            @\File::copy($public_path.$oldFolderPath.'/'.$unconditional_lien_release_file,$public_path.$folderPath.'/'.$unconditional_lien_release_file); 
+            @\File::delete($public_path.$oldFolderPath.'/'.$conditional_lien_release_file);
+            @\File::delete($public_path.$oldFolderPath.'/'.$unconditional_lien_release_file);
+
+         }
+
+
+        $billQuery = Bill::where($where);
+
+        $bill_ids = $billQuery->pluck('id');  
+
+        $billQuery->update($update);
+
+         foreach ($bill_ids as $key => $pr) {
+
+            $bill = Bill::find($pr);
+
+            $project_slug = \Str::slug(@$bill->project->name);
+
+            $file = $bill->file;
+
+            $dir = Document::BILLS;
+            $folderPath = $dir.'/'.$project_slug.'/'.$withTrade->slug;
+            $oldFolderPath = $dir.'/'.$project_slug.'/'.$whatTrade->slug;
+
+           \File::makeDirectory($folderPath, $mode = 0777, true, true);
+
+            @\File::copy($public_path.$oldFolderPath.'/'.$file,$public_path.$folderPath.'/'.$file); 
+            @\File::delete($public_path.$oldFolderPath.'/'.$file);
+
+         }
+
+     }
+     
 
     /**
      * Remove the specified resource from storage.
