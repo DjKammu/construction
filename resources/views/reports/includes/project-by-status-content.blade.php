@@ -40,7 +40,7 @@ table.payments-table thead>tr>th{
                 <td ><a   href="{{ url('projects/'.$project->id )}}">
                   {{ $project->name }} </a>  </td>
                 <td>{{ @$project->project_type->name }}</td>
-                <td>{{ $project->p_status->name }}</td>
+                <td>{{ @$project->p_status->name }}</td>
                </tr>
             @endforeach
 
