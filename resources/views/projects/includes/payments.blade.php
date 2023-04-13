@@ -73,7 +73,14 @@
                 </span></th>
 
                 <th>Trade</th>
-                <th>Subcontractor/Vendor</th>
+                <th>Subcontractor/Vendor
+                <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderBy('sc', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('sc', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span>
+              </th>
                 <th>Amount Paid</th>
                 <th>Contract Amount </th>
                 <th>Remaining Amount </th>

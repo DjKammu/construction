@@ -321,10 +321,11 @@ class ProjectController extends Controller
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
-                ['date','invoice_number','created_at'] ) ? 'created_at' : request()->orderby ) : 'created_at';
+                ['date','invoice_number','created_at','sc'] ) ? 'created_at' : request()->orderby ) : 'created_at';
             
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
              : request()->order;
+
         }
 
         if(request()->filled('orderRFI')){
@@ -350,9 +351,20 @@ class ProjectController extends Controller
 
          $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
 
+         if($orderBy == 'sc' ){
+            $payments->join('subcontractors', 'payments.subcontractor_id', '=', 'subcontractors.id')->orderBy('subcontractors.name', $order);
+             $bills->orderBy('created_at', 'ASC');
+         }else{
 
-         $payments = $payments->orderBy($orderBy, $order)->get();
-         $bills    = $bills->orderBy($orderBy, $order)->get();
+            if($orderBy == 'invoice_number'){
+               $orderBy = \DB::raw('CONVERT(invoice_number, SIGNED)');
+            }
+            $payments->orderBy($orderBy, $order);
+            $bills->orderBy($orderBy, $order);
+         }
+
+         $payments = $payments->get();
+         $bills = $bills->get();
 
          $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
          $submittals = $submittals->orderBy($orderBySubmittal, $orderSubmittal)->get();

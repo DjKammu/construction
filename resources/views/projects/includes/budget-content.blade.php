@@ -163,7 +163,65 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
+                  @php 
+                   $subcontractorId = (@$bid->subcontractor->id) ? $bid->subcontractor->id : '';
+                  @endphp
+                  <td>
+                        @if(request()->route()->getName()  == 'projects.show')
+                        @if(!empty($bid->files))
+                          <span class="budget-image">
+                          @php
+
+                          $project_slug = \Str::slug($project->name);
+
+                          $trade_slug = @\Str::slug($bid->trade->name);
+
+                          $folderPath = App\Models\Document::PROPOSALS."/";
+
+                          $folderPath .= "$project_slug/$trade_slug/";
+
+                          @endphp
+
+                           @foreach(@explode(',',$bid->files) as $file)
+             
+                                  @php
+                                     $fileInfo = pathinfo($file); 
+                                       $extension = @$fileInfo['extension'];
+                                    
+                                        if(in_array($extension,['doc','docx','docm','dot',
+                                      'dotm','dotx'])){
+                                          $extension = 'word'; 
+                                       }
+                                       else if(in_array($extension,['csv','dbf','dif','xla',
+                                      'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                          $extension = 'excel'; 
+                                       }
+                                     
+                                      if(!$extension){
+                                        $extension = 'pdf';
+                                      }
+
+                                  @endphp
+                                  <a href="{{ url("$folderPath$file") }}" target="_blank">
+                                <img class="avatar border-gray proposal_file" 
+                                src="{{ asset('img/'.$extension.'.png') }}">
+                                </a>
+
+                           @endforeach
+                         </span>
+
+                           @endif
+                           @endif
+
+                    <span class="doc_type_m">
+                       @if(request()->route()->getName()  == 'projects.show')
+                    <a class="disable-anchor" target="_blank" href="{{ url("reports?p=$project->id&sc=@$subcontractorId&t=subcontractor-payment#subcontractor-payment")}}">{{ @$bid->subcontractor->name }}</a>
+
+                    @else
+                   {{ @$bid->subcontractor->name }}
+                    @endif
+
+                  </span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="5" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
@@ -181,6 +239,7 @@
                @php
                 $vendorsTotal = $vendorsTotal + $tPay->payment_amount_total;
                 $catVendorsTotal = $catVendorsTotal + $tPay->payment_amount_total;
+                $vendorId = (@$tPay->vendor->id) ? $tPay->vendor->id : '';
                @endphp
 
                   <tr>
@@ -204,7 +263,17 @@
 
                 <tr>
                   <td colspan="3" style="padding:10px;"></td>
-                  <td><span class="doc_type_m">{{ @$tPay->vendor->name }} {{ 
+                  <td><span class="doc_type_m">
+
+                     @if(request()->route()->getName()  == 'projects.show')
+
+                    <a class="disable-anchor" target="_blank" href="{{ url("reports?p=$project->id&v=$vendorId&t=subcontractor-payment#subcontractor-payment")}}">{{ @$tPay->vendor->name }}</a> 
+                    
+                    @else
+                      {{ @$tPay->vendor->name }}
+                    @endif
+
+                    {{ 
                 (@$tPay->material) ? '('.@$tPay->material->name .')' : ""}}</span></td>
                   <td></td>
                   <td></td>
