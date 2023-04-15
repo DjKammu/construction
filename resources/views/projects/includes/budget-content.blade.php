@@ -3,7 +3,7 @@
     <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
-                <th>Icctem No.</th>
+                <th>Item No.</th>
                 <th >Category&Trade</th>
                 <th >Trade Budget</th>
                 <th>Material</th>
@@ -267,7 +267,19 @@
                   <td>${{  @\App\Models\Payment::format(0.00)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format(@@$tPay->payment_amount_total)  }}</td>
-                  <td>${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}</td>
+                  <td>
+
+                     <span class="doc_type_m">
+                       @if(request()->route()->getName()  == 'projects.show')
+                    <a class="disable-anchor" href="{{ url("projects/$project->id").'?to=Budget&url='.urlencode(url()->current().'#budget').'&payment_vendor='.$vendorId.'#payments'}} "> ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }} </a>
+
+                    @else
+                   ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}
+                    @endif
+
+                  </span>
+
+                  </td>
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td> 100 % </td> 
