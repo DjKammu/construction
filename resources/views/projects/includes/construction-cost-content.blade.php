@@ -140,6 +140,8 @@
                       $catDueTotal = (float) @$due + $catDueTotal;
                       // $catbudgetDiff = (float) @$bid->trade_budget - @$bidTotal +  @$catbudgetDiff;
 
+                       $subcontractorId = (@$bid->subcontractor->id) ? $bid->subcontractor->id : '';
+
                 @endphp
 
                   <td>${{  @\App\Models\Payment::format(@$bid->trade_budget)  }}</td>
@@ -148,7 +150,15 @@
                   <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</br> <span class="doc_type_m">{{ ($changeOrderTotal > 0) ? 'Change Orders - $'. @\App\Models\Payment::format($changeOrderTotal) : ''  }}</span></td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
-                  <td>${{ \App\Models\Payment::format($paid) }}</td>
+                  <td> <span class="doc_type_m">
+                       @if(request()->route()->getName()  == 'projects.show')
+                    <a class="disable-anchor" href="{{ url("projects/$project->id").'?to=Total Construction Cost&url='.urlencode(url()->current().'#construction-cost').'&payment_subcontractor='.$subcontractorId.'#payments'}} "> ${{ \App\Models\Payment::format($paid) }}</a>
+
+                    @else
+                    ${{ \App\Models\Payment::format($paid) }}
+                    @endif
+
+                  </span></td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
                   <td>${{ \App\Models\Payment::format((float) @$bid->trade_budget - $bidTotal) }} </td> 
                   <td>{{ ($paid && $bidTotal) ?  sprintf('%0.2f', @$paid /@$bidTotal * 100)  : 0 }}
@@ -161,7 +171,61 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td><span class="doc_type_m">{{ @$bid->subcontractor->name }}</span></td>
+                  <td>
+                    @if(request()->route()->getName()  == 'projects.show')
+                        @if(!empty($bid->files))
+                          <span class="budget-image">
+                          @php
+
+                          $project_slug = \Str::slug($project->name);
+
+                          $trade_slug = @\Str::slug($bid->trade->name);
+
+                          $folderPath = App\Models\Document::PROPOSALS."/";
+
+                          $folderPath .= "$project_slug/$trade_slug/";
+
+                          @endphp
+
+                           @foreach(@explode(',',$bid->files) as $file)
+             
+                                  @php
+                                     $fileInfo = pathinfo($file); 
+                                       $extension = @$fileInfo['extension'];
+                                    
+                                        if(in_array($extension,['doc','docx','docm','dot',
+                                      'dotm','dotx'])){
+                                          $extension = 'word'; 
+                                       }
+                                       else if(in_array($extension,['csv','dbf','dif','xla',
+                                      'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                          $extension = 'excel'; 
+                                       }
+                                     
+                                      if(!$extension){
+                                        $extension = 'pdf';
+                                      }
+
+                                  @endphp
+                                  <a href="{{ url("$folderPath$file") }}" target="_blank">
+                                <img class="avatar border-gray proposal_file" 
+                                src="{{ asset('img/'.$extension.'.png') }}">
+                                </a>
+
+                           @endforeach
+                         </span>
+
+                           @endif
+                           @endif
+                        <span class="doc_type_m">
+                       @if(request()->route()->getName()  == 'projects.show')
+                    <a class="disable-anchor" href="{{ url("projects/proposals/$bid->id").'?to=Total Construction Cost&url='.urlencode(url()->current().'#construction-cost')}} ">{{ @$bid->subcontractor->name }}</a>
+
+                    @else
+                   {{ @$bid->subcontractor->name }}
+                    @endif
+
+                  </span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
                   <td colspan="5" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
@@ -179,6 +243,7 @@
                @php
                 $vendorsTotal = $vendorsTotal + $tPay->payment_amount_total;
                 $catVendorsTotal = $catVendorsTotal + $tPay->payment_amount_total;
+                 $vendorId = (@$tPay->vendor->id) ? $tPay->vendor->id : '';
                @endphp
 
                   <tr>
@@ -193,7 +258,15 @@
                   <td>${{  @\App\Models\Payment::format(0.00)  }}</td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format(@@$tPay->payment_amount_total)  }}</td>
-                  <td>${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}</td>
+                  <td><span class="doc_type_m">
+                       @if(request()->route()->getName()  == 'projects.show')
+                    <a class="disable-anchor" href="{{ url("projects/$project->id").'?to=Total Construction Cost&url='.urlencode(url()->current().'#construction-cost').'&payment_vendor='.$vendorId.'#payments'}} "> ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }} </a>
+
+                    @else
+                   ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}
+                    @endif
+
+                  </span></td>
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td> 100 % </td> 

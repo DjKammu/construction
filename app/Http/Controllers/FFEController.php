@@ -69,6 +69,11 @@ class FFEController extends Controller
          if(request()->filled('payment_vendor')){
                 $payment_vendor = request()->payment_vendor;
                 $payments->where('f_f_e_vendor_id', $payment_vendor);
+         }
+
+          if(request()->filled('non_contract')){
+                $non_contract = request()->non_contract;
+                $payments->where('non_contract', $non_contract);
          } 
 
          if(request()->filled('payment_trade')){
@@ -136,8 +141,6 @@ class FFEController extends Controller
         }
 
          $bills    = $bills->orderBy($orderBy, $order)->get();
-
-      
          $payments = $payments->orderBy($orderBy, $order)->get();
          $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
 

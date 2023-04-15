@@ -742,6 +742,16 @@ i.fa.fa-sort-asc{
   .checkbox{
     margin-right: 4px;
   }
+
+    .budget-image{
+    float: left;
+    margin-top: 5px;
+  }
+  .budget-image .avatar.proposal_file{
+    height: 15px;
+    width: 15px;
+  }
+  
 </style>
 
 @endsection

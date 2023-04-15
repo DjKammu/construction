@@ -141,8 +141,7 @@
                       $catDueTotal = (float) @$due + $catDueTotal;
                       // $catbudgetDiff = (float) @$bid->trade_budget - @$bidTotal +  @$catbudgetDiff;
 
-                  
-                   $subcontractorId = (@$bid->subcontractor->id) ? $bid->subcontractor->id : '';
+                       $subcontractorId = (@$bid->subcontractor->id) ? $bid->subcontractor->id : '';
                 
 
                 @endphp
