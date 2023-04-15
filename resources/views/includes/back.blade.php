@@ -16,5 +16,13 @@
 
 <button type="button" class="btn btn-danger mt-0" onclick="return window.location.href='{{ $url }}'">Back {{ $to }}
 </button>
+
+@if(request()->filled('url','to'))
+
+<button type="button" class="btn btn-danger mt-0" onclick="return window.location.href='{{ request()->url }}'">Back to {{ request()->to }}
+</button>
+
+@endif
+
 </div>
 

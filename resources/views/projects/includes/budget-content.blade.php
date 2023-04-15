@@ -142,6 +142,10 @@
                       $catDueTotal = (float) @$due + $catDueTotal;
                       // $catbudgetDiff = (float) @$bid->trade_budget - @$bidTotal +  @$catbudgetDiff;
 
+                  
+                   $subcontractorId = (@$bid->subcontractor->id) ? $bid->subcontractor->id : '';
+                
+
                 @endphp
 
                   <td>${{  @\App\Models\Payment::format(@$bid->trade_budget)  }}</td>
@@ -150,7 +154,19 @@
                   <td>${{  @\App\Models\Payment::format($bid->subcontractor_price)  }}</br> <span class="doc_type_m">{{ ($changeOrderTotal > 0) ? 'Change Orders - $'. @\App\Models\Payment::format($changeOrderTotal) : ''  }}</span></td>
                   <!-- <td><span class="doc_type_m">{{  @implode(',',$vendors) }}</span></td> -->
                   <td>${{  \App\Models\Payment::format($bidTotal)  }}</td>
-                  <td>${{ \App\Models\Payment::format($paid) }}</td>
+                  <td>
+
+                    <span class="doc_type_m">
+                       @if(request()->route()->getName()  == 'projects.show')
+                    <a class="disable-anchor" href="{{ url("projects/$project->id").'?to=Budget&url='.urlencode(url()->current().'#budget').'&payment_subcontractor='.$subcontractorId.'#payments'}} "> ${{ \App\Models\Payment::format($paid) }}</a>
+
+                    @else
+                    ${{ \App\Models\Payment::format($paid) }}
+                    @endif
+
+                  </span>
+
+               </td>
                   <td>${{ \App\Models\Payment::format($due) }} </td> 
                   <td>${{ \App\Models\Payment::format((float) @$bid->trade_budget - $bidTotal) }} </td> 
                   <td>{{ ($paid && $bidTotal) ?  sprintf('%0.2f', @$paid /@$bidTotal * 100)  : 0 }}
@@ -163,9 +179,7 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  @php 
-                   $subcontractorId = (@$bid->subcontractor->id) ? $bid->subcontractor->id : '';
-                  @endphp
+                  
                   <td>
                         @if(request()->route()->getName()  == 'projects.show')
                         @if(!empty($bid->files))
@@ -215,7 +229,7 @@
 
                     <span class="doc_type_m">
                        @if(request()->route()->getName()  == 'projects.show')
-                    <a class="disable-anchor" target="_blank" href="{{ url("reports?p=$project->id&sc=@$subcontractorId&t=subcontractor-payment#subcontractor-payment")}}">{{ @$bid->subcontractor->name }}</a>
+                    <a class="disable-anchor" href="{{ url("projects/proposals/$bid->id").'?to=Budget&url='.urlencode(url()->current().'#budget')}} ">{{ @$bid->subcontractor->name }}</a>
 
                     @else
                    {{ @$bid->subcontractor->name }}
@@ -265,14 +279,7 @@
                   <td colspan="3" style="padding:10px;"></td>
                   <td><span class="doc_type_m">
 
-                     @if(request()->route()->getName()  == 'projects.show')
-
-                    <a class="disable-anchor" target="_blank" href="{{ url("reports?p=$project->id&v=$vendorId&t=subcontractor-payment#subcontractor-payment")}}">{{ @$tPay->vendor->name }}</a> 
-                    
-                    @else
-                      {{ @$tPay->vendor->name }}
-                    @endif
-
+                   {{ @$tPay->vendor->name }}
                     {{ 
                 (@$tPay->material) ? '('.@$tPay->material->name .')' : ""}}</span></td>
                   <td></td>

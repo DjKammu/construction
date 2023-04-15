@@ -16,6 +16,7 @@
     </div>
 
 <div id="proposals-list" class="row py-3">
+  
  @include('projects.includes.budget-content')
 
  <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
