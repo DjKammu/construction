@@ -261,6 +261,11 @@ class ProjectController extends Controller
                 $bills->where('bill_status', $bill_paid_status);
          } 
 
+         if(request()->filled('bill_assigned_to')){
+                $bill_assigned_to = request()->bill_assigned_to;
+                $bills->where('assigned_to', $bill_assigned_to);
+         } 
+
          if(request()->filled('rfi_subcontractor')){
                 $subcontractor = request()->rfi_subcontractor;
 

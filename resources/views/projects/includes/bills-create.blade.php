@@ -241,7 +241,23 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                      <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Assigned To
+                                                </label>
+                                                <select class="form-control" name="assigned_to"> 
+                                                  <option value="">Select Assigned To</option>
+                                                   @foreach(@$users as $user)
+                                                   <option value="{{ $user->id }}">{{ $user->name}}
+                                                   </option>
+                                                  @endforeach
+                                                </select>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">

@@ -46,6 +46,16 @@
               <option value="{{ \App\Models\Bill::UNPAID_BILL_STATUS }}" 
               {{ @request()->bill_paid_status == \App\Models\Bill::UNPAID_BILL_STATUS ? 'selected' : ''}}>{{\App\Models\Bill::UNPAID_BILL_TEXT  }}</option>
             </select>
+
+             <select style="height: 26px;"  name="bill_assigned_to" onchange="return window.location.href = '?bill_assigned_to='+this.value+'#bills'"> 
+              <option value="">Select Assigned To</option>
+              <option value="">All</option>
+               @foreach(@$users as $user)
+                <option value="{{ $user->id }}" {{ ( @request()->bill_assigned_to == $user->id ) ? 'selected' : ''}}>{{ $user->name}}
+               </option>
+              @endforeach
+            </select>
+
           </form>
         </div>
     </div>
@@ -81,6 +91,7 @@
                 <!-- <th>Remaining Amount </th> -->
                 <th>Invoice</th>
                 <th>Status</th>
+                <th>Mark as Paid</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -127,6 +138,13 @@
             </td>  
             </td>
                <td>{{ @\App\Models\Payment::$statusArr[$bill->status] }}</td>
+               <td><input type="checkbox" 
+                {{ $bill->bill_status == \App\Models\Bill::PAID_BILL_STATUS ? 'checked' : ''}} 
+                 name="bill_status" 
+                onclick="return window.location.href='bills/{{ $bill->id }}/bill-stattus?bill_status='+this.checked">
+                <label class="text-dark" for="password">
+                  <b>Mark as Paid</b>
+                </label></td>
                   <td>        
                     <button onclick="return window.location.href='bills/{{$bill->id}}'" rel="tooltip" class="btn btn-neutral bg-transparent btn-icon" data-original-title="Edit Project Type" title="Edit Project Type">            <i class="fa fa-edit text-success"></i>        
                     </button> 

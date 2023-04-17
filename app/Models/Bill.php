@@ -29,7 +29,7 @@ class Bill extends Model
      'proposal_id' , 'subcontractor_id' ,'project_id',
      'trade_id' , 'vendor_id' ,'payment_amount', 'date',
      'total_amount' ,'notes','file','status','invoice_number','material_id',
-     'bill_status','payment_id'
+     'bill_status','payment_id','assigned_to'
     ];
 
     public static $statusArr = [

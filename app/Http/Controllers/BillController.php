@@ -16,6 +16,7 @@ use App\Models\Category;
 use App\Models\DocumentType;
 use App\Models\DocumentFile;
 use App\Models\Subcontractor;
+use App\Models\User;
 use Gate;
 use Carbon\Carbon;
 
@@ -79,8 +80,9 @@ class BillController extends Controller
        //  }
         $totalAmount = $this->proposalTotalAmount($proposal);
         $dueAmount = $this->proposalDueTotalAmount($proposal);
+          $users = User::orderBy('name')->get();
 
-        return view('projects.includes.bills-create',compact('id','proposal','vendors','trades','allTrades','totalAmount','dueAmount'));
+        return view('projects.includes.bills-create',compact('id','proposal','vendors','trades','allTrades','totalAmount','dueAmount','users'));
     }  
 
 
@@ -350,11 +352,12 @@ class BillController extends Controller
         });
 
         $allTrades = Trade::orderBy('name')->get();
+        $users = User::orderBy('name')->get();
          
          session()->flash('url', route('projects.show',['project' => $bill->project_id]).'?#bills'); 
 
 
-        return view('projects.includes.bills-edit',compact('subcontractor','bill','vendors','totalAmount','dueAmount','trades','allTrades'));
+        return view('projects.includes.bills-edit',compact('subcontractor','bill','vendors','totalAmount','dueAmount','trades','allTrades','users'));
     }
 
     /**
