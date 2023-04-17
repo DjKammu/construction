@@ -224,7 +224,7 @@
 
                     <span class="doc_type_m">
                        @if(request()->route()->getName()  == 'ffe.index')
-                    <a class="disable-anchor" href="{{ url("projects/$project->id/ffe/proposals/$bid->id/edit").'?to=Budget&url='.urlencode(url()->current().'#budget')}} ">{{ @$bid->vendor->name }}</a>
+                    <a class="disable-anchor" href="{{ url("projects/$project->id/ffe").'?url='.urlencode(url()->current().'#budget').'&to=Budget&trade='.$trd->id.'#proposals'}}">{{ @$bid->vendor->name }}</a>
 
                     @else
                    {{ @$bid->vendor->name }}

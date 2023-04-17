@@ -219,7 +219,7 @@
                            @endif
                         <span class="doc_type_m">
                        @if(request()->route()->getName()  == 'projects.show')
-                    <a class="disable-anchor" href="{{ url("projects/proposals/$bid->id").'?to=Total Construction Cost&url='.urlencode(url()->current().'#construction-cost')}} ">{{ @$bid->subcontractor->name }}</a>
+                    <a class="disable-anchor" href="{{ url("projects/$project->id").'?url='.urlencode(url()->current().'#construction-cost').'&to=Total Construction Cost&trade='.$trd->id.'#proposals'}}">{{ @$bid->subcontractor->name }}</a>
 
                     @else
                    {{ @$bid->subcontractor->name }}
