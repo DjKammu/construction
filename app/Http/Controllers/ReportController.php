@@ -163,6 +163,39 @@ class ReportController extends Controller
          $projects = $projects->orderBy('name')->get();
          $bills = @$bills->get();
 
+         @$bills->filter(function($bill){
+
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $folderPath = Document::BILLS."/";
+
+            if(@!$trade_slug){
+                 $vendor  = Vendor::find($bill->vendor_id);
+                 $trade_slug = @$vendor->slug;
+            }
+
+            $folderPath .= "$project_slug/$trade_slug/";
+
+            // $folderPath2 = Document::LIEN_RELEASES."/";
+            
+            // $folderPath2 .= "$project_slug/$trade_slug/";
+
+        
+            $bill->file = @($bill->file) ? asset($folderPath.$bill->file) : '' ;
+            
+            // $bill->remaining = (new PaymentController)->proposalDueAmount($bill->proposal,$bill->id);
+
+            return $bill->file;
+           
+         }); 
+
+
          $projectTypes = ProjectType::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get(); 
          $statuses = Status::orderBy('name')->get();
