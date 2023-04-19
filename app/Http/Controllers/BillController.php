@@ -701,7 +701,13 @@ class BillController extends Controller
       $bill_status = $request->bill_status;
       $bill_status = ($bill_status == 'true') ? Bill::PAID_BILL_STATUS : Bill::UNPAID_BILL_STATUS;
       $this->updateBillStatus($bill,$bill_status);
-      return redirect()->back()->with('message', 'Status Updated Successfully!');   
+
+      if($request->filled('url')){
+        $redirect = redirect($request->url);
+      }else{
+        $redirect = redirect()->back();
+      }
+      return $redirect->with('message', 'Status Updated Successfully!');   
     }
 
     public function updateBillStatus($bill, $bill_status, $force = false){

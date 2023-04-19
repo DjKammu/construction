@@ -17,6 +17,7 @@ use App\Models\Vendor;
 use App\Models\Status;
 use App\Models\Trade;
 use App\Models\User;
+use App\Models\Bill;
 use Gate;
 use PDF;
 
@@ -122,11 +123,45 @@ class ReportController extends Controller
             $vendor = Vendor::find($v);
             $subcontractor = Subcontractor::find($sc);
 
-
         }
 
+       $bills = Bill::query();
+
+        if(request()->t == 'unpaid-bills'){
+            
+            if(request()->filled('at')){
+                $at = request()->at;
+                $bills->where('assigned_to', $at);
+             } 
+
+             if(request()->filled('ps')){
+                $ps = request()->ps;
+                $bills->where('bill_status', $ps);
+             }  
+
+            if(request()->filled('pt') || request()->filled('pr')){
+                $pt = request()->pt;
+                @$projects->whereHas('project_type', function($q) use ($pt){
+                    $q->where('slug', $pt);
+                });
+
+                if(request()->filled('pr')){
+                    $pr = request()->pr;
+                    $projects->where('property_type_id', $pr);
+                 } 
+
+                 $project_ids = @$projects->pluck('id')->toArray();
+                 $bills->whereIn('project_id',$project_ids);
+             } 
+             
+              if(request()->filled('p')){
+                    $p = request()->p;
+                    $bills->where('project_id', $p);
+                 }  
+        }
 
          $projects = $projects->orderBy('name')->get();
+         $bills = @$bills->get();
 
          $projectTypes = ProjectType::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get(); 
@@ -134,7 +169,7 @@ class ReportController extends Controller
          $users = User::orderBy('name')->get();
          $propertyGroups = PropertyGroup::orderBy('name')->get();
 
-         return view('reports.index',compact('projects','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses','users','propertyGroups','subcontractor','vendor'));
+         return view('reports.index',compact('projects','bills','projectTypes','propertyTypes','categories','trades','project','project_subcontractors','project_vendors','payments','statuses','users','propertyGroups','subcontractor','vendor'));
     }
 
     /**

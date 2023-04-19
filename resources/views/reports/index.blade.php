@@ -62,6 +62,11 @@
                                       <li class="nav-item">
                                           <a class="nav-link text-dark"  data-toggle="tab" href="#project-by-status" role="tab"
                                              aria-expanded="false">Projects By Status</a>
+                                      </li> 
+
+                                      <li class="nav-item">
+                                          <a class="nav-link text-dark"  data-toggle="tab" href="#unpaid-bills" role="tab"
+                                             aria-expanded="false">Unpaid Bills</a>
                                       </li>
 
                                   </ul>
@@ -72,6 +77,7 @@
                               @include('reports.project-summary')
                               @include('reports.subcontractor-payment')
                               @include('reports.project-by-status')
+                              @include('reports.unpaid-bills')
                         </div>
 
                       </div>
@@ -118,7 +124,14 @@
 @endsection
 
 @section('pagescript')
+<style type="text/css">
+  
+  table{
+    table-layout: fixed;
+  }
 
+
+</style>
 <script type="text/javascript">
 
 function selectPerpage(perPage){
@@ -287,6 +300,39 @@ function selectVendor(trade, cLass, cLass2, cLass3){
           url += 'p='+project+'&';
        }
        url += 'v='+trade;
+
+       window.location.href = path+'?'+url;
+      
+       
+  }
+
+   function selectUnbilledStatus(value, at, ps, pt, pr, p){
+       let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
+       var at = $('.'+at).val();
+       var ps = $('.'+ps).val();
+       var pt = $('.'+pt).val();
+       var pr = $('.'+pr).val();
+       var p = $('.'+p).val();
+        
+       let url = ''; 
+       if(at){
+          url += 'at='+at+'&';
+       }
+       if(ps){
+          url += 'ps='+ps+'&';
+       }
+       if(pt){
+          url += 'pt='+pt+'&';
+       }
+       if(pr){
+          url += 'pr='+pr+'&';
+       }
+       if(p){
+          url += 'p='+p+'&';
+       }
+     
+       url += value;
 
        window.location.href = path+'?'+url;
       
