@@ -130,7 +130,14 @@
     table-layout: fixed;
   }
 
+table.payments-table{
+      font-size: 12px;
+      font-family: Arial;
+}
 
+table.payments-table thead>tr>th{
+   font-size: 12px;
+}
 </style>
 <script type="text/javascript">
 

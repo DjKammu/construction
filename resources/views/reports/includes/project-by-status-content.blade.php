@@ -25,8 +25,9 @@ table.payments-table thead>tr>th{
             <thead>
             <tr class="text-danger">
                 <th>No.</th>
-                <th >Project </th>
                 <th>Property</th>
+                <th >Project </th>
+                <th>Project Type</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -37,8 +38,9 @@ table.payments-table thead>tr>th{
             @foreach($projects as $project)
               <tr>
               <td>{{ $project->id }}</td>
+                <td>{{ @$project->property->name }}</td>
                 <td ><a   href="{{ url('projects/'.$project->id )}}">
-                  {{ $project->name }} </a>  </td>
+                   {{ $project->name }} </a> </td>
                 <td>{{ @$project->project_type->name }}</td>
                 <td>{{ @$project->p_status->name }}</td>
                </tr>

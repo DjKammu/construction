@@ -127,5 +127,9 @@ class Project extends Model
     public function propertyGroup(){
         return $this->hasOne(PropertyGroup::class);
     }
+
+    public function property(){
+        return $this->belongsTo(PropertyType::class,'property_type_id');
+    }
     
 }

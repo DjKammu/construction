@@ -3,12 +3,10 @@
        <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
+                <th>Project </th>
                 <th>Date </th>
-
-                <th>Inserted 
-                  </th>
+                <th>Inserted</th>
                 <th >Invoice Number </th>
-
                 <th>Trade</th>
                 <th>Subcontractor/Vendor</th>
                 <th>Amount Paid</th>
@@ -41,6 +39,7 @@
                
 
              <tr>
+               <td> {{ @$bill->project->name }}</td>
                <td> {{ @$bill->date }}</td>
                <td> {{ @$bill->updated_at }}</td>
                <td> {{ @$bill->invoice_number }}</td>
@@ -52,7 +51,7 @@
                <td> {{ (@$bill->vendor ) ? '-' :  '$'.\App\Models\Payment::format($bill->total_amount) }}</td>
                <!-- <td>  {{ (@$bill->vendor ) ? '-' :  '$'.\App\Models\Payment::format($bill->remaining) }} </td> -->
                <td>
-                @if($bill->file)
+              @if($bill->file)
                 <a href="{{ asset($bill->file) }}" target="_blank">
               <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
               </a> 
