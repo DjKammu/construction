@@ -3,7 +3,12 @@
        <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
-                <th>Project </th>
+                <th>Project <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderBy('project', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderBy('project', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span></th>
                 <th>Date </th>
                 <th>Inserted</th>
                 <th >Invoice Number </th>
@@ -37,7 +42,6 @@
                @endphp
                @endif
                
-
              <tr>
                <td> {{ @$bill->project->name }}</td>
                <td> {{ @$bill->date }}</td>

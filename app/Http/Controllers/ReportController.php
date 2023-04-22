@@ -69,7 +69,7 @@ class ReportController extends Controller
 
          if(request()->filled('p') &&  request()->t == 'project-by-status'){
             $p = request()->p;
-            $projects->where('id', $p);
+            $projects->where('projects.id', $p);
          }  
 
          if(request()->filled('pg') &&  request()->t == 'project-by-status'){
@@ -125,6 +125,25 @@ class ReportController extends Controller
 
         }
 
+        if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? (!in_array(request()->orderby, 
+            ['name','project_type','property']) ? 'created_at' : request()->orderby ) : 'created_at';
+            
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+
+             if($orderBy == 'property'){
+                $projects->join('property_types', 'projects.property_type_id', '=', 'property_types.id')->orderBy('property_types.name', $order);
+             }
+             elseif($orderBy == 'project_type'){
+                $projects->join('project_types', 'projects.project_type_id', '=', 'project_types.id')->orderBy('project_types.name', $order);
+             }
+             else{
+                $projects->orderBy($orderBy, $order);
+             } 
+        }
+        
+
        $bills = Bill::query();
 
         if(request()->t == 'unpaid-bills'){
@@ -154,13 +173,28 @@ class ReportController extends Controller
                  $bills->whereIn('project_id',$project_ids);
              } 
              
-              if(request()->filled('p')){
+            if(request()->filled('p')){
                     $p = request()->p;
                     $bills->where('project_id', $p);
-                 }  
+            }  
+            
+            if(request()->filled('order')){
+                $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                    ['project'] ) ? 'created_at' : request()->orderby ) : 'created_at';
+                
+                $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+                 : request()->order;
+
+                 if($orderBy == 'project'){
+                    $bills->join('projects', 'bills.project_id', '=', 'projects.id')->orderBy('projects.name', $order);
+                 }
+                 else{
+                    $bills->orderBy($orderBy, $order);
+                 } 
+            }
         }
 
-         $projects = $projects->orderBy('name')->get();
+         $projects = $projects->get();
          $bills = @$bills->get();
 
          @$bills->filter(function($bill){
@@ -287,7 +321,7 @@ class ReportController extends Controller
     public function getreportDetails($id, $sc = null, $v= null){
 
         $project = Project::find($id); 
-        $trades = $project->trades()->get(); 
+        $trades = @$project->trades()->get(); 
         $paymentTrades = [];
       
         $trade_ids = @$project->payments->whereNotNull('trade_id')

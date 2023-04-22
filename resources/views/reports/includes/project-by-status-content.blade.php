@@ -25,9 +25,24 @@ table.payments-table thead>tr>th{
             <thead>
             <tr class="text-danger">
                 <th>No.</th>
-                <th>Property</th>
-                <th >Project </th>
-                <th>Project Type</th>
+                <th>Property <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderByStatus('property', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderByStatus('property', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span></th>
+                <th >Project <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderByStatus('project', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderByStatus('project', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span></th>
+                <th>Project Type <span class="sorting-outer">
+                  <a href="javascript:void(0)" onclick="sortOrderByStatus('project_type', 'ASC')">
+                    <i class="fa fa-sort-asc" o ></i></a>
+                  <a href="javascript:void(0)" onclick="sortOrderByStatus('project_type', 'DESC')">
+                    <i class="fa fa-sort-desc"></i> </a>
+                </span></th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -39,8 +54,17 @@ table.payments-table thead>tr>th{
               <tr>
               <td>{{ $project->id }}</td>
                 <td>{{ @$project->property->name }}</td>
-                <td ><a   href="{{ url('projects/'.$project->id )}}">
-                   {{ $project->name }} </a> </td>
+                <td >
+
+                  @if(request()->route()->getName()  == 'reports.index')
+
+                  <a href="{{ url('projects/'.$project->id )}}">
+                   {{ $project->name }} </a> 
+                 @else
+                 {{ $project->name }}
+                 @endif
+
+                 </td>
                 <td>{{ @$project->project_type->name }}</td>
                 <td>{{ @$project->p_status->name }}</td>
                </tr>
