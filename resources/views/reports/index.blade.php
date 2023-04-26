@@ -68,6 +68,10 @@
                                           <a class="nav-link text-dark"  data-toggle="tab" href="#unpaid-bills" role="tab"
                                              aria-expanded="false">Unpaid Bills</a>
                                       </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link text-dark"  data-toggle="tab" href="#awarded-contracts" role="tab"
+                                             aria-expanded="false">Awarded Contracts</a>
+                                      </li>
 
                                   </ul>
                               </div>
@@ -78,6 +82,7 @@
                               @include('reports.subcontractor-payment')
                               @include('reports.project-by-status')
                               @include('reports.unpaid-bills')
+                              @include('reports.awarded-contracts')
                         </div>
 
                       </div>
@@ -158,7 +163,13 @@ i.fa.fa-sort-asc{
 .sorting-outer a{
   color: #ef8157 ;
 }
+#awarded-contracts table th{
+  border: 1px solid #000;
+}
 
+#awarded-contracts table img{
+  height: 60px;
+}
 </style>
 <script type="text/javascript">
 
@@ -350,6 +361,32 @@ function selectVendor(trade, cLass, cLass2, cLass3){
        if(ps){
           url += 'ps='+ps+'&';
        }
+       if(pt){
+          url += 'pt='+pt+'&';
+       }
+       if(pr){
+          url += 'pr='+pr+'&';
+       }
+       if(p){
+          url += 'p='+p+'&';
+       }
+     
+       url += value;
+
+       window.location.href = path+'?'+url;
+      
+       
+  }   
+
+  function selectAwardedContracts(value, pt, pr){
+       let path = window.location.href.split('?')[0]
+       path = path.split('#')[0]
+      var pt = $('.'+pt).val();
+       var pr = $('.'+pr).val();
+       var p = $('.'+p).val();
+        
+       let url = ''; 
+      
        if(pt){
           url += 'pt='+pt+'&';
        }
