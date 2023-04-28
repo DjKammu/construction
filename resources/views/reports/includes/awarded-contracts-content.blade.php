@@ -8,13 +8,10 @@
             </tr>
             </thead>
             <tbody>
-
               <tr class="text-danger">
-                <th><img src="/img/pdf.png"></th>
-                <th><img src="/img/pdf.png"></th>
-            </tr>
-          
-
+                <th><a target="_blank" href="{{ url('contracts-reports').'?t=awarded&p='.request()->p}}" ><img src="/img/pdf.png"></a></th>
+                <th><a target="_blank" href="{{ url('contracts-reports').'?t=pending&p='.request()->p}}" ><img src="/img/pdf.png"></a></th>
+              </tr>
             </tbody>
         </table>
 </div>

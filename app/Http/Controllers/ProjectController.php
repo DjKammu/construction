@@ -177,9 +177,9 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-          if(Gate::denies('edit')) {
+         if(Gate::denies('edit')) {
                return abort('401');
-          } 
+         } 
          $rfi_statuses = RFISubmittalStatus::orderBy('name')->get(); 
          $statuses = Status::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get();
@@ -290,8 +290,7 @@ class ProjectController extends Controller
                 
          } 
 
-
-          if(request()->filled('submittal_subcontractor')){
+        if(request()->filled('submittal_subcontractor')){
                 $subcontractor = request()->submittal_subcontractor;
 
                 $submittals->whereHas('subcontractor', function($q) use ($subcontractor){
@@ -299,7 +298,7 @@ class ProjectController extends Controller
                 });
          }
 
-          if(request()->filled('submittal_status')){
+        if(request()->filled('submittal_status')){
                 $status = request()->submittal_status;
 
                 $submittals->whereHas('status', function($q) use ($status){
@@ -322,7 +321,7 @@ class ProjectController extends Controller
          $orderRFI ='DESC' ;
          $orderSubmittal ='DESC' ;
          $orderByLog = 'created_at';  
-         $orderLog ='DESC' ;
+         $orderLog ='DESC';
                     
         if(request()->filled('order')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 

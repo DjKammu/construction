@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Mail\MaitToSubcontractor;
@@ -24,6 +23,9 @@ use PDF;
 
 class ReportController extends Controller
 {
+        CONST AWARDED   = 'awarded';
+        CONST PENDING   = 'pending';
+
     /**
      * Create a new controller instance.
      *
@@ -484,9 +486,59 @@ class ReportController extends Controller
             'message' => 'Sent Successfully!'
            ]
        );
-
-
-
     }
+    
+    public function ContractsReports(Request $request){
+        
+         if(!$request->filled('p')) {
+               return abort('401');
+        } 
 
+        $project = Project::find($request->p);
+
+        $awardedTrades = @$project->proposals()->IsAwarded()->pluck('trade_id');
+        
+        $trades = $project->trades();
+        if($request->t == self::AWARDED){
+           $trades->whereIn('trades.id',$awardedTrades); 
+        }
+        elseif($request->t == self::PENDING){
+           $trades->whereNotIn('trades.id',$awardedTrades); 
+        }
+        $trades = $trades->orderBy('name')->get();
+     
+         $catids = @($trades->pluck('category_id'))->unique();
+
+         $categories = $paymentCategories = Category::whereIn('id',$catids)->get(); 
+         
+         $type = $request->filled('t') ? $request->t : self::PENDING;
+
+         // return View('reports.'.$type.'-contracts-pdf',
+         //    ['project' => $project, 'categories' => $categories,'trades' => $trades]
+         //  );
+
+       // dd($data); 
+
+         $pdf = PDF::loadView('reports.'.$type.'-contracts-pdf',
+              ['project' => $project, 'categories' => $categories,'trades' => $trades]
+            );
+
+         
+
+
+        $slug = \Str::slug(@$project->name);
+
+        $view = true;
+
+        $pdf->setOptions(['margin' => 5]);
+
+        $pdf->setPaper('a4', 'landscape');  
+
+        if($view){
+         return $pdf->stream('project_'.$slug.'-'.$request->t.'-contracts.pdf');
+         return $pdf->setPaper('a4')->output();
+        }
+
+        return $pdf->download($slug.'-'.$type .'.pdf');
+    }
 }

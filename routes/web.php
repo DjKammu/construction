@@ -128,11 +128,9 @@ Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::cl
 
 Route::get('documents/search', [App\Http\Controllers\DocumentController::class,'search'])->name('documents.search');
 
-
 Route::delete('documents/{id}/file', [App\Http\Controllers\DocumentController::class,'destroyFile'])->name('documents.file.destroy');
 
 Route::resource('documents', App\Http\Controllers\DocumentController::class);
-
 
 // Reports Routes
 
@@ -141,6 +139,8 @@ Route::resource('reports', App\Http\Controllers\ReportController::class);
  Route::get('reports/{id}/{type}/{trade?}', [App\Http\Controllers\ReportController::class,'getReport'])->name('reports.report');
 
  Route::post('reports/{id}/send-mail', [App\Http\Controllers\ReportController::class,'reportSendMail'])->name('reports.send-mail');
+
+ Route::get('contracts-reports', [App\Http\Controllers\ReportController::class,'ContractsReports'])->name('contracts.reports');
 
 
 
