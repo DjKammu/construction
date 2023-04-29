@@ -70,7 +70,7 @@
      $vendors = [];
      @endphp
 
-    @foreach($categories as $cat)
+    @foreach($categories as $k => $cat)
 
      @php   
       $catMaterialTotal = 0;
@@ -83,10 +83,11 @@
       $catTradeTotal = 0;
       $catBudgetDiff = 0;
 
-
-         $catTrades = @$trades->where('category_id', $cat->id);
-         
-         @endphp
+      $catTrades = [];
+      $catTrades = @$trades->where('category_id', $cat->id);
+      $end = ($k == ($categories->count() - 1)) ? true : false;
+      $i = 0;
+      @endphp
 
         
         <TR>
@@ -94,7 +95,7 @@
           <TD class="tr1 td5 max-width-td" colspan="6" > </TD>
         </TR>
          
-        @foreach($catTrades as $k => $trd)
+        @foreach($catTrades as $trd)
 
               @php
               $changeOrderTotal = 0;
@@ -105,15 +106,14 @@
                              ->where('trade_id',$trd->id)
                              ->groupBy('vendor_id','material_id')
                            ->get();
-
-              
-              $bb = ($k == ($catTrades->count())) ? 'bb' : '';
-           
+               
+               $bb = ($end && $i == ($catTrades->count() - 1)) ? 'bb' : '';
+               $i++;
               @endphp
             
             <TR>
               <TD class="lb tr1 td4 {{ $bb }}"><P class="p5 ft7"></P></TD>
-              <TD class="lb tr1 td4 {{ $bb }}"><P class="p5 ft7">{{ $trd->name  }}</P></TD>
+              <TD class=" tr1 td4 {{ $bb }}"><P class="p5 ft7">{{ $trd->name  }}</P></TD>
               
 
 

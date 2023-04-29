@@ -46,12 +46,12 @@
   <TD class="tr5 td2"><P class="p5 ft8">Trade</P></TD>
 </TR>
 
-    @foreach($categories as $cat)
+    @foreach($categories as $k => $cat)
 
-     @php   
-
-         $catTrades = @$trades->where('category_id', $cat->id);
-         
+         @php   
+          $catTrades = @$trades->where('category_id', $cat->id);
+          $end = ($k == ($categories->count() - 1)) ? true : false;
+          $i = 0;
          @endphp
 
         
@@ -60,22 +60,19 @@
           <TD class="tr1 td5 max-width-td" > </TD>
         </TR>
          
-        @foreach($catTrades as $k => $trd)
-
-              @php
-             
-              $bb = ($k == ($catTrades->count() - 1) ) ? 'bb' : '';
-           
-              @endphp
-            
+        @foreach($catTrades as $trd)
+             @php
+             $bb = ($end && $i == ($catTrades->count() - 1)) ? 'bb' : '';
+             $i++;
+            @endphp
             <TR>
               <TD class="lb tr1 td4 {{ $bb }}"><P class="p5 ft7"></P></TD>
-              <TD class="lb tr1 td4 {{ $bb }}"><P class="p5 ft7">{{ $trd->name  }}</P></TD>
+              <TD class="tr1 td4 {{ $bb }}"><P class="p5 ft7">{{ $trd->name  }} {{ $i}}</P></TD>
             </TR>
 
           @endforeach
          
-          @endforeach
+   @endforeach
 
 
 </TABLE>
