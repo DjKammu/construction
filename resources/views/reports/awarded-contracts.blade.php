@@ -38,10 +38,19 @@ aria-expanded="true">
 
     </div>
     @if(@request()->p && @request()->t == 'awarded-contracts' )
-       
+
+        <div class="col-3" >
+      <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
+          Send Email
+      </button>
+    </div>
+
        </br> 
         <div class="col-12" >
             <h4 class="mt-0 text-left"> {{ $project->name }}  Awarded / Pending Contracts</h4>
+
+          
+
         </div>
         @include('reports.includes.awarded-contracts-content')
     @else

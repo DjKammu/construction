@@ -468,9 +468,17 @@ class ReportController extends Controller
           'subject' => $request->subject,
           'content' => $request->message,
         ];
-    
-        $pdffile =  $this->getReport($id,$type,$sc, true);
 
+        if($request->t == 'awarded-contracts'){
+          $pdffile = null;
+          $data['subject'] = $project->name.' Awarded and Pending Contacts Report';
+          $files =  $this->getContractsReport($id);
+          $data['pdffiles'] = $files;
+        }
+        else{
+        $pdffile =  $this->getReport($id,$type,$sc, true);
+        }    
+    
         $data['pdffile'] = $pdffile;
         $data['fileName'] = $slug.'-'.$type.'.pdf';
 
@@ -513,19 +521,11 @@ class ReportController extends Controller
          
          $type = $request->filled('t') ? $request->t : self::PENDING;
 
-         // return View('reports.'.$type.'-contracts-pdf',
-         //    ['project' => $project, 'categories' => $categories,'trades' => $trades]
-         //  );
-
-       // dd($data); 
-
          $pdf = PDF::loadView('reports.'.$type.'-contracts-pdf',
               ['project' => $project, 'categories' => $categories,'trades' => $trades]
             );
 
-         
-
-
+        
         $slug = \Str::slug(@$project->name);
 
         $view = true;
@@ -540,5 +540,60 @@ class ReportController extends Controller
         }
 
         return $pdf->download($slug.'-'.$type .'.pdf');
+    }
+
+
+    public function getContractsReport( $id){
+
+        $project = Project::find($id);
+
+        $awardedTrades = @$project->proposals()->IsAwarded()->pluck('trade_id');
+        
+        $tradesQuery = $project->trades();
+       
+        $aTrades = $tradesQuery->whereIn('trades.id',$awardedTrades); 
+    
+        $pTrades  = $tradesQuery->whereNotIn('trades.id',$awardedTrades); 
+
+        $aTrades = $aTrades->orderBy('name')->get();
+        $pTrades = $pTrades->orderBy('name')->get();
+     
+        $catids = @($aTrades->pluck('category_id'))->unique();
+
+        $categories  = Category::whereIn('id',$catids)->get(); 
+         
+        $pdf = PDF::loadView('reports.'.self::AWARDED.'-contracts-pdf',
+              ['project' => $project, 'categories' => $categories,'trades' => $aTrades]
+            );
+        
+        $slug = \Str::slug(@$project->name);
+
+        $pdf->setOptions(['margin' => 5]);
+
+        $pdf->setPaper('a4', 'landscape');  
+
+        $files[$slug.'-'.self::AWARDED] = $pdf->setPaper('a4')->output();
+
+        $catids = @($pTrades->pluck('category_id'))->unique();
+
+        $categories  = Category::whereIn('id',$catids)->get(); 
+         
+        $pdf = '';
+
+        $pdf = PDF::loadView('reports.'.self::PENDING.'-contracts-pdf',
+              ['project' => $project, 'categories' => $categories,'trades' => $pTrades]
+            );
+
+        
+        $slug = \Str::slug(@$project->name);
+
+        $pdf->setOptions(['margin' => 5]);
+
+        $pdf->setPaper('a4', 'landscape');  
+
+        $files[$slug.'-'.self::PENDING] = $pdf->setPaper('a4')->output();
+
+        return $files;
+
     }
 }
