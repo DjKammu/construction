@@ -41,9 +41,15 @@
   <TD class="lb tr4 td2"><P class="p5 ft7">A</P></TD>
   <TD class="tr4 td2"><P class="p5 ft8">B</P></TD>
 </TR>
+
+
+@php   
+    $br = ($categories->count() == 0) ? 'bb' : '';
+@endphp
+
 <TR>
-  <TD class="lb tr5 td2"><P class="p12 ft7">Category </P></TD>
-  <TD class="tr5 td2"><P class="p5 ft8">Trade</P></TD>
+  <TD class="lb tr5 td2 {{ $br }}"><P class="p12 ft7">Category </P></TD>
+  <TD class="tr5 td2 {{ $br }}"><P class="p5 ft8">Trade</P></TD>
 </TR>
 
     @foreach($categories as $k => $cat)

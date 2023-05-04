@@ -108,6 +108,17 @@
               <input type="email" class="form-control" id="recipient">
             </div>
             <div class="form-group">
+            <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="cc">
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="bcc">
+          </div>
+            <div class="form-group">
               <label for="recipient-name" class="col-form-label">Subject:</label>
               <input type="text" class="form-control" id="subject">
             </div>
@@ -448,6 +459,8 @@ function projectPage(id){
     var subject = $('#subject').val();
     var message = $('#message').val();
     var file = $('#file').val();
+    var cc = $('#cc').val();
+    var bcc = $('#bcc').val();
 
     const validateEmail = (email) => {
     return String(email)
@@ -488,6 +501,8 @@ function projectPage(id){
           subject:subject,
           message:message,
           file:file,
+          cc:cc,
+          bcc:bcc,
           _token: _token
         },
         success:function(response){

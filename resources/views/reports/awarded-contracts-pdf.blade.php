@@ -46,15 +46,7 @@
   <TD class="tr4 td9"><P class="p9 ft8">F</P></TD>
   <TD class="tr4 td10"><P class="p10 ft7">G</P></TD>
 </TR>
-<TR>
-  <TD class="lb tr5 td6"><P class="p12 ft7">Category </P></TD>
-  <TD class="tr5 td5"><P class="p5 ft8">Trade</P></TD>
-  <TD class="tr5 td6"><P class="p5 ft9">SubContractor</P></TD>
-  <TD  class="tr5 td13"><P class="p5 ft7">Contract Sum</P></TD>
-  <TD class="tr5 td9"><P class="p9 ft8">Paid to Date</P></TD>
-  <TD class="tr5 td10"><P class="p5 ft7">Remaining Amt.</P></TD>
-  <TD class="tr5 td11"><P class="p5 ft9">% Completed</P></TD>
-</TR>
+
 
 @php   
      $materialTotal = 0;
@@ -68,7 +60,21 @@
      $vendorsTotal = 0;
      $changeOrderTotal = 0;
      $vendors = [];
-     @endphp
+
+    $br = ($categories->count() == 0) ? 'bb' : '';
+
+@endphp
+
+<TR>
+  <TD class="lb tr5 td6 {{ $br }}"><P class="p12 ft7">Category </P></TD>
+  <TD class="tr5 td5 {{ $br }}"><P class="p5 ft8">Trade</P></TD>
+  <TD class="tr5 td6 {{ $br }}"><P class="p5 ft9">SubContractor</P></TD>
+  <TD  class="tr5 td13 {{ $br }}"><P class="p5 ft7">Contract Sum</P></TD>
+  <TD class="tr5 td9 {{ $br }}"><P class="p9 ft8">Paid to Date</P></TD>
+  <TD class="tr5 td10 {{ $br }}"><P class="p5 ft7">Remaining Amt.</P></TD>
+  <TD class="tr5 td11 {{ $br }}"><P class="p5 ft9">% Completed</P></TD>
+</TR>
+
 
     @foreach($categories as $k => $cat)
 
@@ -202,7 +208,7 @@
 
           @endforeach
          
-          @endforeach
+      @endforeach
 
 
 </TABLE>

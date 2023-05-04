@@ -892,8 +892,6 @@ class PaymentController extends Controller
         $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
         $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
 
-
-
         $data['pdffile'] = $pdffile;
         $data['fileName'] = $slug.'-budget.pdf';
 

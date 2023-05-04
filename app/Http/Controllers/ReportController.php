@@ -481,12 +481,29 @@ class ReportController extends Controller
     
         $data['pdffile'] = $pdffile;
         $data['fileName'] = $slug.'-'.$type.'.pdf';
-        
+
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
         dispatch(
-          function() use ($request, $data){
-           \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+           function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
           }
+
         )->afterResponse();
+        
+        // dispatch(
+        //   function() use ($request, $data){
+        //    \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));
+        //   }
+        // )->afterResponse();
 
       return response()->json(
            [
@@ -572,7 +589,7 @@ class ReportController extends Controller
 
         $pdf->setPaper('a4', 'landscape');  
 
-        $files[$slug.'-'.self::AWARDED] = $pdf->setPaper('a4')->output();
+        $files[$slug.'-'.self::AWARDED] = $pdf->output();
 
         $catids = @($pTrades->pluck('category_id'))->unique();
 
@@ -591,7 +608,7 @@ class ReportController extends Controller
 
         $pdf->setPaper('a4', 'landscape');  
 
-        $files[$slug.'-'.self::PENDING] = $pdf->setPaper('a4')->output();
+        $files[$slug.'-'.self::PENDING] = $pdf->output();
 
         return $files;
 
