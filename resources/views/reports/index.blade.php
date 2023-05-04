@@ -499,7 +499,6 @@ function projectPage(id){
           alert(error);
         }
        });
-
    }
 
  function sortOrderBy(orderBy,order){

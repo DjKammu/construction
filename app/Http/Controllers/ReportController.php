@@ -481,7 +481,7 @@ class ReportController extends Controller
     
         $data['pdffile'] = $pdffile;
         $data['fileName'] = $slug.'-'.$type.'.pdf';
-
+        
         dispatch(
           function() use ($request, $data){
            \Mail::to($request->recipient)->send(new MaitToSubcontractor($data));

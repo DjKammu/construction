@@ -191,7 +191,6 @@ function sendMail(){
           alert(error);
         }
        });
-  
 }
 
 function selectSign(val, id){
