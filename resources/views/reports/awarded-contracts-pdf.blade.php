@@ -36,7 +36,7 @@
 
 <DIV id="id1_2">
 
-<TABLE style="margin-left: 55px;" cellpadding=0 cellspacing=0 class="t3">
+<TABLE style="text-align:center; width: 100%;" cellpadding=0 cellspacing=0 class="t3">
 <TR>
   <TD class="lb tr4 td4"><P class="p5 ft7">A</P></TD>
   <TD class="tr4 td5"><P class="p5 ft8">B</P></TD>

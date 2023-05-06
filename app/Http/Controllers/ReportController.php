@@ -539,6 +539,14 @@ class ReportController extends Controller
          
          $type = $request->filled('t') ? $request->t : self::PENDING;
 
+
+       //      return View('reports.'.$type.'-contracts-pdf',
+       //        ['project' => $project, 'categories' => $categories,'trades' => $trades]
+       //      );
+
+       // dd($data); 
+
+
          $pdf = PDF::loadView('reports.'.$type.'-contracts-pdf',
               ['project' => $project, 'categories' => $categories,'trades' => $trades]
             );
