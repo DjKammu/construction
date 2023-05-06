@@ -482,6 +482,7 @@ class ReportController extends Controller
         $data['pdffile'] = $pdffile;
         $data['fileName'] = $slug.'-'.$type.'.pdf';
 
+
         $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
         $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
 
@@ -530,7 +531,7 @@ class ReportController extends Controller
         elseif($request->t == self::PENDING){
            $trades->whereNotIn('trades.id',$awardedTrades); 
         }
-        $trades = $trades->orderBy('name')->get();
+         $trades = $trades->orderBy('name')->get();
      
          $catids = @($trades->pluck('category_id'))->unique();
 
@@ -569,19 +570,21 @@ class ReportController extends Controller
         $tradesQuery = $project->trades();
        
         $aTrades = $tradesQuery->whereIn('trades.id',$awardedTrades); 
-    
-        $pTrades  = $tradesQuery->whereNotIn('trades.id',$awardedTrades); 
-
         $aTrades = $aTrades->orderBy('name')->get();
+    
+        $pTrades  = $project->trades()->whereNotIn('trades.id',$awardedTrades); 
         $pTrades = $pTrades->orderBy('name')->get();
      
         $catids = @($aTrades->pluck('category_id'))->unique();
 
         $categories  = Category::whereIn('id',$catids)->get(); 
-         
+
+       
         $pdf = PDF::loadView('reports.'.self::AWARDED.'-contracts-pdf',
               ['project' => $project, 'categories' => $categories,'trades' => $aTrades]
             );
+
+
         
         $slug = \Str::slug(@$project->name);
 
@@ -589,7 +592,7 @@ class ReportController extends Controller
 
         $pdf->setPaper('a4', 'landscape');  
 
-        $files[$slug.'-'.self::AWARDED] = $pdf->output();
+        $files['project-'.$slug.'-'.self::AWARDED] = $pdf->output();
 
         $catids = @($pTrades->pluck('category_id'))->unique();
 
@@ -608,7 +611,7 @@ class ReportController extends Controller
 
         $pdf->setPaper('a4', 'landscape');  
 
-        $files[$slug.'-'.self::PENDING] = $pdf->output();
+        $files['project-'.$slug.'-'.self::PENDING] = $pdf->output();
 
         return $files;
 
