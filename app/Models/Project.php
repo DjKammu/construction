@@ -36,7 +36,8 @@ class Project extends Model
      'project_date' ,'retainage_percentage','original_amount','project_email',
      'notary_name' ,'notary_country','notary_state','commission_expire_date',
      'status','project_number','contract_phone','property_type_id','attachment',
-     'attachment_name','user_id','property_group_id','project_email_user'
+     'attachment_name','user_id','property_group_id','project_email_user',
+     'total_construction_sq_ft','hotel_keys'
     ];
 
     

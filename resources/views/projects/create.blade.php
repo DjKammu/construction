@@ -485,7 +485,26 @@
                         </select>
                     </div>
                 </div>
-          
+                
+
+                <div class="col-lg-6 col-md-6">
+
+                   <div class="form-group">
+                        <label class="text-dark" for="password">Total Construction Sq Ft 
+                        </label>
+                        <input  name="total_construction_sq_ft" value=" {{ old('total_construction_sq_ft')}}" type="number" class="form-control" placeholder="Total Construction Sq Ft" step="any">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+
+                   <div class="form-group">
+                        <label class="text-dark" for="password">Hotel Keys 
+                        </label>
+                        <input  name="hotel_keys" value=" {{ old('hotel_keys')}}" type="number" class="form-control" placeholder="Hotel Keys" step="any">
+                    </div>
+                </div>
+
                
             </div>
 
