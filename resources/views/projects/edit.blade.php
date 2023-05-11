@@ -89,7 +89,7 @@
                                               
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
-                                                     aria-expanded="false">Project Budget</a>
+                                                     aria-expanded="false">Hard Project Cost</a>
                                               </li>
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#construction-cost" role="tab"
