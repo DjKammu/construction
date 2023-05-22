@@ -426,6 +426,16 @@ Route::prefix('projects')->group(function(){
            Route::delete('bills/{id}/file', [App\Http\Controllers\FFEBillController::class,'destroyFile'])->name('projects.ffe.bills.file.destroy');
 
       });
+       
+
+        Route::group(['prefix' => '{project}/budget','as' => 'projects.budget.'], function ($project) {
+
+            Route::get('/',[App\Http\Controllers\BudgetController::class,'index'])->name('index');
+            Route::get('/lines/get',[App\Http\Controllers\BudgetController::class,'create'])->name('lines');
+            Route::post('/lines',[App\Http\Controllers\BudgetController::class,'store'])->name('lines');
+            Route::delete('/lines',[App\Http\Controllers\BudgetController::class,'destroy'])->name('lines');
+
+        });
 
 
 
