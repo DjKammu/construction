@@ -105,10 +105,17 @@
                     <td colspan="4"></td>
                   </tr>
                   <tr>
-                    <td></td>
-                    <th>Total Budget / Sq Ft </th>
-                    <th>{{(total_price_sq_ft / total_construction_sq_ft).toFixed(2)}}</th>
+                    <th></th>
+                    <th >Total Budget / Sq Ft </th>
+                    <th></th>
+                    <th>Total Budget / Hotel Keys </th>
+                  </tr>
+
+                  <tr>
+                    <th> </th>
                     <th>{{(total_budget / total_construction_sq_ft).toFixed(2)}}</th>
+                    <th></th>
+                    <th>{{(hotel_keys != 0) ?(total_budget / hotel_keys).toFixed(2) : (0).toFixed(2)}}</th>
                   </tr>
                 </tbody>
                 </table> 
@@ -128,7 +135,7 @@
 
 <script>
     export default {
-        props: ['project','projectid','total_construction_sq_ft'],
+        props: ['project','projectid','total_construction_sq_ft','hotel_keys'],
 
         mounted() {
             this.loadLines();        
@@ -169,9 +176,8 @@
                 .then(function (response) {
                        let res = response.data
                        _vm.budget_lines = res.data.lines
-                       _vm.total_budget = res.data.total_budget
-                       _vm.total_price_sq_ft = res.data.total_price_sq_ft
-                       _vm.loadSummary();
+                       _vm.total_budget = res.data.total_budget.toFixed(2)
+                       _vm.total_price_sq_ft = res.data.total_price_sq_ft.toFixed(2)
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -181,45 +187,6 @@
                       _vm.projectLines = false 
                       _vm.firstTime = false
                 }
-            },
-            async loadSummary(){
-            
-              let _vm = this;
-
-              await axios.get('/projects/'+this.projectid+'/get-applications-summary/')
-                .then(function (response) {
-                       let res = response.data
-                       _vm.lastApplicationsPayments = res.data.lastApplicationsPayments
-                       _vm.applications_count = res.data.applicationsCount
-                       _vm.changeOrdersTotal = res.data.changeOrdersTotal
-                       _vm.currentDuePayment = res.data.currentDuePayment
-                       _vm.retainageToDate = res.data.retainageToDate
-                       _vm.isProjectClosed = res.data.isProjectClosed
-                       _vm.closeProject = res.data.closeProject
-                       _vm.totalStored = res.data.totalStored
-                       _vm.totalEarned = res.data.totalEarned
-                       _vm.balance = parseFloat(_vm.original_amount) +  parseFloat(res.data.changeOrdersTotal) - parseFloat(res.data.totalEarned)
-
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            },
-            async loadApplications(){
-            
-              let _vm = this;
-
-              await axios.get('/projects/'+this.projectid+'/get-all-applications/')
-                .then(function (response) {
-                       let res = response.data
-                       _vm.applications = res.data
-
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
             },
             addLineItem(){
                      // this.form.retainage[this.addLineItemHTML.length] = this.retainage;
@@ -310,10 +277,12 @@
             sortOrderBy(orderBy,order){
                  let _vm = this;
 
-                  axios.get('/projects/'+this.projectid+'/get-project-lines/?order='+order+'&orderBy='+orderBy)
+                  axios.get('/projects/'+this.projectid+'/budget/lines/get/?order='+order+'&orderBy='+orderBy)
                     .then(function (response) {
                            let res = response.data
-                           _vm.budget_lines = res.data
+                           _vm.budget_lines = res.data.lines
+                           _vm.total_budget = res.data.total_budget.toFixed(2)
+                           _vm.total_price_sq_ft = res.data.total_price_sq_ft.toFixed(2)
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -352,137 +321,6 @@
             summaryProject(){
                 this.projectLines = false;
                 this.loadLines();
-            }, 
-            projectClose(){
-             
-               if(!confirm("This project has been 100% billed, less retainage. Closing the project will mark the current application as Complete. The final application for the retainage will also be created. You will not be able to create any additional applications or make any other updates to the project.\n\nAre you sure you want to close the project?")){
-                    return
-               }
-
-              $('#closeProjectModal').modal('show')
-
-            },
-            async undoApplication(){
-               let applications_count = this.applications_count
-               if (!confirm("Are you sure to undo application "+ applications_count +"!")) {
-                  return;
-                }
-
-                  let _vm = this;
-
-                await axios.get('/projects/undo/'+_vm.projectid+'/project-lines')
-                .then(function (response) {
-                           let res = response.data
-                          if(res.error){
-                                _vm.error = true
-                                _vm.errorMsg = res.message
-                           }else{
-                              _vm.success = true
-                              _vm.successMsg = res.message
-                               _vm.loadLines();
-                           }
-
-                           setTimeout(()=>{
-                             _vm.clearMsg()
-                          },2000);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-
-            },
-            async resetApplication(){
-              let password = prompt("By doing reset application line will be deleted.\n\nAre you sure you want to  reset the project?\n\nEnter user password for reset application");
-               
-               if(!password){
-                    return
-               }
-
-              let _vm = this;
-
-              await axios.post('/projects/delete/'+_vm.projectid+'/project-lines',{
-                     'password' : password
-                  }).then(function (response) {
-                           let res = response.data
-                          if(res.error){
-                                _vm.error = true
-                                _vm.errorMsg = res.message
-                           }else{
-                              _vm.success = true
-                              _vm.successMsg = res.message
-                               _vm.loadLines();
-                           }
-
-                           setTimeout(()=>{
-                             _vm.clearMsg()
-                          },2000);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-
-
-            },
-            async  saveCloseProject() {
-
-              let _vm = this;
-
-
-               if(!this.application_date || !this.period_to ){
-                  this.error2 = true
-                  this.errorMsg2 = 'Application date or Period to is missing!'
-
-                   setTimeout(()=>{
-                       this.clearMsg()
-                    },2000);
-
-                  return;
-               }
-
-              await axios.post('/projects/'+this.projectid+'/close-project/',{
-                    application_date: this.application_date,
-                    retainage_value: this.balance,
-                    period_to: this.period_to
-                })
-                .then(function (response) {
-
-                       let res = response.data
-
-                      if(res.error){
-                            _vm.error2 = true
-                            _vm.errorMsg2 = res.message
-                       }else{
-                          _vm.success = true
-                          _vm.successMsg = res.message
-                           $('#closeProjectModal').modal('hide')
-                           _vm.loadLines();
-                       }
-
-                       setTimeout(()=>{
-                         this.clearMsg()
-                      },2000);
-                      
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            createApplication(){
-              let applications_count = this.applications_count
-              if(applications_count == 1){
-  
-                 if(!confirm("If you proceed with creating application #2, you will no longer be able to make any changes to the original contract amount or the original project line items. Any subsequent changes to the contract value and contract line items will need to be made via change orders.\n\nDo you want to proceed with creating Application #2?")){
-                      return
-                 }
-              }
-              window.location.href =  'applications';
-            },
-            editApplication(){
-              window.location.href =  'applications/edit';
-            },
-            changeOrders(){
-              window.location.href =  'change-orders';
             },
             redirectTo($id,$to){
                  let a= document.createElement('a');
@@ -503,10 +341,17 @@
                  this.budget_lines[index].budget = parseFloat(this.budget_lines[index].price_sq_ft)*total
               }
 
+              if(isNaN(this.budget_lines[index].budget)){
+                   this.budget_lines[index].price_sq_ft = 0;
+                   this.budget_lines[index].budget = 0;
+              }
+
               this.budget_lines[index].budget = this.budget_lines[index].budget.toFixed(2)
 
                 var total_budget = 0;
                 var total_price_sq_ft = 0;
+
+                 console.log(this.budget_lines[index].budget)
 
                this.budget_lines.map(function(value, key) {
                 total_budget += parseFloat(value.budget)
@@ -514,19 +359,24 @@
                }); 
               this.total_budget = total_budget.toFixed(2)
               this.total_price_sq_ft = total_price_sq_ft.toFixed(2)
-
-                
+  
             },
             fillBudget(index){ 
 
                let total = parseFloat(this.total_construction_sq_ft)
-            
+
+
               if(parseFloat(total) == 0 ){
                  this.budget_lines[index].price_sq_ft = 0
               } 
 
               if(parseFloat(total) > 0 ){
-                 this.budget_lines[index].price_sq_ft = total/parseFloat(this.budget_lines[index].budget)
+                 this.budget_lines[index].price_sq_ft = parseFloat(this.budget_lines[index].budget)/total
+              }
+
+              if(isNaN(this.budget_lines[index].price_sq_ft)){
+                   this.budget_lines[index].price_sq_ft = 0;
+                   this.budget_lines[index].budget = 0;
               }
 
               this.budget_lines[index].price_sq_ft = this.budget_lines[index].price_sq_ft.toFixed(2) 
@@ -535,8 +385,8 @@
                 var total_price_sq_ft = 0;
 
                this.budget_lines.map(function(value, key) {
-                total_budget += parseFloat(value.budget)
-                total_price_sq_ft += parseFloat(value.price_sq_ft)
+                total_budget +=  parseFloat(value.budget)
+                total_price_sq_ft +=  parseFloat(value.price_sq_ft)
                }); 
               
               this.total_budget = total_budget.toFixed(2)

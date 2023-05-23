@@ -84,7 +84,7 @@
                         </div>
 
                         <div class="col-md-12">
-                             <project-budget v-bind:project="{{ @json_encode($project) }}" total_construction_sq_ft="{{ @$project->total_construction_sq_ft }}" projectid="{{ @$project->id }}"></project-budget>
+                             <project-budget v-bind:project="{{ @json_encode($project) }}" total_construction_sq_ft="{{ @$project->total_construction_sq_ft }}"hotel_keys="{{ @$project->hotel_keys }}" projectid="{{ @$project->id }}"></project-budget>
                         </div>
 
 

@@ -97,9 +97,11 @@ class BudgetController extends Controller
        }
 
 
-      $budget_lines = $budget_lines->orderBy($orderBy, $order)->get();
-      $total_price_sq_ft = @$budget_lines->sum('price_sq_ft');
-      $total_budget = @$budget_lines->sum('budget');
+      $budget_lines = $budget_lines->select('*', \DB::raw('CAST(price_sq_ft AS DOUBLE) AS price_sq_ft'),
+        \DB::raw('CAST(budget AS DOUBLE) AS budget'))->orderBy($orderBy, $order)->get();
+
+      $total_price_sq_ft = (float)  @$budget_lines->sum('price_sq_ft');
+      $total_budget =(float)  @$budget_lines->sum('budget');
 
        return response()->json(
            [
@@ -222,11 +224,17 @@ class BudgetController extends Controller
 
         foreach ($budget_lines as $key => $value) {
 
-          $update = ['trade' => $value['trade'],
-                      'account_number' => $value['account_number'] 
-              ];
+          $where = ['trade' => $value['trade'],
+                      'account_number' => $value['account_number']
+            ];
 
-            $assignToproject->budget_lines()->UpdateOrCreate($update,$update);
+          $update = ['trade' => $value['trade'],
+                      'account_number' => $value['account_number'],
+                      'price_sq_ft' => $value['price_sq_ft'],
+                      'budget' => $value['budget'] 
+            ];
+
+            $assignToproject->budget_lines()->UpdateOrCreate($where,$update);
         }
 
         return redirect()->back()->with('Budget Lines added Successfully!');
