@@ -46,14 +46,25 @@
                                 </div>
                               
                                  <div class="col-6 text-right">
-                                    
+                                    <button type="button" class="btn btn-danger mt-0"  onclick="sendEmailPopup()">
+                                      Send Email
+                                    </button>
+
+                                    <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/budget/download'">Download
+                                    </button>
                                 </div>
                             </div>
 
                              <div class="row">
-                                <div class="col-6">
-                                    <form method="post" action="{{ route('projects.ffe.trades.multiple', [ 'project' => request()->project]) }}"> 
+                                <div class="col-8">
+                                    <form method="post" action="{{ route('projects.budget.other.assign', [ 'project' => request()->project]) }}"> 
                                       @csrf
+                                     <select style="height: 26px;" onchange="return window.location.href = '?project_type='+this.value" name="project_type"> 
+                                      <option value="">Select Project Type</option>
+                                      @foreach($projectTypes as $type)
+                                         <option value="{{ $type->slug }}" {{ (@request()->project_type == $type->slug) ? 'selected' : ''}}> {{ $type->name }}</option>
+                                      @endforeach
+                                      </select>
                                     <select style="height: 26px;"  name="project_id"> 
                                       <option value=""> Select Project</option>
                                       @foreach($projects as $p)
@@ -64,8 +75,10 @@
                                     <button >Add Budget from other projects</button>
                                   </form>
                                 </div>
-                                <div class="col-6">
-                                  <h6>Total Construction SQ Ft - ${{ \App\Models\Payment::format(@$project->total_construction_sq_ft) }}</h6>
+                                <div class="col-4">
+                                  <h6>Total Construction SQ Ft -
+                                    {{ @$project->total_construction_sq_ft }}
+                                  </h6>
                                 </div>
                             </div>
                         </div>

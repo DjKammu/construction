@@ -54,11 +54,21 @@ class BudgetController extends Controller
         if(!$project->total_construction_sq_ft){
            return redirect()->back()->with('error' ,'Total Construction SQ Ft is not available!');
         }
+          
+         $projectTypes = ProjectType::orderBy('name')->get(); 
 
-         $projects = Project::orderBy('name')
-                     ->get()->except($id);
+         $projects = Project::has('budget_lines')->orderBy('name');
 
-         return view('projects.budget.index',compact('projects','project'));
+         if(request()->filled('project_type')){
+            $p = request()->project_type;
+            $projects->whereHas('project_type', function($q) use ($p){
+                $q->where('slug', $p);
+            });
+         } 
+
+         $projects = $projects->get()->except($id);
+
+         return view('projects.budget.index',compact('projects','project','projectTypes'));
 
 
     }
@@ -194,6 +204,37 @@ class BudgetController extends Controller
           } 
     }
 
+    public function otherAssign(Request $request, $id)
+    {
+          if(Gate::denies('edit')) {
+               return abort('401');
+          } 
+
+        $project  = Project::find($request->project_id);  
+        $assignToproject  = Project::find($id);  
+
+         if(!@$project || !@$assignToproject){
+            return redirect()->back();
+        }
+
+        $budget_lines = $project->budget_lines()->get();
+        
+
+        foreach ($budget_lines as $key => $value) {
+
+          $update = ['trade' => $value['trade'],
+                      'account_number' => $value['account_number'] 
+              ];
+
+            $assignToproject->budget_lines()->UpdateOrCreate($update,$update);
+        }
+
+        return redirect()->back()->with('Budget Lines added Successfully!');
+
+
+
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -253,7 +294,7 @@ class BudgetController extends Controller
         return response()->json(
            [
             'status' => 200,
-            'message' => 'Bsudget Line Delete Successfully!'
+            'message' => 'Budget Line Delete Successfully!'
            ]
         );
 

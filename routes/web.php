@@ -434,6 +434,7 @@ Route::prefix('projects')->group(function(){
             Route::get('/lines/get',[App\Http\Controllers\BudgetController::class,'create'])->name('lines');
             Route::post('/lines',[App\Http\Controllers\BudgetController::class,'store'])->name('lines');
             Route::delete('/lines',[App\Http\Controllers\BudgetController::class,'destroy'])->name('lines');
+            Route::post('/other-assign',[App\Http\Controllers\BudgetController::class,'otherAssign'])->name('other.assign');
 
         });
 
