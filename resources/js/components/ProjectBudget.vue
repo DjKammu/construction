@@ -99,7 +99,7 @@
                     <td></td>
                     <th>Total</th>
                     <th>{{total_price_sq_ft}}</th>
-                    <th>{{total_budget}}</th>
+                    <th>$ {{ new Intl.NumberFormat().format(total_budget)}}</th>
                   </tr>
                   <tr>
                     <td colspan="4"></td>
@@ -115,7 +115,7 @@
                     <th> </th>
                     <th>{{(total_budget / total_construction_sq_ft).toFixed(2)}}</th>
                     <th></th>
-                    <th>{{(hotel_keys != 0) ?(total_budget / hotel_keys).toFixed(2) : (0).toFixed(2)}}</th>
+                    <th>${{(hotel_keys != 0) ?  new Intl.NumberFormat().format(total_budget / hotel_keys) : (0) }}</th>
                   </tr>
                 </tbody>
                 </table> 
