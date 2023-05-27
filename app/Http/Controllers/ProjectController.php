@@ -852,7 +852,17 @@ class ProjectController extends Controller
              }
         }
 
+         if(($project->total_construction_sq_ft != $request->total_construction_sq_ft)
+           && $budget_lines = $project->budget_lines()){
+            $budget_lines->UpdateSqFt();
+         }
+
          $project->update($data);
+
+
+
+
+
 
         return redirect()->back()->with('message', 'Project Updated Successfully!');
     }

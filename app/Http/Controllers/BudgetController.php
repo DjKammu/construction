@@ -220,7 +220,7 @@ class BudgetController extends Controller
         }
 
         $budget_lines = $project->budget_lines()->get();
-        
+        $total_construction_sq_ft = $project->total_construction_sq_ft;
 
         foreach ($budget_lines as $key => $value) {
 
@@ -230,7 +230,7 @@ class BudgetController extends Controller
 
           $update = ['trade' => $value['trade'],
                       'account_number' => $value['account_number'],
-                      'price_sq_ft' => $value['price_sq_ft'],
+                      'price_sq_ft' => number_format($value['budget']/$total_construction_sq_ft,2),
                       'budget' => $value['budget'] 
             ];
 

@@ -119,7 +119,7 @@
 
                                         <button 
                                           type="submit"
-                                          onclick="return confirm('Are you sure?')"
+                                          onclick="return confirm('Are you sure to delete?')"
                                           class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Property Type" title="Delete Property Type"><i class="fa fa-trash text-danger"></i> </button>
                                       </form>
                                     </span>

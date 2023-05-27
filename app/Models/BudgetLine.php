@@ -12,12 +12,20 @@ class BudgetLine extends Model
     protected $perPage = 9;
 
     protected $fillable = [
-     'project_id' , 'account_number','trade' ,
+     'project_id' , 'account_number','trade',
      'price_sq_ft','budget'
     ];
 
      public function project(){
         return $this->belongsTo(Project::class);
+    }
+
+    public function scopeUpdateSqFt($query){
+         $total_construction_sq_ft = request()->total_construction_sq_ft;
+         $query->update([
+          'price_sq_ft' => \DB::raw( "budget/$total_construction_sq_ft")
+         ]);
+    	 
     }
 
 

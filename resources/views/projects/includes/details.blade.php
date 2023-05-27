@@ -493,7 +493,7 @@ aria-expanded="true">
 
                 <!-- Submit Button -->
                 <div class="col-12 text-center">
-                    <button id="change-password-button" type="submit" class="btn btn-danger">Update Project
+                    <button id="change-password-button" onclick="return confirm('Are you sure to update?')" type="submit" class="btn btn-danger">Update Project
                     </button>
                 </div>
 
