@@ -50,7 +50,10 @@
                                       Send Email
                                     </button>
 
-                                    <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='ffe/budget/download'">Download
+                                    <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='budget/pdf/download'">Download
+                                    </button> 
+
+                                     <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='budget/excel/download'">Download to Excel
                                     </button>
                                 </div>
                             </div>

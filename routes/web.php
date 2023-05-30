@@ -436,6 +436,9 @@ Route::prefix('projects')->group(function(){
             Route::delete('/lines',[App\Http\Controllers\BudgetController::class,'destroy'])->name('lines');
             Route::post('/other-assign',[App\Http\Controllers\BudgetController::class,'otherAssign'])->name('other.assign');
 
+            Route::get('/pdf/download',[App\Http\Controllers\BudgetController::class,'pdfDownload'])->name('pdf.download');
+            Route::get('/excel/download',[App\Http\Controllers\BudgetController::class,'excelDownload'])->name('excel.download');
+
         });
 
 

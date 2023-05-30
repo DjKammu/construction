@@ -20,7 +20,9 @@ use App\Models\BudgetLine;
 use App\Models\Status;
 use Carbon\Carbon;
 use Gate;
-
+use PDF;
+use Excel;
+use App\Exports\BudgetLinesExport;
 
 class BudgetController extends Controller
 {
@@ -44,6 +46,7 @@ class BudgetController extends Controller
          if(Gate::denies('view')) {
                return abort('401');
          } 
+         
          $project = Project::find($id);
 
 
@@ -80,28 +83,7 @@ class BudgetController extends Controller
                return abort('401');
          } 
 
-       $project  = Project::find($id);  
-      
-       $budget_lines = $project->budget_lines();
-
-        $orderBy = 'created_at';  
-        $order ='DESC' ;
-                    
-      if(request()->filled('order')){
-    
-            $orderBy = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
-                ['account_number'] ) ? 'created_at' : request()->orderBy ) : 'created_at';
-            
-            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'DESC' 
-             : request()->order;
-       }
-
-
-      $budget_lines = $budget_lines->select('*', \DB::raw('CAST(price_sq_ft AS DOUBLE) AS price_sq_ft'),
-        \DB::raw('CAST(budget AS DOUBLE) AS budget'))->orderBy($orderBy, $order)->get();
-
-      $total_price_sq_ft = (float)  @$budget_lines->sum('price_sq_ft');
-      $total_budget =(float)  @$budget_lines->sum('budget');
+       @extract($this->getLines($id));
 
        return response()->json(
            [
@@ -164,12 +146,13 @@ class BudgetController extends Controller
 
         }
 
-        $ifBudget = false;
+        $projectLines = $request->projectLines;
+        $totalBudget = 0;
 
         if($lines){
 
          foreach ($lines as $key => $line) {
-              $ifBudget = (@$line['price_sq_ft']) ? true : false;
+              $totalBudget = (float) (@$line['budget']) + $totalBudget;
               BudgetLine::where('id',$line['id'])
                   ->update(
                   [
@@ -182,13 +165,23 @@ class BudgetController extends Controller
          }
 
         }  
+        
+        $msg2 = ' AIA Applications already exists for this project!';
 
-        $msg = ($ifBudget) ? 'Budget Save' : 'Budget Lines added';
+        if(!$projectLines && !$project->applications()->exists()){
+           $project->original_amount = $totalBudget;
+           $project->save();
+           $msg2 = ' Budget saved for AIA Applications!';
+        }
+
+        $msg = ((!$projectLines) ? 'Budget Save' : 'Budget Lines added ' ) . ' Successfully!';
+
+        $msg .= (!$projectLines) ? $msg2 : '';
 
         return response()->json(
            [
             'status' => 200,
-            'message' => $msg.' Successfully!'
+            'message' => $msg
            ]
         );
         
@@ -204,6 +197,44 @@ class BudgetController extends Controller
           if(Gate::denies('edit')) {
                return abort('401');
           } 
+    }
+
+    public function pdfDownload(Request $request, $id){
+     
+     @extract($this->getLines($id));
+
+      $pdf = PDF::loadView('projects.budget.pdf',
+              ['lines' => $budget_lines,
+              'total_budget' => $total_budget,
+              'project' => $project,
+              'total_price_sq_ft' => $total_price_sq_ft]
+        );
+
+        $slug = \Str::slug(@$project->name).'-budget';
+
+         $view = request()->view;
+        
+        if($view){
+         return $pdf->setPaper('a4')->output();
+        }
+        
+        //return $pdf->stream($slug .'.pdf');
+
+        return $pdf->download($slug.'.pdf');
+    } 
+
+    public function excelDownload(Request $request, $id){
+     
+     @extract($this->getLines($id));
+
+     $data = ['lines' => $budget_lines,
+              'total_budget' => $total_budget,
+              'project' => $project,
+              'total_price_sq_ft' => $total_price_sq_ft];
+     $file = \Str::slug(@$project->name).'-budget.xlsx';         
+     
+     return Excel::download(new BudgetLinesExport($data) , $file);
+
     }
 
     public function otherAssign(Request $request, $id)
@@ -253,7 +284,34 @@ class BudgetController extends Controller
     {
         //
     }
+     
+    public function getLines( $id){
 
+      $project  = Project::find($id);  
+      
+      $budget_lines = $project->budget_lines();
+
+      $orderBy = 'created_at';  
+      $order ='DESC' ;
+                  
+     if(request()->filled('order')){
+  
+          $orderBy = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
+              ['account_number'] ) ? 'created_at' : request()->orderBy ) : 'created_at';
+          
+          $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'DESC' 
+           : request()->order;
+     }
+
+      $budget_lines = $budget_lines->select('*', \DB::raw('CAST(price_sq_ft AS DOUBLE) AS price_sq_ft'),
+        \DB::raw('CAST(budget AS DOUBLE) AS budget'))->orderBy($orderBy, $order)->get();
+
+      $total_price_sq_ft = (float)  @$budget_lines->sum('price_sq_ft');
+      $total_budget =(float)  @$budget_lines->sum('budget');
+
+      return compact('budget_lines','total_price_sq_ft','total_budget','project');
+
+     }
     /**
      * Update the specified resource in storage.
      *
@@ -309,92 +367,5 @@ class BudgetController extends Controller
     }
 
     
-    public function getAttachment(Request $request, $id){
-
-     $project = Project::find($id);
-     $attachment = $project->attachment;
-     $attachment_name = @$project->attachment_name;
-
-     $fileInfo = pathinfo($attachment);
-     $extension = $fileInfo['extension'];
-
-     if(in_array(\Str::lower($extension),['doc','docx','docm','dot',
-    'dotm','dotx'])){
-         $extension = 'word'; 
-     }
-    else if(in_array(\Str::lower($extension),['csv','dbf','dif','xla',
-        'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
-         $extension = 'excel'; 
-    }
-
-    return response()->json(
-           [
-            'status' => 200,
-            'message' => true,
-            'attachment_name' => $attachment_name,
-            'URL'     => url(\Storage::url($attachment)),
-            'extension'  => $extension
-           ]
-        );
-
-    } 
-
-    public function uploadAttachment(Request $request, $id){
-
-        $project = Project::find($id);
-
-        $document_type = DocumentType::where('name', DocumentType::PROJECT_BUDGET)
-                         ->first();
-
-        $name = @$project->name.' '.@$request->name.' Project Budget';  
-
-        $slug = @\Str::slug($name);
-
-        $attachment_name = $request->attachment_name;                
-
-        $document = $project->documents()
-                   ->firstOrCreate(['project_id' => $project->id,
-                    'document_type_id' => $document_type->id
-                     ],
-                     ['name' => $attachment_name, 'slug' => $slug,
-                     'project_id'       => $project->id,
-                     'document_type_id' => $document_type->id
-                     ]
-        );
-
-        if($request->hasFile('attachment')){
-               $attachment = $request->file('attachment');
-               $attachmentName = @\Str::slug($attachment_name) .'.'.$attachment->getClientOriginalExtension();
-               $path = Document::PROJECTS.'/'.Document::ATTACHMENTS;
-               $data['attachment']  = $request->file('attachment')->storeAs($path, $attachmentName,
-                'public');
-               $data['attachment_name']  = $attachment_name;
-
-             $date  = date('d');
-             $month = date('m');
-             $year  = date('Y');
-
-             $fileName = $attachmentName;
-
-             $fileArr = ['file' => $fileName,
-                      'name' => $attachment_name,
-                      'date' => $date,'month' => $month,
-                      'year' => $year
-                      ];
-
-               @unlink('storage/'.$project->attachment);
-               $document->files()->delete();
-               $document->files()->create($fileArr);
-        }
-
-        $project->update($data);
-
-        return response()->json(
-           [
-            'status' => 200,
-            'message' => 'Attachment Uploaded Successfully!'
-           ]
-        );
-    }
-
+    
 }

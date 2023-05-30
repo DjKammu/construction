@@ -1,6 +1,6 @@
 <template>
     <div id="proposals-list" class="row">
-       <div class="col-6">
+       <div class="col-12">
             <div v-if="success" class="alert alert-success alert-dismissible fade show">
               <strong>Success!</strong> {{ successMsg }}
             </div>
@@ -242,7 +242,6 @@
                if((!lines) && (!this.form.account_number[0] || !this.form.trade[0])){
                   this.error = true
                   this.errorMsg = 'Enter lines to save data!'
-
                    setTimeout(()=>{
                        this.clearMsg()
                     },2000);
@@ -252,7 +251,8 @@
                
               await axios.post('/projects/'+this.projectid+'/budget/lines/',{
                     data : this.form,
-                    lines: lines
+                    lines: lines,
+                    projectLines : _vm.projectLines
                 })
                 .then(function (response) {
                        let res = response.data

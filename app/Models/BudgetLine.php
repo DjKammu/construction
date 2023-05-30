@@ -28,5 +28,9 @@ class BudgetLine extends Model
     	 
     }
 
+    public function getPriceSqFtAttribute($value){
+        return $value ? number_format($value,2) : 0.00;
+    }
+
 
 }
