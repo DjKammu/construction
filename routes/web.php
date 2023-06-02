@@ -251,7 +251,8 @@ Route::prefix('projects')->group(function(){
      Route::delete('{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'destroy'])->name('projects.project-lines.destroy');
 
      Route::match(['get','post'],'delete/{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'deleteLines'])->name('projects.project-lines.delete');
-     Route::match(['get','post'],'undo/{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'undoLine'])->name('projects.project-lines.undo');
+     Route::match(['get','post'],'undo/{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'undoLine'])->name('projects.project-lines.undo'); 
+     Route::match(['get','post'],'import/{id}/project-lines', [App\Http\Controllers\ProjectLineController::class,'importLines'])->name('projects.project-lines.import');
 
      Route::get('{id}/applications', [App\Http\Controllers\ProjectApplicationController::class,'create'])->name('projects.applications'); 
 
@@ -427,7 +428,6 @@ Route::prefix('projects')->group(function(){
 
       });
        
-
         Route::group(['prefix' => '{project}/budget','as' => 'projects.budget.'], function ($project) {
 
             Route::get('/',[App\Http\Controllers\BudgetController::class,'index'])->name('index');
@@ -438,10 +438,9 @@ Route::prefix('projects')->group(function(){
 
             Route::get('/pdf/download',[App\Http\Controllers\BudgetController::class,'pdfDownload'])->name('pdf.download');
             Route::get('/excel/download',[App\Http\Controllers\BudgetController::class,'excelDownload'])->name('excel.download');
+            Route::post('/send-mail',[App\Http\Controllers\BudgetController::class,'sendMail'])->name('send.mail');
 
         });
-
-
 
 });
 

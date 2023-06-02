@@ -284,6 +284,67 @@ class ProjectLineController extends Controller
 
     }
 
+    public function importLines(Request $request, $id){
+         
+         if(Gate::denies('delete')) {
+               return abort('401');
+          } 
+
+        $project  = Project::find($id);  
+
+        $project_lines = $project->project_lines();
+
+        $password = $request->password;
+
+        $user = \Auth::user();
+
+        if(!\Hash::check($password, $user->password)) { 
+          return response()->json(
+               [
+                'status' => 200,
+                'error' => true,
+                'message' => 'Password not matched!'
+               ]
+            );
+        }
+
+        $project_lines->delete();
+
+        $bProject =  Project::find($id);
+        $budget_lines = $bProject->budget_lines()->get();
+
+        if($budget_lines->count() == 0){
+            return response()->json(
+               [
+                'status' => 200,
+                'error' => true,
+                'message' => 'Line Items are not there!'
+               ]
+            );
+        }
+
+        foreach ($budget_lines as $key => $budget_line) {
+
+             $project_lines->Create(
+                    [
+                      'description' => $budget_line['trade'],
+                      'account_number' => $budget_line['account_number'],
+                      'value' => $budget_line['budget'],
+                      'retainage' => @$bProject['retainage_percentage']
+                    ]
+              );
+
+        }
+
+        return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Line Items Import Successfully!'
+           ]
+        );
+
+    }
+
   public function undoLine(Request $request, $id){
          
          if(Gate::denies('delete')) {

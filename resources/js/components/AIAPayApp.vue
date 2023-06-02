@@ -1,5 +1,6 @@
 <template>
     <div id="proposals-list" class="row py-3">
+        <div class="col-6">
             <div v-if="success" class="alert alert-success alert-dismissible fade show">
               <strong>Success!</strong> {{ successMsg }}
             </div>
@@ -7,6 +8,7 @@
             <div  v-else-if="error" class="alert alert-warning alert-dismissible fade show">
             <strong>Error!</strong> {{ errorMsg }}
             </div>
+        </div>    
         <div class="table-responsive" v-if="projectLines">
 
           <table id="project-types-table" class="table table-hover text-center payments-table">
@@ -115,7 +117,9 @@
                <button type="button"  v-if="(!currentExcess) && (!shortFall) && (applications_count >= 0) && !isProjectClosed" class="btn btn-danger" @click="changeOrders" >Change Orders
               </button>
 
-              <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" >Edit Line Items
+              <button type="button"  v-if="applications_count < 2" class="btn btn-danger" @click="editLineItem" > Edit Line Items
+              </button>  
+              <button type="button"  v-if="applications_count < 1" class="btn btn-danger" @click="importLineItems" >Import Items
               </button>
             </div>
 
@@ -666,7 +670,38 @@
                     });
 
             },
-            async resetApplication(){
+            async importLineItems(){
+              let password = prompt("By doing import the items, line items will be deleted.\n\nAre you sure you want to  import the items?\n\nEnter user password for import items");
+               
+               if(!password){
+                    return
+               }
+
+               let _vm = this;
+
+              await axios.post('/projects/import/'+_vm.projectid+'/project-lines',{
+                     'password' : password
+                  }).then(function (response) {
+                           let res = response.data
+                          if(res.error){
+                                _vm.error = true
+                                _vm.errorMsg = res.message
+                           }else{
+                              _vm.success = true
+                              _vm.successMsg = res.message
+                               _vm.loadLines();
+                           }
+
+                           setTimeout(()=>{
+                             _vm.clearMsg()
+                          },2000);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+             },
+              async resetApplication(){
               let password = prompt("By doing reset application line will be deleted.\n\nAre you sure you want to  reset the project?\n\nEnter user password for reset application");
                
                if(!password){

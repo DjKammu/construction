@@ -97,13 +97,58 @@
     </div>
 </div>
 
+
+ <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Send Mail</h3>
+    </div>
+    <div class="modal-body">
+     
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="email" class="form-control" id="recipient">
+          </div>
+             <div class="form-group">
+            <label for="recipient-name" class="col-form-label">CC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="cc">
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">BCC: <small>email with comma seperated
+            </small></label>
+            <input type="text" class="form-control" id="bcc">
+          </div>
+
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Subject:</label>
+            <input type="text" class="form-control" id="subject">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message"></textarea>
+          </div>
+    
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-close" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary" onclick="sendMail()">Send</button>
+    </div>
+    </div>
+    </div>
+
+</div>
+
+
 @endsection
 
 
 @section('pagescript')
 @include('includes.vue-js')
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 <script type="text/javascript">
 
@@ -126,73 +171,10 @@
 
   });
 
-$('.date').datetimepicker({
-    format: 'Y-M-D'
-});
 
-var start =  '{{ Request::input("start")}}';
-var end =  '{{ Request::input("end")}}';
-
- $('input[name="daterange"]').daterangepicker({
-
-    startDate: (start) ? start :   moment().startOf('month'),
-    endDate: (end) ? end :  moment().startOf('day'),
-    locale: {
-      format: 'YYYY-MM-DD'
-    }
-  }).on('apply.daterangepicker', function(ev, picker) {
-      var fullUrl = window.location.href.split("#")[0];
-      let isStart = fullUrl.includes('start') ;
-      let isEnd = fullUrl.includes('end') ;
-      
-      var url = '/';
-      if(isStart || isEnd){ 
-          fullUrl = replaceUrlParam(fullUrl,'start',picker.startDate.format('YYYY-MM-DD'));
-          fullUrl = replaceUrlParam(fullUrl,'end',picker.endDate.format('YYYY-MM-DD'));
-          url = fullUrl;
-      }
-      else{
-        url = fullUrl+(fullUrl.includes('?')?'&':'?')+'start='+picker.startDate.format('YYYY-MM-DD')+'&end='+picker.endDate.format('YYYY-MM-DD')
-      }
-
-      url = url+'#rfi';
-       window.location.href = url;
-  }); 
-   
-   var submittal_start =  '{{ Request::input("submittal_start")}}';
-  var submittal_end =  '{{ Request::input("submittal_end")}}';
-
-
-  $('input[name="daterange-submittal"]').daterangepicker({
-
-    startDate: (submittal_start) ? submittal_start :   moment().startOf('month'),
-    endDate: (submittal_end) ? submittal_end :  moment().startOf('day'),
-    locale: {
-      format: 'YYYY-MM-DD'
-    }
-  }).on('apply.daterangepicker', function(ev, picker) {
-      var fullUrl = window.location.href.split("#")[0];
-      let isStart = fullUrl.includes('submittal_start') ;
-      let isEnd = fullUrl.includes('submittal_end') ;
-      
-      var url = '/';
-      if(isStart || isEnd){ 
-          fullUrl = replaceUrlParam(fullUrl,'submittal_start',picker.startDate.format('YYYY-MM-DD'));
-          fullUrl = replaceUrlParam(fullUrl,'submittal_end',picker.endDate.format('YYYY-MM-DD'));
-          url = fullUrl;
-      }
-      else{
-        url = fullUrl+(fullUrl.includes('?')?'&':'?')+'submittal_start='+picker.startDate.format('YYYY-MM-DD')+'&submittal_end='+picker.endDate.format('YYYY-MM-DD')
-      }
-
-      url = url+'#submittal';
-       window.location.href = url;
-  });
-
-
-   function sendEmailPopup(){   
+  function sendEmailPopup(){   
       $("#myModal").modal('show');
-   }
+  }
 
    function sendMail(){
    
@@ -232,7 +214,7 @@ var end =  '{{ Request::input("end")}}';
 
     let _token   =   "{{ csrf_token() }}";
 
-    let url = '/projects/'+projectId+'/ffe/send-mail'
+    let url = '/projects/'+projectId+'/budget/send-mail'
 
    $.ajax({
         url: url,
@@ -258,320 +240,6 @@ var end =  '{{ Request::input("end")}}';
 
    }
 
-  function sendEmailLogsPopup(){   
-      $("#myModalLogs").modal('show');
-   }
-
-   function sendMailLogs(){
-   
-    var recipient = $('#recipient2').val();
-    var subject = $('#subject2').val();
-    var message = $('#message2').val();
-    var file = $('#file2').val();
-     var cc = $('#cc2').val();
-    var bcc = $('#bcc2').val();
-
-
-    const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
-
-
-    if(!recipient){
-      alert('Recipient cant be blank')
-      return
-    }else if(!validateEmail(recipient)) {
-        alert('Recipient is invalid')
-      return
-  
-    }else if(!subject){
-      alert('Subject cant be blank')
-      return
-    } else if(!message){
-      alert('Message cant be blank')
-      return
-    }
-    
-    let projectId = '{{ @$project->id }}';
-
-    let _token   =   "{{ csrf_token() }}";
-
-    let url = '/projects/'+projectId+'/ffe/send-mail-logs'
-
-   $.ajax({
-        url: url,
-        type:"POST",
-        data:{
-          recipient:recipient,
-          subject:subject,
-          message:message,
-          file:file,
-          cc:cc,
-          bcc:bcc,
-          _token: _token
-        },
-        success:function(response){
-           alert(response.message); 
-           $("#myModal").modal('hide');
-          location.reload();
-        },
-        error: function(error) {
-          alert(error);
-        }
-       });
-
-   }
-
-  function selectPerpage(perPage){
-       var fullUrl = window.location.href;
-       let isPerpage = '{{ Request::input("per_page")}}';
-
-       if(!isPerpage){
-          let url = fullUrl;
-         if(location.hash){
-          fullUrl = location.href.replace(location.hash,"");
-          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'per_page='+perPage+location.hash;
-         }else{
-         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'per_page='+perPage;
-         }
-         window.location.href = url;
-       }
-       else if(isPerpage != perPage){
-         window.location.href = fullUrl.replace(isPerpage, perPage)
-       }
-  } 
-
-  const loc = new URL(window.location.href) || null
-
-  if (loc !== null) {
-    if (loc.hash !== '') {
-      $('.nav-tabs li a').removeClass('active')
-      $(loc.hash).addClass('active')
-       $(`a[href="${ loc.hash }"]`).tab('show')
-    }
-  }
-
-  $('a[data-toggle="tab"]').on("click", function() {
-    let url = location.href.replace(/\/$/, "");
-    let newUrl;
-    const hash = $(this).attr("href");
-    if(hash == "#details") {
-      newUrl = url.split("#")[0];
-    } else {
-      newUrl = url.split("#")[0] + hash;
-    }
-    history.replaceState(null, null, newUrl);
-  });
-
- $('.add_file').click(function(){
-   $(this).siblings('.uploadImage').click();
- });
-
- $(".uploadImage").change(function() {
-    $(this).parent('.file_form').submit();
-  });
-
-
-  function sortOrderBy(orderBy,order){
-       
-      var fullUrl = window.location.href.split("#")[0];
-      let isOrderBy = fullUrl.includes('orderby') ;
-      let isSort = fullUrl.includes('order') ;
-      
-      var url = '/';
-      if(isOrderBy || isSort){ 
-          fullUrl = replaceUrlParam(fullUrl,'orderby',orderBy);
-          fullUrl = replaceUrlParam(fullUrl,'order',order);
-          url = fullUrl;
-      }
-      else{
-         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderby='+orderBy+'&order='+order
-      }
-       url = url+'#payments';
-       window.location.href = url;
-
- } 
-
-  function sortOrderByRFI(orderBy,order){
-       
-      var fullUrl = window.location.href.split("#")[0];
-      let isOrderBy = fullUrl.includes('orderbyRFI') ;
-      let isSort = fullUrl.includes('orderRFI') ;
-      
-      var url = '/';
-      if(isOrderBy || isSort){ 
-          fullUrl = replaceUrlParam(fullUrl,'orderbyRFI',orderBy);
-          fullUrl = replaceUrlParam(fullUrl,'orderRFI',order);
-          url = fullUrl;
-      }
-      else{
-         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbyRFI='+orderBy+'&orderRFI='+order
-      }
-       url = url+'#rfi';
-       window.location.href = url;
-
- }  
-
- function sortOrderBySubmittal(orderBy,order){
-       
-      var fullUrl = window.location.href.split("#")[0];
-      let isOrderBy = fullUrl.includes('orderbySubmittal') ;
-      let isSort = fullUrl.includes('orderSubmittal') ;
-      
-      var url = '/';
-      if(isOrderBy || isSort){ 
-          fullUrl = replaceUrlParam(fullUrl,'orderbySubmittal',orderBy);
-          fullUrl = replaceUrlParam(fullUrl,'orderSubmittal',order);
-          url = fullUrl;
-      }
-      else{
-         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderbySubmittal='+orderBy+'&orderSubmittal='+order
-      }
-       url = url+'#submittal';
-       window.location.href = url;
-
- } 
-
- function sortOrderByLog(orderBy,order){
-       
-      var fullUrl = window.location.href.split("#")[0];
-      let isOrderBy = fullUrl.includes('orderbySubmittal') ;
-      let isSort = fullUrl.includes('orderLog') ;
-      
-      var url = '/';
-      if(isOrderBy || isSort){ 
-          fullUrl = replaceUrlParam(fullUrl,'orderbySubmittal',orderBy);
-          fullUrl = replaceUrlParam(fullUrl,'orderLog',order);
-          url = fullUrl;
-      }
-      else{
-         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderByLog='+orderBy+'&orderLog='+order
-      }
-       url = url+'#logs';
-       window.location.href = url;
-
- }
-
-
-  function replaceUrlParam(url, paramName, paramValue)
-    {
-        if (paramValue == null) {
-            paramValue = '';
-        }
-        var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
-        if (url.search(pattern)>=0) {
-            return url.replace(pattern,'$1' + paramValue + '$2');
-        }
-        url = url.replace(/[?#]$/,'');
-        return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
-    }
-
-function proposalPage(id){
-        var fullUrl = window.location.href.split("?")[0];
-        fullUrl = fullUrl.split("#")[0];
-        url = fullUrl+'?trade='+id+'#proposals';
-        window.location.href = url;
-}
-   
-   var senders = [];
-$('.subcontractor').click(function() {
-    var checked = ($(this).val());
-    if ($(this).is(':checked')) {
-      senders.push(checked);
-    } else {
-      senders.splice($.inArray(checked, senders),1);
-    }
-  });
-function sendMailTracker(){
-   
-   if(senders.length == 0 ){
-      alert('Select atleast one');
-      return;
-    }
-
-    let projectId =  '{{ @$project->id }}';
-    let _token   =   "{{ csrf_token() }}";
-
-   $.ajax({
-        url: "{{ route('ffe.send.mail')}}",
-        type:"POST",
-        data:{
-          projectId:projectId,
-          senders:senders,
-          _token: _token
-        },
-        success:function(response){
-           alert(response.message); 
-           location.reload();
-        },
-        error: function(error) {
-          alert(error);
-        }
-       });
-  
-}
-
-function selectSign(val, id){
- 
-   if(val == null ){
-      alert('Select for Contract Sign');
-      return;
-    }
-
-    let tracker_id = id;
-    let _token   =   "{{ csrf_token() }}";
-
-   $.ajax({
-        url: "{{ route('ffe.contract.signed')}}",
-        type:"POST",
-        data:{
-          tracker_id:tracker_id,
-          value :val,
-          _token: _token
-        },
-        success:function(response){
-           alert(response.message); 
-           // location.reload();
-        },
-        error: function(error) {
-          alert(error);
-        }
-       });
-  
-}
-
-function selectBid(val, id){
- 
-   if(val == null ){
-      alert('Select for Bid Recieved');
-      return;
-    }
-
-    let tracker_id = id;
-    let _token   =   "{{ csrf_token() }}";
-
-   $.ajax({
-        url: "{{ route('ffe.bid.recieved')}}",
-        type:"POST",
-        data:{
-          tracker_id:tracker_id,
-          value :val,
-          _token: _token
-        },
-        success:function(response){
-           alert(response.message); 
-           // location.reload();
-        },
-        error: function(error) {
-          alert(error);
-        }
-       });
-  
-}
 
 </script>
 <style type="text/css">

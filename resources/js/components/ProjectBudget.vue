@@ -225,6 +225,11 @@
             },          
            async  saveLineItem() {
 
+
+              if(!confirm('Are you sure to save?')){
+                return;
+              }
+
               let _vm = this;
 
               var lines = [];

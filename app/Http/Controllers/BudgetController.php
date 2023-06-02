@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MaitToSubcontractor;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
 use App\Models\Subcontractor;
@@ -199,7 +200,7 @@ class BudgetController extends Controller
           } 
     }
 
-    public function pdfDownload(Request $request, $id){
+    public function pdfDownload($id, $view = false){
      
      @extract($this->getLines($id));
 
@@ -212,7 +213,7 @@ class BudgetController extends Controller
 
         $slug = \Str::slug(@$project->name).'-budget';
 
-         $view = request()->view;
+        // $view = true;
         
         if($view){
          return $pdf->setPaper('a4')->output();
@@ -223,7 +224,7 @@ class BudgetController extends Controller
         return $pdf->download($slug.'.pdf');
     } 
 
-    public function excelDownload(Request $request, $id){
+    public function excelDownload( $id){
      
      @extract($this->getLines($id));
 
@@ -363,6 +364,54 @@ class BudgetController extends Controller
             'message' => 'Budget Line Delete Successfully!'
            ]
         );
+
+    }
+
+
+        public function sendMail(Request $request, $id){
+
+       set_time_limit(0);
+        $project = Project::find($id); 
+         $slug = \Str::slug($project->name);
+
+        $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+        $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
+        $data = [
+          'heading' => '',
+          'plans' => '',
+          'file' => '',
+          'subject' => $request->subject,
+          'content' => $request->message,
+        ];
+       
+
+        $pdffile = $this->pdfDownload($id,true);
+
+      
+
+        $data['pdffile'] = $pdffile;
+        $data['fileName'] = $slug.'-budget.pdf';
+  
+        dispatch(
+          function() use ($request, $data, $ccUsers, $bccUsers){
+           $mail = \Mail::to($request->recipient);
+             if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+              $mail->cc($ccUsers);
+             }
+             if(array_filter($bccUsers)  && count($bccUsers) > 0){
+              $mail->bcc($bccUsers);
+             }
+             $mail->send(new MaitToSubcontractor($data));
+          }
+        )->afterResponse();
+
+      return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Sent Successfully!'
+           ]
+       );
 
     }
 
