@@ -504,7 +504,16 @@
                         <input  name="hotel_keys" value=" {{ old('hotel_keys')}}" type="number" class="form-control" placeholder="Hotel Keys" step="any">
                     </div>
                 </div>
+                
+                <div class="col-lg-6 col-md-6">
 
+                   <div class="form-group">
+                        <label class="text-dark" for="password">Subcontractor Retainage 
+                        </label>
+                        <input  name="subcontractor_retainage" value="{{ old('subcontractor_retainage')}}" type="number" class="form-control" placeholder="Subcontractor Retainage" step="any">
+                    </div>
+                </div>
+                
                
             </div>
 

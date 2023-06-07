@@ -210,9 +210,41 @@
                                          <div class="col-lg-5 col-md-6 mx-auto">
 
                                            <div class="form-group">
-                                                <label class="text-dark" for="password"> Payment
+                                                <label class="text-dark" for="password"> Total Subcontractor Payment 
                                                 </label>
-                                                <input  name="payment_amount" value="{{ old('payment_amount')}}" type="number" class="form-control" placeholder="Payment Amount" step="any"step="any">
+                                                <input  name="total_subcontractor_payment" id="total_subcontractor_payment" value="{{ old('total_subcontractor_payment')}}" type="number" class="form-control" placeholder="Total Subcontractor Payment" step="any"step="any">
+                                            </div>
+                                        </div>
+                                    </div>  
+
+                                     <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Retainage Percentage
+                                                </label>
+                                                <input  name="retainage_percentage" id="retainage_percentage" value="{{ @$proposal->project->subcontractor_retainage }}" type="number" class="form-control" placeholder="Retainage Percentage" step="any"step="any">
+                                            </div>
+                                        </div>
+                                    </div>  
+                                     <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Retainage Held 
+                                                </label>
+                                                <input  type="number" id="retainage_held" class="form-control" value=""  placeholder="Retainage Held" class="form-control" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>  
+
+                                    <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Subcontractor Payment minus Retainage
+                                                </label>
+                                                <input id="payment_amount" type="number" class="form-control" placeholder="Subcontractor Payment minus Retainage"  readonly="">
                                             </div>
                                         </div>
                                     </div> 
@@ -283,6 +315,16 @@
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Purchase Order
+                                                </label>
+                                                <input  name="purchase_order"  type="file" >
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                     <!-- Submit Button -->
                                     <div class="col-12 text-center">
@@ -316,8 +358,6 @@ $("input[name='type']").click(function() {
       $("#" + id).show();
   });
 
-
-
  $('select[name="vendor_id"]').change(function(){
       let vendorId = $(this).val();
       $.ajax({
@@ -331,6 +371,33 @@ $("input[name='type']").click(function() {
                 $('#materials').html(html);
             }
         });
+    
+ }); 
+
+ var retainage_percentage = '{{ @$proposal->project->subcontractor_retainage }}'
+
+$('#total_subcontractor_payment').on('input', function (e) {
+      let total_subcontractor_payment = $(this).val();
+      let retainage_held = total_subcontractor_payment*retainage_percentage/100;
+      $('#retainage_held').val(retainage_held);
+      let payment_amount = parseFloat(total_subcontractor_payment) - parseFloat(retainage_held);
+      $('#payment_amount').val(payment_amount);
+    
+ });
+
+$('#retainage_percentage').on('input', function (e) {
+       retainage_percentage = $(this).val();
+       if(retainage_percentage > 100){
+         alert("Can't be exceed 100");
+         retainage_percentage = '{{ @$proposal->project->subcontractor_retainage }}'
+         $(this).val(retainage_percentage)
+       }
+
+      let total_subcontractor_payment = $('#total_subcontractor_payment').val();
+      let retainage_held = total_subcontractor_payment*retainage_percentage/100;
+      $('#retainage_held').val(retainage_held);
+      let payment_amount = parseFloat(total_subcontractor_payment) - parseFloat(retainage_held);
+      $('#payment_amount').val(payment_amount);
     
  });
 

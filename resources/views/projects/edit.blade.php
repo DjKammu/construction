@@ -881,6 +881,11 @@ table .row-border{
     height: 15px;
     width: 15px;
   }
+
+  #payments-table thead>tr>th{
+    font-size: 10px;
+    padding: 10px 1px;
+  }
 </style>
 
 @endsection

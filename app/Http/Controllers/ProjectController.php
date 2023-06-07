@@ -859,11 +859,6 @@ class ProjectController extends Controller
 
          $project->update($data);
 
-
-
-
-
-
         return redirect()->back()->with('message', 'Project Updated Successfully!');
     }
 

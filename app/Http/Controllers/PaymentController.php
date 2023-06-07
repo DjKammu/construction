@@ -106,9 +106,16 @@ class PaymentController extends Controller
             return redirect('/');
         }
 
-        $totalDueMount =  $this->proposalDueTotalAmount($proposal);
+       $totalDueMount =  $this->proposalDueTotalAmount($proposal);
 
-        $data = $request->except('_token');
+       $retainage_percentage = $request->retainage_percentage;
+       $total_subcontractor_payment = $request->total_subcontractor_payment;
+       $retainage_held = $total_subcontractor_payment*$retainage_percentage/100;
+       $payment_amount = $total_subcontractor_payment - $retainage_held;
+
+       $request->merge(["payment_amount"=>$payment_amount,"retainage_held"=>$retainage_held]);
+
+       $data = $request->except('_token');
 
        $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
 
@@ -196,6 +203,12 @@ class PaymentController extends Controller
         $folderPath2 .= $project_slug.'/'.$trade_slug;
 
         \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
+        $folderPath3 = Document::PROJECTS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
 
         $data['file'] = '';
 
@@ -320,6 +333,45 @@ class PaymentController extends Controller
             $document->files()->create($fileArr);
         }
 
+        if($request->hasFile('purchase_order')){
+              
+              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
+                         ->first();
+
+              $name = @$project->name.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'payment_id'       => $payment->id,
+                           'proposal_id'      => $id,
+                           'document_type_id' => $document_type->id,
+                           'subcontractor_id' => @$proposal->subcontractor->id
+                           ]
+                       );
+
+              $file = $request->file('purchase_order');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+            $payment->update(['purchase_order' => $fileName]);
+
+            $document->files()->create($fileArr);
+        }
+
         
 
         return redirect(route('projects.show',['project' => $project_id]).'#payments')->with('message', 'Payment Created Successfully!');
@@ -382,6 +434,7 @@ class PaymentController extends Controller
            return abort('401');
         } 
         $payment = Payment::find($id);  
+
         $subcontractor = @$payment->subcontractor;
 
         $project = @$payment->project;
@@ -400,10 +453,15 @@ class PaymentController extends Controller
 
         $folderPath2 .= "$project_slug/$trade_slug/";
 
+        $folderPath3 = Document::PROJECTS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= "$project_slug/$trade_slug/";
+
         
         $payment->file = @($payment->file) ? $folderPath.$payment->file : '';
         $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath2.$payment->unconditional_lien_release_file : '';
         $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath2.$payment->conditional_lien_release_file : '';
+        $payment->purchase_order = @($payment->purchase_order) ? $folderPath3.$payment->purchase_order : '';
 
         $payment->date = @($payment->date) ? Carbon::parse($payment->date)->format('m-d-Y') : '' ;
 
@@ -458,13 +516,20 @@ class PaymentController extends Controller
                return abort('401');
         } 
 
-        $data = $request->except('_token');
+      $data = $request->except('_token');
 
-        $payment = Payment::find($id);
+      $payment = Payment::find($id);
 
-        $totalDueMount =  $this->proposalDueTotalAmount($payment->proposal);
+       $totalDueMount =  $this->proposalDueTotalAmount($payment->proposal);
      
-        $data = $request->except('_token');
+       $retainage_percentage = $request->retainage_percentage;
+       $total_subcontractor_payment = $request->total_subcontractor_payment;
+       $retainage_held = $total_subcontractor_payment*$retainage_percentage/100;
+       $payment_amount = $total_subcontractor_payment - $retainage_held;
+
+       $request->merge(["payment_amount"=>$payment_amount,"retainage_held"=>$retainage_held]);
+
+      $data = $request->except('_token');
 
          $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
 
@@ -548,6 +613,12 @@ class PaymentController extends Controller
         $folderPath2 .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
+         $folderPath3 = Document::PROJECTS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
         
         $document_type = DocumentType::where('name', DocumentType::INVOICE)
                          ->first();
@@ -592,7 +663,7 @@ class PaymentController extends Controller
         }
 
          if($request->hasFile('unconditional_lien_release_file')){
-              
+               @unlink($folderPath2.'/'.$payment->unconditional_lien_release_file);
               $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
@@ -631,7 +702,7 @@ class PaymentController extends Controller
         }
 
         if($request->hasFile('conditional_lien_release_file')){
-              
+               @unlink($folderPath2.'/'.$payment->conditional_lien_release_file);
               $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
@@ -667,6 +738,44 @@ class PaymentController extends Controller
             $document->files()->create($fileArr);
              $data['conditional_lien_release_file'] = $fileName;
 
+        }
+
+        if($request->hasFile('purchase_order')){
+              @unlink($folderPath3.'/'.$payment->purchase_order);
+              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
+                         ->first();
+
+              $name = @$project->name.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->firstOrCreate(['payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'payment_id'       => $payment->id,
+                           'proposal_id'      => $id,
+                           'document_type_id' => $document_type->id,
+                           'subcontractor_id' => @$proposal->subcontractor->id
+                           ]
+                       );
+
+              $file = $request->file('purchase_order');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $subcontractor_slug.'-'.time().'.'.$file->getClientOriginalExtension();
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+            
+            $document->files()->create($fileArr);
+             $data['purchase_order'] = $fileName;
         }
 
 
@@ -712,19 +821,25 @@ class PaymentController extends Controller
          $file = @$payment->file;
          $unconditional_lien_release_file = @$payment->unconditional_lien_release_file;
          $conditional_lien_release_file = @$payment->conditional_lien_release_file;
+         $purchase_order = @$payment->purchase_order;
          
          $aPath = public_path().'/'. Document::INVOICES."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
          $aPath2 = public_path().'/'. Document::LIEN_RELEASES."/".Document::ARCHIEVED; 
-         \File::makeDirectory($aPath2, $mode = 0777, true, true);
+         \File::makeDirectory($aPath2, $mode = 0777, true, true);  
+          $aPath3 = public_path().'/'. Document::PROJECTS_PURCHASE_ORDERS."/".Document::ARCHIEVED; 
+         \File::makeDirectory($aPath3, $mode = 0777, true, true);
 
         @\File::copy($path.$file, $aPath.'/'.$file);
         @\File::copy($path2.$conditional_lien_release_file, $aPath2.'/'.$conditional_lien_release_file);
         @\File::copy($path2.$unconditional_lien_release_file, $aPath2.'/'
           .$unconditional_lien_release_file);
+        @\File::copy($aPath3.$purchase_order, $aPath2.'/'
+          .$purchase_order);
         @unlink($path.$file);
         @unlink($path2.$conditional_lien_release_file);
         @unlink($path2.$unconditional_lien_release_file);
+        @unlink($aPath3.$purchase_order);
 
          $project->documents()
                     ->where(['payment_id' => $id])->delete();
@@ -753,6 +868,9 @@ class PaymentController extends Controller
           if (str_contains($path, Document::LIEN_RELEASES)) { 
              $folder = Document::LIEN_RELEASES;
           }
+          if (str_contains($path, Document::PROJECTS_PURCHASE_ORDERS)) { 
+             $folder = Document::PROJECTS_PURCHASE_ORDERS;
+          }
 
           $aPath = $publicPath.$folder."/".Document::ARCHIEVED;
 
@@ -764,7 +882,7 @@ class PaymentController extends Controller
 
           $coulumn = 'file';
 
-          $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
+          $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : ( $file == @$payment->purchase_order ? 'purchase_order' : $coulumn));  
           
           @$docFile->delete();  
 

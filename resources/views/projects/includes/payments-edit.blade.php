@@ -214,13 +214,48 @@
                                             </div>
                                         </div>
                                     </div> 
+
+                                     <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Total Subcontractor Payment 
+                                                </label>
+                                                <input  name="total_subcontractor_payment" id="total_subcontractor_payment" value="{{ @$payment->total_subcontractor_payment }}" type="number" class="form-control" placeholder="Total Subcontractor Payment" step="any"step="any">
+                                            </div>
+                                        </div>
+                                    </div>  
+
+                                     <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Retainage Percentage
+                                                </label>
+                                                <input  name="retainage_percentage" id="retainage_percentage" value="{{ @$payment->retainage_percentage }}" type="number" class="form-control" placeholder="Retainage Percentage" step="any"step="any">
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                     <div class="row">
+                                         <div class="col-lg-5 col-md-6 mx-auto">
+
+                                           <div class="form-group">
+                                                <label class="text-dark" for="password"> Retainage Held 
+                                                </label>
+                                                <input  type="number" id="retainage_held" class="form-control" value="{{ $payment->retainage_held }}"  placeholder="Retainage Held" class="form-control" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>  
+
+
                                     <div class="row">
                                          <div class="col-lg-5 col-md-6 mx-auto">
 
                                            <div class="form-group">
-                                                <label class="text-dark" for="password"> Payment
+                                                <label class="text-dark" for="password"> Subcontractor Payment minus Retainage
                                                 </label>
-                                                <input  name="payment_amount" value="{{ $payment->payment_amount }}" type="number" class="form-control" placeholder="Payment Amount" step="any">
+                                                <input id="payment_amount"  value="{{ $payment->payment_amount }}" type="number" class="form-control" placeholder="Subcontractor Payment minus Retainage"  readonly="">
                                             </div>
                                         </div>
                                     </div> 
@@ -290,6 +325,16 @@
                                                 <label class="text-dark" for="password">Conditional Lien Release File
                                                 </label>
                                                 <input  name="conditional_lien_release_file"  type="file" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                     <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Purchase Order
+                                                </label>
+                                                <input  name="purchase_order"  type="file" >
                                             </div>
                                         </div>
                                     </div>
@@ -468,6 +513,58 @@
                                     </tr>
 
                                     @endif
+
+                                    @if($payment->purchase_order)
+                                   @php
+                                     $fileInfo = pathinfo($payment->purchase_order);
+                                     $extension = @$fileInfo['extension'];
+                                    
+                                  if(in_array($extension,['doc','docx','docm','dot',
+                                  'dotm','dotx'])){
+                                      $extension = 'word'; 
+                                   }
+                                   else if(in_array($extension,['csv','dbf','dif','xla',
+                                  'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                                      $extension = 'excel'; 
+                                   }
+
+                                   @endphp
+
+                                    <tr class="text-center col-lg-2 col-sm-3 odd" style="display: flex; flex-wrap: wrap;" role="row">
+                                       <td>
+                                            <span class="cross"> 
+                                             <form 
+                                                method="post" 
+                                                action="{{route('projects.payments.file.destroy', $payment->id)}}?path={{$payment->purchase_order}}"> 
+                                                 @csrf
+                                                {{ method_field('DELETE') }}
+
+                                                <button 
+                                                  type="submit"
+                                                  onclick="return confirm('Are you sure?')"
+                                                  class="btn btn-neutral bg-transparent btn-icon" data-original-title="Delete Property Type" title="Delete Property Type"><i class="fa fa-trash text-danger"></i> </button>
+                                              </form>
+                                            </span>
+                                             <div class="card card-table-item" 
+                                             style="width: 100%;">
+                                                <div class="card-body pb-0">
+                                                   <div class="author mt-1">
+                                                    <!-- <span class="doc_type_m">
+                                                      {{ @$proposal->subcontractor->name }} 
+                                                    </span></br> -->
+                                                    <a href="{{ asset($payment->purchase_order) }}" target="_blank">
+                                                      <p> {{ @$file->name }} </p>
+                                                      <img class="avatar border-gray" src="{{ asset('img/'.@$extension.'.png') }}">
+                                                      </a> 
+                                                      <!--  <span class="doc-type"> 
+                                                      {{  @$file->document->document_type->name }}</span>  -->             
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </td>
+                                    </tr>
+
+                                    @endif
                                  </tbody>
                               </table>
                                 </div>
@@ -521,6 +618,34 @@ function materialsHtml(vendorId){
 materialsHtml(selVendorId);
 
 });
+
+
+ var retainage_percentage = '{{ @$payment->retainage_percentage }}'
+
+$('#total_subcontractor_payment').on('input', function (e) {
+      let total_subcontractor_payment = $(this).val();
+      let retainage_held = total_subcontractor_payment*retainage_percentage/100;
+      $('#retainage_held').val(retainage_held);
+      let payment_amount = parseFloat(total_subcontractor_payment) - parseFloat(retainage_held);
+      $('#payment_amount').val(payment_amount);
+    
+ });
+
+$('#retainage_percentage').on('input', function (e) {
+       retainage_percentage = $(this).val();
+       if(retainage_percentage > 100){
+         alert("Can't be exceed 100");
+         retainage_percentage = '{{ @$payment->retainage_percentage }}'
+         $(this).val(retainage_percentage)
+       }
+
+      let total_subcontractor_payment = $('#total_subcontractor_payment').val();
+      let retainage_held = total_subcontractor_payment*retainage_percentage/100;
+      $('#retainage_held').val(retainage_held);
+      let payment_amount = parseFloat(total_subcontractor_payment) - parseFloat(retainage_held);
+      $('#payment_amount').val(payment_amount);
+    
+ });
 
 </script>
 <style type="text/css">

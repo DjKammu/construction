@@ -27,7 +27,8 @@ class Payment extends Model
      'trade_id' , 'vendor_id' ,'payment_amount', 'date',
      'total_amount' ,'notes','file','status','invoice_number','material_id',
      'unconditional_lien_release_file','conditional_lien_release_file',
-     'bill_id'
+     'bill_id','total_subcontractor_payment','retainage_percentage','retainage_held',
+     'purchase_order'
     ];
 
     public static $statusArr = [

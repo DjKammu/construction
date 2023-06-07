@@ -51,7 +51,7 @@
                <b>CLR</b>  - Conditional Lien Release</p>
             </div>
        </div>
-       <table id="project-types-table" class="table table-hover text-center payments-table">
+       <table id="payments-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
                 <th >Date 
@@ -81,9 +81,11 @@
                     <i class="fa fa-sort-desc"></i> </a>
                 </span>
               </th>
-                <th>Amount Paid</th>
+                <th>Subcontractor Payment minus Retainage</th>
                 <th>Contract Amount </th>
-                <th>Remaining Amount </th>
+                <th>Retainage Held </th>
+                <th>Remaining Minus Retainage </th>
+                <th>Remaining Plus Retainage</th>
                 <th>Invoice</th>
                 <th>ULR </th>
                 <th>CLR </th>
@@ -152,6 +154,8 @@
                <td> ${{ \App\Models\Payment::format($payment->payment_amount) }}</td>
 
                <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount) }}</td>
+               <td> ${{ \App\Models\Payment::format($payment->retainage_held) }}</td>
+                <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount - $payment->total_subcontractor_payment) }}</td>
                <td>  {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->remaining) }} </td>
                <td>
                 @if($payment->file)
