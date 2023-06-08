@@ -81,11 +81,11 @@
                     <i class="fa fa-sort-desc"></i> </a>
                 </span>
               </th>
-                <th>Subcontractor Payment minus Retainage</th>
+                <th>Payment - Retainage</th>
                 <th>Contract Amount </th>
                 <th>Retainage Held </th>
-                <th>Remaining Minus Retainage </th>
-                <th>Remaining Plus Retainage</th>
+                <th>Remaining - Retainage </th>
+                <th>Remaining + Retainage</th>
                 <th>Invoice</th>
                 <th>ULR </th>
                 <th>CLR </th>

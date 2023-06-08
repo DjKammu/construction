@@ -35,7 +35,7 @@
             }
 
             table.payments-table thead>tr>th{
-               font-size: 12px;
+               font-size: 10px;
             }
             .text-center {
                 text-align: center!important;
