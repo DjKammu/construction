@@ -181,6 +181,12 @@ i.fa.fa-sort-asc{
 #awarded-contracts table img{
   height: 60px;
 }
+
+ table.payments-table thead>tr>th{
+    font-size: 10px;
+    padding: 10px 1px;
+  }
+
 </style>
 <script type="text/javascript">
 

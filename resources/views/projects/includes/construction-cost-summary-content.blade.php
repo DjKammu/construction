@@ -4,15 +4,17 @@
             <thead>
             <tr class="text-danger">
                 <th>Item No.</th>
-                <th >Category&Trade</th>
+                 <th >Category&Trade</th>
                 <th >Trade Budget</th>
                 <th>Material</th>
                 <th>Labor</th>
                 <th>Subcontractor</th>
                 <!-- <th>Vendors</th> -->
                 <th>Total </th>
-                <th>Paid</th>
-                <th >Remaining  </th>
+                <th>Paid - Retainage</th>
+                 <th>Retainage Held </th>
+                <th >Remaining - Retainage</th>
+                <th>Remaining + Retainage</th>
                 <th >Budget Diff  </th>
 
                 <th> %Complete </th>
@@ -29,7 +31,9 @@
          $grandTotal = 0;
          $paidTotal = 0;
          $dueTotal = 0;
+         $heldTotal = 0;
          $vendorsTotal = 0;
+         $vendorsHeldTotal = 0;
          $changeOrderTotal = 0;
          $vendors = [];
          @endphp
@@ -44,8 +48,10 @@
           $catPaidTotal = 0;
           $catDueTotal = 0;
           $catVendorsTotal = 0;
+          $catVendorsHeldTotal = 0;
           $catTradeTotal = 0;
           $catBudgetDiff = 0;
+          $catHeldTotal = 0;
 
          $catTrades = @$trades->where('category_id', $cat->id);
          
@@ -64,10 +70,10 @@
               $bids = @$project->proposals()->trade($trd->id)->IsAwarded()
                      ->get();
               $tradePayments = @$project->payments()->whereNotNull('vendor_id')
-                            ->selectRaw('sum(payment_amount) as payment_amount_total, vendor_id,material_id')
+                            ->selectRaw('sum(payment_amount) as payment_amount_total,sum(total_subcontractor_payment) as total_subcontractor_payment ,sum(retainage_held) as retainage_held, vendor_id,material_id')
                              ->where('trade_id',$trd->id)
                              ->groupBy('vendor_id','material_id')
-                           ->get();
+                           ->get(); 
                
               @endphp
             
@@ -121,7 +127,8 @@
                       
                         
                       $paid =  (float) @$bid->payment()->whereNull('vendor_id')->sum('payment_amount');
-                      $due =  (float) @$bidTotal  - (float) $paid;
+                       $held =  (float) @$bid->payment()->whereNull('vendor_id')->sum('retainage_held');
+                       $due =  (float) @$bidTotal  - (float) $paid;
 
                       $materialTotal = (float) @$bid->material + $materialTotal;
                       $tradeTotal = (float) @$bid->trade_budget + $tradeTotal;
@@ -130,6 +137,7 @@
                       $grandTotal = (float) @$bidTotal + $grandTotal;
                       $paidTotal = (float) @$paid + $paidTotal;
                       $dueTotal = (float) @$due + $dueTotal;
+                       $heldTotal = (float) @$held + $heldTotal;
                       //$budgetDiff = (float) @$bid->trade_budget - $bidTotal + $budgetDiff;
                       
                       $catSubcontractorTotal = (float) @$bid->subcontractor_price + $catSubcontractorTotal;
@@ -180,6 +188,8 @@
                @php
                 $vendorsTotal = $vendorsTotal + $tPay->payment_amount_total;
                 $catVendorsTotal = $catVendorsTotal + $tPay->payment_amount_total;
+                $vendorsHeldTotal = $vendorsHeldTotal + $tPay->retainage_held;
+                $catVendorsHeldTotal = $catVendorsHeldTotal + $tPay->retainage_held;
                @endphp
 
                   <!-- <tr>
@@ -267,10 +277,12 @@
                <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($grandTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($paidTotal + $vendorsTotal) }}</b></td>
-               <td><b>${{ \App\Models\Payment::format($dueTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($heldTotal + $vendorsHeldTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($dueTotal - $heldTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($dueTotal ) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($tradeTotal - $grandTotal) }}</b></td>
 
-               <td><b>{{ ($paidTotal && $grandTotal)  || ($vendorsTotal) ? sprintf('%0.2f', (@$paidTotal + $vendorsTotal)/ (@$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
+               <td><b>{{ ($paidTotal && $grandTotal)  || ($vendorsTotal) ? sprintf('%0.2f', (@$paidTotal + $vendorsTotal + @$heldTotal)/ (@$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
                <!-- <td ></td> -->
             
            </tr>
@@ -550,6 +562,8 @@
                <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($ffeGrandTotal + $ffeVendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($ffePaidTotal + $ffeVendorsTotal) }}</b></td>
+                <td></td> 
+                <td> </td> 
                <td><b>${{ \App\Models\Payment::format($ffeDueTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($ffeTradeTotal - $ffeGrandTotal) }}</b></td>
 
@@ -569,6 +583,8 @@
                <!-- <td></td> -->
                <td><b>${{ \App\Models\Payment::format($ffeGrandTotal + $ffeVendorsTotal + $grandTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($ffePaidTotal + $ffeVendorsTotal + $paidTotal + $vendorsTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($heldTotal + $vendorsHeldTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($dueTotal - $heldTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($ffeDueTotal + $dueTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($ffeTradeTotal - $ffeGrandTotal + $tradeTotal - $grandTotal) }}</b></td>
 

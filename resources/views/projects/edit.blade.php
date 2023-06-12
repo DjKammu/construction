@@ -886,6 +886,14 @@ table .row-border{
     font-size: 10px;
     padding: 10px 1px;
   }
+  #construction-cost-summary-content thead>tr>th{
+    font-size: 10px;
+    padding: 10px 1px;
+  }
+  #construction-cost-content thead>tr>th{
+    font-size: 10px;
+    padding: 10px 1px;
+  }
 </style>
 
 @endsection

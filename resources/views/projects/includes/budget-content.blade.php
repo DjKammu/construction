@@ -61,7 +61,7 @@
               <td class="text-danger h6 text-center">
                  <b>{{ $cat->name }}</b>
               </td>
-              <td  colspan="8"></td>
+              <td  colspan="11"></td>
             </tr>
          @foreach($catTrades as $trd)
 
@@ -245,7 +245,7 @@
 
                   </span></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
-                  <td colspan="5" style="padding:10px;"></td>
+                  <td colspan="7" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
 
@@ -285,13 +285,13 @@
                     <a class="disable-anchor" href="{{ url("projects/$project->id").'?to=Budget&url='.urlencode(url()->current().'#budget').'&payment_vendor='.$vendorId.'#payments'}} "> ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }} </a>
 
                     @else
-                   ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}
+                   ${{ \App\Models\Payment::format(@$tPay->payment_amount_total) }}
                     @endif
 
                   </span>
 
                   </td>
-                  <td>${{ \App\Models\Payment::format(@@$tPay->retainage_held) }} </td> 
+                  <td>${{ \App\Models\Payment::format(@$tPay->retainage_held) }} </td> 
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
                   <td>${{ \App\Models\Payment::format(0.00) }} </td> 
@@ -309,7 +309,7 @@
                   <td></td>
                   <td></td>
                   <!-- <td><span class="doc_type_m">{{ @trim($payment_vendors,',') }}</span></td> -->
-                  <td colspan="5" style="padding:10px;"></td>
+                  <td colspan="7" style="padding:10px;"></td>
                   <!-- <td colspan="4" style="padding:10px;"></td> -->
                 </tr>
               @endforeach
@@ -338,7 +338,7 @@
            </tr>
 
            <tr>
-            <td colspan="11" style="padding:10px;"></td>
+            <td colspan="13" style="padding:10px;"></td>
            </tr>
 
         @endforeach
