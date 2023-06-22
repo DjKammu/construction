@@ -13,6 +13,7 @@
 /public/bills/*
 /public/purchase-orders/*
 /public/projects-purchase-orders/*
+/public/bills-purchase-orders/*
 /public/storage
 /public/images
 /storage/*.key

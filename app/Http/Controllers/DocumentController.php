@@ -224,9 +224,44 @@ class DocumentController extends Controller
                      $folderPath = Document::BILLS."/";
                      
                 }
+
+                if($document->document_type->name == DocumentType::PURCHASE_ORDER && $document->bill_id){
+                     $bill = Bill::find($document->bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS_PURCHASE_ORDERS."/";
+                     
+                } 
+
+                if($document->document_type->name == DocumentType::PURCHASE_ORDER && $document->payment_id){
+                     $payment = Payment::find($document->payment_id);
+                     $trade_slug = @\Str::slug($payment->trade->name);
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";
+                     
+                }
+
                  $folderPath .= "$project_slug/$trade_slug/";
 
             }
+
+             else if(!$document->proposal_id && $document->payment_id){
+
+                 $payment_id = Payment::find($document->payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($document->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+              else if(!$document->proposal_id && $document->bill_id){
+                 $bill = Bill::find($document->bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+
             else if($document->ffe_proposal_id){
                  $proposal = FFEProposal::find($document->ffe_proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
@@ -244,7 +279,26 @@ class DocumentController extends Controller
                 }
                  $folderPath .= "$project_slug/$trade_slug/";
 
+            } else if(!$document->ffe_proposal_id && $document->ffe_payment_id){
+
+                 $payment_id = FFEPayment::find($document->ffe_payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($document->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
             }
+
+            else if(!$document->ffe_proposal_id && $document->ffe_bill_id){
+
+                 $bill = FFEBill::find($document->ffe_bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
             else if($document->log_id || $document->ffe_log_id ){
                  if($document->document_type->name == DocumentType::INVOICE){
                     $folderPath = Document::INVOICES."/$project_slug/";
@@ -515,8 +569,6 @@ class DocumentController extends Controller
             $projects->whereHas('project_type', function($q){
                 $q->where('slug', request()->project_type);
             });
-
-
          }
          
 
@@ -659,9 +711,45 @@ class DocumentController extends Controller
                      $folderPath = Document::BILLS."/";
                      
                 }
+
+                if($doc->document->document_type->name == DocumentType::PURCHASE_ORDER && $doc->document->bill_id){
+                     $bill = Bill::find($doc->document->bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS_PURCHASE_ORDERS."/";
+                     
+                } 
+
+                if($doc->document->document_type->name == DocumentType::PURCHASE_ORDER && $doc->document->payment_id){
+                     $payment = Payment::find($doc->document->payment_id);
+                     $trade_slug = @\Str::slug($payment->trade->name);
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";
+                     
+                }
+                
                  $folderPath .= "$project_slug/$trade_slug/";
 
             }
+
+             else if(!$doc->document->proposal_id && $doc->document->payment_id){
+
+                 $payment_id = Payment::find($doc->document->payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($doc->document->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+              else if(!$doc->document->proposal_id && $doc->document->bill_id){
+
+                 $bill = Bill::find($doc->bill_id);
+                 $trade_slug = @\Str::slug($bill->document->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+            
             else if($doc->document->ffe_proposal_id){
                  $proposal = FFEProposal::find($doc->document->ffe_proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
@@ -680,6 +768,26 @@ class DocumentController extends Controller
                  $folderPath .= "$project_slug/$trade_slug/";
 
             }
+
+            else if(!$doc->document->ffe_proposal_id && $doc->document->ffe_payment_id){
+
+                 $payment_id = FFEPayment::find($doc->document->ffe_payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($doc->document->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+            else if(!$doc->document->ffe_proposal_id && $doc->document->ffe_bill_id){
+
+                 $bill = FFEBill::find($doc->document->ffe_bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+            
             else if($doc->document->log_id || $doc->document->ffe_log_id ){
                  if($doc->document->document_type->name == DocumentType::INVOICE){
                     $folderPath = Document::INVOICES."/$project_slug/";

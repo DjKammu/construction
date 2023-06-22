@@ -99,7 +99,7 @@ class FFEPaymentController extends Controller
 
         
         $proposal  = FFEProposal::find($id);  
-         
+
         if(!$proposal &&  $id == null){
             return redirect('/');
         }
@@ -157,9 +157,10 @@ class FFEPaymentController extends Controller
 
         $trade_slug = @$trade->slug;
 
-        $vendor  = FFEVendor::find($request->f_f_e_vendor_id);
+        $vendor  = FFEVendor::find(@$data['f_f_e_vendor_id']);
+
         $subcontractor_slug = @$vendor->slug;
-      
+
         $public_path = public_path().'/';
 
         $folderPath = Document::INVOICES."/";
@@ -173,6 +174,12 @@ class FFEPaymentController extends Controller
         $folderPath2 .= $project_slug.'/'.$trade_slug;
 
         \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
+        $folderPath3 = Document::PROJECTS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
 
         $data['file'] = '';
 
@@ -189,7 +196,7 @@ class FFEPaymentController extends Controller
                     'document_type_id' => $document_type->id
                      ],
                      ['name' => $name, 'slug' => $slug,
-                     'ffe_payment_id'       => $payment->id,
+                     'ffe_payment_id'     => $payment->id,
                      'ffe_proposal_id'  => $id,
                      'document_type_id' => $document_type->id
                      ]
@@ -204,7 +211,7 @@ class FFEPaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -243,7 +250,7 @@ class FFEPaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'1.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -281,7 +288,7 @@ class FFEPaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'2.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -291,6 +298,44 @@ class FFEPaymentController extends Controller
                                   ];
 
             $payment->update(['conditional_lien_release_file' => $fileName]);
+
+            $document->files()->create($fileArr);
+        } 
+
+        if($request->hasFile('purchase_order')){
+              
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+
+              $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->UpdateOrCreate(['ffe_payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'ffe_payment_id'       => $payment->id,
+                           'ffe_proposal_id'  => $id,
+                           'document_type_id' => $document_type->id
+                           ]
+                       );
+
+              $file = $request->file('purchase_order');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+            $payment->update(['purchase_order' => $fileName]);
 
             $document->files()->create($fileArr);
         }
@@ -375,10 +420,15 @@ class FFEPaymentController extends Controller
 
         $folderPath2 .= "$project_slug/$trade_slug/";
 
+        $folderPath3 = Document::PROJECTS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= "$project_slug/$trade_slug/";
+
         
         $payment->file = @($payment->file) ? $folderPath.$payment->file : '';
         $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath2.$payment->unconditional_lien_release_file : '';
         $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath2.$payment->conditional_lien_release_file : '';
+        $payment->purchase_order = @($payment->purchase_order) ? $folderPath3.$payment->purchase_order : '';
 
         $payment->date = @($payment->date) ? Carbon::parse($payment->date)->format('m-d-Y') : '' ;
 
@@ -482,7 +532,7 @@ class FFEPaymentController extends Controller
 
         $trade_slug = @$payment->trade->slug;
 
-        $vendor  = FFEVendor::find($request->f_f_e_vendor_id);
+        $vendor  = FFEVendor::find(@$data['f_f_e_vendor_id']);
         $subcontractor_slug  =  @$vendor->slug;
       
 
@@ -499,6 +549,12 @@ class FFEPaymentController extends Controller
         $folderPath2 .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+
+        $folderPath3 = Document::PROJECTS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+        
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
         
         $document_type = DocumentType::where('name', DocumentType::INVOICE)
                          ->first();
@@ -507,11 +563,11 @@ class FFEPaymentController extends Controller
         $slug = @\Str::slug($name);            
 
         $document = $project->documents()
-                   ->firstOrCreate(['ffe_payment_id' => $payment->id,
+                   ->UpdateOrCreate(['ffe_payment_id' => $payment->id,
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
                      'ffe_payment_id'       => $payment->id,
-                     'ffe_proposal_id'      => $id,
+                     'ffe_proposal_id'      => @$payment->proposal->id,
                      'document_type_id' => $document_type->id
                      ]
                  );
@@ -525,7 +581,7 @@ class FFEPaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
 
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
@@ -542,7 +598,7 @@ class FFEPaymentController extends Controller
         }
 
          if($request->hasFile('unconditional_lien_release_file')){
-              
+               @unlink($folderPath3.'/'.$payment->unconditional_lien_release_file);
               $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
@@ -550,11 +606,11 @@ class FFEPaymentController extends Controller
               $slug = @\Str::slug($name);                
 
               $document = $project->documents()
-                         ->firstOrCreate(['ffe_payment_id' => $payment->id,
+                         ->UpdateOrCreate(['ffe_payment_id' => $payment->id,
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'ffe_payment_id'       => $payment->id,
-                           'ffe_proposal_id'      => $id,
+                           'ffe_proposal_id'      => @$payment->proposal->id,
                            'document_type_id' => $document_type->id
                            ]
                        );
@@ -565,7 +621,7 @@ class FFEPaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'1.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -574,13 +630,13 @@ class FFEPaymentController extends Controller
                                   'year' => $year
                                   ];
 
-
+            @$document->files()->whereFile($payment->unconditional_lien_release_file)->delete();   
             $document->files()->create($fileArr);
             $data['unconditional_lien_release_file'] = $fileName;
         }
 
         if($request->hasFile('conditional_lien_release_file')){
-              
+               @unlink($folderPath3.'/'.$payment->conditional_lien_release_file);
               $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
                          ->first();
 
@@ -588,11 +644,11 @@ class FFEPaymentController extends Controller
               $slug = @\Str::slug($name);                
 
               $document = $project->documents()
-                         ->firstOrCreate(['ffe_payment_id' => $payment->id,
+                         ->UpdateOrCreate(['ffe_payment_id' => $payment->id,
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'ffe_payment_id'       => $payment->id,
-                           'ffe_proposal_id'      => $id,
+                           'ffe_proposal_id'      => @$payment->proposal->id,
                            'document_type_id' => $document_type->id
                            ]
                        );
@@ -603,7 +659,7 @@ class FFEPaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'2.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -611,9 +667,47 @@ class FFEPaymentController extends Controller
                                   'date' => $date,'month' => $month,
                                   'year' => $year
                                   ];
-
-            $document->files()->create($fileArr);
+             @$document->files()->whereFile($payment->conditional_lien_release_file)->delete();   
+             $document->files()->create($fileArr);
              $data['conditional_lien_release_file'] = $fileName;
+
+        }
+
+         if($request->hasFile('purchase_order')){
+              @unlink($folderPath3.'/'.$payment->purchase_order);
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+
+              $name = @$project->name.' '.@$document_type->name.' '.@$proposal->subcontractor->name;                
+              $slug = @\Str::slug($name);                
+
+              $document = $project->documents()
+                         ->UpdateOrCreate(['ffe_payment_id' => $payment->id,
+                          'document_type_id' => $document_type->id],
+                           ['name' => $name, 'slug' => $slug,
+                           'ffe_payment_id'       => $payment->id,
+                           'ffe_proposal_id'      => @$payment->proposal->id,
+                           'document_type_id' => $document_type->id
+                           ]
+                       );
+
+              $file = $request->file('purchase_order');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+             @$document->files()->delete();   
+             $document->files()->create($fileArr);
+             $data['purchase_order'] = $fileName;
 
         }
 
@@ -703,19 +797,28 @@ class FFEPaymentController extends Controller
              $folder = Document::LIEN_RELEASES;
           }
 
+          if (str_contains($path, Document::PROJECTS_PURCHASE_ORDERS)) { 
+             $folder = Document::PROJECTS_PURCHASE_ORDERS;
+          }
+
           $aPath = $publicPath.$folder."/".Document::ARCHIEVED;
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
            @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $docFile  = DocumentFile::whereFile($file)->firstOrFail();
+          $docFile  = DocumentFile::whereFile($file)
+                        ->whereHas('document', function($q){
+                            $q->where('ffe_bill_id', NULL);
+                            $q->orWhere('ffe_bill_id', 0);
+                            $q->orWhere('ffe_bill_id', '');
+                        })->first(); 
 
           $coulumn = 'file';
 
-          $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
+          $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : ( $file == @$payment->purchase_order ? 'purchase_order' : $coulumn));  
           
-          @$docFile->delete();  
+           (@$docFile) ?  @$docFile->delete() : '';
 
           $payment->update([$coulumn => '']);
 

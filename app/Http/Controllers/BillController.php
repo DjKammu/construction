@@ -108,7 +108,14 @@ class BillController extends Controller
 
         $totalDueMount =  $this->proposalDueTotalAmount($proposal);
 
-        $data = $request->except('_token');
+        $retainage_percentage = $request->retainage_percentage;
+       $total_subcontractor_payment = $request->total_subcontractor_payment;
+       $retainage_held = $total_subcontractor_payment*$retainage_percentage/100;
+       $payment_amount = $total_subcontractor_payment - $retainage_held;
+
+       $request->merge(["payment_amount"=>$payment_amount,"retainage_held"=>$retainage_held]);
+
+       $data = $request->except('_token');
 
        $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
 
@@ -191,13 +198,13 @@ class BillController extends Controller
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
-        // $folderPath2 = Document::LIEN_RELEASES."/";
+         $folderPath3 = Document::BILLS_PURCHASE_ORDERS."/";
 
-        // $folderPath2 .= $project_slug.'/'.$trade_slug;
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
 
-        // \File::makeDirectory($public_path.$folderPath2, $mode = 0777, true, true);
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
 
-        $data['file'] = ' ';
+        $data['file'] = '';
 
         $bill = Bill::create($data);
        
@@ -228,7 +235,7 @@ class BillController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -241,6 +248,44 @@ class BillController extends Controller
 
             $document->files()->create($fileArr);
         }
+
+         if($request->hasFile('purchase_order')){
+                $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                           ->first();                
+                
+                $name = @$project->name.' '.@$document_type->name;                
+                $slug = @\Str::slug($name);               
+
+                $document = $project->documents()
+                           ->firstOrCreate(['bill_id' => $bill->id,
+                            'document_type_id' => $document_type->id],
+                             ['name' => $name, 'slug' => $slug,
+                             'bill_id'       => $bill->id,
+                             'proposal_id'      => $id,
+                             'document_type_id' => $document_type->id,
+                             'subcontractor_id' => @$proposal->subcontractor->id
+                             ]
+                         );
+
+                $file = $request->file('purchase_order');
+
+                $date  = date('d');
+                $month = date('m');
+                $year  = date('Y');
+
+               $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+               $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+               $fileArr = ['file' => $fileName,
+                                    'name' => $name,
+                                    'date' => $date,'month' => $month,
+                                    'year' => $year
+                                    ];
+              
+              $document->files()->create($fileArr);
+              $bill->update(['purchase_order' => $fileName]);
+          }
+
 
         if($request->bill_status == 1){
            $bill_status =  Bill::PAID_BILL_STATUS;
@@ -322,12 +367,20 @@ class BillController extends Controller
 
         $folderPath .= "$project_slug/$trade_slug/";
 
+        $folderPath3 = Document::BILLS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= "$project_slug/$trade_slug/";
+        
+
         // $folderPath2 = Document::LIEN_RELEASES."/";
 
         // $folderPath2 .= "$project_slug/$trade_slug/";
 
         
         $bill->file = @($bill->file) ? $folderPath.$bill->file : '';
+        $bill->purchase_order = @($bill->purchase_order) ? $folderPath3.$bill->purchase_order : '';
+
+        // dd($bill);
 
         // $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? $folderPath2.$payment->unconditional_lien_release_file : '';
         // $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? $folderPath2.$payment->conditional_lien_release_file : '';
@@ -353,9 +406,8 @@ class BillController extends Controller
 
         $allTrades = Trade::orderBy('name')->get();
         $users = User::orderBy('name')->get();
-         
-         session()->flash('url', route('projects.show',['project' => $bill->project_id]).'?#bills'); 
 
+        session()->flash('url', route('projects.show',['project' => $bill->project_id]).'?#bills'); 
 
         return view('projects.includes.bills-edit',compact('subcontractor','bill','vendors','totalAmount','dueAmount','trades','allTrades','users'));
     }
@@ -389,10 +441,18 @@ class BillController extends Controller
         $bill = Bill::find($id);
 
         $totalDueMount =  $this->proposalDueTotalAmount($bill->proposal);
-     
-        $data = $request->except('_token');
+ 
+       $retainage_percentage = $request->retainage_percentage;
+       $total_subcontractor_payment = $request->total_subcontractor_payment;
+       $retainage_held = $total_subcontractor_payment*$retainage_percentage/100;
+       $payment_amount = $total_subcontractor_payment - $retainage_held;
 
-         $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
+       $request->merge(["payment_amount"=>$payment_amount,"retainage_held"=>$retainage_held]);
+
+       $data = $request->except('_token');
+
+
+       $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
 
          if($bill->proposal){
 
@@ -456,6 +516,7 @@ class BillController extends Controller
 
         $subcontractor_slug = @$bill->subcontractor->slug;
 
+
          if(@!$bill->proposal){
              $vendor  = Vendor::find($request->vendor_id);
              $subcontractor_slug  =  @$vendor->slug;
@@ -468,6 +529,12 @@ class BillController extends Controller
         $folderPath .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+
+        $folderPath3 = Document::BILLS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
 
         // $folderPath2 = Document::LIEN_RELEASES."/";
 
@@ -486,7 +553,7 @@ class BillController extends Controller
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
                      'bill_id'          => $bill->id,
-                     'proposal_id'      => $id,
+                     'proposal_id'      => @$bill->proposal->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$proposal->subcontractor->id
                      ]
@@ -501,7 +568,7 @@ class BillController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
 
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
@@ -516,6 +583,44 @@ class BillController extends Controller
             $document->files()->create($fileArr);
             $data['file'] = $fileName;
         }
+
+        if($request->hasFile('purchase_order')){
+                @unlink($folderPath3.'/'.$bill->purchase_order);
+                $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                           ->first();                
+                
+                $name = @$project->name.' '.@$document_type->name;                
+                $slug = @\Str::slug($name); 
+            
+                $document = $project->documents()
+                           ->UpdateOrCreate(['bill_id' => $bill->id,
+                            'document_type_id' => $document_type->id],
+                             ['name' => $name, 'slug' => $slug,
+                             'bill_id'       => $bill->id,
+                             'proposal_id'      => @$bill->proposal->id,
+                             'document_type_id' => $document_type->id,
+                             'subcontractor_id' => @$proposal->subcontractor->id
+                             ]
+                         );  
+
+                $file = $request->file('purchase_order');
+
+                $date  = date('d');
+                $month = date('m');
+                $year  = date('Y');
+
+               $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+               $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+               $fileArr = ['file' => $fileName,
+                                    'name' => $name,
+                                    'date' => $date,'month' => $month,
+                                    'year' => $year
+                                    ];
+               @$document->files()->delete();
+               $document->files()->create($fileArr);
+               $data['purchase_order'] = $fileName;
+          }
 
 
         $bill->update($data);
@@ -557,22 +662,20 @@ class BillController extends Controller
          $path = @public_path().'/'.$folderPath;
          // $path2 = @public_path().'/'.$folderPath2;
 
-         $file = @$payment->file;
-         // $unconditional_lien_release_file = @$payment->unconditional_lien_release_file;
-         // $conditional_lien_release_file = @$payment->conditional_lien_release_file;
+         $file = @$bill->file;
+         $purchase_order = @$bill->purchase_order;
          
          $aPath = public_path().'/'. Document::BILLS."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
-         // $aPath2 = public_path().'/'. Document::LIEN_RELEASES."/".Document::ARCHIEVED; 
-         // \File::makeDirectory($aPath2, $mode = 0777, true, true);
+         $aPath3 = public_path().'/'. Document::BILLS_PURCHASE_ORDERS."/".Document::ARCHIEVED; 
+         \File::makeDirectory($aPath3, $mode = 0777, true, true);
 
         @\File::copy($path.$file, $aPath.'/'.$file);
-        // @\File::copy($path2.$conditional_lien_release_file, $aPath2.'/'.$conditional_lien_release_file);
-        // @\File::copy($path2.$unconditional_lien_release_file, $aPath2.'/'
-          // .$unconditional_lien_release_file);
+        @\File::copy($aPath3.$purchase_order, $aPath2.'/'
+          .$purchase_order);
+
         @unlink($path.$file);
-        // @unlink($path2.$conditional_lien_release_file);
-        // @unlink($path2.$unconditional_lien_release_file);
+        @unlink($aPath3.$purchase_order);
 
          $project->documents()
                     ->where(['bill_id' => $id])->delete();
@@ -602,24 +705,31 @@ class BillController extends Controller
           $publicPath = public_path().'/';
 
           $folder = Document::BILLS;
-          // if (str_contains($path, Document::LIEN_RELEASES)) { 
-          //    $folder = Document::LIEN_RELEASES;
-          // }
+          if (str_contains($path, Document::BILLS_PURCHASE_ORDERS)) { 
+             $folder = Document::BILLS_PURCHASE_ORDERS;
+          }
 
           $aPath = $publicPath.$folder."/".Document::ARCHIEVED;
+
+          
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
            @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $docFile  = DocumentFile::whereFile($file)->first();
+          $docFile  = DocumentFile::whereFile($file)
+                      ->whereHas('document', function($q){
+                           $q->where('payment_id', NULL);
+                            $q->orWhere('payment_id', 0);
+                            $q->orWhere('payment_id', '');
+                      })->first();
+
           (@$docFile) ?  @$docFile->delete() : ''; 
 
           $coulumn = 'file';
 
-          // $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
+          $coulumn = ( $file == @$bill->purchase_order ? 'purchase_order' : $coulumn); 
           
-
           $bill->update([$coulumn => '']);
 
           @unlink($path);
@@ -725,7 +835,7 @@ class BillController extends Controller
           unset($data['created_at']);
           unset($data['updated_at']);
 
-          $payment  = Payment::create($data);
+           $payment  = Payment::create($data);
 
           if($bill->file){
 
@@ -744,6 +854,8 @@ class BillController extends Controller
             $folderPath .= "$project_slug/$trade_slug/";
 
             $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
+
+            @\File::makeDirectory($public_path.$invoicePath, $mode = 0777, true, true);
             
             @\File::copy($publicPath.$folderPath.$bill->file, $publicPath.$invoicePath.$bill->file);
              
@@ -752,7 +864,7 @@ class BillController extends Controller
 
             $name = @$project->name.' '.@$document_type->name; 
 
-            $slug = @\Str::slug($name);                
+            $slug = @\Str::slug($name);        
 
             $document = $project->documents()
                ->firstOrCreate(['payment_id' => $payment->id,
@@ -775,20 +887,12 @@ class BillController extends Controller
                         'date' => $date,'month' => $month,
                         'year' => $year
                         ];
-
+             @$document->files()->delete(); 
             $document->files()->create($fileArr);
 
           }
 
-          $bill->update(['bill_status' => $bill_status]);
-          
-          return true;
-      }
-      else if ($bill_status == Bill::UNPAID_BILL_STATUS){
-
-           Payment::where('bill_id',$bill->id)->delete();
-
-          if($bill->file){
+           if($bill->purchase_order){
 
             $project = @$bill->project;
 
@@ -800,20 +904,107 @@ class BillController extends Controller
 
             $publicPath = public_path().'/';
 
-            $folderPath = Document::BILLS."/";
+            $folderPath = Document::BILLS_PURCHASE_ORDERS."/";
 
             $folderPath .= "$project_slug/$trade_slug/";
 
-            $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
+            $invoicePath = Document::PROJECTS_PURCHASE_ORDERS."/$project_slug/$trade_slug/";
+            @\File::makeDirectory($public_path.$invoicePath, $mode = 0777, true, true);
             
-            // @\File::copy($publicPath.$folderPath.$bill->file, $publicPath.$invoicePath.$bill->file);
+            \File::copy($publicPath.$folderPath.$bill->purchase_order, $publicPath.$invoicePath.$bill->purchase_order);
+         
+            $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
 
-            // @unlink($publicPath.$folderPath.$bill->file);
+            $name = @$project->name.' '.@$document_type->name; 
+
+            $slug = @\Str::slug($name);                
+
+            $document = $project->documents()
+               ->firstOrCreate(['payment_id' => $payment->id,
+                'document_type_id' => $document_type->id
+                 ],
+                 ['name' => $name, 'slug' => $slug,
+                 'payment_id'       => $payment->id,
+                 'proposal_id'      => @$bill->proposal_id,
+                 'document_type_id' => $document_type->id,
+                 'subcontractor_id' => @$bill->subcontractor_id
+                 ]
+             );
+
+            $date  = date('d');
+            $month = date('m');
+            $year  = date('Y');
+
+            $fileArr = ['file' => $bill->purchase_order,
+                        'name' => $name,
+                        'date' => $date,'month' => $month,
+                        'year' => $year
+                        ];
+             @$document->files()->delete(); 
+            $document->files()->create($fileArr);
+
+          }
+
+          $bill->update(['bill_status' => $bill_status]);
+          
+          return true;
+      }
+      else if ($bill_status == Bill::UNPAID_BILL_STATUS){
+
+          Payment::where('bill_id',$bill->id)->delete();
+           
+          if(@$bill->file){
+
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $publicPath = public_path().'/';
+            $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
+
             @unlink($publicPath.$invoicePath.$bill->file);
 
-            $docFile  = DocumentFile::whereFile($bill->file)->firstOrFail();
+            $docFile  = DocumentFile::whereFile($bill->file)
+                        ->whereHas('document', function($q){
+                            $q->where('bill_id', NULL);
+                            $q->orWhere('bill_id', 0);
+                            $q->orWhere('bill_id', '');
+                        })->first();  
           
-            @$docFile->delete();  
+           (@$docFile) ?  @$docFile->delete() : ''; 
+
+          }
+
+          if($bill->purchase_order){
+
+           
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $publicPath = public_path().'/';
+
+            $invoicePath = Document::PROJECTS_PURCHASE_ORDERS."/$project_slug/$trade_slug/";
+
+            @unlink($publicPath.$invoicePath.$bill->purchase_order);
+
+            $docFile  = DocumentFile::whereFile($bill->purchase_order)
+                        ->whereHas('document', function($q){
+                            $q->where('bill_id', NULL);
+                            $q->orWhere('bill_id', 0);
+                            $q->orWhere('bill_id', '');
+                        })->first();
+          
+           (@$docFile) ?  @$docFile->delete() : ''; 
 
           }
           

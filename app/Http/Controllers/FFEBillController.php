@@ -158,6 +158,12 @@ class FFEBillController extends Controller
 
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
 
+         $folderPath3 = Document::BILLS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
+
 
         $data['file'] = '';
 
@@ -190,7 +196,7 @@ class FFEBillController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $trade_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -200,6 +206,45 @@ class FFEBillController extends Controller
                                   ];
 
             $bill->update(['file' => $fileName]);
+
+            $document->files()->create($fileArr);
+        }
+
+        if($request->hasFile('purchase_order')){
+
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+              $name = @$project->name.' '.@$document_type->name;                
+              $slug = @\Str::slug($name); 
+
+              $document = $project->documents()
+                 ->firstOrCreate(['ffe_bill_id' => $bill->id,
+                  'document_type_id'        => $document_type->id
+                   ],
+                   ['name' => $name, 'slug' => $slug,
+                   'ffe_bill_id'       => $bill->id,
+                   'ffe_proposal_id'   => $id,
+                   'project_id'        => $project_id,
+                   'document_type_id' => $document_type->id
+                   ]
+               );
+
+              $file = $request->file('purchase_order');
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+
+            $bill->update(['purchase_order' => $fileName]);
 
             $document->files()->create($fileArr);
         }
@@ -284,8 +329,12 @@ class FFEBillController extends Controller
 
         $folderPath .= "$project_slug/$trade_slug/";
 
-        
+        $folderPath3 = Document::BILLS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= "$project_slug/$trade_slug/";
+
         $bill->file = @($bill->file) ? $folderPath.$bill->file : '';
+        $bill->purchase_order = @($bill->purchase_order) ? $folderPath3.$bill->purchase_order : '';
 
 
         $bill->date = @($bill->date) ? Carbon::parse($bill->date)->format('m-d-Y') : '' ;
@@ -343,7 +392,7 @@ class FFEBillController extends Controller
      
         $data = $request->except('_token');
 
-         $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
+        $non_contract = ($request->filled('non_contract')) ?  $request->non_contract : false;
 
         if($bill->proposal){
 
@@ -356,7 +405,7 @@ class FFEBillController extends Controller
 
         }else{
              $non_contract = 1; 
-            $request->validate([
+             $request->validate([
                    $non_contract.'_ffe_trade_id'  => 'required|exists:f_f_e_trades,id',
                    $non_contract.'_ffe_vendor_id' => 'required|exists:f_f_e_vendors,id',
                    'payment_amount'  =>  ['required']
@@ -385,6 +434,12 @@ class FFEBillController extends Controller
         $folderPath .= $project_slug.'/'.$trade_slug;
         
         \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+
+        $folderPath3 = Document::BILLS_PURCHASE_ORDERS."/";
+
+        $folderPath3 .= $project_slug.'/'.$trade_slug;
+        
+        \File::makeDirectory($public_path.$folderPath3, $mode = 0777, true, true);
         
         $document_type = DocumentType::where('name', DocumentType::BILL)
                          ->first();
@@ -397,7 +452,7 @@ class FFEBillController extends Controller
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
                      'ffe_bill_id'          => $bill->id,
-                     'ffe_proposal_id'      => $id,
+                     'ffe_proposal_id'      => @$bill->proposal->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$proposal->subcontractor->id
                      ]
@@ -412,7 +467,7 @@ class FFEBillController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $trade_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
 
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
@@ -426,6 +481,51 @@ class FFEBillController extends Controller
            @$document->files()->delete();             
             $document->files()->create($fileArr);
             $data['file'] = $fileName;
+        } 
+
+
+        if($request->hasFile('purchase_order')){
+              @unlink($folderPath.'/'.$bill->purchase_order);
+              $file = $request->file('purchase_order');
+
+               $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+
+               
+               $name = @$project->name.' '.@$document_type->name;                
+               $slug = @\Str::slug($name); 
+
+
+               $document = $project->documents()
+                   ->firstOrCreate(['ffe_bill_id' => $bill->id,
+                          'document_type_id' => $document_type->id],
+                     ['name' => $name, 'slug' => $slug,
+                     'ffe_bill_id'          => $bill->id,
+                     'ffe_proposal_id'      => @$bill->proposal->id,
+                     'document_type_id' => $document_type->id,
+                     'subcontractor_id' => @$proposal->subcontractor->id
+                     ]
+                 );
+
+
+              $date  = date('d');
+              $month = date('m');
+              $year  = date('Y');
+
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
+
+             $file->storeAs($folderPath3, $fileName, 'doc_upload');
+
+             $fileArr = ['file' => $fileName,
+                          'name' => $name,
+                          'date' => $date,
+                          'month' => $month,
+                          'year' => $year
+                          ];
+
+           @$document->files()->delete();             
+            $document->files()->create($fileArr);
+            $data['purchase_order'] = $fileName;
         }
 
 
@@ -484,7 +584,7 @@ class FFEBillController extends Controller
     }
 
 
-     public function destroyFile($id)
+     public function destroyFile($project, $id)
     {
          if(Gate::denies('delete')) {
                return abort('401');
@@ -496,26 +596,35 @@ class FFEBillController extends Controller
 
           $file = @end(explode('/', $path));
 
+          
+
           $publicPath = public_path().'/';
 
           $folder = Document::BILLS;
-          // if (str_contains($path, Document::LIEN_RELEASES)) { 
-          //    $folder = Document::LIEN_RELEASES;
-          // }
 
+          if (str_contains($path, Document::BILLS_PURCHASE_ORDERS)) { 
+             $folder = Document::BILLS_PURCHASE_ORDERS;
+          }
+           
           $aPath = $publicPath.$folder."/".Document::ARCHIEVED;
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
            @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $docFile  = DocumentFile::whereFile($file)->firstOrFail();
+          $docFile  = DocumentFile::whereFile($file)
+                      ->whereHas('document', function($q){
+                           $q->where('ffe_payment_id', NULL);
+                            $q->orWhere('ffe_payment_id', 0);
+                            $q->orWhere('ffe_payment_id', '');
+                      })->first();
+
 
           $coulumn = 'file';
 
-          // $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : $coulumn);  
-          
-          @$docFile->delete();  
+          $coulumn =  ($file == @$bill->purchase_order) ? 'purchase_order' : $coulumn ;  
+
+          (@$docFile) ?  @$docFile->delete() : '';
 
           $bill->update([$coulumn => '']);
 
@@ -618,7 +727,7 @@ class FFEBillController extends Controller
           unset($data['bill_status']);
           unset($data['created_at']);
           unset($data['updated_at']);
-
+          
           $payment  = FFEPayment::create($data);
 
           if($bill->file){
@@ -638,7 +747,7 @@ class FFEBillController extends Controller
             $folderPath .= "$project_slug/$trade_slug/";
 
             $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
-            
+            @\File::makeDirectory($public_path.$invoicePath, $mode = 0777, true, true);
             @\File::copy($publicPath.$folderPath.$bill->file, $publicPath.$invoicePath.$bill->file);
              
             $document_type = DocumentType::where('name', DocumentType::INVOICE)
@@ -668,8 +777,61 @@ class FFEBillController extends Controller
                         'date' => $date,'month' => $month,
                         'year' => $year
                         ];
+             @$document->files()->delete(); 
+             $document->files()->create($fileArr);
 
-                  $document->files()->create($fileArr);
+          }
+
+          if($bill->purchase_order){
+
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $publicPath = public_path().'/';
+
+            $folderPath = Document::BILLS_PURCHASE_ORDERS."/";
+
+            $folderPath .= "$project_slug/$trade_slug/";
+
+            $invoicePath = Document::PROJECTS_PURCHASE_ORDERS."/$project_slug/$trade_slug/";
+            @\File::makeDirectory($public_path.$invoicePath, $mode = 0777, true, true);
+            
+            @\File::copy($publicPath.$folderPath.$bill->purchase_order, $publicPath.$invoicePath.$bill->purchase_order);
+             
+            $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
+                         ->first();
+
+            $name = @$project->name.' '.@$document_type->name; 
+
+            $slug = @\Str::slug($name);                
+
+            $document = $project->documents()
+               ->UpdateOrCreate(['ffe_payment_id' => $payment->id,
+                'document_type_id' => $document_type->id
+                 ],
+                 ['name' => $name, 'slug' => $slug,
+                 'ffe_payment_id'       => $payment->id,
+                 'ffe_proposal_id'      => @$bill->proposal_id,
+                 'document_type_id' => $document_type->id
+                 ]
+             );
+
+            $date  = date('d');
+            $month = date('m');
+            $year  = date('Y');
+
+            $fileArr = ['file' => $bill->purchase_order,
+                        'name' => $name,
+                        'date' => $date,'month' => $month,
+                        'year' => $year
+                        ];
+           @$document->files()->delete(); 
+           $document->files()->create($fileArr);
 
           }
 
@@ -679,7 +841,7 @@ class FFEBillController extends Controller
       }
       else if ($bill_status == FFEBill::UNPAID_BILL_STATUS){
 
-           FFEPayment::where('ffe_bill_id',$bill->id)->delete();
+          FFEPayment::where('ffe_bill_id',$bill->id)->delete();
 
           if($bill->file){
 
@@ -693,17 +855,45 @@ class FFEBillController extends Controller
 
             $publicPath = public_path().'/';
 
-            $folderPath = Document::BILLS."/";
-
-            $folderPath .= "$project_slug/$trade_slug/";
-
             $invoicePath = Document::INVOICES."/$project_slug/$trade_slug/";
-            
+
             @unlink($publicPath.$invoicePath.$bill->file);
 
-            $docFile  = DocumentFile::whereFile($bill->file)->firstOrFail();
+            $docFile  = DocumentFile::whereFile($bill->file)
+                        ->whereHas('document', function($q){
+                            $q->where('ffe_bill_id', NULL);
+                            $q->orWhere('ffe_bill_id', 0);
+                            $q->orWhere('ffe_bill_id', '');
+                        })->first();            
+
+            (@$docFile) ?  @$docFile->delete() : ''; 
+
+          }
+
+          if($bill->purchase_order){
+
+            $project = @$bill->project;
+
+            $project_slug = \Str::slug($project->name);
+
+            $trade_slug = @\Str::slug($bill->trade->name);
+
+            $project_type_slug = @$project->project_type->slug;
+
+            $publicPath = public_path().'/';
+
+            $invoicePath = Document::PROJECTS_PURCHASE_ORDERS."/$project_slug/$trade_slug/";
+            
+            @unlink($publicPath.$invoicePath.$bill->purchase_order);
+
+            $docFile  = DocumentFile::whereFile($bill->purchase_order)
+                        ->whereHas('document', function($q){
+                            $q->where('ffe_bill_id', NULL);
+                            $q->orWhere('ffe_bill_id', 0);
+                            $q->orWhere('ffe_bill_id', '');
+                        })->first();
           
-            @$docFile->delete();  
+            (@$docFile) ?  @$docFile->delete() : '';
 
           }
           

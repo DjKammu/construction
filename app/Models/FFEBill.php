@@ -32,7 +32,7 @@ class FFEBill extends Model
      'ffe_proposal_id'  ,'project_id',
      'ffe_vendor_id' , 'ffe_trade_id' ,'payment_amount', 'date',
      'total_amount' ,'notes','file','status','invoice_number','material_id',
-     'bill_status','ffe_payment_id','non_contract'
+     'bill_status','ffe_payment_id','non_contract','purchase_order'
     ];
 
     public static $statusArr = [

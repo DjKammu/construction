@@ -155,7 +155,7 @@
 
                <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount) }}</td>
                <td> ${{ \App\Models\Payment::format($payment->retainage_held) }}</td>
-                <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount - $payment->total_subcontractor_payment) }}</td>
+                <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->remainingMinusRetainage) }}</td>
                <td>  {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->remaining) }} </td>
                <td>
                 @if($payment->file)

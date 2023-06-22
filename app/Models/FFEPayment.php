@@ -27,7 +27,7 @@ class FFEPayment extends Model
      'f_f_e_trade_id' , 'f_f_e_vendor_id' ,'payment_amount', 'date',
      'total_amount' ,'notes','file','status','invoice_number',
      'unconditional_lien_release_file','conditional_lien_release_file',
-     'non_contract','ffe_bill_id'
+     'non_contract','ffe_bill_id','purchase_order'
     ];
 
     public static $statusArr = [

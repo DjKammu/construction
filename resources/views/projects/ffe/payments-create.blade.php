@@ -246,7 +246,7 @@
                                    <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">File
+                                                <label class="text-dark" for="password">Invoice
                                                 </label>
                                                 <input  name="file"  type="file" >
                                             </div>
@@ -269,6 +269,16 @@
                                                 <label class="text-dark" for="password">Conditional Lien Release File
                                                 </label>
                                                 <input  name="conditional_lien_release_file"  type="file" >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-6 mx-auto">
+                                            <div class="form-group">
+                                                <label class="text-dark" for="password">Purchase Order
+                                                </label>
+                                                <input  name="purchase_order"  type="file" >
                                             </div>
                                         </div>
                                     </div>

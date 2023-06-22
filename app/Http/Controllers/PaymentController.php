@@ -241,7 +241,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -280,7 +280,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'1.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -319,7 +319,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'2.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -335,7 +335,7 @@ class PaymentController extends Controller
 
         if($request->hasFile('purchase_order')){
               
-              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
                          ->first();
 
               $name = @$project->name.@$document_type->name.' '.@$proposal->subcontractor->name;                
@@ -358,7 +358,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath3, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -422,6 +422,22 @@ class PaymentController extends Controller
 
          return round($due,2);
     } 
+
+    public function remainingMinusRetainage($proposal,$payment_id){
+          
+           $remaining =  $this->proposalDueAmount($proposal, $payment_id); 
+            
+          $payments = Payment::whereProposalId(@$proposal->id)
+             ->whereNull('vendor_id')                   
+             ->where('id','<=', $payment_id)->sum('retainage_held');
+
+             $due = (float) $remaining - (float) $payments;
+
+             return round($due,2);
+
+
+    }
+
     /**
      * Display the specified resource.
      *
@@ -529,7 +545,7 @@ class PaymentController extends Controller
 
        $request->merge(["payment_amount"=>$payment_amount,"retainage_held"=>$retainage_held]);
 
-      $data = $request->except('_token');
+       $data = $request->except('_token');
 
          $type = ($request->filled('type')) ?  $request->type : Payment::VENDOR;
 
@@ -631,7 +647,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                      ['name' => $name, 'slug' => $slug,
                      'payment_id'       => $payment->id,
-                     // 'proposal_id'      => $id,
+                     'proposal_id'      => @$proposal->id,
                      'document_type_id' => $document_type->id,
                      'subcontractor_id' => @$proposal->subcontractor->id
                      ]
@@ -646,7 +662,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'. $file->getClientOriginalExtension();
 
              $file->storeAs($folderPath, $fileName, 'doc_upload');
 
@@ -675,7 +691,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'payment_id'       => $payment->id,
-                           // 'proposal_id'      => $id,
+                           'proposal_id'      => @$proposal->id,
                            'document_type_id' => $document_type->id,
                            'subcontractor_id' => @$proposal->subcontractor->id
                            ]
@@ -687,7 +703,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'1.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'1.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -696,7 +712,7 @@ class PaymentController extends Controller
                                   'year' => $year
                                   ];
 
-
+            @$document->files()->whereFile($payment->unconditional_lien_release_file)->delete(); 
             $document->files()->create($fileArr);
             $data['unconditional_lien_release_file'] = $fileName;
         }
@@ -714,7 +730,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'payment_id'       => $payment->id,
-                           // 'proposal_id'      => $id,
+                           'proposal_id'      => @$proposal->id,
                            'document_type_id' => $document_type->id,
                            'subcontractor_id' => @$proposal->subcontractor->id
                            ]
@@ -726,7 +742,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'2.'. $file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'2.'. $file->getClientOriginalExtension();
              $file->storeAs($folderPath2, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -734,15 +750,15 @@ class PaymentController extends Controller
                                   'date' => $date,'month' => $month,
                                   'year' => $year
                                   ];
-
-            $document->files()->create($fileArr);
+            @$document->files()->whereFile($payment->conditional_lien_release_file)->delete(); 
+             $document->files()->create($fileArr);
              $data['conditional_lien_release_file'] = $fileName;
 
         }
 
         if($request->hasFile('purchase_order')){
               @unlink($folderPath3.'/'.$payment->purchase_order);
-              $document_type = DocumentType::where('name', DocumentType::LIEN_RELEASE)
+              $document_type = DocumentType::where('name', DocumentType::PURCHASE_ORDER)
                          ->first();
 
               $name = @$project->name.@$document_type->name.' '.@$proposal->subcontractor->name;                
@@ -753,7 +769,7 @@ class PaymentController extends Controller
                           'document_type_id' => $document_type->id],
                            ['name' => $name, 'slug' => $slug,
                            'payment_id'       => $payment->id,
-                           'proposal_id'      => $id,
+                           'proposal_id'      => @$proposal->id,
                            'document_type_id' => $document_type->id,
                            'subcontractor_id' => @$proposal->subcontractor->id
                            ]
@@ -765,7 +781,7 @@ class PaymentController extends Controller
               $month = date('m');
               $year  = date('Y');
 
-             $fileName = $subcontractor_slug.'-'.time().'.'.$file->getClientOriginalExtension();
+             $fileName = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
              $file->storeAs($folderPath3, $fileName, 'doc_upload');
 
              $fileArr = ['file' => $fileName,
@@ -773,8 +789,9 @@ class PaymentController extends Controller
                                   'date' => $date,'month' => $month,
                                   'year' => $year
                                   ];
-            
-            $document->files()->create($fileArr);
+
+             @$document->files()->delete(); 
+             $document->files()->create($fileArr);
              $data['purchase_order'] = $fileName;
         }
 
@@ -878,13 +895,18 @@ class PaymentController extends Controller
 
            @\File::copy($publicPath.$path, $aPath.'/'.$file);
 
-          $docFile  = DocumentFile::whereFile($file)->firstOrFail();
+           $docFile  = DocumentFile::whereFile($file)
+                        ->whereHas('document', function($q){
+                            $q->where('bill_id', NULL);
+                            $q->orWhere('bill_id', 0);
+                            $q->orWhere('bill_id', '');
+                        })->first(); 
 
           $coulumn = 'file';
 
           $coulumn = ( $file == @$payment->conditional_lien_release_file ) ? 'conditional_lien_release_file' : ( $file == @$payment->unconditional_lien_release_file ? 'unconditional_lien_release_file' : ( $file == @$payment->purchase_order ? 'purchase_order' : $coulumn));  
           
-          @$docFile->delete();  
+          (@$docFile) ?  @$docFile->delete() : ''; 
 
           $payment->update([$coulumn => '']);
 

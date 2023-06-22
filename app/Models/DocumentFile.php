@@ -14,7 +14,7 @@ class DocumentFile extends Model
    protected $fillable = [
 	     'file','name',
 	     'date','month',
-	     'year'
+	     'year','document_id'
 	 ];
 
     public function document(){

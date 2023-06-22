@@ -434,7 +434,7 @@ class ProjectController extends Controller
               
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
-         $documents = $documents->with('document_type')
+         $documents = $documents->has('files')->with('document_type')
                     ->paginate($perPage);
         
        
@@ -459,20 +459,62 @@ class ProjectController extends Controller
                  $proposal = Proposal::find($doc->proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
                  $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::PROPOSALS."/");
+
                  if($doc->document_type->name == DocumentType::LIEN_RELEASE && $doc->payment_id){
                          $payment_id = Payment::find($doc->payment_id);
                          $trade_slug = @\Str::slug($payment_id->trade->name);
                  }
 
-                 if($doc->document_type->name == DocumentType::BILL && $doc->bill_id){
+                 if($doc->payment_id){
+                     $payment = Payment::find($doc->payment_id);
+                     $trade_slug = @\Str::slug($payment->trade->name);
+                 }
+
+
+                if($doc->document_type->name == DocumentType::BILL && $doc->bill_id){
                      $bill = Bill::find($doc->bill_id);
                      $trade_slug = @\Str::slug($bill->trade->name);
                      $folderPath = Document::BILLS."/";
                      
                 }
-                 $folderPath .= "$project_slug/$trade_slug/";
+
+                if($doc->document_type->name == DocumentType::PURCHASE_ORDER && $doc->bill_id){ 
+                     $bill = Bill::find($doc->bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS_PURCHASE_ORDERS."/";
+                     
+                } 
+
+                if($doc->document_type->name == DocumentType::PURCHASE_ORDER && $doc->payment_id){
+                     $payment = Payment::find($doc->payment_id);
+                     $trade_slug = @\Str::slug($payment->trade->name);
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";
+                     
+                }
+
+                $folderPath .= "$project_slug/$trade_slug/";
 
             }
+             else if(!$doc->proposal_id && $doc->payment_id){
+
+                 $payment_id = Payment::find($doc->payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($doc->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+              else if(!$doc->proposal_id && $doc->bill_id){
+
+                 $bill = Bill::find($doc->bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
             else if($doc->ffe_proposal_id){
                  $proposal = FFEProposal::find($doc->ffe_proposal_id);
                  $trade_slug = @\Str::slug($proposal->trade->name);
@@ -489,8 +531,26 @@ class ProjectController extends Controller
                      
                 }
                  $folderPath .= "$project_slug/$trade_slug/";
+            }  else if(!$doc->ffe_proposal_id && $doc->ffe_payment_id){
 
+                 $payment_id = FFEPayment::find($doc->ffe_payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($doc->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
             }
+
+              else if(!$doc->ffe_proposal_id && $doc->ffe_bill_id){
+
+                 $bill = FFEBill::find($doc->ffe_bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
             else if($doc->log_id || $doc->ffe_log_id ){
                  if($doc->document_type->name == DocumentType::INVOICE){
                     $folderPath = Document::INVOICES."/$project_slug/";
@@ -589,6 +649,8 @@ class ProjectController extends Controller
             $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath2.$payment->unconditional_lien_release_file) : '' ;
 
             $payment->remaining = (new PaymentController)->proposalDueAmount($payment->proposal,$payment->id);
+
+            $payment->remainingMinusRetainage = (new PaymentController)->remainingMinusRetainage($payment->proposal,$payment->id);
 
             return $payment->file;
            
