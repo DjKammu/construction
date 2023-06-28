@@ -79,6 +79,25 @@
                         <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("ffe.vendors.index") }}'"> FFE Vendors
                         </button>
                     </div>
+                </div> 
+
+
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <h4 class="mt-0 text-left">Soft Cost Modules</h4>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                   
+                    <div class="col-12">   
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("soft-cost.categories.index") }}'"> Soft Cost Categories
+                        </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("soft-cost.trades.index") }}'"> Soft Cost Trades
+                        </button>
+                        <button type="button" class="btn btn-danger mt-0"  onclick="return window.location.href='{{ route("soft-cost.vendors.index") }}'"> Soft Cost Vendors
+                        </button>
+                    </div>
                 </div>
 
             </div>

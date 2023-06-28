@@ -119,7 +119,12 @@ Route::resource('ffe/trades', App\Http\Controllers\FFETradeController::class,['n
 
 Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::class,['names' => 'ffe.categories']);
 
-Route::resource('ffe/categories', App\Http\Controllers\FFECategoryController::class,['names' => 'ffe.categories']);
+Route::resource('soft-cost/vendors', App\Http\Controllers\SoftCostVendorController::class,['names' => 'soft-cost.vendors']);
+
+Route::resource('soft-cost/trades', App\Http\Controllers\SoftCostTradeController::class,['names' => 'soft-cost.trades']);
+
+Route::resource('soft-cost/categories', App\Http\Controllers\SoftCostCategoryController::class,['names' => 'soft-cost.categories']);
+
 
 
 // Document Routes
