@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SoftCostCategory;
-// use App\Models\SoftCostProposal;
+use App\Models\SoftCostProposal;
 use App\Models\SoftCostTrade;
 use App\Models\Project;
 use Gate;
@@ -212,7 +212,7 @@ class SoftCostTradeController extends Controller
             $q->where("project_id",$id);
           })->get();
 
-        return view('projects.ffe.trades-create',compact('trades','project'));
+        return view('projects.soft_cost.trades-create',compact('trades','project'));
     }
 
     /**
@@ -230,9 +230,9 @@ class SoftCostTradeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'trade_id' => 'required|exists:f_f_e_trades,id'
+              'trade_id' => 'required|exists:soft_cost_trades,id'
         ]);
-            
+
 
         $project = Project::find($id);
 
@@ -241,9 +241,9 @@ class SoftCostTradeController extends Controller
             return redirect()->back();
         }          
         
-        $project->ffe_trades()->attach($request->trade_id); 
+        $project->sc_trades()->attach($request->trade_id); 
 
-        return redirect(route('ffe.index',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
+        return redirect(route('projects.soft-cost.index',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
     }
 
     /**
@@ -274,9 +274,9 @@ class SoftCostTradeController extends Controller
 
         $selectedTrades = @$selectedProject->ffe_trades()->pluck('f_f_e_trade_id');
    
-        @$project->ffe_trades()->sync($selectedTrades,false); 
+        @$project->sc_trades()->sync($selectedTrades,false); 
 
-        return redirect(route('ffe.index',['project' => $id]).'#trades')->with('message', 'Trades Assigned Successfully!');
+        return redirect(route('projects.soft-cost.index',['project' => $id]).'#trades')->with('message', 'Trades Assigned Successfully!');
     }
 
 
@@ -296,17 +296,17 @@ class SoftCostTradeController extends Controller
         $project = Project::find($project_id);
 
 
-         $trade = @$project->ffe_trades()
-                  ->where('f_f_e_trade_id',$id)
-                    ->firstOrFail()->pivot;   
+         $trade = @$project->sc_trades()
+                  ->where('soft_cost_trade_id',$id)
+                    ->first()->pivot;   
 
-         @$trade->delete();
+         ($trade)  ?  @$trade->delete() : '';
          
          @SoftCostProposal::where([
           ['project_id', $project_id],
-          ['trade_id' , $id]
+          ['soft_cost_trade_id' , $id]
          ])->delete();    
 
-        return redirect(route('ffe.index',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
+        return redirect(route('projects.soft-cost.index',['project' => $project_id]).'#trades')->with('message', 'Trade Delete Successfully!');
     }
 }

@@ -5,12 +5,14 @@
 @section('content')
 
 <div class="row">
-
-@include('includes.back')
+@include('includes.back', 
+['url' => route("projects.show", ['project' => request()->project]),
+'to' => 'to Project'])
 
 </div>
 
 @include('includes.favourite')
+
   <div class="card p-2">
     <div class="row">
         <div class="col-md-12">
@@ -37,7 +39,6 @@
               </div>
             @endif
 
-
             <div class="card-body">
                <div class="row">
                         <div class="col-md-12">
@@ -46,29 +47,16 @@
                               <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
                                         <ul id="tabs" class="nav nav-tabs" role="tablist">
-
-                                            <li class="nav-item">
-                                                <a class="nav-link text-dark active"  data-toggle="tab" href="#details" role="tab"
-                                                   aria-expanded="true">Details</a>
-                                            </li>
-
-                                            <li class="nav-item">
-                                                <a class="nav-link text-dark"  data-toggle="tab" href="#documents" role="tab"
-                                                   aria-expanded="false">Documents</a>
-                                            </li>
-
-                                            <li class="nav-item">
-                                                <a class="nav-link text-dark"  data-toggle="tab" href="#trades" role="tab"
-                                                   aria-expanded="false">Trades</a>
-                                            </li> 
-                                             @if($trade)
+                                             <li class="nav-item">
+                                                  <a class="nav-link text-dark active"  data-toggle="tab" role="tab" aria-expanded="true" href="#trades" >Trades</a>
+                                              </li>
+                                             <!-- @if(@$trade)
                                               <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#proposals" role="tab"
-                                                     aria-expanded="false">Proposals</a>
+                                                  <a class="nav-link text-dark"  data-toggle="tab" role="tab" aria-expanded="true" href="#proposals" >Proposals</a>
                                               </li>
                                               @endif
 
-                                              @if($allProposals->count() > 0)
+                                               @if(@$allProposals)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bids" role="tab"
                                                      aria-expanded="false">Bids Tabulation</a>
@@ -76,82 +64,36 @@
                                               @endif 
 
                                               <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#bills" role="tab"
-                                                     aria-expanded="false">Bills</a>
-                                              </li>
-
-                                              <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
+                                              </li>
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#bills" role="tab"
+                                                     aria-expanded="false">Bills</a>
                                               </li>
                                               
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
-                                                     aria-expanded="false">Hard Project Cost</a>
-                                              </li>
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/soft-cost') }}" 
-                                                     aria-expanded="false">Soft Project Cost</a>
-                                              </li>
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#construction-cost" role="tab"
-                                                     aria-expanded="false">Total Construction Cost</a>
-                                              </li>
+                                                     aria-expanded="false">FFE Budget</a>
+                                              </li> 
 
                                                <li class="nav-item">
-                                                  <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/budget') }}"  role="tab"
-                                                     aria-expanded="false">Project Budget </a>
-                                              </li>
-
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#rfi" role="tab"
-                                                     aria-expanded="false">RFI</a>
-                                              </li>
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#submittal" role="tab"
-                                                     aria-expanded="false">Submittal</a>
-                                              </li>
-                                              <li class="nav-item">
-                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
-                                                     aria-expanded="false">Procurement Log</a>
-                                              </li>
-
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/ffe') }}"  role="tab"
-                                                     aria-expanded="false">FFE </a>
-                                              </li>
-                                               
-                                              <li class="nav-item">
-                                                  <a class="nav-link text-dark"   href="{{ url('projects/'.$project->id.'/aia-pay-app') }}" role="tab"
-                                                     aria-expanded="false">AIA Pay App</a>
+                                                  <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
+                                                     aria-expanded="false">FFE Procurement Log</a>
                                               </li> 
+
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#tracker" role="tab"
-                                                     aria-expanded="false">ITB Tracker</a>
-                                              </li>
+                                                     aria-expanded="false">FFE ITBTracker</a>
+                                              </li> -->
+
                                         </ul>
                                     </div>
                                </div>
 
                                 <div id="my-tab-content" class="tab-content">
-
-                                    @include('projects.includes.details')
-                                    @include('projects.includes.documents')
-                                    @include('projects.includes.trades')
-                                    @if($trade)
-                                    @include('projects.includes.proposals')
-                                    @endif
-                                    @if($allProposals->count() > 0)
-                                    @include('projects.includes.bids')
-                                    @endif 
-                                    @include('projects.includes.payments')
-                                    @include('projects.includes.bills')
-                                    @include('projects.includes.budget')
-                                    @include('projects.includes.construction-cost')
-                                    @include('projects.includes.rfi')
-                                    @include('projects.includes.submittal')
-                                    @include('projects.includes.logs')
-                                    @include('projects.includes.tracker')
+                                    @include('projects.soft_cost.trades')
+                                    
                               </div>
 
                             </div>
@@ -258,15 +200,6 @@ var end =  '{{ Request::input("end")}}';
 
    function sendEmailPopup(){   
       $("#myModal").modal('show');
-   } 
-
-   function sendEmailPopup2(type){
-      $('#type').val(type);   
-      $("#myModal2").modal('show');
-   }
-
-   function sendEmailLogsPopup(){
-      $("#myModalLogs").modal('show');
    }
 
    function sendMail(){
@@ -275,8 +208,9 @@ var end =  '{{ Request::input("end")}}';
     var subject = $('#subject').val();
     var message = $('#message').val();
     var file = $('#file').val();
-    var cc = $('#cc').val();
+     var cc = $('#cc').val();
     var bcc = $('#bcc').val();
+
 
     const validateEmail = (email) => {
     return String(email)
@@ -306,7 +240,7 @@ var end =  '{{ Request::input("end")}}';
 
     let _token   =   "{{ csrf_token() }}";
 
-    let url = '/projects/'+projectId+'/send-mail'
+    let url = '/projects/'+projectId+'/ffe/send-mail'
 
    $.ajax({
         url: url,
@@ -330,17 +264,21 @@ var end =  '{{ Request::input("end")}}';
         }
        });
 
-   } 
+   }
 
+  function sendEmailLogsPopup(){   
+      $("#myModalLogs").modal('show');
+   }
 
- function sendMail2(){
+   function sendMailLogs(){
    
     var recipient = $('#recipient2').val();
     var subject = $('#subject2').val();
     var message = $('#message2').val();
     var file = $('#file2').val();
-    var cc = $('#cc2').val();
+     var cc = $('#cc2').val();
     var bcc = $('#bcc2').val();
+
 
     const validateEmail = (email) => {
     return String(email)
@@ -370,7 +308,7 @@ var end =  '{{ Request::input("end")}}';
 
     let _token   =   "{{ csrf_token() }}";
 
-    let url = '/projects/'+projectId+'/total/send-mail'
+    let url = '/projects/'+projectId+'/ffe/send-mail-logs'
 
    $.ajax({
         url: url,
@@ -387,71 +325,7 @@ var end =  '{{ Request::input("end")}}';
         success:function(response){
            alert(response.message); 
            $("#myModal").modal('hide');
-            location.reload();
-        },
-        error: function(error) {
-          alert(error);
-        }
-       });
-
-   }
-
-
- function sendMailLogs(){
-   
-    var recipient = $('#recipient3').val();
-    var subject = $('#subject3').val();
-    var message = $('#message3').val();
-    var file = $('#file3').val();
-    var cc = $('#cc3').val();
-    var bcc = $('#bcc3').val();
-
-    const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
-
-
-    if(!recipient){
-      alert('Recipient cant be blank')
-      return
-    }else if(!validateEmail(recipient)) {
-        alert('Recipient is invalid')
-      return
-  
-    }else if(!subject){
-      alert('Subject cant be blank')
-      return
-    } else if(!message){
-      alert('Message cant be blank')
-      return
-    }
-    
-    let projectId = '{{ @$project->id }}';
-
-    let _token   =   "{{ csrf_token() }}";
-
-    let url = '/projects/'+projectId+'/send-mail-logs'
-
-   $.ajax({
-        url: url,
-        type:"POST",
-        data:{
-          recipient:recipient,
-          subject:subject,
-          message:message,
-          file:file,
-          cc:cc,
-          bcc:bcc,
-          _token: _token
-        },
-        success:function(response){
-           alert(response.message); 
-           $("#myModalLogs").modal('hide');
-            location.reload();
+          location.reload();
         },
         error: function(error) {
           alert(error);
@@ -570,16 +444,15 @@ var end =  '{{ Request::input("end")}}';
 
  } 
 
-
  function sortOrderByLog(orderBy,order){
        
       var fullUrl = window.location.href.split("#")[0];
-      let isOrderBy = fullUrl.includes('orderByLog') ;
+      let isOrderBy = fullUrl.includes('orderbySubmittal') ;
       let isSort = fullUrl.includes('orderLog') ;
       
       var url = '/';
       if(isOrderBy || isSort){ 
-          fullUrl = replaceUrlParam(fullUrl,'orderByLog',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'orderbySubmittal',orderBy);
           fullUrl = replaceUrlParam(fullUrl,'orderLog',order);
           url = fullUrl;
       }
@@ -612,7 +485,6 @@ function proposalPage(id){
         window.location.href = url;
 }
    
-
    var senders = [];
 $('.subcontractor').click(function() {
     var checked = ($(this).val());
@@ -622,7 +494,6 @@ $('.subcontractor').click(function() {
       senders.splice($.inArray(checked, senders),1);
     }
   });
-
 function sendMailTracker(){
    
    if(senders.length == 0 ){
@@ -634,7 +505,7 @@ function sendMailTracker(){
     let _token   =   "{{ csrf_token() }}";
 
    $.ajax({
-        url: "{{ route('send.mail')}}",
+        url: "{{ route('ffe.send.mail')}}",
         type:"POST",
         data:{
           projectId:projectId,
@@ -663,7 +534,7 @@ function selectSign(val, id){
     let _token   =   "{{ csrf_token() }}";
 
    $.ajax({
-        url: "{{ route('contract.signed')}}",
+        url: "{{ route('ffe.contract.signed')}}",
         type:"POST",
         data:{
           tracker_id:tracker_id,
@@ -692,7 +563,7 @@ function selectBid(val, id){
     let _token   =   "{{ csrf_token() }}";
 
    $.ajax({
-        url: "{{ route('bid.recieved')}}",
+        url: "{{ route('ffe.bid.recieved')}}",
         type:"POST",
         data:{
           tracker_id:tracker_id,
@@ -853,9 +724,6 @@ i.fa.fa-sort-asc{
 .table-responsive.table-payments{
   overflow: auto;
 }
-table .row-border{
-    border: 2px solid;
-}
 
   #category-types-table{
     font-size: 12px;
@@ -863,19 +731,8 @@ table .row-border{
   .checkbox{
     margin-right: 4px;
   }
-  #construction-cost-content{
-    table-layout: fixed;
-  }
 
-  #construction-cost-summary-content{
-    table-layout: fixed;
-  }
-
-  table{
-    table-layout: fixed;
-  }
-
-  .budget-image{
+    .budget-image{
     float: left;
     margin-top: 5px;
   }
@@ -883,19 +740,7 @@ table .row-border{
     height: 15px;
     width: 15px;
   }
-
-  #payments-table thead>tr>th{
-    font-size: 10px;
-    padding: 10px 1px;
-  }
-  #construction-cost-summary-content thead>tr>th{
-    font-size: 10px;
-    padding: 10px 1px;
-  }
-  #construction-cost-content thead>tr>th{
-    font-size: 10px;
-    padding: 10px 1px;
-  }
+  
 </style>
 
 @endsection

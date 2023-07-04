@@ -445,6 +445,98 @@ Route::prefix('projects')->group(function(){
             Route::get('/excel/download',[App\Http\Controllers\BudgetController::class,'excelDownload'])->name('excel.download');
             Route::post('/send-mail',[App\Http\Controllers\BudgetController::class,'sendMail'])->name('send.mail');
 
+        }); 
+
+
+        Route::group(['prefix' => '{project}/soft-cost','as' => 'projects.soft-cost.'], function ($project) {
+
+            Route::get('/',[App\Http\Controllers\SoftCostController::class,'index'])->name('index');
+           
+             // Proposal Routes
+
+            Route::get('proposals/{trade}',[App\Http\Controllers\SoftCostProposalController::class,'create'])->name('proposals');
+
+            Route::post('proposals/{trade}',[App\Http\Controllers\SoftCostProposalController::class,'store'])->name('proposals');
+
+            Route::get('proposals/{id}/edit',[App\Http\Controllers\SoftCostProposalController::class,'show'])->name('proposals.edit');
+
+            Route::get('proposals/award/{id}/{status}',[App\Http\Controllers\SoftCostProposalController::class,'award'])->name('proposals.award');
+
+            Route::post('proposals/{id}/update',[App\Http\Controllers\SoftCostProposalController::class,'update'])->name('proposals.update');
+
+            Route::post('proposals/{id}/upload',[App\Http\Controllers\SoftCostProposalController::class,'upload'])->name('proposals.upload');
+
+             Route::delete('proposals/{id}', [App\Http\Controllers\SoftCostProposalController::class,'destroy'])->name('proposals.destroy');
+
+             Route::delete('proposals/{id}/file', [App\Http\Controllers\SoftCostProposalController::class,'destroyFile'])->name('proposals.file.destroy');
+
+             
+             // trades Route
+
+             Route::get('trades/add',[App\Http\Controllers\SoftCostTradeController::class,'createProjectTrade'])->name('trades');
+
+            Route::post('trades/store',[App\Http\Controllers\SoftCostTradeController::class,'storeProjectTrade'])->name('trades.store');
+
+            Route::post('trades/multiple',[App\Http\Controllers\SoftCostTradeController::class,'storeMultipleProjectTrade'])->name('trades.multiple');
+
+             Route::delete('trades/{id}', [App\Http\Controllers\SoftCostTradeController::class,'destroyProjectTrade'])->name('trades.destroy');
+              
+            // Payments Route  
+             
+            Route::get('payments/create',[App\Http\Controllers\FFEPaymentController::class,'create'])->name('projects.ffe.payments');
+
+            Route::post('{id?}/payments',[App\Http\Controllers\FFEPaymentController::class,'store'])->name('projects.ffe.payments.store');
+
+            Route::get('payments/{id}',[App\Http\Controllers\FFEPaymentController::class,'show'])->name('projects.ffe.payments.edit');
+
+            Route::post('payments/{id}',[App\Http\Controllers\FFEPaymentController::class,'update'])->name('projects.ffe.payments.update');
+
+             Route::delete('payments/{id}', [App\Http\Controllers\FFEPaymentController::class,'destroy'])->name('projects.ffe.payments.destroy');
+
+             Route::delete('payments/{id}/file', [App\Http\Controllers\FFEPaymentController::class,'destroyFile'])->name('projects.ffe.payments.file.destroy');
+
+             Route::get('budget/download', [App\Http\Controllers\FFEPaymentController::class,'downloadPDF'])->name('projects.ffe.download');
+
+             Route::post('send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
+
+            // Logs Route 
+
+            Route::get('logs/create',[App\Http\Controllers\FFEProcurementLogController::class,'create'])->name('projects.ffe.logs');
+
+            Route::post('{id?}/logs',[App\Http\Controllers\FFEProcurementLogController::class,'store'])->name('projects.ffe.logs.store');
+
+            Route::get('logs/{id}',[App\Http\Controllers\FFEProcurementLogController::class,'show'])->name('projects.ffe.logs.edit');
+
+            Route::post('logs/{id}',[App\Http\Controllers\FFEProcurementLogController::class,'update'])->name('projects.ffe.logs.update');
+
+             Route::delete('logs/{id}', [App\Http\Controllers\FFEProcurementLogController::class,'destroy'])->name('projects.ffe.logs.destroy');
+
+             Route::delete('logs/{id}/file', [App\Http\Controllers\FFEProcurementLogController::class,'destroyFile'])->name('projects.ffe.logs.file.destroy');
+
+             Route::get('download/logs', [App\Http\Controllers\FFEProcurementLogController::class,'downloadPDF'])->name('projects.ffe.logs.download');
+
+             Route::post('send-mail-logs', [App\Http\Controllers\FFEProcurementLogController::class,'sendMail'])->name('projects.ffe.logs.send.mail');
+
+
+             // Bills Route
+
+           Route::get('bills/create',[App\Http\Controllers\FFEBillController::class,'create'])
+           ->name('projects.ffe.bills');
+
+          Route::post('{id?}/bills',[App\Http\Controllers\FFEBillController::class,'store'])
+          ->name('projects.ffe.bills.store');
+          
+          Route::get('bills/{id}',[App\Http\Controllers\FFEBillController::class,'show'])
+          ->name('projects.bills.edit');
+         
+           Route::get('bills/{id}/bill-stattus', [App\Http\Controllers\FFEBillController::class,'billStatus'])->name('projects.ffe.bills.status');
+
+          Route::post('bills/{id}',[App\Http\Controllers\FFEBillController::class,'update'])->name('projects.ffe.bills.update');
+
+           Route::delete('bills/{id}', [App\Http\Controllers\FFEBillController::class,'destroy'])->name('projects.ffe.bills.destroy');
+
+           Route::delete('bills/{id}/file', [App\Http\Controllers\FFEBillController::class,'destroyFile'])->name('projects.ffe.bills.file.destroy');
+
         });
 
 });

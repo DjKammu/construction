@@ -29,9 +29,9 @@ class SoftCostVendor extends Model
     //     return $this->hasMany(Proposal::class);
     // }
 
-    // public function ffe_proposals(){
-    //     return $this->hasMany(FFEProposal::class);
-    // }
+    public function sc_proposals(){
+        return $this->hasMany(SoftCostProposal::class);
+    }
 
 
 }

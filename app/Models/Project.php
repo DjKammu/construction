@@ -127,6 +127,10 @@ class Project extends Model
     public function ffe_trades(){
         return $this->belongsToMany(FFETrade::class)->withTimestamps();
     }
+
+    public function sc_trades(){
+        return $this->belongsToMany(SoftCostTrade::class)->withTimestamps();
+    }
     
     public function propertyGroup(){
         return $this->hasOne(PropertyGroup::class);
