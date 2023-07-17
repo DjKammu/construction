@@ -25,6 +25,7 @@ class Document extends Model
      CONST PURCHASE_ORDERS = 'purchase-orders';
      CONST PROJECTS_PURCHASE_ORDERS = 'projects-purchase-orders';
      CONST BILLS_PURCHASE_ORDERS = 'bills-purchase-orders';
+     CONST SOFT_COST_PROPOSALS = 'soft-cost-proposals';
     
 
      protected $fillable = [
@@ -34,7 +35,7 @@ class Document extends Model
      'subcontractor_id', 'proposal_id',
      'payment_id','rfi_id','submittal_id',
      'ffe_proposal_id','bill_id','ffe_bill_id',
-     'log_id','ffe_log_id','ffe_payment_id'
+     'log_id','ffe_log_id','ffe_payment_id','soft_cost_proposal_id'
     ];
 
     public function document_type(){

@@ -5,7 +5,7 @@
 @section('content')
 
 @include('includes.back',
-['url' => route('ffe.index',['project' => request()->project ]) , 'to' => 'To Soft Cost'])
+['url' => route('projects.soft-cost.index',['project' => request()->project ]) , 'to' => 'To Soft Cost'])
 
       <!-- Start Main View -->
   <div class="card p-2">
@@ -38,7 +38,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.ffe.proposals.update',['project'=> request()->project,'id' => request()->id]) }}" enctype="multipart/form-data">
+                              action="{{ route('projects.soft-cost.proposals.update',['project'=> request()->project,'id' => request()->id]) }}" enctype="multipart/form-data">
                                   @csrf
 
                                     <div class="row">
@@ -48,7 +48,7 @@
                                                 </label>
                                                 <select class="form-control"> 
                                                   <option>
-                                                      {{ @$ffe_vendor->name }}
+                                                      {{ @$vendor->name }}
                                                   </option>
                                                 </select>
                                             </div>
@@ -206,7 +206,7 @@
                                             <span class="cross"> 
                                              <form 
                                                 method="post" 
-                                                action="{{route('projects.ffe.proposals.file.destroy', ['project'=> request()->project,'id' => request()->id])}}?path={{$file}}"> 
+                                                action="{{route('projects.soft-cost.proposals.file.destroy', ['project'=> request()->project,'id' => request()->id])}}?path={{$file}}"> 
                                                  @csrf
                                                 {{ method_field('DELETE') }}
 

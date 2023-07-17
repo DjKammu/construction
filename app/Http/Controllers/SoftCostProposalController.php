@@ -78,7 +78,7 @@ class SoftCostProposalController extends Controller
                return abort('401');
         } 
         
-        $trade = FFETrade::find($trade_id);  
+        $trade = SoftCostTrade::find($trade_id);  
         $project  = Project::find($id);  
          
         if(!$trade || !$project){
@@ -87,20 +87,20 @@ class SoftCostProposalController extends Controller
 
         $data = $request->except('_token');
 
-        $proposal = FFEProposal::where('f_f_e_vendor_id',$request->f_f_e_vendor_id)
+        $proposal = SoftCostProposal::where('soft_cost_vendor_id',$request->soft_cost_vendor_id)
               ->where(
                 function($query) use ($id,$trade_id){
-                    (new FFEProposal)->scopeHaveProposal($query,$id,$trade_id);
+                    (new SoftCostProposal)->scopeHaveProposal($query,$id,$trade_id);
               })->exists();
         
 
        if($proposal){
-         return redirect(route('ffe.index',['project' => $id]).'?trade='.$trade_id.'#proposals')->withErrors(['Already FFE Proposal exists for this subcontractor!']);
+         return redirect(route('projects.soft-cost.index',['project' => $id]).'?trade='.$trade_id.'#proposals')->withErrors(['Already Soft Cost Proposal exists for this subcontractor!']);
        }
 
         $request->validate([
-              'f_f_e_vendor_id' => ['required',
-              'exists:f_f_e_vendors,id'],
+              'soft_cost_vendor_id' => ['required',
+              'exists:soft_cost_vendors,id'],
               // 'labour_cost' => 'required',
               // 'material' => 'required',
               // 'subcontractor_price' => 'required'
@@ -112,23 +112,23 @@ class SoftCostProposalController extends Controller
         $data['subcontractor_price'] = $data['subcontractor_price'] ?? 0;
 
         $data['project_id'] = $id;
-        $data['f_f_e_trade_id'] = $trade_id;
+        $data['soft_cost_trade_id'] = $trade_id;
  
         $project = Project::find($id);
 
         $project_slug = \Str::slug($project->name);
 
-        $trade = FFETrade::find($trade_id);
+        $trade = SoftCostTrade::find($trade_id);
 
         $trade_slug = @$trade->slug;
 
-        $ffe_vendor = FFEVendor::find($request->f_f_e_vendor_id);
+        $vendor = SoftCostVendor::find($request->soft_cost_vendor_id);
 
-        $ffe_vendor_slug = $ffe_vendor->slug;
+        $vendor_slug = $vendor->slug;
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::FFE_PROPOSALS."/";
+        $folderPath = Document::SOFT_COST_PROPOSALS."/";
 
         $folderPath .= $project_slug.'/'.$trade_slug;
 
@@ -136,7 +136,7 @@ class SoftCostProposalController extends Controller
 
         $data['files'] = '';
 
-        $proposal = FFEProposal::create($data);
+        $proposal = SoftCostProposal::create($data);
 
         $document_type = DocumentType::where('name', DocumentType::BID)
                          ->first();
@@ -145,9 +145,9 @@ class SoftCostProposalController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                    ->firstOrCreate(['ffe_proposal_id' => $proposal->id],
+                    ->firstOrCreate(['soft_cost_proposal_id' => $proposal->id],
                        ['name' => $name, 'slug' => $slug,
-                       'ffe_proposal_id'      => $proposal->id,
+                       'soft_cost_proposal_id'      => $proposal->id,
                        'document_type_id' => $document_type->id
                        ]
                    );
@@ -162,7 +162,7 @@ class SoftCostProposalController extends Controller
 
              foreach ($files as $key => $file) {
 
-                    $fileName = $ffe_vendor_slug.'-'.time().$key.'.'. $file->getClientOriginalExtension();
+                    $fileName = $vendor_slug.'-'.time().$key.'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
                      $filesArr[] = $fileName; 
 
@@ -179,7 +179,7 @@ class SoftCostProposalController extends Controller
 
         
 
-        return redirect(route('ffe.index',['project' => $id]).'?trade='.$trade_id.'#proposals')->with('message', 'FFE Proposal Created Successfully!');
+        return redirect(route('projects.soft-cost.index',['project' => $id]).'?trade='.$trade_id.'#proposals')->with('message', 'Soft Cost Proposal Created Successfully!');
     }
 
     /**
@@ -194,8 +194,8 @@ class SoftCostProposalController extends Controller
            return abort('401');
         } 
 
-        $proposal = FFEProposal::find($id);  
-        $ffe_vendor = @$proposal->vendor;
+        $proposal = SoftCostProposal::find($id);  
+        $vendor = @$proposal->vendor;
 
         $filesCollection = ($proposal->files) ? @explode(',',$proposal->files) : [];
 
@@ -209,7 +209,7 @@ class SoftCostProposalController extends Controller
 
             $project_type_slug = @$project->project_type->slug;
 
-            $folderPath = Document::FFE_PROPOSALS."/";
+            $folderPath = Document::SOFT_COST_PROPOSALS."/";
 
             $folderPath .= "$project_slug/$trade_slug/";
             
@@ -219,10 +219,8 @@ class SoftCostProposalController extends Controller
            
          })->implode(',');
 
-         
-         session()->flash('url', route('ffe.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals'); 
 
-        return view('projects.soft_cost.proposals-edit',compact('ffe_vendor','proposal'));
+        return view('projects.soft_cost.proposals-edit',compact('vendor','proposal'));
     }
 
     /**
@@ -262,7 +260,7 @@ class SoftCostProposalController extends Controller
         $data['material']    = $data['material'] ?? 0;
         $data['subcontractor_price'] = $data['subcontractor_price'] ?? 0;
 
-        $proposal = FFEProposal::find($id);
+        $proposal = SoftCostProposal::find($id);
 
         $project = @$proposal->project;
 
@@ -270,11 +268,11 @@ class SoftCostProposalController extends Controller
 
         $trade_slug = @$proposal->trade->slug;
 
-        $ffe_vendor_slug = @$proposal->vendor->slug;
+        $vendor_slug = @$proposal->vendor->slug;
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::FFE_PROPOSALS."/";
+        $folderPath = Document::SOFT_COST_PROPOSALS."/";
 
         $folderPath .= $project_slug.'/'.$trade_slug;
         
@@ -286,9 +284,9 @@ class SoftCostProposalController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                    ->firstOrCreate(['ffe_proposal_id' => $id],
+                    ->UpdateOrCreate(['soft_cost_proposal_id' => $id],
                        ['name' => $name, 'slug' => $slug,
-                       'ffe_proposal_id'      => $id,
+                       'soft_cost_proposal_id'      => $id,
                        'document_type_id' => $document_type->id
                        ]
                    );
@@ -304,7 +302,7 @@ class SoftCostProposalController extends Controller
 
              foreach ($files as $key => $file) {
 
-                   $fileName = $ffe_vendor_slug.'-'.time().$key.'.'. $file->getClientOriginalExtension();
+                   $fileName = $vendor_slug.'-'.time().$key.'.'. $file->getClientOriginalExtension();
                     $file->storeAs($folderPath, $fileName, 'doc_upload');
                      $filesArr[] = $fileName; 
 
@@ -349,7 +347,7 @@ class SoftCostProposalController extends Controller
             @$proposal->changeOrders()->whereIn('id', $notIds)->delete();
         }
       
-        return redirect(route('ffe.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'FFE Proposal Updated Successfully!');
+        return redirect(route('projects.soft-cost.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'FFE Proposal Updated Successfully!');
     }
 
     /**
@@ -364,7 +362,8 @@ class SoftCostProposalController extends Controller
                return abort('401');
           } 
 
-         $proposal = FFEProposal::find($id);
+
+         $proposal = SoftCostProposal::find($id);
 
          $project = @$proposal->project;
 
@@ -374,7 +373,7 @@ class SoftCostProposalController extends Controller
 
          $public_path = public_path().'/';
 
-         $folderPath = Document::FFE_PROPOSALS."/";
+         $folderPath = Document::SOFT_COST_PROPOSALS."/";
 
          $folderPath .= "$project_slug/$trade_slug/";
 
@@ -382,7 +381,7 @@ class SoftCostProposalController extends Controller
 
          $files = @explode(',',$proposal->files);
 
-         $aPath = public_path().'/'. Document::FFE_PROPOSALS."/".Document::ARCHIEVED; 
+         $aPath = public_path().'/'. Document::SOFT_COST_PROPOSALS."/".Document::ARCHIEVED; 
          \File::makeDirectory($aPath, $mode = 0777, true, true);
          
          foreach (@$files as $key => $file) {
@@ -391,7 +390,7 @@ class SoftCostProposalController extends Controller
          }
 
          $project->documents()
-                    ->where(['ffe_proposal_id' => $id])->delete();
+                    ->where(['soft_cost_proposal_id' => $id])->delete();
 
          $proposal->delete();
 
@@ -411,22 +410,23 @@ class SoftCostProposalController extends Controller
                return abort('401');
          } 
          
-        $proposal = FFEProposal::find($id);
+        $proposal = SoftCostProposal::find($id);
 
-        $isAwarded = $proposal->HaveProposal($proposal->project_id, $proposal->trade_id)
+        
+        $isAwarded = $proposal->HaveProposal($proposal->project_id, $proposal->soft_cost_trade_id)
                     ->IsAwarded()->exists();
 
-         if($isAwarded && ($award == FFEProposal::RETRACTED)){
-           return redirect(route('ffe.index',['project' => $proposal->project_id]).'#proposals')->withErrors('Proposal already awarded for this trade!');
+         if($isAwarded && ($award == SoftCostProposal::RETRACTED)){
+           return redirect(route('projects.soft-cost.index',['project' => $proposal->project_id]).'#proposals')->withErrors('Proposal already awarded for this trade!');
          }
 
-       $award =  ($award == FFEProposal::AWARDED) ? FFEProposal::RETRACTED : FFEProposal::AWARDED;
+       $award =  ($award == SoftCostProposal::AWARDED) ? SoftCostProposal::RETRACTED : SoftCostProposal::AWARDED;
 
        $proposal->update(['awarded' => $award]);
         
-       $awardMsg = ($award == FFEProposal::AWARDED) ? FFEProposal::AWARDED_TEXT : FFEProposal::RETRACTED_TEXT ; 
+       $awardMsg = ($award == SoftCostProposal::AWARDED) ? SoftCostProposal::AWARDED_TEXT : SoftCostProposal::RETRACTED_TEXT ; 
 
-      return redirect(route('ffe.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'Proposal '.$awardMsg.' 
+      return redirect(route('projects.soft-cost.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'Proposal '.$awardMsg.' 
         Successfully!');
     }
 
@@ -445,7 +445,7 @@ class SoftCostProposalController extends Controller
 
         $data = $request->except('_token');
 
-        $proposal = FFEProposal::find($id);
+        $proposal = SoftCostProposal::find($id);
 
         $project = @$proposal->project;
 
@@ -457,7 +457,7 @@ class SoftCostProposalController extends Controller
 
         $public_path = public_path().'/';
 
-        $folderPath = Document::FFE_PROPOSALS."/";
+        $folderPath = Document::SOFT_COST_PROPOSALS."/";
 
         $folderPath .= $project_slug.'/'.$trade_slug;
         
@@ -470,9 +470,9 @@ class SoftCostProposalController extends Controller
         $slug = @\Str::slug($name);                
 
         $document = $project->documents()
-                    ->firstOrCreate(['ffe_proposal_id' => $id],
+                    ->UpdateOrCreate(['soft_cost_proposal_id' => $id],
                        ['name' => $name, 'slug' => $slug,
-                       'ffe_proposal_id'      => $id,
+                       'soft_cost_proposal_id'      => $id,
                        'document_type_id' => $document_type->id,
                        'subcontractor_id' => @$proposal->subcontractor->id
                        ]
@@ -503,7 +503,7 @@ class SoftCostProposalController extends Controller
         }
         
 
-        return redirect(route('ffe.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'File added Successfully!');
+        return redirect(route('projects.soft-cost.index',['project' => $proposal->project_id]).'?trade='.$proposal->trade_id.'#proposals')->with('message', 'File added Successfully!');
     }
     
 
@@ -516,14 +516,14 @@ class SoftCostProposalController extends Controller
 
           $path = request()->path;
 
-          $proposal = FFEProposal::find($id);
+          $proposal = SoftCostProposal::find($id);
 
           $file = @end(explode('/', $path));
 
           $publicPath = public_path().'/';
 
 
-          $aPath = $publicPath.Document::FFE_PROPOSALS."/".Document::ARCHIEVED; 
+          $aPath = $publicPath.Document::SOFT_COST_PROPOSALS."/".Document::ARCHIEVED; 
 
           @\File::makeDirectory($aPath, $mode = 0777, true, true);
 
@@ -538,7 +538,7 @@ class SoftCostProposalController extends Controller
           $files = implode(',', $files); 
 
           $documents = @$proposal->project->documents()
-                       ->where('ffe_proposal_id',$id)->first();
+                       ->where('soft_cost_proposal_id',$id)->first();
           $docFiles = @$documents->files()->whereFile($file)->delete();             
 
           $proposal->update(['files' => $files]);

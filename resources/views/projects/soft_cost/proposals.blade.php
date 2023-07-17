@@ -48,14 +48,14 @@
             <p class="card-text">Notes: {{ $proposal->notes}}</p>
             @foreach($proposal->changeOrders as $k => $order)
               @php 
-              if($order->type == \App\Models\FFEChangeOrder::ADD ){
+              if($order->type == \App\Models\SoftCostChangeOrder::ADD ){
                  $bidTotal += $order->subcontractor_price;
                }
                else{
                  $bidTotal -= $order->subcontractor_price;
                }
               @endphp
-              <p class="mb-1">Change Order {{ $k+1}} : {{$order->type == \App\Models\FFEChangeOrder::ADD  ? '+' : '-'}} ${{ \App\Models\Payment::format($order->subcontractor_price)}}</p>
+              <p class="mb-1">Change Order {{ $k+1}} : {{$order->type == \App\Models\SoftCostChangeOrder::ADD  ? '+' : '-'}} ${{ \App\Models\Payment::format($order->subcontractor_price)}}</p>
                <p class="card-text">Notes: {{ $order->notes}}</p>
             @endforeach
              <p class="mb-1">Trade Budget: <b>${{ \App\Models\Payment::format(@$proposal->trade_budget) }}</b></p>
@@ -120,7 +120,7 @@
             <div class="btn-group-sm" role="group" aria-label="Basic example">
 
               @php  
-                 $awarded = @$project->ffe_proposals()->whereFFETradeId($proposal->f_f_e_trade_id)
+                 $awarded = @$project->sc_proposals()->whereSoftCostTradeId($proposal->soft_cost_trade_id)
                             ->IsAwarded()->exists();
               @endphp
             <button onclick="return window.location.href='{{ route("projects.soft-cost.proposals.award",

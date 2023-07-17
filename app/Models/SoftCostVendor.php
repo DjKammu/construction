@@ -25,10 +25,6 @@ class SoftCostVendor extends Model
     	return $this->belongsToMany(SoftCostTrade::class)->withTimestamps();
     } 
 
-    // public function proposals(){
-    //     return $this->hasMany(Proposal::class);
-    // }
-
     public function sc_proposals(){
         return $this->hasMany(SoftCostProposal::class);
     }

@@ -120,6 +120,12 @@ class Project extends Model
     public function ffe_proposals(){
         return $this->hasMany(FFEProposal::class);
     }
+
+
+    public function sc_proposals(){
+        return $this->hasMany(SoftCostProposal::class);
+    }
+    
     public function ffe_logs(){
         return $this->hasMany(FFEProcurementLog::class);
     }

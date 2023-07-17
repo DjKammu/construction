@@ -50,7 +50,7 @@
                                              <li class="nav-item">
                                                   <a class="nav-link text-dark active"  data-toggle="tab" role="tab" aria-expanded="true" href="#trades" >Trades</a>
                                               </li>
-                                             <!-- @if(@$trade)
+                                             @if(@$trade)
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" role="tab" aria-expanded="true" href="#proposals" >Proposals</a>
                                               </li>
@@ -62,7 +62,7 @@
                                                      aria-expanded="false">Bids Tabulation</a>
                                               </li>
                                               @endif 
-
+                                              <!-- 
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
@@ -93,7 +93,14 @@
 
                                 <div id="my-tab-content" class="tab-content">
                                     @include('projects.soft_cost.trades')
-                                    
+                                    @if(@$trade)
+                                    @include('projects.soft_cost.proposals')
+                                    @endif
+                                    @if($allProposals->count() > 0)
+                                    @include('projects.soft_cost.bids')
+                                    @endif
+                                 
+
                               </div>
 
                             </div>
