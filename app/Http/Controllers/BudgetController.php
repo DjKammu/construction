@@ -308,7 +308,7 @@ class BudgetController extends Controller
       if(in_array(request()->route()->getName(),['projects.budget.excel.download','projects.budget.pdf.download'])  && (Session::get('orderBy') && Session::get('order') )) {
            
            $orderBy = Session::get('orderBy') ? ( !in_array(Session::get('orderBy'), 
-              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.Session::get('orderBy').', SIGNED)')   ) : 'created_at';  
+              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT(account_number, SIGNED)')   ) : 'created_at';  
 
           $order = !in_array(\Str::lower(Session::get('order') ), ['desc','asc'])  ? 'DESC' 
            : Session::get('order'); 
