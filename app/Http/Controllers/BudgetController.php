@@ -293,13 +293,17 @@ class BudgetController extends Controller
       
       $budget_lines = $project->budget_lines();
 
-      $orderBy = 'created_at';  
+      $orderBy = $orderByText = 'created_at';  
       $order ='DESC' ;
                   
      if(request()->filled('order')){
   
           $orderBy = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
-              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.request()->orderBy.', SIGNED)')   ) : 'created_at';  
+              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.request()->orderBy.', SIGNED)')   ) : 'created_at'; 
+
+          $orderByText = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
+              ['account_number'] ) ? 'created_at' : request()->orderBy ) : 'created_at'; 
+
           $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'DESC' 
            : request()->order;
      }
@@ -308,13 +312,15 @@ class BudgetController extends Controller
       if(in_array(request()->route()->getName(),['projects.budget.excel.download','projects.budget.pdf.download'])  && (Session::get('orderBy') && Session::get('order') )) {
            
            $orderBy = Session::get('orderBy') ? ( !in_array(Session::get('orderBy'), 
-              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT(account_number, SIGNED)')   ) : 'created_at';  
+              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.Session::get('orderBy').', SIGNED)')   ) : 'created_at';  
+          $orderByText =  Session::get('orderBy') ? ( !in_array(Session::get('orderBy'), 
+              ['account_number'] ) ? 'created_at' : Session::get('orderBy') ) : 'created_at';
 
           $order = !in_array(\Str::lower(Session::get('order') ), ['desc','asc'])  ? 'DESC' 
            : Session::get('order'); 
       }
 
-      \Session::put('orderBy', $orderBy);
+      \Session::put('orderBy', $orderByText);
       \Session::put('order', $order);
 
       $budget_lines = $budget_lines->select('*', \DB::raw('CAST(price_sq_ft AS DOUBLE) AS price_sq_ft'),
