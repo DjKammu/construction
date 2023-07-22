@@ -99,8 +99,6 @@
                                     @if($allProposals->count() > 0)
                                     @include('projects.soft_cost.bids')
                                     @endif
-                                 
-
                               </div>
 
                             </div>

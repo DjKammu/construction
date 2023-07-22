@@ -298,7 +298,7 @@ class BudgetController extends Controller
      if(request()->filled('order')){
   
           $orderBy = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
-              ['account_number'] ) ? 'created_at' : request()->orderBy ) : 'created_at';
+              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.request()->orderBy.', SIGNED)')   ) : 'created_at';
           
           $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'DESC' 
            : request()->order;
