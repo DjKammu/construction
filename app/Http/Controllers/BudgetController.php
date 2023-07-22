@@ -24,6 +24,7 @@ use Gate;
 use PDF;
 use Excel;
 use App\Exports\BudgetLinesExport;
+use Session;
 
 class BudgetController extends Controller
 {
@@ -298,11 +299,23 @@ class BudgetController extends Controller
      if(request()->filled('order')){
   
           $orderBy = request()->filled('orderBy') ? ( !in_array(request()->orderBy, 
-              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.request()->orderBy.', SIGNED)')   ) : 'created_at';
-          
+              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.request()->orderBy.', SIGNED)')   ) : 'created_at';  
           $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'DESC' 
            : request()->order;
      }
+
+ 
+      if(in_array(request()->route()->getName(),['projects.budget.excel.download','projects.budget.pdf.download'])  && (Session::get('orderBy') && Session::get('order') )) {
+           
+           $orderBy = Session::get('orderBy') ? ( !in_array(Session::get('orderBy'), 
+              ['account_number'] ) ? 'created_at' : \DB::raw('CONVERT('.Session::get('orderBy').', SIGNED)')   ) : 'created_at';  
+
+          $order = !in_array(\Str::lower(Session::get('order') ), ['desc','asc'])  ? 'DESC' 
+           : Session::get('order'); 
+      }
+
+      \Session::put('orderBy', $orderBy);
+      \Session::put('order', $order);
 
       $budget_lines = $budget_lines->select('*', \DB::raw('CAST(price_sq_ft AS DOUBLE) AS price_sq_ft'),
         \DB::raw('CAST(budget AS DOUBLE) AS budget'))->orderBy($orderBy, $order)->get();
