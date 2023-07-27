@@ -54,37 +54,37 @@ class SoftCostController extends Controller
                      
          $project = Project::find($id);
          // $documentTypes = DocumentType::orderBy('name')->get();
-         // $subcontractors = Subcontractor::orderBy('name')->get();
-         // $vendors = FFEVendor::orderBy('name')->get();
+
+         $vendors = SoftCostVendor::orderBy('name')->get();
          // $documents = $project->documents();
          $trades = $project->sc_trades()->orderBy('name')->get();
 
-         // $payments = $project->ffe_payments();
+         $payments = $project->sc_payments();
          // $rfis = $project->rfis();
          // $submittals = $project->submittals();
          // $logs = $project->ffe_logs();
          // $bills = $project->ffe_bills();
 
 
-        //  if(request()->filled('payment_vendor')){
-        //         $payment_vendor = request()->payment_vendor;
-        //         $payments->where('f_f_e_vendor_id', $payment_vendor);
-        //  }
+         if(request()->filled('payment_vendor')){
+                $payment_vendor = request()->payment_vendor;
+                $payments->where('soft_cost_vendor_id', $payment_vendor);
+         }
 
         //   if(request()->filled('non_contract')){
         //         $non_contract = request()->non_contract;
         //         $payments->where('non_contract', $non_contract);
         //  } 
 
-        //  if(request()->filled('payment_trade')){
-        //         $payment_trade = request()->payment_trade;
-        //         $payments->where('f_f_e_trade_id', $payment_trade);
-        //  } 
+         if(request()->filled('payment_trade')){
+                $payment_trade = request()->payment_trade;
+                $payments->where('soft_cost_trade_id', $payment_trade);
+         } 
 
-        //  if(request()->filled('payment_status')){
-        //         $payment_status = request()->payment_status;
-        //         $payments->where('status', $payment_status);
-        //  } 
+         if(request()->filled('payment_status')){
+                $payment_status = request()->payment_status;
+                $payments->where('status', $payment_status);
+         } 
 
         //  if(request()->filled('log_vendor')){
         //         $log_vendor = request()->log_vendor;
@@ -126,13 +126,13 @@ class SoftCostController extends Controller
          $orderByLog = 'created_at';  
          $orderLog ='DESC' ;
                     
-       //  if(request()->filled('order')){
-       //      $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
-       //          ['date','invoice_number','created_at'] ) ? 'created_at' : request()->orderby ) : 'created_at';
+        if(request()->filled('order')){
+            $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
+                ['date','invoice_number','created_at'] ) ? 'created_at' : request()->orderby ) : 'created_at';
             
-       //      $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
-       //       : request()->order;
-       //  }
+            $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'ASC' 
+             : request()->order;
+        }
        
        // if(request()->filled('orderLog')){
        //      $orderByLog = request()->filled('orderByLog') ? ( !in_array(request()->orderByLog, ['date','item','po_sent','date_shipped','lead_time_weeks'] ) ? 'date_shipped' : request()->orderByLog ) : 'created_at';
@@ -141,7 +141,7 @@ class SoftCostController extends Controller
        //  }
 
          // $bills    = $bills->orderBy($orderBy, $order)->get();
-         // $payments = $payments->orderBy($orderBy, $order)->get();
+          $payments = $payments->orderBy($orderBy, $order)->get();
          // $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
 
          // if(request()->filled('s')){
@@ -181,9 +181,9 @@ class SoftCostController extends Controller
 
          $awardedProposals = $proposalQuery->IsAwarded()->get();
 
-         // $paymentTrades = @$awardedProposals->map(function($prpsl){
-         //         return $prpsl->trade;
-         // })->unique()->sortByDesc('name');
+         $paymentTrades = @$awardedProposals->map(function($prpsl){
+                 return $prpsl->trade;
+         })->unique()->sortByDesc('name');
 
          // if(!@$project->sc_proposals()->exists()){
          //     $paymentTrades = SoftCostTrade::orderBy('name')->get();
@@ -270,39 +270,39 @@ class SoftCostController extends Controller
          // });
         
 
-         //  $payments->filter(function($payment){
+          $payments->filter(function($payment){
 
-         //    $project = @$payment->project;
+            $project = @$payment->project;
 
-         //    $project_slug = \Str::slug($project->name);
+            $project_slug = \Str::slug($project->name);
 
-         //    $trade_slug = @\Str::slug($payment->trade->name);
+            $trade_slug = @\Str::slug($payment->trade->name);
 
-         //    $project_type_slug = @$project->project_type->slug;
+            $project_type_slug = @$project->project_type->slug;
 
-         //    $folderPath = Document::INVOICES."/";
+            $folderPath = Document::INVOICES."/";
 
-         //    if(@!$trade_slug){
-         //         $vendor  = FFEVendor::find($payment->f_f_e_vendor_id);
-         //         $trade_slug = @$vendor->slug;
-         //    }
+            if(@!$trade_slug){
+                 $vendor  = SoftCostVendor::find($payment->f_f_e_vendor_id);
+                 $trade_slug = @$vendor->slug;
+            }
 
-         //    $folderPath .= "$project_slug/$trade_slug/";
+            $folderPath .= "$project_slug/$trade_slug/";
 
-         //    $folderPath2 = Document::LIEN_RELEASES."/";
+            $folderPath2 = Document::LIEN_RELEASES."/";
             
-         //    $folderPath2 .= "$project_slug/$trade_slug/";
+            $folderPath2 .= "$project_slug/$trade_slug/";
 
         
-         //    $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
-         //    $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? asset($folderPath2.$payment->conditional_lien_release_file) : '' ;
-         //    $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath2.$payment->unconditional_lien_release_file) : '' ;
+            $payment->file = @($payment->file) ? asset($folderPath.$payment->file) : '' ;
+            $payment->conditional_lien_release_file = @($payment->conditional_lien_release_file) ? asset($folderPath2.$payment->conditional_lien_release_file) : '' ;
+            $payment->unconditional_lien_release_file = @($payment->unconditional_lien_release_file) ? asset($folderPath2.$payment->unconditional_lien_release_file) : '' ;
 
-         //    $payment->remaining = (new FFEPaymentController)->proposalDueAmount($payment->proposal,$payment->id);
+            $payment->remaining = (new SoftCostPaymentController)->proposalDueAmount($payment->proposal,$payment->id);
 
-         //    return $payment->file;
+            return $payment->file;
            
-         // });  
+         });  
 
         // $bills->filter(function($bill){
 
@@ -349,32 +349,33 @@ class SoftCostController extends Controller
 
           $categories = $paymentCategories = SoftCostCategory::whereIn('id',$catids)->get(); 
 
-         // $pTrades =  [];
+         $pTrades =  [];
          
-         // $trade_ids = @$project->ffe_payments->whereNotNull('f_f_e_trade_id')
-         //               ->pluck('f_f_e_trade_id'); 
+         $trade_ids = @$project->sc_payments->whereNotNull('soft_cost_trade_id')
+                       ->pluck('soft_cost_trade_id'); 
 
 
-         // $pTrades = FFETrade::whereIn('id',$trade_ids)->get();   
+         $pTrades = SoftCosttrade::whereIn('id',$trade_ids)->get();   
       
           $prTrades = $trades;
    
-         // if($pTrades){
-         //    $trades = $trades->merge($pTrades);
-         // }
+         if($pTrades){
+            $trades = $trades->merge($pTrades);
+         }
 
-         // if($paymentCategories->count() == 0){   
-         //      $catids = @($pTrades->pluck('category_id'))->unique();
-         //      $paymentCategories = FFECategory::whereIn('id',$catids)->get(); 
-         // }
+         if($paymentCategories->count() == 0){   
+              $catids = @($pTrades->pluck('category_id'))->unique();
+              $paymentCategories = SoftCostCategory::whereIn('id',$catids)->get(); 
+         }
         
          $subcontractorsCount = @$project->proposals()
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max();                      
-         //  $paymentStatuses = PaymentStatus::orderBy('name')->get();                          
-           
-         return view('projects.soft_cost.index',compact('project','trades','projects','trade','proposals','awarded','prTrades','allProposals','categories','subcontractorsCount'));
+         //  $paymentStatuses = PaymentStatus::orderBy('name')->get();    
+
+        
+         return view('projects.soft_cost.index',compact('project','trades','projects','trade','proposals','awarded','prTrades','allProposals','categories','subcontractorsCount','vendors','paymentTrades','payments','paymentCategories','pTrades'));
 
 
     }

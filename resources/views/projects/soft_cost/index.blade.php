@@ -62,20 +62,22 @@
                                                      aria-expanded="false">Bids Tabulation</a>
                                               </li>
                                               @endif 
-                                              <!-- 
+                                              
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#payments" role="tab"
                                                      aria-expanded="false">Payments</a>
                                               </li>
-                                              <li class="nav-item">
+                                              
+                                              <!-- <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bills" role="tab"
                                                      aria-expanded="false">Bills</a>
                                               </li>
-                                              
+                                               -->
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
-                                                     aria-expanded="false">FFE Budget</a>
+                                                     aria-expanded="false">Soft Cost Budget</a>
                                               </li> 
+                                               <!--
 
                                                <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
@@ -99,6 +101,8 @@
                                     @if($allProposals->count() > 0)
                                     @include('projects.soft_cost.bids')
                                     @endif
+                                    @include('projects.soft_cost.payments')
+                                    @include('projects.soft_cost.budget')
                               </div>
 
                             </div>
@@ -245,7 +249,7 @@ var end =  '{{ Request::input("end")}}';
 
     let _token   =   "{{ csrf_token() }}";
 
-    let url = '/projects/'+projectId+'/ffe/send-mail'
+    let url = '/projects/'+projectId+'/soft-cost/send-mail'
 
    $.ajax({
         url: url,
@@ -746,6 +750,10 @@ i.fa.fa-sort-asc{
     width: 15px;
   }
   
+  #payments-table thead>tr>th{
+        font-size: 10px;
+    padding: 10px 1px;
+  }
 </style>
 
 @endsection

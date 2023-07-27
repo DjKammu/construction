@@ -35,7 +35,8 @@ class Document extends Model
      'subcontractor_id', 'proposal_id',
      'payment_id','rfi_id','submittal_id',
      'ffe_proposal_id','bill_id','ffe_bill_id',
-     'log_id','ffe_log_id','ffe_payment_id','soft_cost_proposal_id'
+     'log_id','ffe_log_id','ffe_payment_id','soft_cost_proposal_id',
+     'soft_cost_payment_id','soft_cost_bill_id','soft_cost_log_id'
     ];
 
     public function document_type(){

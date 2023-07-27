@@ -483,21 +483,21 @@ Route::prefix('projects')->group(function(){
               
             // Payments Route  
              
-            Route::get('payments/create',[App\Http\Controllers\FFEPaymentController::class,'create'])->name('projects.ffe.payments');
+            Route::get('payments/create',[App\Http\Controllers\SoftCostPaymentController::class,'create'])->name('payments');
 
-            Route::post('{id?}/payments',[App\Http\Controllers\FFEPaymentController::class,'store'])->name('projects.ffe.payments.store');
+            Route::post('{id?}/payments',[App\Http\Controllers\SoftCostPaymentController::class,'store'])->name('payments.store');
 
-            Route::get('payments/{id}',[App\Http\Controllers\FFEPaymentController::class,'show'])->name('projects.ffe.payments.edit');
+            Route::get('payments/{id}',[App\Http\Controllers\SoftCostPaymentController::class,'show'])->name('payments.edit');
 
-            Route::post('payments/{id}',[App\Http\Controllers\FFEPaymentController::class,'update'])->name('projects.ffe.payments.update');
+            Route::post('payments/{id}',[App\Http\Controllers\SoftCostPaymentController::class,'update'])->name('payments.update');
 
-             Route::delete('payments/{id}', [App\Http\Controllers\FFEPaymentController::class,'destroy'])->name('projects.ffe.payments.destroy');
+             Route::delete('payments/{id}', [App\Http\Controllers\SoftCostPaymentController::class,'destroy'])->name('payments.destroy');
 
-             Route::delete('payments/{id}/file', [App\Http\Controllers\FFEPaymentController::class,'destroyFile'])->name('projects.ffe.payments.file.destroy');
+             Route::delete('payments/{id}/file', [App\Http\Controllers\SoftCostPaymentController::class,'destroyFile'])->name('payments.file.destroy');
 
-             Route::get('budget/download', [App\Http\Controllers\FFEPaymentController::class,'downloadPDF'])->name('projects.ffe.download');
+             Route::get('budget/download', [App\Http\Controllers\SoftCostPaymentController::class,'downloadPDF'])->name('download');
 
-             Route::post('send-mail', [App\Http\Controllers\FFEPaymentController::class,'sendMail'])->name('projects.ffe.send.mail');
+             Route::post('send-mail', [App\Http\Controllers\SoftCostPaymentController::class,'sendMail'])->name('send.mail');
 
             // Logs Route 
 

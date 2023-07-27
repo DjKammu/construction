@@ -76,6 +76,9 @@ class Project extends Model
 
      public function ffe_payments(){
         return $this->hasMany(FFEPayment::class);
+    }
+     public function sc_payments(){
+        return $this->hasMany(SoftCostPayment::class);
     } 
 
     public function bills(){
