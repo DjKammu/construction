@@ -48,8 +48,6 @@
           $catTradeTotal = 0;
           $catBudgetDiff = 0;
 
-          print_r($cat->id);
-
          $catTrades = @$pTrades->where('category_id', $cat->id);
 
          @endphp
@@ -268,10 +266,10 @@
 
                   <span class="doc_type_m">
                     @if(request()->route()->getName()  == 'projects.soft-cost.index')
-                    <a class="disable-anchor" href="{{ url("projects/$project->id/soft-cost").'?to=Budget&url='.urlencode(url()->current().'#budget').'&non_contract=1&payment_vendor='.$vendorId.'#payments'}} "> ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }} </a>
+                    <a class="disable-anchor" href="{{ url("projects/$project->id/soft-cost").'?to=Budget&url='.urlencode(url()->current().'#budget').'&non_contract=1&payment_vendor='.$vendorId.'#payments'}} "> ${{ \App\Models\Payment::format(@$tPay->payment_amount_total) }} </a>
 
                     @else
-                   ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}
+                   ${{ \App\Models\Payment::format(@$tPay->payment_amount_total) }}
                     @endif
 
                   </span>
