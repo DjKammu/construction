@@ -146,9 +146,11 @@ class FFEPaymentController extends Controller
         $data['ffe_proposal_id'] = ($id > 0) ? $id : null ;
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
+
         
         $data['total_amount'] = @$this->proposalTotalAmount(@$proposal);
 
+        // dd($data);
         $project = Project::find($project_id);
 
         $project_slug = \Str::slug($project->name);

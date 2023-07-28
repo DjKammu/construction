@@ -22,7 +22,7 @@
             
             <select style="height: 26px;" name="payment_trade" onchange="return window.location.href = '?payment_trade='+this.value+'#payments'"> 
               <option value="">Select Trade</option>
-              @foreach($paymentTrades as $trade)
+              @foreach($trades as $trade)
                  <option value="{{ $trade->id }}" {{ (@request()->payment_trade == $trade->id) ? 'selected' : ''}}> {{ $trade->name }}</option>
               @endforeach
             </select>
@@ -138,8 +138,8 @@
                 ' (Vendor) '. ( (@$payment->material) ? '('.@$payment->material->name .')' : "" ) :  @$payment->subcontractor->name }}</td>
                <td> ${{ \App\Models\Payment::format($payment->payment_amount) }}</td>
 
-               <td> {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount) }}</td>
-               <td>  {{ (@$payment->vendor ) ? '-' :  '$'.\App\Models\Payment::format($payment->remaining) }} </td>
+               <td> {{ (@!$payment->soft_cost_proposal_id ) ? '-' :  '$'.\App\Models\Payment::format($payment->total_amount) }}</td>
+               <td>  {{ (@!$payment->soft_cost_proposal_id ) ? '-' :  '$'.\App\Models\Payment::format($payment->remaining) }} </td>
                <td>
                 @if($payment->file)
                 <a href="{{ asset($payment->file) }}" target="_blank">

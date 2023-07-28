@@ -117,7 +117,7 @@ class SoftCostTradeController extends Controller
           } 
 
          $trade = SoftCostTrade::find($id);
-         $categories =  SoftCostCategory::all();
+         $categories =  SoftCostCategory::orderBy('name')->get();
          
          return view('soft_cost_trades.edit',compact('trade','categories'));
     }
@@ -149,9 +149,9 @@ class SoftCostTradeController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:f_f_e_trades,name,'.$id,
-              'account_number' => 'required|unique:f_f_e_trades,account_number,'.$id,
-              'category_id'    => 'required|exists:f_f_e_categories,id'
+              'name' => 'required|unique:soft_cost_trades,name,'.$id,
+              'account_number' => 'required|unique:soft_cost_trades,account_number,'.$id,
+              'category_id'    => 'required|exists:soft_cost_categories,id'
         ]);
 
         $data['slug'] = \Str::slug($request->name);

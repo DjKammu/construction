@@ -4,7 +4,10 @@
 
 @section('content')
 
-@include('includes.back')
+
+@include('includes.back', 
+['url' => route('soft-cost.trades.index'),
+'to' => 'to Trades'])
 
       <!-- Start Main View -->
   <div class="card p-2">

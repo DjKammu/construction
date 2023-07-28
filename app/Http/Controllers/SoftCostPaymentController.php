@@ -138,11 +138,13 @@ class SoftCostPaymentController extends Controller
         $data['project_id']  = (int) $project_id;
         $data['soft_cost_proposal_id'] = ($id > 0) ? $id : null ;
 
+
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : date('Y-m-d');
         
         $data['total_amount'] = @$this->proposalTotalAmount(@$proposal);
 
         $project = Project::find($project_id);
+        // dd($data);
 
         $project_slug = \Str::slug($project->name);
 
@@ -151,8 +153,6 @@ class SoftCostPaymentController extends Controller
         $trade_slug = @$trade->slug;
 
         $vendor  = SoftCostVendor::find(@$data['soft_cost_vendor_id']);
-
-        $subcontractor_slug = @$vendor->slug;
 
         $public_path = public_path().'/';
 
@@ -361,7 +361,8 @@ class SoftCostPaymentController extends Controller
          $total =  $this->proposalTotalAmount($proposal);  
      
          $payments = SoftCostPayment::whereSoftCostProposalId(@$proposal->id)
-                    ->whereNull('soft_cost_vendor_id')->sum('payment_amount');
+                     ->where('non_contract','0')
+                  ->sum('payment_amount');
 
          $due = (float) $total - (float) $payments;
 
@@ -373,8 +374,10 @@ class SoftCostPaymentController extends Controller
          $total =  $this->proposalTotalAmount($proposal);  
 
          $payments = SoftCostPayment::whereSoftCostProposalId(@$proposal->id)
-         ->whereNull('soft_cost_vendor_id')                   
+         ->where('non_contract','0')                   
          ->where('id','<=', $payment_id)->sum('payment_amount');
+
+        // dd($payments);
 
          $due = (float) $total - (float) $payments;
 
