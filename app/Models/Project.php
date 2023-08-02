@@ -89,6 +89,10 @@ class Project extends Model
         return $this->hasMany(FFEBill::class);
     }
 
+    public function sc_bills(){
+        return $this->hasMany(SoftCostBill::class);
+    }
+
      public function rfis(){
         return $this->hasMany(RFI::class);
     } 
@@ -131,6 +135,10 @@ class Project extends Model
     
     public function ffe_logs(){
         return $this->hasMany(FFEProcurementLog::class);
+    }
+
+    public function sc_logs(){
+        return $this->hasMany(SoftCostProcurementLog::class);
     }
 
     public function ffe_trades(){

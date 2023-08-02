@@ -69,8 +69,7 @@
                ->where('soft_cost_trade_id',$trd->id)
                ->groupBy('soft_cost_vendor_id')
              ->get();
-
-
+             
               @endphp
             
              @if($bids->count() > 0)

@@ -62,8 +62,8 @@ class SoftCostController extends Controller
          $payments = $project->sc_payments();
          // $rfis = $project->rfis();
          // $submittals = $project->submittals();
-         // $logs = $project->ffe_logs();
-         // $bills = $project->ffe_bills();
+         $logs = $project->sc_logs();
+         $bills = $project->sc_bills();
 
 
          if(request()->filled('payment_vendor')){
@@ -86,38 +86,38 @@ class SoftCostController extends Controller
                 $payments->where('status', $payment_status);
          } 
 
-        //  if(request()->filled('log_vendor')){
-        //         $log_vendor = request()->log_vendor;
-        //         $logs->where('ffe_vendor_id', $log_vendor);
-        //  } 
-        // if(request()->filled('log_status')){
-        //         $log_status = request()->log_status;
-        //         $logs->whereHas('status', function($q) use ($log_status){
-        //             $q->where('id', $log_status);
-        //         });
-        //  } 
+         if(request()->filled('log_vendor')){
+                $log_vendor = request()->log_vendor;
+                $logs->where('ffe_vendor_id', $log_vendor);
+         } 
+        if(request()->filled('log_status')){
+                $log_status = request()->log_status;
+                $logs->whereHas('status', function($q) use ($log_status){
+                    $q->where('id', $log_status);
+                });
+         } 
          
 
 
-         // if(request()->filled('bill_vendor')){
-         //        $bill_vendor = request()->bill_vendor;
-         //        $bills->where('ffe_vendor_id', $bill_vendor);
-         // } 
+         if(request()->filled('bill_vendor')){
+                $bill_vendor = request()->bill_vendor;
+                $bills->where('soft_cost_vendor_id', $bill_vendor);
+         } 
 
-         // if(request()->filled('bill_trade')){
-         //        $bill_trade = request()->bill_trade;
-         //        $bills->where('ffe_trade_id', $bill_trade);
-         // } 
+         if(request()->filled('bill_trade')){
+                $bill_trade = request()->bill_trade;
+                $bills->where('soft_cost_trade_id', $bill_trade);
+         } 
 
-         // if(request()->filled('bill_status')){
-         //        $bill_status = request()->bill_status;
-         //        $bills->where('status', $bill_status);
-         // }
+         if(request()->filled('bill_status')){
+                $bill_status = request()->bill_status;
+                $bills->where('status', $bill_status);
+         }
 
-         //  if(request()->filled('bill_paid_status')){
-         //        $bill_paid_status = request()->bill_paid_status;
-         //        $bills->where('bill_status', $bill_paid_status);
-         // } 
+          if(request()->filled('bill_paid_status')){
+                $bill_paid_status = request()->bill_paid_status;
+                $bills->where('bill_status', $bill_paid_status);
+         } 
 
 
          $orderBy = 'created_at';  
@@ -140,9 +140,9 @@ class SoftCostController extends Controller
        //       : request()->orderLog;
        //  }
 
-         // $bills    = $bills->orderBy($orderBy, $order)->get();
+          $bills    = $bills->orderBy($orderBy, $order)->get();
           $payments = $payments->orderBy($orderBy, $order)->get();
-         // $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
+          $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
 
          // if(request()->filled('s')){
          //    $searchTerm = request()->s;
@@ -206,7 +206,7 @@ class SoftCostController extends Controller
          $perPage = request()->filled('per_page') ? request()->per_page : (new Project())->perPage;
 
 
-          $proposals->filter(function($proposal){
+         $proposals->filter(function($proposal){
 
             $project = @$proposal->project;
 
@@ -239,35 +239,35 @@ class SoftCostController extends Controller
          });
 
 
-         //  $logs->filter(function($log){
+          $logs->filter(function($log){
 
-         //    $project = @$log->project;
+            $project = @$log->project;
 
-         //    $project_slug = \Str::slug($project->name);
+            $project_slug = \Str::slug($project->name);
 
-         //    $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
-         //    $folderPath2 = Document::INVOICES."/$project_slug/";
-         //    $folderPath3 = Document::PURCHASE_ORDERS."/$project_slug/";
+            $folderPath = Document::RECEIVED_SHIPMENTS."/$project_slug/";
+            $folderPath2 = Document::INVOICES."/$project_slug/";
+            $folderPath3 = Document::PURCHASE_ORDERS."/$project_slug/";
           
-         //    $files = $log->received_shipment_attachment;
+            $files = $log->received_shipment_attachment;
 
-         //    $files = @array_filter(explode(',',$files));
+            $files = @array_filter(explode(',',$files));
 
-         //    $filesArr = [];
+            $filesArr = [];
             
-         //    if(!empty($files)){
-         //       foreach (@$files as $key => $file) {
-         //           $filesArr[] = asset($folderPath.$file);
-         //        }  
-         //    } 
+            if(!empty($files)){
+               foreach (@$files as $key => $file) {
+                   $filesArr[] = asset($folderPath.$file);
+                }  
+            } 
 
-         //    $log->received_shipment_attachment = @($filesArr) ? @implode(',',$filesArr) : '' ;
-         //    $log->invoice = @($log->invoice) ? asset($folderPath2.$log->invoice) : '' ;
-         //    $log->po_sent_file = @($log->po_sent_file) ? asset($folderPath3.$log->po_sent_file) : '';
+            $log->received_shipment_attachment = @($filesArr) ? @implode(',',$filesArr) : '' ;
+            $log->invoice = @($log->invoice) ? asset($folderPath2.$log->invoice) : '' ;
+            $log->po_sent_file = @($log->po_sent_file) ? asset($folderPath3.$log->po_sent_file) : '';
          
-         //    return $log;
+            return $log;
            
-         // });
+         });
         
 
           $payments->filter(function($payment){
@@ -304,23 +304,23 @@ class SoftCostController extends Controller
            
          });  
 
-        // $bills->filter(function($bill){
+        $bills->filter(function($bill){
 
-        //     $project = @$bill->project;
+            $project = @$bill->project;
 
-        //     $project_slug = \Str::slug($project->name);
+            $project_slug = \Str::slug($project->name);
 
-        //     $trade_slug = @\Str::slug($bill->trade->name);
+            $trade_slug = @\Str::slug($bill->trade->name);
 
-        //     $folderPath = Document::BILLS."/";
+            $folderPath = Document::BILLS."/";
 
-        //     $folderPath .= "$project_slug/$trade_slug/";
+            $folderPath .= "$project_slug/$trade_slug/";
 
-        //     $bill->file = @($bill->file) ? asset($folderPath.$bill->file) : '' ;
+            $bill->file = @($bill->file) ? asset($folderPath.$bill->file) : '' ;
           
-        //     return $bill->file;
+            return $bill->file;
            
-        //  }); 
+         }); 
           
           $ITBtrades = [];
           
@@ -372,11 +372,9 @@ class SoftCostController extends Controller
                                   ->withCount('subcontractor')
                                  ->orderBy('subcontractor_count', 'DESC')
                                   ->pluck('subcontractor_count')->max();                      
-         //  $paymentStatuses = PaymentStatus::orderBy('name')->get();    
+        $paymentStatuses = PaymentStatus::orderBy('name')->get();    
 
-        
-         return view('projects.soft_cost.index',compact('project','trades','projects','trade','proposals','awarded','prTrades','allProposals','categories','subcontractorsCount','vendors','paymentTrades','payments','paymentCategories','pTrades'));
-
+        return view('projects.soft_cost.index',compact('project','trades','projects','trade','proposals','awarded','prTrades','allProposals','categories','subcontractorsCount','vendors','paymentTrades','payments','paymentCategories','pTrades','bills','paymentStatuses','logs'));
 
     }
 

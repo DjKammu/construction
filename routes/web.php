@@ -421,7 +421,7 @@ Route::prefix('projects')->group(function(){
           ->name('projects.ffe.bills.store');
           
           Route::get('bills/{id}',[App\Http\Controllers\FFEBillController::class,'show'])
-          ->name('projects.bills.edit');
+          ->name('projects.ffe.bills.edit');
          
            Route::get('bills/{id}/bill-stattus', [App\Http\Controllers\FFEBillController::class,'billStatus'])->name('projects.ffe.bills.status');
 
@@ -501,41 +501,41 @@ Route::prefix('projects')->group(function(){
 
             // Logs Route 
 
-            Route::get('logs/create',[App\Http\Controllers\FFEProcurementLogController::class,'create'])->name('projects.ffe.logs');
+            Route::get('logs/create',[App\Http\Controllers\SoftCostProcurementLogController::class,'create'])->name('logs');
 
-            Route::post('{id?}/logs',[App\Http\Controllers\FFEProcurementLogController::class,'store'])->name('projects.ffe.logs.store');
+            Route::post('{id?}/logs',[App\Http\Controllers\SoftCostProcurementLogController::class,'store'])->name('logs.store');
 
-            Route::get('logs/{id}',[App\Http\Controllers\FFEProcurementLogController::class,'show'])->name('projects.ffe.logs.edit');
+            Route::get('logs/{id}',[App\Http\Controllers\SoftCostProcurementLogController::class,'show'])->name('logs.edit');
 
-            Route::post('logs/{id}',[App\Http\Controllers\FFEProcurementLogController::class,'update'])->name('projects.ffe.logs.update');
+            Route::post('logs/{id}',[App\Http\Controllers\SoftCostProcurementLogController::class,'update'])->name('logs.update');
 
-             Route::delete('logs/{id}', [App\Http\Controllers\FFEProcurementLogController::class,'destroy'])->name('projects.ffe.logs.destroy');
+             Route::delete('logs/{id}', [App\Http\Controllers\SoftCostProcurementLogController::class,'destroy'])->name('logs.destroy');
 
-             Route::delete('logs/{id}/file', [App\Http\Controllers\FFEProcurementLogController::class,'destroyFile'])->name('projects.ffe.logs.file.destroy');
+             Route::delete('logs/{id}/file', [App\Http\Controllers\SoftCostProcurementLogController::class,'destroyFile'])->name('logs.file.destroy');
 
-             Route::get('download/logs', [App\Http\Controllers\FFEProcurementLogController::class,'downloadPDF'])->name('projects.ffe.logs.download');
+             Route::get('download/logs', [App\Http\Controllers\SoftCostProcurementLogController::class,'downloadPDF'])->name('logs.download');
 
-             Route::post('send-mail-logs', [App\Http\Controllers\FFEProcurementLogController::class,'sendMail'])->name('projects.ffe.logs.send.mail');
+             Route::post('send-mail-logs', [App\Http\Controllers\SoftCostProcurementLogController::class,'sendMail'])->name('logs.send.mail');
 
 
              // Bills Route
 
-           Route::get('bills/create',[App\Http\Controllers\FFEBillController::class,'create'])
-           ->name('projects.ffe.bills');
+           Route::get('bills/create',[App\Http\Controllers\SoftCostBillController::class,'create'])
+           ->name('bills');
 
-          Route::post('{id?}/bills',[App\Http\Controllers\FFEBillController::class,'store'])
-          ->name('projects.ffe.bills.store');
+          Route::post('{id?}/bills',[App\Http\Controllers\SoftCostBillController::class,'store'])
+          ->name('bills.store');
           
-          Route::get('bills/{id}',[App\Http\Controllers\FFEBillController::class,'show'])
-          ->name('projects.bills.edit');
+          Route::get('bills/{id}',[App\Http\Controllers\SoftCostBillController::class,'show'])
+          ->name('bills.edit');
          
-           Route::get('bills/{id}/bill-stattus', [App\Http\Controllers\FFEBillController::class,'billStatus'])->name('projects.ffe.bills.status');
+           Route::get('bills/{id}/bill-stattus', [App\Http\Controllers\SoftCostBillController::class,'billStatus'])->name('bills.status');
 
-          Route::post('bills/{id}',[App\Http\Controllers\FFEBillController::class,'update'])->name('projects.ffe.bills.update');
+          Route::post('bills/{id}',[App\Http\Controllers\SoftCostBillController::class,'update'])->name('bills.update');
 
-           Route::delete('bills/{id}', [App\Http\Controllers\FFEBillController::class,'destroy'])->name('projects.ffe.bills.destroy');
+           Route::delete('bills/{id}', [App\Http\Controllers\SoftCostBillController::class,'destroy'])->name('bills.destroy');
 
-           Route::delete('bills/{id}/file', [App\Http\Controllers\FFEBillController::class,'destroyFile'])->name('projects.ffe.bills.file.destroy');
+           Route::delete('bills/{id}/file', [App\Http\Controllers\SoftCostBillController::class,'destroyFile'])->name('bills.file.destroy');
 
         });
 

@@ -1,10 +1,11 @@
 @extends('layouts.admin-app')
 
-@section('title', 'FFE Bill')
+@section('title', 'Soft Cost Bill')
 
 @section('content')
 
-@include('includes.back',['url' => route('ffe.index',['project' => request()->project ]) , 'to' => 'To FFE'])
+@include('includes.back',
+['url' => route('projects.soft-cost.index',['project' => request()->project ]) , 'to' => 'To Soft Cost'])
 
       <!-- Start Main View -->
   <div class="card p-2">
@@ -29,7 +30,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left"> {{ @$bill->project->name }} -  Make Bill </h4>
+                        <h4 class="mt-0 text-left"> {{ @$bill->project->name }} -  Make Soft Cost Bill </h4>
                     </div>
                 </div>
 
@@ -37,7 +38,7 @@
                         <div class="col-md-12">
                             <div class="card-body">
                                 <form   method="post" 
-                              action="{{ route('projects.ffe.bills.update',['project' => request()->project,
+                              action="{{ route('projects.soft-cost.bills.update',['project' => request()->project,
                               'id' => $bill->id]) }}" enctype="multipart/form-data">
                                   @csrf
 
@@ -65,10 +66,10 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password"> Trades
                                                 </label>
-                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_ffe_trade_id"> 
+                                                <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_soft_cost_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   @$bill->proposal->ffe_trade_id == $trade->id ? 'selected' : '' 
+                                                   @$bill->proposal->soft_cost_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
@@ -76,21 +77,21 @@
                                             </div>
                                         </div>
                                     </div> 
-                                    
-                                     <div class="row">
+                                     
+                                      <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                   <select class="form-control" name="0_ffe_vendor_id"> 
-                                                     <option value="{{ @$bill->proposal->f_f_e_vendor_id }}" >{{ @$bill->proposal->vendor->name}}
+                                                   <select class="form-control" name="0_soft_cost_vendor_id"> 
+                                                     <option value="{{ @$bill->proposal->soft_cost_vendor_id }}" >{{ @$bill->proposal->vendor->name}}
                                                      </option>
                                                   </select>
                                               </div>
 
                                         </div>
                                        </div>
-                          
+                                       
                                 
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
@@ -121,10 +122,10 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Trades
                                                   </label>
-                                                  <select class="form-control" name="1_ffe_trade_id"> 
+                                                  <select class="form-control" name="1_soft_cost_trade_id"> 
                                                     @foreach($allTrades as $trade)
                                                      <option value="{{ $trade->id }}" {{ 
-                                                   $bill->ffe_trade_id == $trade->id ? 'selected' : '' 
+                                                   $bill->soft_cost_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                      </option>
                                                     @endforeach
@@ -138,11 +139,11 @@
                                               <div class="form-group">
                                                   <label class="text-dark" for="password">Vendor
                                                   </label>
-                                                  <select class="form-control" name="1_ffe_vendor_id"> 
+                                                  <select class="form-control" name="1_soft_cost_vendor_id"> 
                                                     <option value="">Select Vendor</option>
                                                     @foreach(@$vendors as $vendor)
                                                      <option value="{{ $vendor->id }}" {{ 
-                                                      ($bill->ffe_vendor_id == $vendor->id ) ? 'selected' : ''}} >{{ $vendor->name}}
+                                                      ($bill->soft_cost_vendor_id == $vendor->id ) ? 'selected' : ''}} >{{ $vendor->name}}
                                                      </option>
                                                     @endforeach
                                                   </select>
@@ -158,10 +159,10 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <select class="form-control" name="1_ffe_trade_id"> 
+                                                <select class="form-control" name="1_soft_cost_trade_id"> 
                                                   @foreach($allTrades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   $bill->ffe_trade_id == $trade->id ? 'selected' : '' 
+                                                   $bill->soft_cost_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach
@@ -175,10 +176,10 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Vendor
                                                 </label>
-                                                <select class="form-control" name="1_ffe_vendor_id"> 
+                                                <select class="form-control" name="1_soft_cost_vendor_id"> 
                                                   <option value="">Select Vendor</option>
                                                   @foreach(@$vendors as $vendor)
-                                                   <option value="{{ $vendor->id }}" {{ ($bill->ffe_vendor_id == $vendor->id ) ? 'selected' : ''}}>{{ $vendor->name}}
+                                                   <option value="{{ $vendor->id }}" {{ ($bill->soft_cost_vendor_id == $vendor->id ) ? 'selected' : ''}}>{{ $vendor->name}}
                                                    </option>
                                                   @endforeach
                                                 </select>
@@ -327,7 +328,7 @@
                                             <span class="cross"> 
                                              <form 
                                                 method="post" 
-                                                action="{{route('projects.ffe.bills.file.destroy',['project' => request()->project, 'id' => $bill->id ])}}?path={{$bill->file}}"> 
+                                                action="{{route('projects.soft-cost.bills.file.destroy',['project' => request()->project, 'id' => $bill->id ])}}?path={{$bill->file}}"> 
                                                  @csrf
                                                 {{ method_field('DELETE') }}
 
@@ -375,7 +376,7 @@
                                             <span class="cross"> 
                                              <form 
                                                 method="post" 
-                                                action="{{route('projects.ffe.bills.file.destroy', ['project' => request()->project, 'id' => $bill->id ])}}?path={{$bill->purchase_order}}"> 
+                                                action="{{route('projects.soft-cost.bills.file.destroy', ['project' => request()->project, 'id' => $bill->id ])}}?path={{$bill->purchase_order}}"> 
                                                  @csrf
                                                 {{ method_field('DELETE') }}
 

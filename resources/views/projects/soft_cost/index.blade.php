@@ -68,22 +68,22 @@
                                                      aria-expanded="false">Payments</a>
                                               </li>
                                               
-                                              <!-- <li class="nav-item">
+                                              <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#bills" role="tab"
                                                      aria-expanded="false">Bills</a>
                                               </li>
-                                               -->
+                                              
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#budget" role="tab"
                                                      aria-expanded="false">Soft Cost Budget</a>
                                               </li> 
-                                               <!--
+                                             
 
                                                <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
-                                                     aria-expanded="false">FFE Procurement Log</a>
+                                                     aria-expanded="false">Soft Cost Procurement Log</a>
                                               </li> 
-
+                                               <!--
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#tracker" role="tab"
                                                      aria-expanded="false">FFE ITBTracker</a>
@@ -102,7 +102,9 @@
                                     @include('projects.soft_cost.bids')
                                     @endif
                                     @include('projects.soft_cost.payments')
+                                    @include('projects.soft_cost.bills')
                                     @include('projects.soft_cost.budget')
+                                    @include('projects.soft_cost.logs')
                               </div>
 
                             </div>
@@ -317,7 +319,7 @@ var end =  '{{ Request::input("end")}}';
 
     let _token   =   "{{ csrf_token() }}";
 
-    let url = '/projects/'+projectId+'/ffe/send-mail-logs'
+    let url = '/projects/'+projectId+'/soft-cost/send-mail-logs'
 
    $.ajax({
         url: url,
