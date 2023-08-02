@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SoftCostProcurementLog extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
      'date'  ,'item','project_id' , 
      'soft_cost_vendor_id' ,'soft_cost_subcontractor_id', 
