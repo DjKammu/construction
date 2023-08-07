@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
 use App\Models\Subcontractor;
-use App\Models\FFEITBTracker;
+use App\Models\SoftCostITBTracker;
 use App\Models\DocumentType;
 use App\Models\PropertyType;
 use App\Models\SoftCostProposal;
@@ -324,25 +324,25 @@ class SoftCostController extends Controller
           
           $ITBtrades = [];
           
-        //  $ITBtrades = $trades->filter(function($tr) use ($id) {
+         $ITBtrades = $trades->filter(function($tr) use ($id) {
 
-        //     $tr->sc_vendors->filter(function($v) use ($id,$tr){
+            $tr->sc_vendors->filter(function($v) use ($id,$tr){
 
-        //                $itb_tracker =FFEITBTracker::where([
-        //                    'project_id' => $id, 
-        //                    'ffe_trade_id' => $tr->id, 
-        //                    'ffe_vendor_id' => $v->id 
-        //                    ])->first();
+                       $itb_tracker = SoftCostITBTracker::where([
+                           'project_id' => $id, 
+                           'soft_cost_trade_id' => $tr->id, 
+                           'soft_cost_vendor_id' => $v->id 
+                           ])->first();
 
-        //                 $v->mail_sent = $itb_tracker->mail_sent ?? false;
-        //                 $v->bid_recieved  = $itb_tracker->bid_recieved ?? false;
-        //                 $v->contract_sign = $itb_tracker->contract_sign ?? false;
-        //                 $v->tracker_id = $itb_tracker->id ?? false;
+                        $v->mail_sent = $itb_tracker->mail_sent ?? false;
+                        $v->bid_recieved  = $itb_tracker->bid_recieved ?? false;
+                        $v->contract_sign = $itb_tracker->contract_sign ?? false;
+                        $v->tracker_id = $itb_tracker->id ?? false;
 
-        //                 return $v;                           
-        //     });
-        //     return $tr;
-        // }); 
+                        return $v;                           
+            });
+            return $tr;
+        }); 
 
         
           $catids = @($trades->pluck('category_id'))->unique();
@@ -374,7 +374,7 @@ class SoftCostController extends Controller
                                   ->pluck('subcontractor_count')->max();                      
         $paymentStatuses = PaymentStatus::orderBy('name')->get();    
 
-        return view('projects.soft_cost.index',compact('project','trades','projects','trade','proposals','awarded','prTrades','allProposals','categories','subcontractorsCount','vendors','paymentTrades','payments','paymentCategories','pTrades','bills','paymentStatuses','logs'));
+        return view('projects.soft_cost.index',compact('project','trades','projects','trade','proposals','awarded','prTrades','allProposals','categories','subcontractorsCount','vendors','paymentTrades','payments','paymentCategories','pTrades','bills','paymentStatuses','logs','ITBtrades'));
 
     }
 

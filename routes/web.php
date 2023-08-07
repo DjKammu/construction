@@ -572,6 +572,16 @@ Route::post('ffe/bid-recieved', [App\Http\Controllers\FFEITBTrackerController::c
 ->name('ffe.bid.recieved');
 Route::post('ffe/contract-signed', [App\Http\Controllers\FFEITBTrackerController::class,'contractSigned'])->name('ffe.contract.signed');
 
+
+// Soft Cost ITBTracker Route
+           
+Route::post('soft-cost/send-mail', [App\Http\Controllers\SoftCostITBTrackerController::class,'sendMail'])->name('soft-cost.send.mail');
+
+Route::post('soft-cost/send-mail-pdf', [App\Http\Controllers\SoftCostITBTrackerController::class,'sendMailWithPdf'])->name('soft-cost.send.mail.pdf');
+Route::post('soft-cost/bid-recieved', [App\Http\Controllers\SoftCostITBTrackerController::class,'bidRecieved'])->name('soft-cost.bid.recieved');
+
+Route::post('soft-cost/contract-signed', [App\Http\Controllers\SoftCostITBTrackerController::class,'contractSigned'])->name('soft-cost.contract.signed');
+
 //Vendor 
 
  Route::get('get-materials', [App\Http\Controllers\VendorController::class,'getMaterials'])

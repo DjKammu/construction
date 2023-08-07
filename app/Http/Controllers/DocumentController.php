@@ -18,7 +18,9 @@ use App\Models\Vendor;
 use App\Models\FFEBill;
 use App\Models\Bill;
 use App\Models\FFEProposal;
+use App\Models\SoftCostProposal;
 use App\Models\FFEPayment;
+use App\Models\SoftCostPayment;
 use Gate;
 
 
@@ -208,6 +210,7 @@ class DocumentController extends Controller
         $project_type_slug = ($project_type_slug) ? $project_type_slug : Document::ARCHIEVED;  
         $folderPath .= "$project_type_slug/$project_slug/$document_type/";
 
+
         if($document->proposal_id){
                $proposal = Proposal::find($document->proposal_id);
                $trade_slug = @\Str::slug($proposal->trade->name);
@@ -299,7 +302,45 @@ class DocumentController extends Controller
                  $folderPath .= "$project_slug/$trade_slug/";
             }
 
-            else if($document->log_id || $document->ffe_log_id ){
+            else if($document->soft_cost_proposal_id){
+                 $proposal = SoftCostProposal::find($document->soft_cost_proposal_id);
+                 $trade_slug = @\Str::slug($proposal->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::SOFT_COST_PROPOSALS."/");
+                 if($document->document_type->name == DocumentType::LIEN_RELEASE && $document->soft_cost_payment_id){
+                         $payment_id = SoftCostPayment::find($document->soft_cost_payment_id);
+                         $trade_slug = @\Str::slug($payment_id->trade->name);
+                 }
+
+                 if($document->document_type->name == DocumentType::BILL && $document->soft_cost_bill_id){
+                     $bill = SoftCostBill::find($document->soft_cost_bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
+                 $folderPath .= "$project_slug/$trade_slug/";
+            } 
+
+             else if(!$documentdocument->soft_cost_proposal_id && $documentdocument->soft_cost_payment_id){
+
+                 $payment_id = SoftCostPayment::find($documentdocument->soft_cost_payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($documentdocument->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $documentdocument->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($documentdocument->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+              else if(!$document->soft_cost_proposal_id && $document->soft_cost_bill_id){
+
+                 $bill = SoftCostBill::find($document->soft_cost_bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+            else if($document->log_id || $document->ffe_log_id || $document->soft_cost_log_id  ){
                  if($document->document_type->name == DocumentType::INVOICE){
                     $folderPath = Document::INVOICES."/$project_slug/";
                  }
@@ -787,8 +828,46 @@ class DocumentController extends Controller
                  $folderPath = ($doc->document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
                  $folderPath .= "$project_slug/$trade_slug/";
             }
-            
-            else if($doc->document->log_id || $doc->document->ffe_log_id ){
+
+             else if($doc->document->soft_cost_proposal_id){
+                 $proposal = SoftCostProposal::find($doc->document->soft_cost_proposal_id);
+                 $trade_slug = @\Str::slug($proposal->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::SOFT_COST_PROPOSALS."/");
+                 if($doc->document->document_type->name == DocumentType::LIEN_RELEASE && $doc->document->document->soft_cost_payment_id){
+                         $payment_id = SoftCostPayment::find($doc->document->soft_cost_payment_id);
+                         $trade_slug = @\Str::slug($payment_id->trade->name);
+                 }
+
+                 if($doc->document->document_type->name == DocumentType::BILL && $doc->document->soft_cost_bill_id){
+                     $bill = SoftCostBill::find($doc->document->soft_cost_bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
+                 $folderPath .= "$project_slug/$trade_slug/";
+            } 
+
+             else if(!$doc->document->soft_cost_proposal_id && $doc->document->soft_cost_payment_id){
+
+                 $payment_id = SoftCostPayment::find($doc->document->soft_cost_payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($doc->document->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+              else if(!$doc->document->soft_cost_proposal_id && $doc->document->soft_cost_bill_id){
+
+                 $bill = SoftCostBill::find($doc->document->soft_cost_bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($doc->document->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+            else if($doc->document->log_id || $doc->document->ffe_log_id || $doc->document->soft_cost_log_id ){
                  if($doc->document->document_type->name == DocumentType::INVOICE){
                     $folderPath = Document::INVOICES."/$project_slug/";
                  }

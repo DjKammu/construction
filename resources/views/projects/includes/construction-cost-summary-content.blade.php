@@ -570,26 +570,217 @@
                <td><b>{{ ($ffePaidTotal && $ffeGrandTotal)  || ($ffeVendorsTotal) ? sprintf('%0.2f', (@$ffePaidTotal + $ffeVendorsTotal)/ (@$ffeGrandTotal + $ffeVendorsTotal) * 100) : 0 }} % </b></td>
             
            </tr>
+
+           <tr>
+          <td colspan="11" class="h6 text-center" style="padding:10px;">
+            <b> Soft Cost Budget </b> 
+          </td>
+         </tr>
+
+         @php   
+
+         $scMaterialTotal = 0;
+         $scTradeTotal = 0;
+         $scBudgetDiff = 0;
+         $scLabourTotal = 0;
+         $scSubcontractorTotal = 0;
+         $scGrandTotal = 0;
+         $scPaidTotal = 0;
+         $scDueTotal = 0;
+         $scVendorsTotal = 0;
+         $scChangeOrderTotal = 0;
+
+         $vendors = [];
+         @endphp
+
+        @foreach($scPaymentCategories as $cat)
+
+         @php   
+          $catMaterialTotal = 0;
+          $catLabourTotal = 0;
+          $catSubcontractorTotal = 0;
+          $catGrandTotal = 0;
+          $catPaidTotal = 0;
+          $catDueTotal = 0;
+          $catVendorsTotal = 0;
+          $catTradeTotal = 0;
+          $catBudgetDiff = 0;
+
+         $catTrades = @$sc_pTrades->where('category_id', $cat->id);
+
+         @endphp
+            
+         @foreach($catTrades as $trd)
+
+              @php
+               $scChangeOrderTotal = 0;
+              $bids = @$project->sc_proposals()->trade($trd->id)->IsAwarded()
+                     ->get();
+              $tradePayments = @$project->sc_payments()->where('non_contract','1')
+              ->selectRaw('sum(payment_amount) as payment_amount_total, soft_cost_vendor_id')
+               ->where('soft_cost_trade_id',$trd->id)
+               ->groupBy('soft_cost_vendor_id')
+               ->get();
+
+
+              @endphp
+            
+             @if($bids->count() > 0)
+
+           
+             
+              @foreach($bids as $bid)
+                @php    
+                  $bidTotal =  (float) @$bid->material + (float) @$bid->labour_cost + (float) @$bid->subcontractor_price;   
+                      foreach(@$bid->changeOrders as $k => $order){
+                       if($order->type == \App\Models\FFEChangeOrder::ADD ){
+                         $bidTotal += $order->subcontractor_price;
+                         $ffeChangeOrderTotal += $order->subcontractor_price;
+                         $catSubcontractorTotal += $order->subcontractor_price;
+                       }
+                       else{
+                         $bidTotal -= $order->subcontractor_price;
+                         $ffeChangeOrderTotal -= $order->subcontractor_price;
+                         $catSubcontractorTotal -= $order->subcontractor_price;
+                       }
+                     }
+                     
+                       $bidPayments =   $bid->payment;
+
+                       $payment_vendors = [];
+
+                       $payment_vendors = @collect($bidPayments)->map(function($p) {
+                              if($p->vendor){
+                                return $p->vendor->name;
+                              }
+                       })->unique()->join(',');
+
+                       @collect($bidPayments)->each(function($p) use (&$vendors){
+                           if($p->vendor){
+                              $amount =  $p->payment_amount;
+                              if(isset( $vendors[$p->vendor->name])){
+                                   $amount = $vendors[$p->vendor->name] +
+                                     $p->payment_amount;   
+                              }
+                              $vendors[$p->vendor->name] =  $amount;  
+                             }
+                       });
+
+
+                       $notes = @$bid->payment()->whereNotNull('notes')->pluck('notes')->join(',');
+                      
+                        
+                      $paid =  (float) @$bid->payment()->where('non_contract','0')->sum('payment_amount');
+                      $due =  (float) @$bidTotal  - (float) $paid;
+
+                      
+                      $scMaterialTotal = (float) @$bid->material + $scMaterialTotal;
+                      $scTradeTotal = (float) @$bid->trade_budget + $scTradeTotal;
+                      $scLabourTotal = (float) @$bid->labour_cost + $scLabourTotal;
+                      $scSubcontractorTotal = (float) @$bid->subcontractor_price + $scSubcontractorTotal + $ffeChangeOrderTotal;
+                      $scGrandTotal = (float) @$bidTotal + $scGrandTotal;
+                      $scPaidTotal = (float) @$paid + $scPaidTotal;
+                      $scDueTotal = (float) @$due + $scDueTotal;
+                      //$scBudgetDiff = (float) @$bid->trade_budget - $bidTotal + $scBudgetDiff;
+                      
+                      $catSubcontractorTotal = (float) @$bid->subcontractor_price + $catSubcontractorTotal;
+                      $catMaterialTotal = (float) @$bid->material + $catMaterialTotal;
+                      $catTradeTotal = (float) @$bid->trade_budget + $catTradeTotal;
+                      $catLabourTotal = (float) @$bid->labour_cost + $catLabourTotal;
+                      $catGrandTotal = (float) @$bidTotal + $catGrandTotal;
+                      $catPaidTotal = (float) @$paid + $catPaidTotal;
+                      $catDueTotal = (float) @$due + $catDueTotal;
+                      // $catbudgetDiff = (float) @$bid->trade_budget - @$bidTotal +  @$catbudgetDiff;
+
+                @endphp
+
+                
+
+              @endforeach
+
+              @endif
+
+            @if($tradePayments->count() > 0)
+            
+              @foreach($tradePayments as $tPay)
+
+               @php
+                $scVendorsTotal = $scVendorsTotal + $tPay->payment_amount_total;
+                $catVendorsTotal = $catVendorsTotal + $tPay->payment_amount_total;
+               @endphp
+
+              @endforeach
+
+            @endif
+
+         @endforeach
+
+        @endforeach
+
+         @php
+         $extraTotal = 0;
+         @endphp
+
+        @if($vendors) 
+
+        
+        
+
+           @foreach($vendors as $k => $vndr)
+              @php
+                $extraTotal = $extraTotal + $vndr;
+              @endphp
+         
+
+           @endforeach
+    
+
+         @endif
+
+          
+            <tr class="row-border">
+               <td><b>Soft Cost Total</b></td>
+               <td></td>
+               <td><b>${{ \App\Models\Payment::format($scTradeTotal)}}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scMaterialTotal + $scVendorsTotal)}}</b></td>
+               <td></td>
+               <td><b>${{ \App\Models\Payment::format($scSubcontractorTotal) }}</b></td>
+               <!-- <td></td> -->
+               <td><b>${{ \App\Models\Payment::format($scGrandTotal + $scVendorsTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scPaidTotal + $scVendorsTotal) }}</b></td>
+               <td></td> 
+                <td> </td> 
+               <td><b>${{ \App\Models\Payment::format($scDueTotal) }}</b></td>
+               
+               <td><b>${{ \App\Models\Payment::format($scTradeTotal - $scGrandTotal) }}</b></td>
+
+               <td><b>{{ ($scPaidTotal && $scGrandTotal)  || ($scVendorsTotal) ? sprintf('%0.2f', (@$scPaidTotal + $scVendorsTotal)/ (@$scGrandTotal + $scVendorsTotal) * 100) : 0 }} % </b></td>
+            
+           </tr>
            <tr>
              <td colspan="11"> </td>
            </tr>
+          
+
             <tr class="row-border">
                <td><b>Project Grand Total</b></td>
                <td></td>
-               <td><b>${{ \App\Models\Payment::format($ffeTradeTotal + $tradeTotal)}}</b></td>
-               <td><b>${{ \App\Models\Payment::format($ffeMaterialTotal + $ffeVendorsTotal + $materialTotal + $vendorsTotal)}}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scTradeTotal + $ffeTradeTotal + $tradeTotal)}}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scMaterialTotal +$ffeMaterialTotal + $ffeVendorsTotal + $scVendorsTotal + $materialTotal + $vendorsTotal)}}</b></td>
                <td><b>${{ \App\Models\Payment::format($labourTotal) }}</b></td>
-               <td><b>${{ \App\Models\Payment::format($ffeSubcontractorTotal + $subcontractorTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scSubcontractorTotal +$ffeSubcontractorTotal + $subcontractorTotal) }}</b></td>
                <!-- <td></td> -->
-               <td><b>${{ \App\Models\Payment::format($ffeGrandTotal + $ffeVendorsTotal + $grandTotal + $vendorsTotal) }}</b></td>
-               <td><b>${{ \App\Models\Payment::format($ffePaidTotal + $ffeVendorsTotal + $paidTotal + $vendorsTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scGrandTotal + $ffeGrandTotal + $ffeVendorsTotal + $grandTotal + $vendorsTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scPaidTotal + $ffePaidTotal + $ffeVendorsTotal + $paidTotal + $vendorsTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($heldTotal + $vendorsHeldTotal) }}</b></td>
                <td><b>${{ \App\Models\Payment::format($dueTotal - $heldTotal) }}</b></td>
-               <td><b>${{ \App\Models\Payment::format($ffeDueTotal + $dueTotal) }}</b></td>
-               <td><b>${{ \App\Models\Payment::format($ffeTradeTotal - $ffeGrandTotal + $tradeTotal - $grandTotal) }}</b></td>
+               <td><b>${{ \App\Models\Payment::format($scDueTotal + $ffeDueTotal + $dueTotal) }}</b></td>
 
-               <td><b>{{ (($ffePaidTotal && $ffeGrandTotal) ||  ($paidTotal && $grandTotal))  || ($vendorsTotal || $ffeVendorsTotal) ? sprintf('%0.2f', (@$ffePaidTotal + $ffeVendorsTotal + @$paidTotal + $vendorsTotal)/ (@$ffeGrandTotal + $ffeVendorsTotal + @$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
+               <td><b>${{ \App\Models\Payment::format($scTradeTotal - $scGrandTotal + $ffeTradeTotal - $ffeGrandTotal + $tradeTotal - $grandTotal) }}</b></td>
+
+               <td><b>{{ (($scPaidTotal && $scGrandTotal) || ($ffePaidTotal && $ffeGrandTotal) ||  ($paidTotal && $grandTotal))  || ($vendorsTotal || $ffeVendorsTotal || $scVendorsTotal) ? sprintf('%0.2f', (@$scPaidTotal + $scVendorsTotal + @$ffePaidTotal + $ffeVendorsTotal + @$paidTotal + $vendorsTotal)/ (@$scGrandTotal + $scVendorsTotal + @$ffeGrandTotal + $ffeVendorsTotal + @$grandTotal + $vendorsTotal) * 100) : 0 }} % </b></td>
            </tr>
+
             </tbody>
         </table>
 </div>

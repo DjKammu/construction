@@ -83,11 +83,11 @@
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#logs" role="tab"
                                                      aria-expanded="false">Soft Cost Procurement Log</a>
                                               </li> 
-                                               <!--
+                                               
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#tracker" role="tab"
                                                      aria-expanded="false">FFE ITBTracker</a>
-                                              </li> -->
+                                              </li> 
 
                                         </ul>
                                     </div>
@@ -105,6 +105,7 @@
                                     @include('projects.soft_cost.bills')
                                     @include('projects.soft_cost.budget')
                                     @include('projects.soft_cost.logs')
+                                    @include('projects.soft_cost.tracker')
                               </div>
 
                             </div>
@@ -516,7 +517,7 @@ function sendMailTracker(){
     let _token   =   "{{ csrf_token() }}";
 
    $.ajax({
-        url: "{{ route('ffe.send.mail')}}",
+        url: "{{ route('soft-cost.send.mail')}}",
         type:"POST",
         data:{
           projectId:projectId,

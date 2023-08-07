@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\RFISubmittalStatus;
+use App\Models\SoftCostCategory;
+use App\Models\SoftCostProposal;
+use App\Models\SoftCostPayment;
+use App\Models\SoftCostTrade;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;
 use App\Models\Subcontractor;
@@ -10,17 +14,17 @@ use App\Models\DocumentType;
 use App\Models\PropertyType;
 use App\Models\ProjectType;
 use App\Models\FFECategory;
-use App\Models\FFETrade;
-use App\Models\Document;
-use App\Models\Category;
 use App\Models\FFEProposal;
 use App\Models\FFEPayment;
+use App\Models\ITBTracker;
+use App\Models\FFETrade;
+use App\Models\Category;
+use App\Models\Document;
 use App\Models\Proposal;
 use App\Models\FFEBill;
 use App\Models\Project;
 use App\Models\Payment;
 use App\Models\Status;
-use App\Models\ITBTracker;
 use App\Models\Vendor;
 use App\Models\Trade;
 use App\Models\Bill;
@@ -192,6 +196,7 @@ class ProjectController extends Controller
          $documents = @$project->documents();
          $trades = $project->trades()->orderBy('name')->get();
          $ffe_trades = $project->ffe_trades()->orderBy('name')->get();
+         $sc_trades = $project->sc_trades()->orderBy('name')->get();
          $users = User::orderBy('name')->get();
 
          $payments = $project->payments();
@@ -550,8 +555,45 @@ class ProjectController extends Controller
                  $folderPath = ($doc->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
                  $folderPath .= "$project_slug/$trade_slug/";
             }
+             else if($doc->soft_cost_proposal_id){
+                 $proposal = SoftCostProposal::find($doc->soft_cost_proposal_id);
+                 $trade_slug = @\Str::slug($proposal->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   Document::SOFT_COST_PROPOSALS."/");
+                 if($doc->document_type->name == DocumentType::LIEN_RELEASE && $doc->soft_cost_payment_id){
+                         $payment_id = SoftCostPayment::find($doc->soft_cost_payment_id);
+                         $trade_slug = @\Str::slug($payment_id->trade->name);
+                 }
 
-            else if($doc->log_id || $doc->ffe_log_id ){
+                 if($doc->document_type->name == DocumentType::BILL && $doc->soft_cost_bill_id){
+                     $bill = SoftCostBill::find($doc->soft_cost_bill_id);
+                     $trade_slug = @\Str::slug($bill->trade->name);
+                     $folderPath = Document::BILLS."/";
+                     
+                }
+                 $folderPath .= "$project_slug/$trade_slug/";
+            } 
+
+             else if(!$doc->soft_cost_proposal_id && $doc->soft_cost_payment_id){
+
+                 $payment_id = SoftCostPayment::find($doc->soft_cost_payment_id);
+                 $trade_slug = @\Str::slug($payment_id->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $doc->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($doc->document_type->name == DocumentType::PURCHASE_ORDER){
+                     $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
+                   }
+
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+              else if(!$doc->soft_cost_proposal_id && $doc->soft_cost_bill_id){
+
+                 $bill = SoftCostBill::find($doc->soft_cost_bill_id);
+                 $trade_slug = @\Str::slug($bill->trade->name);
+                 $folderPath = ($doc->document_type->name == DocumentType::PURCHASE_ORDER) ? Document::BILLS_PURCHASE_ORDERS."/" :  Document::BILLS."/";
+                 $folderPath .= "$project_slug/$trade_slug/";
+            }
+
+            else if($doc->log_id || $doc->ffe_log_id || $doc->soft_cost_log_id ){
                  if($doc->document_type->name == DocumentType::INVOICE){
                     $folderPath = Document::INVOICES."/$project_slug/";
                  }
@@ -664,7 +706,7 @@ class ProjectController extends Controller
 
             $trade_slug = @\Str::slug($bill->trade->name);
 
-            $project_type_slug = @$project->project_type->slug;
+            $project_typ5e_slug = @$project->project_type->slug;
 
             $folderPath = Document::BILLS."/";
 
@@ -776,10 +818,19 @@ class ProjectController extends Controller
          $ffe_trade_ids = @$project->ffe_payments->whereNotNull('f_f_e_trade_id')
                        ->pluck('f_f_e_trade_id'); 
 
-          $ffe_pTrades = FFETrade::whereIn('id',$ffe_trade_ids)->get();   
+          $ffe_pTrades = FFETrade::whereIn('id',$ffe_trade_ids)->get();  
+
+          $sc_trade_ids = @$project->sc_payments->whereNotNull('soft_cost_trade_id')
+                       ->pluck('soft_cost_trade_id'); 
+
+          $sc_pTrades = SoftCostTrade::whereIn('id',$sc_trade_ids)->get();   
       
          if($ffe_pTrades){
             $ffe_trades = $ffe_trades->merge($ffe_pTrades);
+         }
+
+         if($sc_pTrades){
+            $sc_trades = $sc_trades->merge($ffe_pTrades);
          }
 
          $prTrades = $trades;
@@ -795,6 +846,10 @@ class ProjectController extends Controller
          $ffe_catids = @($ffe_trades->pluck('category_id'))->unique();
 
          $ffe_categories = $ffePaymentCategories = FFECategory::whereIn('id',$ffe_catids)->get(); 
+        
+         $sc_catids = @($sc_trades->pluck('category_id'))->unique();
+
+         $sc_categories = $scPaymentCategories = SoftCostCategory::whereIn('id',$sc_catids)->get(); 
 
 
          if($paymentCategories->count() == 0){   
@@ -805,6 +860,11 @@ class ProjectController extends Controller
          if($ffePaymentCategories->count() == 0){   
               $catids = @($ffe_trades->pluck('category_id'))->unique();
               $ffePaymentCategories = FFECategory::whereIn('id',$catids)->get(); 
+         }
+
+         if($scPaymentCategories->count() == 0){   
+              $catids = @($sc_trades->pluck('category_id'))->unique();
+              $scPaymentCategories = SoftCostCategory::whereIn('id',$catids)->get(); 
          }
          
          $subcontractorsCount = @$project->proposals()
@@ -817,7 +877,7 @@ class ProjectController extends Controller
             'awarded','categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
             'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',
-            'ffe_pTrades','logs','paymentStatuses','ITBtrades'));
+            'ffe_pTrades','logs','paymentStatuses','ITBtrades','scPaymentCategories','sc_pTrades'));
     }
 
     /**
