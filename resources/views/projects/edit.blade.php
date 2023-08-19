@@ -104,6 +104,11 @@
                                               </li>
 
                                               <li class="nav-item">
+                                                  <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/gantt') }}"  role="tab"
+                                                     aria-expanded="false">Gantt </a>
+                                              </li>
+
+                                              <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#rfi" role="tab"
                                                      aria-expanded="false">RFI</a>
                                               </li>

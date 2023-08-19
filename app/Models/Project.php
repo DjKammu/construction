@@ -107,6 +107,10 @@ class Project extends Model
     public function budget_lines(){
         return $this->hasMany(BudgetLine::class);
     }
+
+    public function gantt_lines(){
+        return $this->hasMany(Task::class);
+    }
     
     public function applications(){
         return $this->hasMany(Application::class);

@@ -448,6 +448,17 @@ Route::prefix('projects')->group(function(){
         }); 
 
 
+        Route::group(['prefix' => '{project}/gantt','as' => 'projects.gantt.'], function ($project) {
+
+            Route::get('/',[App\Http\Controllers\GanttController::class,'index'])->name('index');
+            Route::get('/get/data',[App\Http\Controllers\GanttController::class,'data'])->name('data');
+            Route::post('/other-assign',[App\Http\Controllers\GanttController::class,'otherAssign'])->name('other.assign');
+            Route::resource('do/task', App\Http\Controllers\TaskController::class);
+            Route::resource('do/link', App\Http\Controllers\LinkController::class);
+
+        }); 
+
+
         Route::group(['prefix' => '{project}/soft-cost','as' => 'projects.soft-cost.'], function ($project) {
 
             Route::get('/',[App\Http\Controllers\SoftCostController::class,'index'])->name('index');
