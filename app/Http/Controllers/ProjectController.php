@@ -6,6 +6,7 @@ use App\Models\RFISubmittalStatus;
 use App\Models\SoftCostCategory;
 use App\Models\SoftCostProposal;
 use App\Models\SoftCostPayment;
+use App\Models\SoftCostBill;
 use App\Models\SoftCostTrade;
 use Illuminate\Http\Request;
 use App\Models\PaymentStatus;

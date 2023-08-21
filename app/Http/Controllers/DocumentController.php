@@ -21,6 +21,7 @@ use App\Models\FFEProposal;
 use App\Models\SoftCostProposal;
 use App\Models\FFEPayment;
 use App\Models\SoftCostPayment;
+use App\Models\SoftCostBill;
 use Gate;
 
 
