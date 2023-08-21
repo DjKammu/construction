@@ -272,8 +272,8 @@ class SoftCostTradeController extends Controller
 
         $selectedProject = Project::find($data['project_id']);
 
-        $selectedTrades = @$selectedProject->ffe_trades()->pluck('f_f_e_trade_id');
-   
+        $selectedTrades = @$selectedProject->sc_trades()->pluck('soft_cost_trade_id');
+
         @$project->sc_trades()->sync($selectedTrades,false); 
 
         return redirect(route('projects.soft-cost.index',['project' => $id]).'#trades')->with('message', 'Trades Assigned Successfully!');

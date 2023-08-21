@@ -49,7 +49,6 @@
           $catBudgetDiff = 0;
 
          $catTrades = @$pTrades->where('category_id', $cat->id);
-
          @endphp
             <tr >
               <td>{{ $cat->account_number }}</td>
@@ -69,7 +68,6 @@
                ->where('soft_cost_trade_id',$trd->id)
                ->groupBy('soft_cost_vendor_id')
              ->get();
-             
               @endphp
             
              @if($bids->count() > 0)
@@ -265,7 +263,7 @@
 
                   <span class="doc_type_m">
                     @if(request()->route()->getName()  == 'projects.soft-cost.index')
-                    <a class="disable-anchor" href="{{ url("projects/$project->id/soft-cost").'?to=Budget&url='.urlencode(url()->current().'#budget').'&non_contract=1&payment_vendor='.((@$vendorId) ? $vendorId : '').'#payments'}} "> ${{ \App\Models\Payment::format(@$tPay->payment_amount_total) }} </a>
+                    <a class="disable-anchor" href="{{ url("projects/$project->id/soft-cost").'?to=Budget&url='.urlencode(url()->current().'#budget').'&non_contract=1&payment_vendor='.$tPay->soft_cost_vendor_id.'#payments'}} "> ${{ \App\Models\Payment::format(@$tPay->payment_amount_total) }} </a>
 
                     @else
                    ${{ \App\Models\Payment::format(@$tPay->payment_amount_total) }}

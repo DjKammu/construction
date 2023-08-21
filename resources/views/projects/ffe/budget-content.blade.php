@@ -266,7 +266,7 @@
 
                   <span class="doc_type_m">
                     @if(request()->route()->getName()  == 'ffe.index')
-                    <a class="disable-anchor" href="{{ url("projects/$project->id/ffe").'?to=Budget&url='.urlencode(url()->current().'#budget').'&non_contract=1&payment_vendor='.$vendorId.'#payments'}} "> ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }} </a>
+                    <a class="disable-anchor" href="{{ url("projects/$project->id/ffe").'?to=Budget&url='.urlencode(url()->current().'#budget').'&non_contract=1&payment_vendor='.$tPay->f_f_e_vendor_id.'#payments'}} "> ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }} </a>
 
                     @else
                    ${{ \App\Models\Payment::format(@@$tPay->payment_amount_total) }}

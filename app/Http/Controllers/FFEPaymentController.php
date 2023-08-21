@@ -149,8 +149,8 @@ class FFEPaymentController extends Controller
 
         
         $data['total_amount'] = @$this->proposalTotalAmount(@$proposal);
+         $data['non_contract'] = ($request->filled('non_contract')) ?  $request->non_contract : "$non_contract";
 
-        // dd($data);
         $project = Project::find($project_id);
 
         $project_slug = \Str::slug($project->name);

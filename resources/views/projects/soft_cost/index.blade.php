@@ -86,7 +86,7 @@
                                                
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#tracker" role="tab"
-                                                     aria-expanded="false">FFE ITBTracker</a>
+                                                     aria-expanded="false">Soft Cost ITBTracker</a>
                                               </li> 
 
                                         </ul>
@@ -98,9 +98,7 @@
                                     @if(@$trade)
                                     @include('projects.soft_cost.proposals')
                                     @endif
-                                    @if($allProposals->count() > 0)
                                     @include('projects.soft_cost.bids')
-                                    @endif
                                     @include('projects.soft_cost.payments')
                                     @include('projects.soft_cost.bills')
                                     @include('projects.soft_cost.budget')

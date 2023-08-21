@@ -143,6 +143,8 @@ class SoftCostPaymentController extends Controller
         
         $data['total_amount'] = @$this->proposalTotalAmount(@$proposal);
 
+        $data['non_contract'] = ($request->filled('non_contract')) ?  $request->non_contract : "$non_contract";
+
         $project = Project::find($project_id);
         // dd($data);
 
