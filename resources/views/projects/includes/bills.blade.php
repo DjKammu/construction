@@ -124,11 +124,12 @@
                <td> {{ @$bill->trade->name }}</td>
                <td> {{ (@$bill->vendor ) ? @$bill->vendor->name. 
                 ' (Vendor) '. ( (@$bill->material) ? '('.@$bill->material->name .')' : "" ) :  @$bill->subcontractor->name }}</td>
-                <td> ${{ \App\Models\Payment::format($bill->retainage_held) }}</td>
+              
                <td> ${{ \App\Models\Payment::format($bill->payment_amount) }}</td>
 
                <td> {{ (@$bill->vendor ) ? '-' :  '$'.\App\Models\Payment::format($bill->total_amount) }}</td>
                <!-- <td>  {{ (@$bill->vendor ) ? '-' :  '$'.\App\Models\Payment::format($bill->remaining) }} </td> -->
+                 <td> ${{ \App\Models\Payment::format($bill->retainage_held) }}</td>
                <td>
                 @if($bill->file)
                 <a href="{{ asset($bill->file) }}" target="_blank">
