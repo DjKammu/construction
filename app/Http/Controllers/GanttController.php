@@ -61,7 +61,7 @@ class GanttController extends Controller
 		$links = new Link();
 
 		return response()->json([
-			"data" => $tasks->whereProjectId($id)->orderBy('sortorder')->get(),
+			"data" =>  $tasks->whereProjectId($id)->orderBy('sortorder')->get(),
 			"links" => $links->all()
 		]);
 	}

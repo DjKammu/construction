@@ -13,7 +13,7 @@ class Task extends Model
 
     protected $fillable = [
      'text' , 'duration','progress',
-     'start_date','sortorder','project_id','parent'
+     'start_date','sortorder','project_id','parent','type'
     ];
 
      public function project(){

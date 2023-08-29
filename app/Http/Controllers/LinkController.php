@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Link;
+use App\Models\Link;
 
 class LinkController extends Controller
 {

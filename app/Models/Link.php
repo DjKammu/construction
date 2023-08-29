@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Link extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+     'source' , 'target','type'
+    ];
+
+     public function project(){
+        return $this->belongsTo(Project::class);
+    }
 }
