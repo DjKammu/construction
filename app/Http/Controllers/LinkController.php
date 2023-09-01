@@ -46,7 +46,7 @@ class LinkController extends Controller
 		]);
 	}
 
-	public function destroy($id){
+	public function destroy($pid , $id){
 		$link = Link::find($id);
 		$link->delete();
 

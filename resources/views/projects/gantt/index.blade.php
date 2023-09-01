@@ -928,6 +928,7 @@
 
 const currentYear = new Date().getFullYear();
 
+
 const durationFormatter = gantt.ext.formatters.durationFormatter({
     enter: "day",
     store: "hour",
@@ -937,6 +938,7 @@ const durationFormatter = gantt.ext.formatters.durationFormatter({
     daysPerMonth: 30,
     short: true
 });
+
 const linksFormatter = gantt.ext.formatters.linkFormatter({ durationFormatter: durationFormatter });
 
 const hourFormatter = gantt.ext.formatters.durationFormatter({
@@ -946,18 +948,61 @@ const hourFormatter = gantt.ext.formatters.durationFormatter({
     short: true
 });
 
+
 const textEditor = { type: "text", map_to: "text" };
 const dateEditor = { type: "date", map_to: "start_date"};
-const durationEditor = { type: "duration", map_to: "duration", formatter: durationFormatter, min: 0, max: 10000 };
-const hourDurationEditor = { type: "duration", map_to: "duration", formatter: hourFormatter, min: 0, max: 10000 };
+// const durationEditor = { type: "duration", map_to: "duration", formatter: durationFormatter, min: 0, max: 10000 };
+// const hourDurationEditor = { type: "duration", map_to: "duration", formatter: hourFormatter, min: 0, max: 10000 };
 const predecessorEditor = { type: "predecessor", map_to: "auto", formatter: linksFormatter };
 
-  gantt.config.columns = [
+const durationEditor = {type: "number", map_to: "duration", min:0, max: 100};
+
+  // gantt.config.columns = [
+  //   {name: "text", tree: true, width: 200, resize: true, editor: textEditor},
+  //   {name: "start_date", align: "center", width: 90, resize: true, editor: dateEditor},
+  //   {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor},
+  //   {name: "add", width: 44}
+  // ]; 
+
+   gantt.config.columns = [
     {name: "text", tree: true, width: 200, resize: true, editor: textEditor},
     {name: "start_date", align: "center", width: 90, resize: true, editor: dateEditor},
     {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor},
     {name: "add", width: 44}
   ];
+
+
+
+// gantt.config.columns = [
+//     { name: "", width: 15, resize: false, template: function (task) { return "<span class='gantt_grid_wbs'>" + gantt.getWBSCode(task) + "</span>" } },
+//     { name: "text", tree: true, width: 180, resize: true, editor: textEditor },
+//     { name: "start_date", label: "Start", align: "center", resize: true, width: 80, editor: dateEditor },
+//     {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor},
+//     // {
+//     //     name: "duration_formatted", label: "Duration", resize: true, align: "center", width: 60, template: function (task) {
+//     //         return durationFormatter.format(task.duration);
+//     //     }, editor: durationEditor
+//     // },
+//     // {
+//     //     name: "duration_hours", label: "<div style='white-space: normal;line-height: 20px;margin: 10px 0;'>Duration (hours)</div>", resize: true, align: "center", width: 65, template: function (task) {
+//     //         return hourFormatter.format(task.duration);
+//     //     }, editor: hourDurationEditor
+//     // },
+//     // {
+//     //     name: "predecessors", label: "Predecessors", width: 80, align: "left", editor: predecessorEditor, resize: true, template: function (task) {
+//     //         const links = task.$target;
+//     //         const labels = [];
+//     //         for (let i = 0; i < links.length; i++) {
+//     //             const link = gantt.getLink(links[i]);
+//     //             labels.push(linksFormatter.format(link));
+//     //         }
+//     //         return labels.join(", ")
+//     //     }
+//     // },
+//     { name: "add", "width": 44 }
+// ];
+
+
 
 gantt.config.lightbox.sections = [
   {name: "description", height: 70, map_to: "text", type: "textarea", focus: true},

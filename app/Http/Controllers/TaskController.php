@@ -33,6 +33,7 @@ class TaskController extends Controller
 		$task->project_id = $id;
 		$task->progress = $request->has("progress") ? $request->progress : 0;
 		$task->parent = $request->parent;
+		$task->type = $request->type;
 		$task->sortorder = Task::max("sortorder") + 1;;
 
 		$task->save();
@@ -50,6 +51,7 @@ class TaskController extends Controller
 		$task->duration = $request->duration;
 		$task->progress = $request->has("progress") ? $request->progress : 0;
 		$task->parent = $request->parent;
+		$task->type = $request->type;
 
 		if($request->has("target")){
 			$this->updateOrder($id, $request->target);
