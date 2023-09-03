@@ -16,10 +16,11 @@ class LinkController extends Controller
         $this->middleware('auth');
     }
     
-	public function store(Request $request){
+	public function store($id, Request $request){
 
 		$link = new Link();
 
+		$link->project_id = $id;
 		$link->type = $request->type;
 		$link->source = $request->source;
 		$link->target = $request->target;

@@ -252,7 +252,7 @@
 
                       .dhx_checkbox_title {
                           color: #5f5f5f;
-                          font: 500 14px/32px "Roboto", Arial, sans-serif;
+                          font: 500 12px/32px "Roboto", Arial, sans-serif;
                       }
 
                       .button-with-icon.active {
@@ -345,7 +345,7 @@
                           vertical-align: middle;
 
                           color: #0288d1;
-                          font: 500 14px/20px "Roboto", Arial, sans-serif;
+                          font: 500 12px/20px "Roboto", Arial, sans-serif;
                           text-align: center;
                           text-transform: uppercase;
                           text-decoration: none;
@@ -397,7 +397,7 @@
                           display: block;
 
                           color: #5f5f5f;
-                          font: 500 14px/32px "Roboto", Arial, sans-serif;
+                          font: 500 12px/32px "Roboto", Arial, sans-serif;
 
                           width: 120px;
                           padding: 0 20px 0 16px;
@@ -405,7 +405,7 @@
                           border-radius: 0;
                           border: 1px solid #ededed;
 
-                          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAASAAAAEgARslrPgAAAEFJREFUSMftzssJACAMBNERi/YolubBurQB8UPiRfZBrjsBEflfAvrm8suIeXwVcRufRY7H40WgAQGoQPH+XkQMBhiHGdCscwwgAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTAyLTI2VDExOjIwOjUzKzAwOjAwRvZ3FgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wMi0yNlQxMToyMDo1MyswMDowMDerz6oAAAAodEVYdHN2ZzpiYXNlLXVyaQBmaWxlOi8vL3RtcC9tYWdpY2stMnZxZlhWUVL3RMOVAAAAAElFTkSuQmCC') 96% / 15% no-repeat #fbfbfb;
+                          background: url('/images/arrow.png') 96% / 15% no-repeat #fbfbfb;
 
                           -webkit-appearance: none;
                           appearance: none;
@@ -489,21 +489,7 @@
                                               <div class="dhx_checkbox_title">Collapse Rows</div>
                                           </div>
                                       </div>
-                                  </div>
- -->
-                                  <!-- <div class="demo-actions__col">
-                                      <span data-action="undo" class="icon-btn disabled js-action-btn">
-                                          <img src="//dhtmlx.com/docs/products/demoApps/advanced-gantt-chart/demo/imgs/ic_undo_24.png" alt="">
-                                          Undo
-                                      </span>
-                                  </div>
-
-                                  <div class="demo-actions__col">
-                                      <span data-action="redo" class="icon-btn disabled js-action-btn">
-                                          <img src="//dhtmlx.com/docs/products/demoApps/advanced-gantt-chart/demo/imgs/ic_redo_24.png" alt="">
-                                          Redo
-                                      </span>
-                                  </div> -->
+                                  </div>-->
 
                                   <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
@@ -515,6 +501,20 @@
                                               <div class="dhx_checkbox_title">Auto Scheduling</div>
                                           </div>
                                       </div>
+                                  </div>
+
+                                  <div class="demo-actions__col">
+                                      <span data-action="undo" class="icon-btn js-action-btn">
+                                          <img src="/images/ic_undo_24.png" alt="Undo">
+                                          Undo
+                                      </span>
+                                  </div>
+
+                                  <div class="demo-actions__col">
+                                      <span data-action="redo" class="icon-btn js-action-btn">
+                                          <img src="/images/ic_redo_24.png" alt="Redo">
+                                          Redo
+                                      </span>
                                   </div>
 
                                   <!-- <div class="demo-actions__col">
@@ -529,7 +529,7 @@
                                       </div>
                                   </div> -->
 
-                                  <!-- <div class="demo-actions__col">
+                                  <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
                                           <div id="zoom-to-fit" class="status-control">
                                               <div class="status">
@@ -539,7 +539,7 @@
                                               <div class="dhx_checkbox_title">Zoom to Fit</div>
                                           </div>
                                       </div>
-                                  </div> -->
+                                  </div>
 
                                   <div class="demo-actions__col">
                                       <div class="scale-container">
@@ -588,6 +588,9 @@
                                 .gantt_task_row.gantt_selected .weekend {
                                   background-color: #C0E8FF !important;
                                 }
+                                div#gantt_here{
+                                  z-index: 1111 !important;
+                                }
                               </style>
 
                               <script type="text/javascript">
@@ -626,6 +629,48 @@
                                   return "";
                                 };
                                 
+                                function addClass(node, className) {
+                                    node.classList.add(className);
+                                }
+
+                                function removeClass(node, className) {
+                                    node.classList.remove(className);
+                                }
+
+                                function getButton(name) {
+                                    return document.querySelector(".demo-actions [data-action='" + name + "']");
+                                }
+
+                                function highlightButton(name) {
+                                    addClass(getButton(name), "menu-item-active");
+                                }
+                                function unhighlightButton(name) {
+                                    removeClass(getButton(name), "menu-item-active");
+                                }
+
+                                function disableButton(name) {
+                                    addClass(getButton(name), "disabled");
+                                }
+
+                                function enableButton(name) {
+                                    removeClass(getButton(name), "disabled");
+                                }
+                                                              function refreshUndoBtns() {
+                                  if (!gantt.getUndoStack || !gantt.getUndoStack().length) {
+                                      disableButton("undo");
+                                  } else {
+                                      enableButton("undo");
+                                  }
+
+                                  if (!gantt.getRedoStack || !gantt.getRedoStack().length) {
+                                      disableButton("redo");
+                                  } else {
+                                      enableButton("redo");
+                                  }
+                              }
+
+                              setInterval(refreshUndoBtns, 1000);
+
 
                                 const toolbarMenu = {
                                   undo: function () {
@@ -866,7 +911,7 @@
                                     }
 
 
-                                    function zoomToFit() {
+                                    function zoomToFitMode() {
                                         const project = gantt.getSubtaskDates(),
                                             areaWidth = gantt.$task.offsetWidth;
                                         const scaleConfigs = zoomConfig.levels
@@ -1084,6 +1129,17 @@ gantt.config.auto_scheduling_strict = true;
     //         toolbarMenu[action]();
     //     }
     // });
+
+//     criticalPathCheckbox.addEventListener("click", function () {
+//     let action = "toggleCriticalPath";
+
+//     config.critical_path = !config.critical_path;
+//     toggleCheckbox(criticalPathCheckbox, config.critical_path);
+
+//     if (toolbarMenu[action]) {
+//         toolbarMenu[action]();
+//     }
+// });
    
    if (autoSchedulingCheckbox) {
         autoSchedulingCheckbox.addEventListener("click", function () {
@@ -1106,6 +1162,19 @@ gantt.config.auto_scheduling_strict = true;
           zoomToFitMode = false;
           toggleCheckbox(zoomToFitCheckbox, false);
       });
+    } 
+
+    if (zoomToFitCheckbox) {
+        zoomToFitCheckbox.addEventListener("click", function () {
+        let action = "zoomToFit";
+
+        config.zoom_to_fit = !config.zoom_to_fit;
+        toggleCheckbox(zoomToFitCheckbox, config.zoom_to_fit);
+
+        if (toolbarMenu[action]) {
+            toolbarMenu[action]();
+        }
+    });
     }
 
 

@@ -15,7 +15,8 @@ class Task extends Model
      'text' , 'duration','progress',
      'start_date','sortorder','project_id','parent','type'
     ];
-
+     
+     
      public function project(){
         return $this->belongsTo(Project::class);
     }

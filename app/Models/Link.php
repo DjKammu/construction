@@ -10,7 +10,7 @@ class Link extends Model
     use HasFactory;
 
     protected $fillable = [
-     'source' , 'target','type'
+     'source' , 'target','type','project_id'
     ];
 
      public function project(){

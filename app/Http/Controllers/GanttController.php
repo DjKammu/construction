@@ -81,6 +81,8 @@ class GanttController extends Controller
 
         $gantt_lines = $project->gantt_lines()->get();
 
+        //dd($gantt_lines);
+
 
          $arr = $oldNewArr = [];
 
@@ -88,13 +90,14 @@ class GanttController extends Controller
 
         foreach ($gantt_lines as $key => $value) {
            
-           $where = ['text' => $value['text']];
+           $where = ['text' => $value['text'],'sortorder' => $value['sortorder']];
 
            $update = ['text' => $value['text'],
                       'duration' => $value['duration'],
                       'progress' => $value['progress'],
                       'start_date' => $value['start_date'],
                       'sortorder' => $value['sortorder'],
+                      'type'      => $value['type'],
                       'parent' => 0,
                       'project_id' => $id 
             ];
@@ -111,7 +114,8 @@ class GanttController extends Controller
 
           $entryArr = [
                'entries' => @$arr,
-               'oldNewPair' => @$oldNewArr
+               'oldNewPair' => @$oldNewArr,
+               'project_id' => @$id
            ];
 
          $this->updateParent($entryArr);
@@ -130,8 +134,39 @@ class GanttController extends Controller
                        $parent = @$entryArr['oldNewPair'][$entry['parent']] ?? 0;
                        $task->parent = $parent;
                        $task->save();
-                 }
+               $this->updateLink($entry['parent'],$entryArr['oldNewPair'],$entryArr['project_id']);
+               // $this->updateTargetLink($entry['parent'],$entryArr['oldNewPair'],$entryArr['project_id']);
+              }
             }
+        } 
+        
+    }
+
+    public function updateLink($id, $oldNewPair,$project_id){     
+        if($id > 0 && count($oldNewPair ) > 0 ){
+                       $links = Link::where('source',$id)
+                                ->orWhere('target',$id)->get();
+                       foreach ($links as $key => $lk) {
+                           if(@$oldNewPair[$lk['source']] && @$oldNewPair[$lk['target']]){
+                             $where = ['source' => @$oldNewPair[$lk['source']],'target' => @$oldNewPair[$lk['target']]];
+
+                             $update = [
+                                        'project_id' => $project_id,
+                                        'type' => $lk['type'],
+                                        'source' => @$oldNewPair[$lk['source']],
+                                        'target' =>@$oldNewPair[$lk['target']]
+                              ];
+                              $link = new Link();
+                              $link->UpdateOrCreate($where,$update);
+ 
+                                // $link = new Link();
+                                // $link->project_id = $project_id;
+                                // $link->type  = $lk['type'];
+                                // $link->source = @$oldNewPair[$lk['source']];
+                                // $link->target = @$oldNewPair[$lk['target']];
+                                // $link->save();
+                           }
+                       }
         } 
         
     }

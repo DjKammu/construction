@@ -105,7 +105,7 @@
 
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/gantt') }}"  role="tab"
-                                                     aria-expanded="false">Gantt </a>
+                                                     aria-expanded="false">Schedule </a>
                                               </li>
 
                                               <li class="nav-item">

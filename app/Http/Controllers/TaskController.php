@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
-
+use App\Models\Link;
 use Gate;
 
 class TaskController extends Controller
@@ -89,8 +89,9 @@ class TaskController extends Controller
 
 	public function destroy($pid,$id){
 		$task = Task::find($id);
+        Link::where('target' => $id)->
+         orWhere('source' => $id)->delete();
 		$task->delete();
-
 		return response()->json([
 			"action"=> "deleted"
 		]);
