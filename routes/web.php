@@ -457,6 +457,16 @@ Route::prefix('projects')->group(function(){
             Route::resource('do/link', App\Http\Controllers\LinkController::class);
 
         }); 
+        
+        Route::group(['prefix' => '{project}/schedule','as' => 'projects.schedule.'], function ($project) {
+
+            Route::get('/',[App\Http\Controllers\ScheduleController::class,'index'])->name('index');
+            Route::get('/get/data',[App\Http\Controllers\ScheduleController::class,'data'])->name('data');
+            Route::post('/other-assign',[App\Http\Controllers\ScheduleController::class,'otherAssign'])->name('other.assign');
+            Route::resource('do', App\Http\Controllers\ScheduleController::class);
+            // Route::resource('do/link', App\Http\Controllers\LinkController::class);
+
+        }); 
 
 
         Route::group(['prefix' => '{project}/soft-cost','as' => 'projects.soft-cost.'], function ($project) {
