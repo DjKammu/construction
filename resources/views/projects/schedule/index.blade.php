@@ -188,8 +188,8 @@
   function init() {
     scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
-    scheduler.config.first_hour = 7;
-    scheduler.config.last_hour = 19;
+    scheduler.config.first_hour = 00;
+    scheduler.config.last_hour = 24;
 
     var targetSkin;
     scheduler.changeSkin = function changeSkin(skin){

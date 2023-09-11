@@ -39,12 +39,12 @@ class TaskController extends Controller
 		$task->save();
 
 		return response()->json([
-			"action"=> "inserted",
+			"action" => "inserted",
 			"tid" => $task->id
 		]);
 	}
 
-	public function update($pid, $id, Request $request){
+    public function update($pid, $id, Request $request){
 		$task = Task::find($id);	
 		$task->text = $request->text;
 		$task->start_date = $request->start_date;
@@ -59,11 +59,12 @@ class TaskController extends Controller
 		$task->save();
 
 		return response()->json([
-			"action"=> "updated"
+			"action" => "updated"
 		]);
 	}
+      
 
-	private function updateOrder($taskId, $target){
+     private function updateOrder($taskId, $target){
 		$nextTask = false;
 		$targetId = $target;
 
@@ -86,14 +87,13 @@ class TaskController extends Controller
 		$updatedTask->save();
 	}
 
-
-	public function destroy($pid,$id){
+     public function destroy($pid,$id){
 		$task = Task::find($id);
-        Link::where('target' => $id)->
-         orWhere('source' => $id)->delete();
+        Link::where('target', $id)->orWhere('source',$id)->delete(); 
 		$task->delete();
 		return response()->json([
-			"action"=> "deleted"
+			"action" => "deleted"
 		]);
 	}
+
 }

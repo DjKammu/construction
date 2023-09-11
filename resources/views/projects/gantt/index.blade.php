@@ -164,6 +164,7 @@
                           line-height: 120%;
                           border-bottom: 1px solid #b3b3b3;
                           border-right: 1px solid #b3b3b3;
+                            z-index: 1111;
                       }
 
                       .gantt_drag_marker {
@@ -479,7 +480,7 @@
                       <div class="demo-actions-container">
                           <div class="demo-actions">
                               <div class="demo-actions__row">
-                                 <!--  <div class="demo-actions__col">
+                                   <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
                                           <div id="collapse" class="status-control">
                                               <div class="status">
@@ -489,7 +490,7 @@
                                               <div class="dhx_checkbox_title">Collapse Rows</div>
                                           </div>
                                       </div>
-                                  </div>-->
+                                  </div>
 
                                   <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
@@ -517,7 +518,7 @@
                                       </span>
                                   </div>
 
-                                  <!-- <div class="demo-actions__col">
+                                  <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
                                           <div id="critical-path" class="status-control">
                                               <div class="status">
@@ -527,7 +528,7 @@
                                               <div class="dhx_checkbox_title">Critical Path</div>
                                           </div>
                                       </div>
-                                  </div> -->
+                                  </div>
 
                                   <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
@@ -594,16 +595,19 @@
                               </style>
 
                               <script type="text/javascript">
-                                window.ganttModules = {};
+
                                  gantt.plugins({
-                                    marker: true,
-                                    fullscreen: true,
-                                    critical_path: true,
-                                    auto_scheduling: true,
-                                    tooltip: true,
-                                    undo: true,
-                                    export_api: true,
-                                  });
+                                      marker: true,
+                                      fullscreen: true,
+                                      critical_path: true,
+                                      auto_scheduling: true,
+                                      tooltip: true,
+                                      undo: true,
+                                      export_api: true,
+                                    });
+
+                                window.ganttModules = {};
+                                
 
                                   gantt.templates.scale_cell_class = function (date) {
                                     if (!gantt.isWorkTime(date)) {
@@ -686,7 +690,7 @@
                                       toggleCheckbox(zoomToFitCheckbox, config.zoom_to_fit);
                                       const scalesDropdown = document.querySelector("#scale_combo");
                                       const zoomLevelName = zoomConfig.levels[gantt.ext.zoom.getCurrentLevel()].name;
-                                      scalesDropdown.value = zoomLevelName;
+                                        scalesDropdown.value = zoomLevelName;
                                   },
                                   fullscreen: function () {
                                       gantt.ext.fullscreen.toggle();
@@ -737,125 +741,125 @@
                               };
 
 
-                                 const zoomConfig = {
-                                    levels: [
-                                        {
-                                            name: "hours",
-                                            scales: [
-                                                { unit: "day", step: 1, format: "%j %M" },
-                                                { unit: "hour", step: 1, format: "%H:%i" },
-                                            ],
-                                            round_dnd_dates: true,
-                                            min_column_width: 30,
-                                            scale_height: 60
-                                        },
-                                        {
-                                            name: "days",
-                                            // scales: [
-                                            //     { unit: "week", step: 1, format: "%W" },
-                                            //     { unit: "day", step: 1, format: "%j" },
-                                            // ],
-                                             scales:[
-                                              {unit: "day", step: 1, format: "%d %M"}
-                                            ],
-                                            round_dnd_dates: true,
-                                            min_column_width: 60,
-                                            scale_height: 60
-                                        },
-                                        {
-                                            name: "weeks",
-                                            scales: [
-                                                { unit: "month", step: 1, format: "%M" },
-                                                {
-                                                    unit: "week", step: 1, format: function (date) {
-                                                        const dateToStr = gantt.date.date_to_str("%d %M");
-                                                        const endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
-                                                        return dateToStr(date) + " - " + dateToStr(endDate);
-                                                    }
-                                                }
-                                            ],
-                                            round_dnd_dates: false,
-                                            min_column_width: 60,
-                                            scale_height: 60
-                                        },
-                                        {
-                                            name: "months",
-                                            scales: [
-                                                { unit: "year", step: 1, format: "%Y" },
-                                                { unit: "month", step: 1, format: "%M" }
-                                            ],
-                                            round_dnd_dates: false,
-                                            min_column_width: 50,
-                                            scale_height: 60
-                                        },
-                                        {
-                                            name: "quarters",
-                                            scales: [
-                                                { unit: "year", step: 1, format: "%Y" },
-                                                {
-                                                    unit: "quarter", step: 1, format: function quarterLabel(date) {
-                                                        const month = date.getMonth();
-                                                        let q_num;
+                               const zoomConfig = {
+    levels: [
+        {
+            name: "hours",
+            scales: [
+                { unit: "day", step: 1, format: "%j %M" },
+                { unit: "hour", step: 1, format: "%H:%i" },
+            ],
+            round_dnd_dates: true,
+            min_column_width: 30,
+            scale_height: 60
+        },
+        {
+            name: "days",
+            // scales: [
+            //     { unit: "week", step: 1, format: "%W" },
+            //     { unit: "day", step: 1, format: "%j" },
+            // ],
+            scales:[
+            {unit: "day", step: 1, format: "%d %M"}
+            ],
+            round_dnd_dates: true,
+            min_column_width: 60,
+            scale_height: 60
+        },
+        {
+            name: "weeks",
+            scales: [
+                { unit: "month", step: 1, format: "%M" },
+                {
+                    unit: "week", step: 1, format: function (date) {
+                        const dateToStr = gantt.date.date_to_str("%d %M");
+                        const endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
+                        return dateToStr(date) + " - " + dateToStr(endDate);
+                    }
+                }
+            ],
+            round_dnd_dates: false,
+            min_column_width: 60,
+            scale_height: 60
+        },
+        {
+            name: "months",
+            scales: [
+                { unit: "year", step: 1, format: "%Y" },
+                { unit: "month", step: 1, format: "%M" }
+            ],
+            round_dnd_dates: false,
+            min_column_width: 50,
+            scale_height: 60
+        },
+        {
+            name: "quarters",
+            scales: [
+                { unit: "year", step: 1, format: "%Y" },
+                {
+                    unit: "quarter", step: 1, format: function quarterLabel(date) {
+                        const month = date.getMonth();
+                        let q_num;
 
-                                                        if (month >= 9) {
-                                                            q_num = 4;
-                                                        } else if (month >= 6) {
-                                                            q_num = 3;
-                                                        } else if (month >= 3) {
-                                                            q_num = 2;
-                                                        } else {
-                                                            q_num = 1;
-                                                        }
+                        if (month >= 9) {
+                            q_num = 4;
+                        } else if (month >= 6) {
+                            q_num = 3;
+                        } else if (month >= 3) {
+                            q_num = 2;
+                        } else {
+                            q_num = 1;
+                        }
 
-                                                        return "Q" + q_num;
-                                                    }
-                                                },
-                                                { unit: "month", step: 1, format: "%M" }
-                                            ],
-                                            round_dnd_dates: false,
-                                            min_column_width: 50,
-                                            scale_height: 60
-                                        },
-                                        {
-                                            name: "years",
-                                            scales: [
-                                                { unit: "year", step: 1, format: "%Y" },
-                                                {
-                                                    unit: "year", step: 5, format: function (date) {
-                                                        const dateToStr = gantt.date.date_to_str("%Y");
-                                                        const endDate = gantt.date.add(gantt.date.add(date, 5, "year"), -1, "day");
-                                                        return dateToStr(date) + " - " + dateToStr(endDate);
-                                                    }
-                                                }
-                                            ],
-                                            round_dnd_dates: false,
-                                            min_column_width: 50,
-                                            scale_height: 60
-                                        },
-                                        {
-                                            name: "years",
-                                            scales: [
-                                                {
-                                                    unit: "year", step: 10, format: function (date) {
-                                                        const dateToStr = gantt.date.date_to_str("%Y");
-                                                        const endDate = gantt.date.add(gantt.date.add(date, 10, "year"), -1, "day");
-                                                        return dateToStr(date) + " - " + dateToStr(endDate);
-                                                    }
-                                                },
-                                                {
-                                                    unit: "year", step: 100, format: function (date) {
-                                                        const dateToStr = gantt.date.date_to_str("%Y");
-                                                        const endDate = gantt.date.add(gantt.date.add(date, 100, "year"), -1, "day");
-                                                        return dateToStr(date) + " - " + dateToStr(endDate);
-                                                    }
-                                                }
-                                            ],
-                                            round_dnd_dates: false,
-                                            min_column_width: 50,
-                                            scale_height: 60
-                                        }
-                                    ]
-                                }
+                        return "Q" + q_num;
+                    }
+                },
+                { unit: "month", step: 1, format: "%M" }
+            ],
+            round_dnd_dates: false,
+            min_column_width: 50,
+            scale_height: 60
+        },
+        {
+            name: "years",
+            scales: [
+                { unit: "year", step: 1, format: "%Y" },
+                {
+                    unit: "year", step: 5, format: function (date) {
+                        const dateToStr = gantt.date.date_to_str("%Y");
+                        const endDate = gantt.date.add(gantt.date.add(date, 5, "year"), -1, "day");
+                        return dateToStr(date) + " - " + dateToStr(endDate);
+                    }
+                }
+            ],
+            round_dnd_dates: false,
+            min_column_width: 50,
+            scale_height: 60
+        },
+        {
+            name: "years",
+            scales: [
+                {
+                    unit: "year", step: 10, format: function (date) {
+                        const dateToStr = gantt.date.date_to_str("%Y");
+                        const endDate = gantt.date.add(gantt.date.add(date, 10, "year"), -1, "day");
+                        return dateToStr(date) + " - " + dateToStr(endDate);
+                    }
+                },
+                {
+                    unit: "year", step: 100, format: function (date) {
+                        const dateToStr = gantt.date.date_to_str("%Y");
+                        const endDate = gantt.date.add(gantt.date.add(date, 100, "year"), -1, "day");
+                        return dateToStr(date) + " - " + dateToStr(endDate);
+                    }
+                }
+            ],
+            round_dnd_dates: false,
+            min_column_width: 50,
+            scale_height: 60
+        }
+    ]
+}
 
                                   
                                   gantt.config.fit_tasks = true;
@@ -910,32 +914,32 @@
                                         }
                                     }
 
+                                     function zoomToFit() {
+                                      const project = gantt.getSubtaskDates(),
+                                          areaWidth = gantt.$task.offsetWidth;
+                                      const scaleConfigs = zoomConfig.levels
 
-                                    function zoomToFitMode() {
-                                        const project = gantt.getSubtaskDates(),
-                                            areaWidth = gantt.$task.offsetWidth;
-                                        const scaleConfigs = zoomConfig.levels
+                                      let zoomLevel = 0;
+                                      for (let i = 0; i < scaleConfigs.length; i++) {
+                                          zoomLevel = i;
+                                          const level = scaleConfigs[i].scales;
+                                          const lowestScale = level[level.length - 1]
+                                          const columnCount = getUnitsBetween(project.start_date, project.end_date, lowestScale.unit, lowestScale.step || 1);
+                                          if ((columnCount + 2) * gantt.config.min_column_width <= areaWidth) {
+                                              break;
+                                          }
+                                      }
 
-                                        let zoomLevel = 0;
-                                        for (let i = 0; i < scaleConfigs.length; i++) {
-                                            zoomLevel = i;
-                                            const level = scaleConfigs[i].scales;
-                                            const lowestScale = level[level.length - 1]
-                                            const columnCount = getUnitsBetween(project.start_date, project.end_date, lowestScale.unit, lowestScale.step || 1);
-                                            if ((columnCount + 2) * gantt.config.min_column_width <= areaWidth) {
-                                                break;
-                                            }
-                                        }
+                                      if (zoomLevel == scaleConfigs.length) {
+                                          zoomLevel--;
+                                      }
 
-                                        if (zoomLevel == scaleConfigs.length) {
-                                            zoomLevel--;
-                                        }
+                                      gantt.ext.zoom.setLevel(scaleConfigs[zoomLevel].name);
+                                      applyConfig(scaleConfigs[zoomLevel], project);
 
-                                        gantt.ext.zoom.setLevel(scaleConfigs[zoomLevel].name);
-                                        applyConfig(scaleConfigs[zoomLevel], project);
+                                      gantt.render();
+                                  }
 
-                                        gantt.render();
-                                    }
 
                                     // get number of columns in timeline
                                     function getUnitsBetween(from, to, unit, step) {
@@ -971,12 +975,90 @@
                                     };
                                 })(gantt);
 
-const currentYear = new Date().getFullYear();
+gantt.templates.grid_row_class = function (start, end, task) {
+    return gantt.hasChild(task.id) ? "gantt_parent_row" : "";
+};
 
+const font_width_ratio = 7;
+
+gantt.templates.leftside_text = function leftSideTextTemplate(start, end, task) {
+    if (getTaskFitValue(task) === "left") {
+        return task.text;
+    }
+    return "";
+};
+
+gantt.templates.rightside_text = function rightSideTextTemplate(start, end, task) {
+    if (getTaskFitValue(task) === "right") {
+        return task.text;
+    }
+    return "";
+};
+
+gantt.templates.task_text = function taskTextTemplate(start, end, task) {
+    if (getTaskFitValue(task) === "center") {
+        return task.text;
+    }
+    return "";
+};
+
+function getTaskFitValue(task) {
+    let taskStartPos = gantt.posFromDate(task.start_date),
+        taskEndPos = gantt.posFromDate(task.end_date);
+
+    const width = taskEndPos - taskStartPos;
+    const textWidth = (task.text || "").length * font_width_ratio;
+
+    if (width < textWidth) {
+        let ganttLastDate = gantt.getState().max_date;
+        let ganttEndPos = gantt.posFromDate(ganttLastDate);
+        if (ganttEndPos - taskEndPos < textWidth) {
+            return "left"
+        }
+        else {
+            return "right"
+        }
+    }
+    else {
+        return "center";
+    }
+}
+
+
+
+const date_to_str = gantt.date.date_to_str(gantt.config.task_date);
+const today = new Date();
+gantt.addMarker({
+    start_date: today,
+    css: "today",
+    text: "Today",
+    title: "Today: " + date_to_str(today)
+});
+
+const start = new Date(2019, 9, 28);
+gantt.addMarker({
+    start_date: start,
+    css: "status_line",
+    text: "Start project",
+    title: "Start project: " + date_to_str(start)
+});
+
+gantt.attachEvent("onTaskCreated", function (item) {
+    if (item.duration == 1) {
+        item.duration = 72;
+    }
+    return true;
+});
+
+gantt.ext.fullscreen.getFullscreenElement = function () {
+    return document.querySelector(".demo-main-container");
+};
+
+const currentYear = new Date().getFullYear();
 
 const durationFormatter = gantt.ext.formatters.durationFormatter({
     enter: "day",
-    store: "hour",
+    store: "day",
     format: "day",
     hoursPerDay: 24,
     hoursPerWeek: 40,
@@ -1000,53 +1082,30 @@ const dateEditor = { type: "date", map_to: "start_date"};
 // const hourDurationEditor = { type: "duration", map_to: "duration", formatter: hourFormatter, min: 0, max: 10000 };
 const predecessorEditor = { type: "predecessor", map_to: "auto", formatter: linksFormatter };
 
-const durationEditor = {type: "number", map_to: "duration", min:0, max: 100};
-
-  // gantt.config.columns = [
-  //   {name: "text", tree: true, width: 200, resize: true, editor: textEditor},
-  //   {name: "start_date", align: "center", width: 90, resize: true, editor: dateEditor},
-  //   {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor},
-  //   {name: "add", width: 44}
-  // ]; 
-
-   gantt.config.columns = [
-    {name: "text", tree: true, width: 200, resize: true, editor: textEditor},
-    {name: "start_date", align: "center", width: 90, resize: true, editor: dateEditor},
-    {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor},
-    {name: "add", width: 44}
-  ];
+ const durationEditor = {type: "number", map_to: "duration", min:0, max: 100};
 
 
-
-// gantt.config.columns = [
-//     { name: "", width: 15, resize: false, template: function (task) { return "<span class='gantt_grid_wbs'>" + gantt.getWBSCode(task) + "</span>" } },
-//     { name: "text", tree: true, width: 180, resize: true, editor: textEditor },
-//     { name: "start_date", label: "Start", align: "center", resize: true, width: 80, editor: dateEditor },
-//     {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor},
-//     // {
-//     //     name: "duration_formatted", label: "Duration", resize: true, align: "center", width: 60, template: function (task) {
-//     //         return durationFormatter.format(task.duration);
-//     //     }, editor: durationEditor
-//     // },
-//     // {
-//     //     name: "duration_hours", label: "<div style='white-space: normal;line-height: 20px;margin: 10px 0;'>Duration (hours)</div>", resize: true, align: "center", width: 65, template: function (task) {
-//     //         return hourFormatter.format(task.duration);
-//     //     }, editor: hourDurationEditor
-//     // },
-//     // {
-//     //     name: "predecessors", label: "Predecessors", width: 80, align: "left", editor: predecessorEditor, resize: true, template: function (task) {
-//     //         const links = task.$target;
-//     //         const labels = [];
-//     //         for (let i = 0; i < links.length; i++) {
-//     //             const link = gantt.getLink(links[i]);
-//     //             labels.push(linksFormatter.format(link));
-//     //         }
-//     //         return labels.join(", ")
-//     //     }
-//     // },
-//     { name: "add", "width": 44 }
-// ];
-
+gantt.config.columns = [
+    { name: "", width: 15, resize: false, template: function (task) { return "<span class='gantt_grid_wbs'>" + gantt.getWBSCode(task) + "</span>" } },
+    { name: "text", tree: true, width: 180, resize: true, editor: textEditor },
+    { name: "start_date", label: "Start", align: "center", resize: true, width: 80, editor: dateEditor },
+    {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor, 
+      template: function (task) {
+            return durationFormatter.format(task.duration);
+        }, editor: durationEditor},
+    {
+        name: "predecessors", label: "Predecessors", width: 80, align: "left", editor: predecessorEditor, resize: true, template: function (task) {
+            const links = task.$target;
+            const labels = [];
+            for (let i = 0; i < links.length; i++) {
+                const link = gantt.getLink(links[i]);
+                labels.push(linksFormatter.format(link));
+            }
+            return labels.join(", ")
+        }
+    },
+    { name: "add", "width": 44 }
+];
 
 
 gantt.config.lightbox.sections = [
@@ -1055,12 +1114,52 @@ gantt.config.lightbox.sections = [
   {name: "time", type: "duration", map_to: "auto"}
 ];  
 
+//Make resize marker for two columns
+gantt.attachEvent("onColumnResizeStart", function (ind, column) {
+    if (!column.tree || ind == 0) return;
+
+    setTimeout(function () {
+        const marker = document.querySelector(".gantt_grid_resize_area");
+        if (!marker) return;
+        const cols = gantt.getGridColumns();
+        const delta = cols[ind - 1].width || 0;
+        if (!delta) return;
+
+        marker.style.boxSizing = "content-box";
+        marker.style.marginLeft = -delta + "px";
+        marker.style.paddingRight = delta + "px";
+    }, 1);
+});
+
+gantt.attachEvent("onGanttReady", function(){
+  
+gantt.templates.tooltip_text = function (start, end, task) {
+    const links = task.$target;
+    const labels = [];
+    for (let i = 0; i < links.length; i++) {
+        const link = gantt.getLink(links[i]);
+        labels.push(linksFormatter.format(link));
+    }
+   
+    const predecessors = labels.join(", ");
+
+    let html = "<b>Task:</b> " + task.text + "<br/><b>Start:</b> " +
+        gantt.templates.tooltip_date_format(start) +
+        "<br/><b>End:</b> " + gantt.templates.tooltip_date_format(end) +
+        "<br><b>Duration:</b> " + durationFormatter.format(task.duration);
+    if (predecessors) {
+        html += "<br><b>Predecessors:</b>" + predecessors;
+    }
+     console.log(html);
+    return html;
+};
+});
 gantt.config.date_format = "%Y-%m-%d %H:%i:%s";
 // gantt.config.order_branch = true;/*!*/
 // gantt.config.order_branch_free = true;/*!*/
 
 gantt.config.work_time = true;
-gantt.config.min_column_width = 60;
+// gantt.config.min_column_width = 60;
 
 //gantt.config.auto_types = true;
 // gantt.config.duration_unit = "hour";
@@ -1069,7 +1168,7 @@ gantt.config.row_height = 23;
 gantt.config.order_branch = "marker";
 gantt.config.order_branch_free = true;
 gantt.config.grid_resize = true;
-// gantt.ext.zoom.setLevel("days");
+gantt.ext.zoom.setLevel("days");
 gantt.config.auto_scheduling_strict = true;
 
   gantt.init("gantt_here");
@@ -1115,31 +1214,35 @@ gantt.config.auto_scheduling_strict = true;
         zoomToFitCheckbox = document.querySelector("#zoom-to-fit"),
         scaleComboElement = document.getElementById("scale_combo");
 
-    // collapseCheckbox.addEventListener("click", function () {
-    //     let action = "expandAll";
+if (collapseCheckbox) {
+    collapseCheckbox.addEventListener("click", function () {
+        let action = "expandAll";
 
-    //     config.collapse = !config.collapse;
-    //     toggleCheckbox(collapseCheckbox, config.collapse);
+        config.collapse = !config.collapse;
+        toggleCheckbox(collapseCheckbox, config.collapse);
 
-    //     if (config.collapse) {
-    //         action = "collapseAll";
-    //     }
+        if (config.collapse) {
+            action = "collapseAll";
+        }
 
-    //     if (toolbarMenu[action]) {
-    //         toolbarMenu[action]();
-    //     }
-    // });
+        if (toolbarMenu[action]) {
+            toolbarMenu[action]();
+        }
+    });
+  }
 
-//     criticalPathCheckbox.addEventListener("click", function () {
-//     let action = "toggleCriticalPath";
+if (criticalPathCheckbox) {
+    criticalPathCheckbox.addEventListener("click", function () {
+      let action = "toggleCriticalPath";
 
-//     config.critical_path = !config.critical_path;
-//     toggleCheckbox(criticalPathCheckbox, config.critical_path);
+      config.critical_path = !config.critical_path;
+      toggleCheckbox(criticalPathCheckbox, config.critical_path);
 
-//     if (toolbarMenu[action]) {
-//         toolbarMenu[action]();
-//     }
-// });
+      if (toolbarMenu[action]) {
+          toolbarMenu[action]();
+      }
+  });
+  }
    
    if (autoSchedulingCheckbox) {
         autoSchedulingCheckbox.addEventListener("click", function () {
