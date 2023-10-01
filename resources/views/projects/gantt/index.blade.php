@@ -160,7 +160,7 @@
                       }
 
                       .gantt_tooltip {
-                          font-size: 14px;
+                          font-size: 12px;
                           line-height: 120%;
                           border-bottom: 1px solid #b3b3b3;
                           border-right: 1px solid #b3b3b3;
@@ -449,6 +449,12 @@
 
                           width: 24px;
                           margin-right: 5px;
+                      }
+                      .gantt_grid_scale, .gantt_task_scale{
+                        font-size: 11px;
+                      }
+                       .gantt_cell{
+                        font-size: 11px;
                       }
 
                       @media screen and (max-width: 1280px){
@@ -1035,7 +1041,7 @@ gantt.addMarker({
     title: "Today: " + date_to_str(today)
 });
 
-const start = new Date(2019, 9, 28);
+const start = new Date();
 gantt.addMarker({
     start_date: start,
     css: "status_line",
@@ -1045,7 +1051,7 @@ gantt.addMarker({
 
 gantt.attachEvent("onTaskCreated", function (item) {
     if (item.duration == 1) {
-        item.duration = 72;
+        // item.duration = 72;
     }
     return true;
 });
@@ -1082,14 +1088,14 @@ const dateEditor = { type: "date", map_to: "start_date"};
 // const hourDurationEditor = { type: "duration", map_to: "duration", formatter: hourFormatter, min: 0, max: 10000 };
 const predecessorEditor = { type: "predecessor", map_to: "auto", formatter: linksFormatter };
 
- const durationEditor = {type: "number", map_to: "duration", min:0, max: 100};
+ const durationEditor = {type: "duration", map_to: "duration", min:0, max: 100};
 
 
 gantt.config.columns = [
     { name: "", width: 15, resize: false, template: function (task) { return "<span class='gantt_grid_wbs'>" + gantt.getWBSCode(task) + "</span>" } },
     { name: "text", tree: true, width: 180, resize: true, editor: textEditor },
     { name: "start_date", label: "Start", align: "center", resize: true, width: 80, editor: dateEditor },
-    {name: "duration", align: "center", width: 90, resize: true, editor: durationEditor, 
+    {name: "duration_formatted",label: "Duration", align: "center", width: 90, resize: true, editor: durationEditor, 
       template: function (task) {
             return durationFormatter.format(task.duration);
         }, editor: durationEditor},
@@ -1158,7 +1164,7 @@ gantt.config.date_format = "%Y-%m-%d %H:%i:%s";
 // gantt.config.order_branch = true;/*!*/
 // gantt.config.order_branch_free = true;/*!*/
 
-gantt.config.work_time = true;
+// gantt.config.work_time = true;
 // gantt.config.min_column_width = 60;
 
 //gantt.config.auto_types = true;

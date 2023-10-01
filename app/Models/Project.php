@@ -111,6 +111,10 @@ class Project extends Model
     public function gantt_lines(){
         return $this->hasMany(Task::class);
     }
+
+     public function spreadsheet(){
+        return $this->hasOne(Spreadsheet::class);
+    }
     
     public function applications(){
         return $this->hasMany(Application::class);

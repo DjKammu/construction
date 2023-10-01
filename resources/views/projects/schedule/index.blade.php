@@ -4,8 +4,7 @@
 
 @section('content')
 
-<script src="{{ asset('js/scheduler.js') }}"></script>
-<script src="{{ asset('js/scheduler_limit.js') }}"></script>
+<script src="{{ asset('js/dhtmlxscheduler_material.js') }}"></script>
 <link href="{{ asset('css/dhtmlxscheduler_material.css') }}"  rel="stylesheet" />
 <div class="row">
 @include('includes.back', 
@@ -179,85 +178,77 @@
     .dhx_cal_event div.dhx_event_resize.dhx_footer{
       background-color: transparent !important;
     }
+    .dhx_cal_navline .dhx_cal_date{
+          width: 80% !important;
+         text-align: right !important;
+    }
+    .dhx_scale_bar{
+          font-size: 12px;
+    }
+    .dhx_cal_event .dhx_title{
+          font-size: 11px;
+    }
+    .dhx_cal_container{
+          font-size: 12px;
+    }
+    .dhx_cal_tab, .dhx_cal_tab.active{
+          font-size: 12px;
+    }
+    .dhx_cal_navline .dhx_cal_date{
+          font-size: 16px;
+    }
  </style>
 
 
 <script type="text/javascript" charset="utf-8">
-  var initSkin = scheduler._skin_init;
 
-  function init() {
+ window.addEventListener("DOMContentLoaded", function(){
+    scheduler.plugins({
+        week_agenda: true ,
+         grid_view: true
+      });
+
     scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
     scheduler.config.first_hour = 00;
     scheduler.config.last_hour = 24;
 
-    var targetSkin;
-    scheduler.changeSkin = function changeSkin(skin){
-      targetSkin = skin;
-      var link = document.createElement("link");
-      link.onload = function(){
-        var children = document.getElementsByClassName("landing-view-demo")[0].getElementsByTagName('link');
-        children = [].slice.call(children);
-        if(children.length > 1){
-          for (var i = 0; i < children.length-1; i++){
-            if((children[i].href + "").indexOf('dhtmlxscheduler') > -1)
-              document.getElementsByClassName("landing-view-demo")[0].removeChild(children[i]);
-          }
-        }
-
-        scheduler.xy={
-          min_event_height:40,
-          scale_width:50,
-          scroll_width:18,
-          scale_height:20,
-          month_scale_height:20,
-          menu_width:25,
-          margin_top:0,
-          margin_left:0,
-          editor_width:140,
-          month_head_height:22
-        };
-
-        scheduler.skin = skin;
-        scheduler._skin_init = initSkin;
-        scheduler.init('scheduler_here', null, null);
-        scheduler.skin = skin;
-        setTimeout(function(){
-          scheduler.setCurrentView();
-          scheduler.resetLightbox();
-        });
-        if(skin == "material"){
-          document.querySelector(".add_event_button").style.display = "";
-        }else{
-          document.querySelector(".add_event_button").style.display = "none";
-        }
-
-      }
-
-      var skinFile = ["dhtmlxscheduler", skin ? ("_" + skin) : "", ".css"].join("");
-      alert(skinFile);
-      link.href = "/docs/products/dhtmlxScheduler/demo/lib/dhtmlxScheduler/" + skinFile;
-      link.rel= "stylesheet";
-
-
-
-      document.getElementsByClassName("landing-view-demo")[0].appendChild(link);
-
-    }
-
     scheduler.config.details_on_create = true;
     // scheduler.config.now_date = new Date(2020, 3, 24, 14, 17);
     scheduler.config.now_date = new Date();
 
-    scheduler.templates.event_class=function(start, end, event){
-      var css = "";
+    scheduler.config.multi_day = true;
+    scheduler.locale.labels.week_agenda_tab = "Week A.";
+    scheduler.config.time_step = 15;
 
-      if( (scheduler.skin == "material" || targetSkin == "material") && event.evType) // if skin == "material" and event has type property then special class should be assigned
-        css += "event_"+getLabel(evType, event.evType).toLowerCase();
+     scheduler.createGridView({
+            name:"grid",
+             fields:[    // defines columns of the grid
+                {id:"id",   label:'Id',   sort:'int',  width:80,  align:'right'},
+                {id:"date", label:'Date', sort:'date', width:'*'},
+                {id:"text", label:'Text', sort:'str',  width:200, align:'left'}
+            ],
+            rowHeight:42,
+            paging:true
+        });
+       
+    scheduler.locale.labels.grid_tab = "Grid";
 
-      return css; // default return
-    };
 
+      scheduler.templates.week_agenda_event_text = function (start_date, end_date, event, date, position) {
+        switch (position) {
+          case "middle":
+            return "-- " + event.text;
+          case "end":
+            return "End: " + scheduler.templates.event_date(start_date) + " " + event.text;
+          case "start":
+            return "Start: " + scheduler.templates.event_date(start_date) + " " + event.text;
+          default:
+            return scheduler.templates.event_date(start_date) + " " + event.text;
+        }
+      };
+
+    
     function getLabel(array, key){
       for (var i = 0; i < array.length; i++) {
         if (key == array[i].key)
@@ -282,21 +273,6 @@
       { name:"time", height:72, type:"time", map_to:"auto" }
     ];
 
-    scheduler.attachEvent("onBeforeViewChange", function(old_mode,old_date,mode,date){
-      if(!scheduler.skin){
-        if(old_mode!=mode || old_date.getTime()!=date.getTime())
-            scheduler.skin = targetSkin;
-      }
-
-        return true;
-    });
-
-    scheduler.attachEvent("onBeforeDrag", function (id, mode, e){
-        if(!scheduler.skin)
-          scheduler.skin = targetSkin;
-
-        return true;
-    });
     
     scheduler.config.date_format = "%Y-%m-%d %H:%i:%s";
  
@@ -313,30 +289,13 @@
       });
 
 
-    // scheduler.parse([
-    //   { start_date: "2020-04-20 10:00", end_date: "2020-04-20 12:00", text:"Front-end meeting"},
-    //   { start_date: "2020-04-21 16:30", end_date: "2020-04-21 18:30", text:"Feed ducks and city walking", evType:1},
-    //   { start_date: "2020-04-22  8:00", end_date: "2020-04-22 11:00", text:"World Darts Championship (morning session)"},
-    //   { start_date: "2020-04-22 12:00", end_date: "2020-04-22 14:00", text:"Lunch with Ann & Alex", evType:2},
-    //   { start_date: "2020-04-23 16:00", end_date: "2020-04-23 17:30", text:"Game of Thrones", evType:3},
-    //   { start_date: "2020-04-25  9:00", end_date: "2020-04-25 11:00", text:"Design workshop", evType:4},
-    //   { start_date: "2020-04-25 14:00", end_date: "2020-04-25 17:00", text:"World Darts Championship (evening session)"},
-    //   { start_date: "2020-04-23 00:00", end_date: "2020-04-23 00:00", text:"Couchsurfing. Family from Portugal"}
-    // ], "json");
-
-
-  }
+  });
 
   function addNewEv(){
     scheduler.addEventNow();
   }
 </script>
 
-<script type="text/javascript">
-  window.onload = function(){
-    init();
-  }
-</script>
 
 
                   <div style="position:relative; height: 600px; padding-top: 30px; overflow: hidden; background: #f7f7f7;">
@@ -348,9 +307,11 @@
                       <div class="dhx_cal_next_button">&nbsp;</div>
                       <div class="dhx_cal_today_button"></div>
                       <div class="dhx_cal_date"></div>
+                      <div class="dhx_cal_tab" name="week_agenda_tab"></div>
                       <div class="dhx_cal_tab" name="day_tab"></div>
                       <div class="dhx_cal_tab" name="week_tab"></div>
                       <div class="dhx_cal_tab" name="month_tab"></div>
+                      <div class="dhx_cal_tab" name="grid_tab"></div>
                     </div>
                     <div class="dhx_cal_header">
                     </div>

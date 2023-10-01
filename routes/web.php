@@ -466,6 +466,16 @@ Route::prefix('projects')->group(function(){
             Route::resource('do', App\Http\Controllers\ScheduleController::class);
             // Route::resource('do/link', App\Http\Controllers\LinkController::class);
 
+        });  
+
+        Route::group(['prefix' => '{project}/spreadsheet','as' => 'projects.spreadsheet.'], function ($project) {
+
+            Route::get('/',[App\Http\Controllers\SpreadsheetController::class,'index'])->name('index');
+            Route::get('/get/data',[App\Http\Controllers\SpreadsheetController::class,'data'])->name('data');
+            Route::post('/other-assign',[App\Http\Controllers\SpreadsheetController::class,'otherAssign'])->name('other.assign');
+            Route::resource('do', App\Http\Controllers\SpreadsheetController::class);
+            // Route::resource('do/link', App\Http\Controllers\LinkController::class);
+
         }); 
 
 

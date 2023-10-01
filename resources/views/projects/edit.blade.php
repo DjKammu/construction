@@ -111,6 +111,9 @@
                                              <li class="nav-item">
                                                   <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/schedule') }}"  role="tab" aria-expanded="false">Schedule </a>
                                               </li>
+                                              <li class="nav-item">
+                                                  <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/spreadsheet ') }}"  role="tab" aria-expanded="false">Spreadsheet  </a>
+                                              </li>
 
                                               <li class="nav-item">
                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#rfi" role="tab"
