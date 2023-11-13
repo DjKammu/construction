@@ -13,7 +13,7 @@ class ApplicationLine extends Model
 
     protected $fillable = [
      'application_id' , 'project_line_id' ,'billed_to_date',
-     'stored_to_date', 'work_completed', 'materials_stored'
+     'stored_to_date', 'work_completed', 'materials_stored','retainage'
     ];
 
     public function project_line(){

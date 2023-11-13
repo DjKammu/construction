@@ -126,6 +126,8 @@ class ProjectApplicationController extends Controller
 
         $application_date =  $request->input('application_date');
 
+
+
         $period_to =  $request->input('period_to');
 
         $application = Application::UpdateOrCreate(
@@ -138,7 +140,7 @@ class ProjectApplicationController extends Controller
               );
 
         $data = $request->data;
-   
+
       if($application_id){
  
        foreach ($data as $key => $dt) {
@@ -148,6 +150,7 @@ class ProjectApplicationController extends Controller
                  'stored_to_date' => $dt['stored_to_date'],
                  'work_completed' => $dt['work_completed'],
                  'materials_stored' => $dt['materials_stored'],
+                 'retainage' => $dt['retainage'],
              ];
              ApplicationLine::whereId($dt['id'])
                 ->update($update);    
@@ -181,6 +184,7 @@ class ProjectApplicationController extends Controller
                  'stored_to_date' => $dt['stored_to_date'],
                  'work_completed' => $dt['work_completed'],
                  'materials_stored' => $dt['materials_stored'],
+                 'retainage' => $dt['retainage'],
                  'change_order_application_id' => $dt['id'],
                  'app_no' => $app_no
              ];
@@ -236,6 +240,7 @@ class ProjectApplicationController extends Controller
       foreach (@$applications as $ak => $application) {
            $lines = $application->application_lines()
                       ->get();
+
            $currentDuePayment = 0;
            $closeProject = true;
 
@@ -244,8 +249,12 @@ class ProjectApplicationController extends Controller
                     $total = (float) $line['work_completed'] + (float) $line['materials_stored'];
 
                     $totalStored = $totalStored + $total;
+                    
+                      // $retainage = $line->project_line->retainage;
 
-                    $retainage = $line->project_line->retainage;
+                    $retainage = ($line->retainage) ? ($line->retainage) : $line->project_line->retainage;
+                    // print_r((float) ($total * $retainage/100));
+                    // print_r('</br>');
                     $retainageToDate = $retainageToDate + (float) ($total * $retainage/100);
 
                     $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
@@ -266,6 +275,8 @@ class ProjectApplicationController extends Controller
             } 
             $currentDuePayment =  (float) $currentDuePayment;                     
        }
+
+      // dd($lines);
 
       $applicationsCount = @$applications->count(); 
 
@@ -292,8 +303,12 @@ class ProjectApplicationController extends Controller
 
                     $totalStored = $totalStored + $total;
 
-                    $retainage = $changeOrder->retainage;
+                    // $retainage = $changeOrder->retainage;
 
+                    $retainage = ($cLine->retainage) ? ($cLine->retainage) : $changeOrder->retainage;
+
+                    // print_r((float) ($total * $retainage/100));
+                    // print_r('</br>');
                     $retainageToDate = $retainageToDate + (float) ($total * $retainage/100);
 
                     $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
@@ -322,7 +337,9 @@ class ProjectApplicationController extends Controller
        $lastApplicationsPayments = (@$applications->count() > 1) ? $totalEarned - $currentDuePayment 
        : 0;
         
-       $isProjectClosed = @$project->closeProject()->first();  
+       $isProjectClosed = @$project->closeProject()->first();
+
+       // dd($retainageToDate);  
 
        $data['applicationsCount'] = @$applicationsCount;
        $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
@@ -379,8 +396,6 @@ class ProjectApplicationController extends Controller
        $orderBy = 'created_at';  
        $order ='DESC' ;
 
-    
-
        if(!$application){
             $applications = $project->project_lines()
             // ->with('project_line')
@@ -399,16 +414,17 @@ class ProjectApplicationController extends Controller
        else{
 
             $applications = $application->application_lines()
-                      ->select('*', 'application_lines.id as id')
-                      ->with('project_line')
+                      ->select('*', 'application_lines.id as id','application_lines.retainage as retainage_line')->with('project_line')
                       ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
-                      ->orderBy('project_lines.account_number')->get();       
+                      ->orderBy('project_lines.account_number')->get();  
+              
 
              $applications->filter(function($app) use ($edit){
 
                 $app->account_number = $app->project_line->account_number;
                 $app->description = $app->project_line->description;
                 $app->value = $app->project_line->value;
+                $app->retainage = $app->retainage_line ? $app->retainage_line : $app->retainage;
                 $total = (float) $app->work_completed + (float) $app->billed_to_date;
 
                 $app->total_percentage = 0;
@@ -482,6 +498,7 @@ class ProjectApplicationController extends Controller
                 $changeOrder->stored_to_date =  @$line->stored_to_date ?? 0;
                 $changeOrder->work_completed =  @$line->work_completed ?? 0;
                 $changeOrder->materials_stored = @$line->materials_stored ?? 0;
+                $changeOrder->retainage = @$line->retainage ? @$line->retainage : $changeOrder->retainage;
 
                  if($edit == false){
                    $changeOrder->billed_to_date = $total;
@@ -557,15 +574,26 @@ class ProjectApplicationController extends Controller
           $application = $project->applications()
                        ->where('id',$app_id)->first();
 
+          $applications = $project->applications()
+                       ->where('id', '<',$app_id)->get();
+
           $lines = $application->application_lines()
+                    ->select('*', 'application_lines.id as id', 'application_lines.retainage as retainage')
                     ->with('project_line')
                    ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
                    ->orderBy('project_lines.account_number')
                    ->get();
+            
+
+           // dd($applications);  
 
           $summary = $this->getSummary($project,$app_id);
-        
+
+        // dd($lines);       
+
+
           $data = array_merge([
+                   'applications' => $applications,
                    'application' => $application,
                    'lines' => $lines,
                    'project' => $project
@@ -593,16 +621,20 @@ class ProjectApplicationController extends Controller
         }  
         
         elseif ($to == self::CONTINUATIONSHEET_CLOSE_PROJECT) {
+            // $applications->pop();
             $application = $project->closeProject()->first();
 
             $lastApplication = $project->applications()
                        ->latest()->first();       
 
+            $applications = $project->applications()->whereNotIn('id',[$lastApplication->id])->get();
+
            $lines = $lastApplication->application_lines()
+                   ->select('*', 'application_lines.id as id', 'application_lines.retainage as retainage')
                    ->with('project_line')
                    ->join('project_lines', 'application_lines.project_line_id', '=', 'project_lines.id')
                    ->orderBy('project_lines.account_number')
-                     ->get(); 
+                    ->get(); 
 
            $summary = $this->getSummary($project,$lastApplication->id);
 
@@ -613,6 +645,7 @@ class ProjectApplicationController extends Controller
            $summary['applicationsCount'] = $summary['applicationsCount'] + 1;
 
            $data = array_merge([
+                   'applications' => $applications,
                    'application' => $application,
                    'lines' => $lines,
                    'project' => $project

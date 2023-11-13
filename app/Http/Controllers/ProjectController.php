@@ -1035,7 +1035,7 @@ class ProjectController extends Controller
      $attachment_name = @$project->attachment_name;
 
      $fileInfo = pathinfo($attachment);
-     $extension = $fileInfo['extension'];
+     $extension = @$fileInfo['extension'];
 
      if(in_array(\Str::lower($extension),['doc','docx','docm','dot',
     'dotm','dotx'])){

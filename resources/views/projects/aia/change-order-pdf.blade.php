@@ -607,7 +607,7 @@ p.p32  {
  $changeOrderApplications = $project->changeOrderApplications()
                             ->where('app','<=',$applicationsCount)
                             ->orderBy('account_number')
-                            ->get();      
+                            ->get();    
 
 @endphp
 
@@ -618,6 +618,21 @@ p.p32  {
  $conmTotal = $copbTotal = 0;
  $total_percentage = 0;
  $co_less_retainage = 0;
+
+$linesTotalCO = []; $lineRetainageCO = 0;
+  foreach(@$changeOrderApplications as $key => $COapp) {
+
+  $COlines = $COapp->application_lines()->where('app_no','<',$applicationsCount)->get(); 
+                        
+  foreach(@$COlines as $key => $COappLine) { 
+    $lineRetainageCO = ($COappLine->retainage) ? ($COappLine->retainage) : $COapp->retainage;
+
+       $linesTotalCO[$COappLine->change_order_application_id] = @$linesTotalCO[$COappLine->change_order_application_id] +  (float) (((float) $COappLine->work_completed + (float)  $COappLine->materials_stored ) * $lineRetainageCO/100);
+    }
+  }
+
+
+
 @endphp
 
 @foreach(@$changeOrderApplications as $key => $line)
@@ -629,6 +644,10 @@ $cTotal = $cTotal + @$line->value;
 $dsTotal = $esTotal = $fsTotal = $gsTotal = $hsTotal = $isTotal = $nmTotal = $pbTotal = 0;
 foreach (@$changeOrderlines as $k => $cLine) {
        $total = $cLine->billed_to_date + $cLine->work_completed + $cLine->stored_to_date +  $cLine->materials_stored;
+
+      $lineTotal = (float) $cLine->work_completed + (float)  $cLine->materials_stored;
+
+
 
       $dTotal = $dTotal + $cLine->billed_to_date;
       $dsTotal = $dsTotal + $cLine->billed_to_date;
@@ -646,11 +665,16 @@ foreach (@$changeOrderlines as $k => $cLine) {
       $hTotal = $hTotal + $exclude_retainage;
       $hsTotal = $hsTotal + $exclude_retainage;
       
-      $retainage =  $line->retainage;
-      $retainage_value =  ($total * $retainage/100);
+      //$retainage =  $line->retainage;
 
-      $iTotal = $iTotal + $retainage_value;
-      $isTotal = $isTotal + $retainage_value;
+      $retainage = ($cLine->retainage) ? ($cLine->retainage) : $line->retainage;
+
+      $retainage_value =  ($lineTotal * $retainage/100);
+
+
+     
+      $iTotal = $iTotal + $retainage_value + @$linesTotalCO[$cLine->change_order_application_id] ;
+      $isTotal = $isTotal + $retainage_value + @$linesTotalCO[$cLine->change_order_application_id] ;
 
        if($cLine->materials_stored > 0){
          $nmTotal = $nmTotal + $cLine->materials_stored;

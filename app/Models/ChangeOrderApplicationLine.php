@@ -12,7 +12,7 @@ class ChangeOrderApplicationLine extends Model
     protected $fillable = [
      'change_order_application_id' ,'billed_to_date',
      'stored_to_date', 'work_completed', 'materials_stored',
-     'app_no'
+     'app_no','retainage'
     ];
 
     // public function project_line(){

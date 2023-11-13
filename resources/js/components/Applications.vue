@@ -38,6 +38,7 @@
             </th>
                 <th>Description</th>
                 <th>Scheduled Value</th>
+                <th style="width: 80px;">Retainage %</th>
                 <th>Billed to Date</th>
                 <th>Stored to Date</th>
                 <th>Work Completed This Period </th>
@@ -51,7 +52,8 @@
                 <td>{{ applications[index].account_number }}</td>
                 <td>
                 {{ applications[index].description }} </td> 
-                <td> ${{ new Intl.NumberFormat().format(applications[index].value) }} </td>         
+                <td> ${{ new Intl.NumberFormat().format(applications[index].value) }} </td>  
+                 <td><input class="form-control" type="number" max="100" v-model="applications[index].retainage" /></td>      
                 <td>
                 ${{ (applications[index].billed_to_date) ? 
                 new Intl.NumberFormat().format(applications[index].billed_to_date) : 0 }}                
@@ -74,6 +76,7 @@
             </th>
                 <th>Description</th>
                 <th>Scheduled Value</th>
+                <th style="width: 80px;">Retainage %</th>
                 <th>Billed to Date</th>
                 <th>Stored to Date</th>
                 <th>Work Completed This Period </th>
@@ -87,7 +90,8 @@
                 <td>{{ change_orders[index].account_number }}</td>
                 <td>
                 {{ change_orders[index].description }} </td> 
-                <td> ${{ new Intl.NumberFormat().format(change_orders[index].value) }} </td>         
+                <td> ${{ new Intl.NumberFormat().format(change_orders[index].value) }} </td>
+                <td><input class="form-control" type="number" max="100" v-model="change_orders[index].retainage" /></td>             
                 <td>
                 ${{ (change_orders[index].billed_to_date) ? 
                 new Intl.NumberFormat().format(change_orders[index].billed_to_date) : 0 }}                
