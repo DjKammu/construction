@@ -190,7 +190,7 @@ foreach(@$applications as $key => $app) {
        foreach(@$app->application_lines as $key => $appLine) { 
        //@if($appLine->project_line_id == @$line->project_line_id)
       
-        $lineRetainage = ($appLine->retainage) ? ($appLine->retainage) : $appLine->project_line->retainage;
+        $lineRetainage = (@$appLine->retainage != '')  ? ($appLine->retainage) : $appLine->project_line->retainage;
          $linesTotal[$appLine->project_line_id] = @$linesTotal[$appLine->project_line_id] +  (float) (((float) $appLine->work_completed + (float)  $appLine->materials_stored ) * $lineRetainage/100);
         
        }
@@ -202,7 +202,7 @@ foreach(@$applications as $key => $app) {
  $total = $line->billed_to_date + $line->work_completed + $line->stored_to_date +  $line->materials_stored;
 
  //$retainage =  $line->project_line->retainage;
- $retainage = ($line->retainage) ? ($line->retainage) : $line->project_line->retainage;
+ $retainage = (@$line->retainage != '') ? ($line->retainage) : $line->project_line->retainage;
 
  $lineTotal = (float) $line->work_completed + (float)  $line->materials_stored;
 
@@ -292,8 +292,7 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
   $COlines = $COapp->application_lines()->where('app_no','<',$applicationsCount)->get(); 
                         
   foreach(@$COlines as $key => $COappLine) { 
-    $lineRetainageCO = ($COappLine->retainage) ? ($COappLine->retainage) : $COapp->retainage;
-
+        $lineRetainageCO = (@$COappLine->retainage != '')  ? ($COappLine->retainage) : $COapp->retainage;
        $linesTotalCO[$COappLine->change_order_application_id] = @$linesTotalCO[$COappLine->change_order_application_id] +  (float) (((float) $COappLine->work_completed + (float)  $COappLine->materials_stored ) * $lineRetainageCO/100);
     }
   }
@@ -304,13 +303,13 @@ $less_retainage = ($eTotal + $pbTotal + $nmTotal) * $retainage/100;
        $coRetainage = $changeOrder->retainage;
 
        $changeOrderlines = $changeOrder->application_lines()
-                            ->where('app_no',$applicationsCount)->get(); 
+                            ->where('app_no',$applicationsCount)->get();                     
 
        $coseTotal = $cosnmTotal = $cospbTotal = 0 ;              
 
        foreach (@$changeOrderlines as $k => $cLine) {
 
-                $coRetainage = ($cLine->retainage) ? ($cLine->retainage) : $coRetainage;
+                $coRetainage = (@$cLine->retainage != '')  ? ($cLine->retainage) : $coRetainage;
 
                 $totalCO = $cLine->billed_to_date + $cLine->work_completed + (($cLine->materials_stored > 0) ? $cLine->materials_stored : 0) ;
 

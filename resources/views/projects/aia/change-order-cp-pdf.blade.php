@@ -625,7 +625,7 @@ p.p32  {
   $COlines = $COapp->application_lines()->where('app_no','<', ($applicationsCount - 1) )->get(); 
                         
   foreach(@$COlines as $key => $COappLine) { 
-    $lineRetainageCO = ($COappLine->retainage) ? ($COappLine->retainage) : $COapp->retainage;
+    $lineRetainageCO = (@$COappLine->retainage != '') ? ($COappLine->retainage) : $COapp->retainage;
 
        $linesTotalCO[$COappLine->change_order_application_id] = @$linesTotalCO[$COappLine->change_order_application_id] +  (float) (((float) $COappLine->work_completed + (float)  $COappLine->materials_stored ) * $lineRetainageCO/100);
     }
@@ -663,7 +663,7 @@ foreach (@$changeOrderlines as $k => $cLine) {
       $hsTotal = $hsTotal + $exclude_retainage;
       
       //$retainage =  $line->retainage;
-      $retainage = ($cLine->retainage) ? ($cLine->retainage) : $line->retainage;
+      $retainage = (@$cLine->retainage != '')  ? ($cLine->retainage) : $line->retainage;
       $retainage_value =  ($lineTotalCO * $retainage/100);
 
       $iTotal = $iTotal + @$linesTotalCO[$cLine->change_order_application_id] + $retainage_value ;

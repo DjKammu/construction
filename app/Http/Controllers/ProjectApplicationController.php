@@ -252,9 +252,14 @@ class ProjectApplicationController extends Controller
                     
                       // $retainage = $line->project_line->retainage;
 
-                    $retainage = ($line->retainage) ? ($line->retainage) : $line->project_line->retainage;
+                    $retainage = (@$line->retainage != '') ? ($line->retainage) : $line->project_line->retainage;
+                    //  print_r ($line->id);
+                    //  print_r('r1</br>'); 
+
+                    // print_r ($line->retainage);
+                    // print_r('r</br>');
                     // print_r((float) ($total * $retainage/100));
-                    // print_r('</br>');
+                    // print_r('t</br>');
                     $retainageToDate = $retainageToDate + (float) ($total * $retainage/100);
 
                     $totalEarned =  (float) $totalStored -  (float) ($retainageToDate);
@@ -305,7 +310,7 @@ class ProjectApplicationController extends Controller
 
                     // $retainage = $changeOrder->retainage;
 
-                    $retainage = ($cLine->retainage) ? ($cLine->retainage) : $changeOrder->retainage;
+                    $retainage = (@$cLine->retainage != '') ? ($cLine->retainage) : $changeOrder->retainage;
 
                     // print_r((float) ($total * $retainage/100));
                     // print_r('</br>');
@@ -424,7 +429,7 @@ class ProjectApplicationController extends Controller
                 $app->account_number = $app->project_line->account_number;
                 $app->description = $app->project_line->description;
                 $app->value = $app->project_line->value;
-                $app->retainage = $app->retainage_line ? $app->retainage_line : $app->retainage;
+                $app->retainage = ($app->retainage_line != '') ? $app->retainage_line : $app->retainage;
                 $total = (float) $app->work_completed + (float) $app->billed_to_date;
 
                 $app->total_percentage = 0;
@@ -498,7 +503,7 @@ class ProjectApplicationController extends Controller
                 $changeOrder->stored_to_date =  @$line->stored_to_date ?? 0;
                 $changeOrder->work_completed =  @$line->work_completed ?? 0;
                 $changeOrder->materials_stored = @$line->materials_stored ?? 0;
-                $changeOrder->retainage = @$line->retainage ? @$line->retainage : $changeOrder->retainage;
+                $changeOrder->retainage =  (@$line->retainage != '') ? @$line->retainage : $changeOrder->retainage;
 
                  if($edit == false){
                    $changeOrder->billed_to_date = $total;
