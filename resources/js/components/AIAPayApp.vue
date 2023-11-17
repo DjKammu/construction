@@ -74,19 +74,19 @@
             <thead>
             <tr >
                 <th>Project Line Total</th>
-                <th>${{ new Intl.NumberFormat().format(total) }}</th>
+                <th>${{ numberFormat(total) }}</th>
             </tr>
             <tr >
                 <th>Contract Original Scheduled Value</th>
-                <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                <th>${{  numberFormat(original_amount)  }}</th>
             </tr>
             <tr style="color: red;" v-if="currentExcess">
                 <th >Current Excess</th>
-                <th>${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
+                <th>${{  numberFormat(currentExcess)  }}</th>
             </tr>
             <tr style="color: red;" v-else>
                 <th> Short Fall</th>
-                <th>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
+                <th>${{  numberFormat(shortFall)   }}</th>
             </tr>
             </thead>
             <tbody>
@@ -127,14 +127,14 @@
 
                   <h6> Project Line Item Excess   </h6>
                 
-                The sum of the scheduled values for the project line items exceeds the original amount by  ${{  new Intl.NumberFormat().format(currentExcess)  }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
+                The sum of the scheduled values for the project line items exceeds the original amount by  ${{  numberFormat(currentExcess)  }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
 
              </div>
 
             <div class="col-12" v-else-if="shortFall > 0">
 
                 <h6>Project Line Item Shortfall</h6> 
-                The sum of the scheduled values for the project line items less than the original amount by ${{  new Intl.NumberFormat().format(shortFall) }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
+                The sum of the scheduled values for the project line items less than the original amount by ${{  numberFormat(shortFall) }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
 
                 You will not able to proceed with creating Application #1 until this is resolved.
                
@@ -226,18 +226,18 @@
                     <thead>
                      <tr >
                         <th>Total Original Contract Amount</th>
-                        <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                        <th>${{  numberFormat(original_amount)  }}</th>
                     </tr>
                     
                     <tr >
                         <th>Project Line Item Total</th>
-                        <th>${{ new Intl.NumberFormat().format(total) }}</th>
+                        <th>${{ numberFormat(total) }}</th>
                     </tr>
                    
                     <tr style="color: red;" >
                         <th >Project Line Item Excess/(Shortfall)</th>
-                        <th v-if="currentExcess" >${{  new Intl.NumberFormat().format(currentExcess)  }}</th>
-                        <th     v-else>${{  new Intl.NumberFormat().format(shortFall)   }}</th>
+                        <th v-if="currentExcess" >${{  numberFormat(currentExcess)  }}</th>
+                        <th     v-else>${{  numberFormat(shortFall)   }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -253,41 +253,41 @@
                 <thead v-if="!isProjectClosed">
                  <tr >
                     <th>Original Contract Sum</th>
-                    <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                    <th>${{  numberFormat(original_amount)  }}</th>
                    
                 </tr>
                 <tr >
                     <th>Net Change from Change Order(s)</th>
-                     <th>${{  new Intl.NumberFormat().format(changeOrdersTotal)  }}</th>
+                     <th>${{  numberFormat(changeOrdersTotal)  }}</th>
                 </tr>
                 <tr >
                     <th>Subcontract Sum to Date</th>
-                    <th>${{ new Intl.NumberFormat().format( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
+                    <th>${{ numberFormat( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
                 </tr>
                 <tr >
                     <th>Total Completed & Stored to Date</th>
-                    <th>${{ new Intl.NumberFormat().format(totalStored) }}</th>
+                    <th>${{ numberFormat(totalStored) }}</th>
                 </tr>  
 
                 <tr >
                     <th>Retainage to Date</th>
-                    <th>${{ new Intl.NumberFormat().format(retainageToDate) }}</th>
+                    <th>${{ numberFormat(retainageToDate) }}</th>
                 </tr>
                 <tr >
                     <th>Total Earned Less Retainage</th>
-                    <th>${{ new Intl.NumberFormat().format(totalEarned) }}</th>
+                    <th>${{ numberFormat(totalEarned) }}</th>
                 </tr>
                 <tr >
                     <th>Less Previous Applications & Certificates for Payment</th>
-                    <th>${{ new Intl.NumberFormat().format(lastApplicationsPayments) }}</th>
+                    <th>${{ numberFormat(lastApplicationsPayments) }}</th>
                 </tr>
                 <tr >
                     <th>Current Payment Due</th>
-                    <th>${{ new Intl.NumberFormat().format(currentDuePayment) }}</th>
+                    <th>${{ numberFormat(currentDuePayment) }}</th>
                 </tr>
                 <tr >
                     <th>Balance to Finish Including Total Retainage</th>
-                    <th>${{ new Intl.NumberFormat().format(
+                    <th>${{ numberFormat(
                           (balance)) }}</th>
                 </tr>
                 
@@ -296,20 +296,20 @@
                 <thead v-else>
                     <tr >
                       <th>Original Contract Sum</th>
-                      <th>${{  new Intl.NumberFormat().format(original_amount)  }}</th>
+                      <th>${{  numberFormat(original_amount)  }}</th>
                      
                     </tr>
                     <tr >
                       <th>Net Change from Change Order(s)</th>
-                       <th>${{  new Intl.NumberFormat().format(changeOrdersTotal)  }}</th>
+                       <th>${{  numberFormat(changeOrdersTotal)  }}</th>
                     </tr>
                     <tr >
                       <th>Subcontract Sum to Date</th>
-                      <th>${{ new Intl.NumberFormat().format( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
+                      <th>${{ numberFormat( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
                     </tr>
                     <tr >
                       <th>Total Completed & Stored to Date</th>
-                      <th>${{ new Intl.NumberFormat().format(totalStored) }}</th>
+                      <th>${{ numberFormat(totalStored) }}</th>
                     </tr>  
 
                      <tr >
@@ -374,6 +374,8 @@
 
 <script>
     import datetimepicker from '../../../public/js/plugins/bootstrap-datetimepicker.js' //import
+
+   
 
     export default {
         props: ['project','retainage','projectid','original_amount'],
@@ -529,6 +531,11 @@
             },
             formatNumber(value){
                return value
+            },
+           numberFormat(value){
+            return  new Intl.NumberFormat('en-US', {
+                        maximumFractionDigits: 2,
+                }).format(value);
             },
             deleteHTMLLine(index){
               this.addLineItemHTML.splice(index, 1);
