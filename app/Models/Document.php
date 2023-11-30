@@ -26,6 +26,7 @@ class Document extends Model
      CONST PROJECTS_PURCHASE_ORDERS = 'projects-purchase-orders';
      CONST BILLS_PURCHASE_ORDERS = 'bills-purchase-orders';
      CONST SOFT_COST_PROPOSALS = 'soft-cost-proposals';
+     CONST ARCHT_REPORTS = 'archt-reports';
     
 
      protected $fillable = [

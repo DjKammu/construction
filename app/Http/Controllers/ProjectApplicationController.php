@@ -6,8 +6,11 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Application;
+use App\Models\DocumentType;
 use App\Models\ApplicationLine;
 use App\Models\ChangeOrderApplicationLine;
+use App\Models\Payment;
+use App\Models\Document;
 use Gate;
 use Carbon\Carbon;
 use PDF;
@@ -347,12 +350,12 @@ class ProjectApplicationController extends Controller
        // dd($retainageToDate);  
 
        $data['applicationsCount'] = @$applicationsCount;
-       $data['lastApplicationsPayments'] = (float) $lastApplicationsPayments;
-       $data['currentDuePayment'] = (float) $currentDuePayment;
-       $data['changeOrdersTotal'] = (float) $changeOrdersTotal;
-       $data['retainageToDate'] = (float) $retainageToDate;
-       $data['totalStored'] = (float) $totalStored;
-       $data['totalEarned'] = (float) $totalEarned;
+       $data['lastApplicationsPayments'] = (float) Payment::format2Decimal($lastApplicationsPayments);
+       $data['currentDuePayment'] = (float) Payment::format2Decimal($currentDuePayment);
+       $data['changeOrdersTotal'] = (float) Payment::format2Decimal($changeOrdersTotal);
+       $data['retainageToDate'] = (float) Payment::format2Decimal($retainageToDate);
+       $data['totalStored'] = (float) Payment::format2Decimal($totalStored);
+       $data['totalEarned'] = (float) Payment::format2Decimal($totalEarned);
        $data['isProjectClosed'] = $isProjectClosed;
        $data['closeProject'] =  ($closeProject &&  $changeOrdercloseProject ) ? $closeProject : false;
 
@@ -549,11 +552,26 @@ class ProjectApplicationController extends Controller
     
         $project  = Project::find($id);  
       
-        $applications = $project->applications()->latest()->get();
+        $applications = $project->applications()->latest()->with('archt_reports')->get();
 
         $applications->filter(function ($application, $key) use ($project,$applications) {
              $changeOrderApplications = $project->changeOrderApplications()
                                        ->where('app','<=', ($applications->count() - $key))->exists();
+            $archtReports = $application->archt_reports->filter(function($report){
+
+                   $fileInfo = pathinfo($report->file);
+                   $extension = @$fileInfo['extension'];
+                   if(in_array(\Str::lower($extension),['doc','docx','docm','dot',
+                  'dotm','dotx'])){
+                       $extension = 'word'; 
+                   }
+                  else if(in_array(\Str::lower($extension),['csv','dbf','dif','xla',
+                      'xls','xlsb','xlsm','xlsx','xlt','xltm','xltx'])){
+                       $extension = 'excel'; 
+                  }
+                $report->file =  Document::ARCHT_REPORTS.'/'.$report->file;
+                $report->extension = $extension;
+            });                    
             return $application['has_change_order'] = $changeOrderApplications;   
       
         });
@@ -693,6 +711,68 @@ class ProjectApplicationController extends Controller
 
         return $pdf->stream('project_'.$slug .'_budget.pdf');
         return $pdf->download('project_'.$slug.'_budget.pdf');
+    }
+
+
+    public function archtReports(Request $request, $id, $app_id){
+
+        $project  = Project::find($id);
+        $application = Application::find($app_id);
+
+        $document_type = DocumentType::where('name', DocumentType::ARCHT_REPORTS)
+                         ->first();
+
+        $name = 'Architect Report File';  
+
+        $slug = @\Str::slug($name);
+
+        $document = $project->documents()
+                   ->firstOrCreate(['project_id' => $project->id,
+                    'document_type_id' => $document_type->id
+                     ],
+                     ['name' => $name, 'slug' => $slug,
+                     'project_id'       => $project->id,
+                     'document_type_id' => $document_type->id
+                     ]
+        );
+
+        if($request->hasFile('files')){
+             $filesArr = $reportsArr =  [];
+             $files = $request->file('files');
+             $date  = date('d');
+             $month = date('m');
+             $year  = date('Y');
+
+             foreach ($files as $key => $file) {
+                    $fileName = time().$key.'.'. $file->getClientOriginalExtension();
+                    $path = Document::ARCHT_REPORTS;
+                    $file->storeAs($path, $fileName, 'doc_upload');
+                     $filesArr[] = $fileName; 
+
+                     $fileArr[] = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ]; 
+
+                      $reportsArr[] = ['file' => $fileName,
+                                  'file_name' => $fileName
+                                  ];
+
+            }
+            $document->files()->createMany($fileArr);
+            $application->archt_reports()->createMany($reportsArr);
+        }
+
+        return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Reports Uploaded Successfully!'
+           ]
+        );
+
+
+
     }
 
 }

@@ -67,5 +67,10 @@ class Payment extends Model
         return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $num);
     }
 
+    public static function format2Decimal($num){
+        return number_format($num, 2, '.', '');
+        return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $num);
+    }
+
 
 }

@@ -273,6 +273,8 @@ Route::prefix('projects')->group(function(){
 
       Route::get('{id}/{to}/{app_id}', [App\Http\Controllers\ProjectApplicationController::class,'generatePDF'])->name('projects.application.pdf'); 
 
+      Route::post('{id}/archt-reports/{app_id}', [App\Http\Controllers\ProjectApplicationController::class,'archtReports'])->name('projects.application.archt-reports.store'); 
+
 
       Route::get('{id}/change-orders', [App\Http\Controllers\ChangeOrderController::class,'create'])->name('projects.change-orders.create'); 
 

@@ -19,4 +19,8 @@ class Application extends Model
         return $this->hasMany(ApplicationLine::class);
     }
 
+    public function archt_reports(){
+        return $this->hasMany(ArchtReport::class);
+    }
+
 }

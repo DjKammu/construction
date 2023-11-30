@@ -10,7 +10,6 @@
             </div>
         </div>    
         <div class="table-responsive" v-if="projectLines">
-
           <table id="project-types-table" class="table table-hover text-center payments-table">
             <thead>
             <tr class="text-danger">
@@ -74,19 +73,19 @@
             <thead>
             <tr >
                 <th>Project Line Total</th>
-                <th>${{ numberFormat(total) }}</th>
+                <th>${{ numbersFormat(total) }}</th>
             </tr>
             <tr >
                 <th>Contract Original Scheduled Value</th>
-                <th>${{  numberFormat(original_amount)  }}</th>
+                <th>${{  numbersFormat(original_amount)  }}</th>
             </tr>
             <tr style="color: red;" v-if="currentExcess">
                 <th >Current Excess</th>
-                <th>${{  numberFormat(currentExcess)  }}</th>
+                <th>${{  numbersFormat(currentExcess)  }}</th>
             </tr>
             <tr style="color: red;" v-else>
                 <th> Short Fall</th>
-                <th>${{  numberFormat(shortFall)   }}</th>
+                <th>${{  numbersFormat(shortFall)   }}</th>
             </tr>
             </thead>
             <tbody>
@@ -127,14 +126,14 @@
 
                   <h6> Project Line Item Excess   </h6>
                 
-                The sum of the scheduled values for the project line items exceeds the original amount by  ${{  numberFormat(currentExcess)  }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
+                The sum of the scheduled values for the project line items exceeds the original amount by  ${{  numbersFormat(currentExcess)  }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
 
              </div>
 
             <div class="col-12" v-else-if="shortFall > 0">
 
                 <h6>Project Line Item Shortfall</h6> 
-                The sum of the scheduled values for the project line items less than the original amount by ${{  numberFormat(shortFall) }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
+                The sum of the scheduled values for the project line items less than the original amount by ${{  numbersFormat(shortFall) }} . Please update the project so that the total scheduled values of the line items equals the original contract amount.
 
                 You will not able to proceed with creating Application #1 until this is resolved.
                
@@ -184,7 +183,7 @@
                 <table class="table table-bordered text-center">
                     <thead>
                       <tr class="">
-                        <th :colspan="(changeOrdersTotal > 0) ? 5 : 4">
+                        <th :colspan="(changeOrdersTotal > 0) ? 6 : 5">
                         Application Document History</th>
                       </tr>
                       <tr>
@@ -193,6 +192,7 @@
                         <th>Application</th>
                         <th>Continuation Sheet</th>
                         <th v-if="changeOrdersTotal > 0">Change Orders</th>
+                        <th>Archt. Reports</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -210,14 +210,28 @@
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'application')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'continuation-sheet')" src="/img/pdf.png"></td>
                         <td v-if="(changeOrdersTotal > 0)"><img v-if="application.has_change_order" style="width:32px;cursor: pointer;" @click="redirectTo(application.id,'change-order')" src="/img/pdf.png"></td>
+                      <td>
+                          <span v-if="application.archt_reports.length > 0" v-for="(archt_report, index) in application.archt_reports">
+                           <a :href="'/'+archt_report.file" class="rep-img" target="_blank"> 
+                             <span class="cross">
+                                  <i class="fa fa-trash text-danger" @click="deleteFile"></i> 
+                              </span>
+                          <img
+                          :src="'/img/' + archt_report.extension + '.png' " /> </a>
+
+                          </span>
+                        <div class="clip-upload">
+                           <label :for="`file-${application.id}`">
+                            <i class="fa fa-paperclip fa-lg" aria-hidden="true"></i>
+                           </label>
+                           <input type="file" :id="`file-${application.id}`" multiple name="files" @change="uploadReport(application.id,$event)">
+                          </div>
+                      </td>
                       </tr>
-                      
                     </tbody>
                   </table>
                       
             </div>
-
-              
            <div v-if="isExcessOrShortfall" class="col-6">
 
               <h5 class=""> Project Summary </h5>
@@ -226,18 +240,18 @@
                     <thead>
                      <tr >
                         <th>Total Original Contract Amount</th>
-                        <th>${{  numberFormat(original_amount)  }}</th>
+                        <th>${{  numbersFormat(original_amount)  }}</th>
                     </tr>
                     
                     <tr >
                         <th>Project Line Item Total</th>
-                        <th>${{ numberFormat(total) }}</th>
+                        <th>${{ numbersFormat(total) }}</th>
                     </tr>
                    
                     <tr style="color: red;" >
                         <th >Project Line Item Excess/(Shortfall)</th>
-                        <th v-if="currentExcess" >${{  numberFormat(currentExcess)  }}</th>
-                        <th     v-else>${{  numberFormat(shortFall)   }}</th>
+                        <th v-if="currentExcess" >${{  numbersFormat(currentExcess)  }}</th>
+                        <th     v-else>${{  numbersFormat(shortFall)   }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -253,41 +267,41 @@
                 <thead v-if="!isProjectClosed">
                  <tr >
                     <th>Original Contract Sum</th>
-                    <th>${{  numberFormat(original_amount)  }}</th>
+                    <th>${{  numbersFormat(original_amount)  }}</th>
                    
                 </tr>
                 <tr >
                     <th>Net Change from Change Order(s)</th>
-                     <th>${{  numberFormat(changeOrdersTotal)  }}</th>
+                     <th>${{  numbersFormat(changeOrdersTotal)  }}</th>
                 </tr>
                 <tr >
                     <th>Subcontract Sum to Date</th>
-                    <th>${{ numberFormat( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
+                    <th>${{ numbersFormat( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
                 </tr>
                 <tr >
                     <th>Total Completed & Stored to Date</th>
-                    <th>${{ numberFormat(totalStored) }}</th>
+                    <th>${{ numbersFormat(totalStored) }}</th>
                 </tr>  
 
                 <tr >
                     <th>Retainage to Date</th>
-                    <th>${{ numberFormat(retainageToDate) }}</th>
+                    <th>${{ numbersFormat(retainageToDate) }}</th>
                 </tr>
                 <tr >
                     <th>Total Earned Less Retainage</th>
-                    <th>${{ numberFormat(totalEarned) }}</th>
+                    <th>${{ numbersFormat(totalEarned) }}</th>
                 </tr>
                 <tr >
                     <th>Less Previous Applications & Certificates for Payment</th>
-                    <th>${{ numberFormat(lastApplicationsPayments) }}</th>
+                    <th>${{ numbersFormat(lastApplicationsPayments) }}</th>
                 </tr>
                 <tr >
                     <th>Current Payment Due</th>
-                    <th>${{ numberFormat(currentDuePayment) }}</th>
+                    <th>${{ numbersFormat(currentDuePayment) }}</th>
                 </tr>
                 <tr >
                     <th>Balance to Finish Including Total Retainage</th>
-                    <th>${{ numberFormat(
+                    <th>${{ numbersFormat(
                           (balance)) }}</th>
                 </tr>
                 
@@ -296,20 +310,20 @@
                 <thead v-else>
                     <tr >
                       <th>Original Contract Sum</th>
-                      <th>${{  numberFormat(original_amount)  }}</th>
+                      <th>${{  numbersFormat(original_amount)  }}</th>
                      
                     </tr>
                     <tr >
                       <th>Net Change from Change Order(s)</th>
-                       <th>${{  numberFormat(changeOrdersTotal)  }}</th>
+                       <th>${{  numbersFormat(changeOrdersTotal)  }}</th>
                     </tr>
                     <tr >
                       <th>Subcontract Sum to Date</th>
-                      <th>${{ numberFormat( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
+                      <th>${{ numbersFormat( parseFloat(original_amount) + parseFloat(changeOrdersTotal)) }}</th>
                     </tr>
                     <tr >
                       <th>Total Completed & Stored to Date</th>
-                      <th>${{ numberFormat(totalStored) }}</th>
+                      <th>${{ numbersFormat(totalStored) }}</th>
                     </tr>  
 
                      <tr >
@@ -409,6 +423,7 @@
                 projectLines : true,
                 currentDuePayment :0,
                 changeOrdersTotal :0,
+                archtReportsTotal :0,
                 successMsg : null,
                 successMsg2 : null,
                 retainageToDate :0,
@@ -532,7 +547,7 @@
             formatNumber(value){
                return value
             },
-           numberFormat(value){
+           numbersFormat(value){
             return  new Intl.NumberFormat('en-US', {
                         maximumFractionDigits: 2,
                 }).format(value);
@@ -837,7 +852,53 @@
                 }else{
                   this.isExcessOrShortfall = false;  
                 }
+            },
+           
+            async uploadReport(id,e) {
+
+              let _vm = this;
+              var form = new FormData();
+
+              if(Array.from(e.target.files) && Array.from(e.target.files).length > 0){
+                  let files = Array.from(e.target.files);
+                  files.map((file) => {
+                       form.append('files[]', file);
+                  });  
+              }
+
+              var config = {
+                  header: { "Contect-type": "multipart/form-data" },
+              };
+
+              await axios.post('/projects/'+this.projectid+'/archt-reports/'+id,form)
+                .then(function (response) {
+
+                       let res = response.data
+                    
+                      if(res.error){
+                            _vm.error = true
+                            _vm.errorMsg = res.message
+                       }else{
+                          _vm.success = true
+                          _vm.successMsg = res.message
+                          _vm.loadApplications();
+                       }
+                      
+                       setTimeout(()=>{
+                         _vm.clearMsg();
+                      },2000);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+
+            },
+
+            deleteFile(e) {
+              e.preventDefault();
             }
+
         }
 
     }
