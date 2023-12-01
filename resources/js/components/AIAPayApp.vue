@@ -203,6 +203,8 @@
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'application-cp')" src="/img/pdf.png"></td>
                         <td><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'continuation-sheet-cp')" src="/img/pdf.png"></td>
                         <td v-if="changeOrdersTotal > 0"><img style="width:32px;cursor: pointer;" @click="redirectTo(isProjectClosed.id,'change-order-cp')" src="/img/pdf.png"></td>
+                        <td >
+                        </td>
                       </tr>
                       <tr  v-if="applications.length > 0" v-for="(application, index) in applications"  >
                         <th scope="row">{{ applications.length - index}}</th>
@@ -214,7 +216,7 @@
                           <span v-if="application.archt_reports.length > 0" v-for="(archt_report, index) in application.archt_reports">
                            <a :href="'/'+archt_report.file" class="rep-img" target="_blank"> 
                              <span class="cross">
-                                  <i class="fa fa-trash text-danger" @click="deleteFile"></i> 
+                                  <i class="fa fa-trash text-danger" @click="deleteFile(archt_report.id,$event)"></i> 
                               </span>
                           <img
                           :src="'/img/' + archt_report.extension + '.png' " /> </a>
@@ -895,8 +897,36 @@
 
             },
 
-            deleteFile(e) {
+            deleteFile(id, e) {
               e.preventDefault();
+
+              if (!confirm("Are you sure to delete Report!")) {
+                  return;
+                } 
+ 
+                let _vm = this;
+
+                axios.delete('/projects/'+this.projectid+'/archt-reports/'+id) 
+                   .then(function (response) {
+                      let res = response.data
+                    
+                      if(res.error){
+                            _vm.error = true
+                            _vm.errorMsg = res.message
+                       }else{
+                          _vm.success = true
+                          _vm.successMsg = res.message
+                          _vm.loadApplications();
+                       }
+                      
+                       setTimeout(()=>{
+                         _vm.clearMsg();
+                      },2000);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             }
 
         }

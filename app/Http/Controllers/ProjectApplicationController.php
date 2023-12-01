@@ -9,6 +9,8 @@ use App\Models\Application;
 use App\Models\DocumentType;
 use App\Models\ApplicationLine;
 use App\Models\ChangeOrderApplicationLine;
+use App\Models\DocumentFile;
+use App\Models\ArchtReport;
 use App\Models\Payment;
 use App\Models\Document;
 use Gate;
@@ -543,9 +545,46 @@ class ProjectApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $rep_id)
     {
-      //
+        // if(Gate::denies('delete')) {
+        //          return abort('401');
+        //     } 
+
+          $report = ArchtReport::find($rep_id);
+
+          if(!$report){
+            return response()->json(
+               [
+                'status' => 200,
+                'error' => true,
+                'message' => 'Report not found!'
+               ]
+            );
+          }
+
+          $file = @$report->file;
+
+          $publicPath = public_path().'/';
+
+          $aPath = $publicPath.Document::ARCHT_REPORTS."/".Document::ARCHIEVED; 
+          @\File::makeDirectory($aPath, $mode = 0777, true, true);
+          @\File::copy($publicPath.$path, $aPath.'/'.$file);
+
+          $docFile  = DocumentFile::whereFile($file)->first();
+
+          (@$docFile) ? @$docFile->delete() : '';  
+
+          @unlink($publicPath.Document::ARCHT_REPORTS."/".$file);
+
+          $report->delete();
+           
+           return response()->json(
+           [
+            'status' => 200,
+            'message' => 'Reports Delete Successfully!'
+           ]
+        );
     }
 
     public function allApplications($id){

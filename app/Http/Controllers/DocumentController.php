@@ -321,12 +321,12 @@ class DocumentController extends Controller
                  $folderPath .= "$project_slug/$trade_slug/";
             } 
 
-             else if(!$documentdocument->soft_cost_proposal_id && $documentdocument->soft_cost_payment_id){
+             else if(!$document->soft_cost_proposal_id && $document->soft_cost_payment_id){
 
-                 $payment_id = SoftCostPayment::find($documentdocument->soft_cost_payment_id);
+                 $payment_id = SoftCostPayment::find($document->soft_cost_payment_id);
                  $trade_slug = @\Str::slug($payment_id->trade->name);
-                 $folderPath = ($documentdocument->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $documentdocument->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
-                  if($documentdocument->document_type->name == DocumentType::PURCHASE_ORDER){
+                 $folderPath = ($document->document_type->name == DocumentType::INVOICE) ? Document::INVOICES."/" : ( $document->document_type->name == DocumentType::LIEN_RELEASE ?  Document::LIEN_RELEASES."/" :   '/');
+                  if($document->document_type->name == DocumentType::PURCHASE_ORDER){
                      $folderPath = Document::PROJECTS_PURCHASE_ORDERS."/";  
                    }
 
