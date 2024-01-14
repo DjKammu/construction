@@ -71,7 +71,7 @@
                                                 <select onchange="return window.location.href ='?trade='+this.value" class="form-control" name="0_ffe_trade_id"> 
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" {{ 
-                                                   $proposal->ffe_trade_id == $trade->id ? 'selected' : '' 
+                                                   $proposal->f_f_e_trade_id == $trade->id ? 'selected' : '' 
                                                    }}>{{ $trade->name}}
                                                    </option>
                                                   @endforeach

@@ -617,6 +617,9 @@ class ProjectController extends Controller
             else if($doc->document_type->name == DocumentType::PROJECT_BUDGET ){
                  $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
             }
+            else if($doc->document_type->name == DocumentType::ARCHT_REPORTS ){
+                 $folderPath = Document::ARCHT_REPORTS.'/';
+            }
           
 
             $files = $doc->files();

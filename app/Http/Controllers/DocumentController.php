@@ -364,6 +364,9 @@ class DocumentController extends Controller
           else if($document->document_type->name == DocumentType::PROJECT_BUDGET ){
                  $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
           }
+          else if($document->document_type->name == DocumentType::ARCHT_REPORTS ){
+                 $folderPath = Document::ARCHT_REPORTS.'/';
+            }
 
         $document->files->filter(function($file) use ($folderPath){
 
@@ -891,6 +894,10 @@ class DocumentController extends Controller
 
            else if($doc->document->document_type->name == DocumentType::PROJECT_BUDGET ){
                  $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
+            }
+
+             else if($doc->document->document_type->name == DocumentType::ARCHT_REPORTS ){
+                 $folderPath = Document::ARCHT_REPORTS.'/';
             }
 
 

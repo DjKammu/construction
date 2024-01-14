@@ -35,7 +35,7 @@ class MailConfigServiceProvider extends ServiceProvider
                     'username'   => $setting->user_name,
                     'password'   => $setting->password
                   );
-                  $fromConfig = array('address' => $setting->from_email, 'name' =>  env('MAIL_FROM_NAME', 'QPM CONSTRUCTION') );
+                  $fromConfig = array('address' => $setting->user_name, 'name' =>  env('MAIL_FROM_NAME', 'QPM CONSTRUCTION') );
 
                   Config::set('mail.mailers.smtp', $config);
                   Config::set('mail.from', $fromConfig);
