@@ -289,6 +289,7 @@ Route::prefix('projects')->group(function(){
       Route::get('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'create'])->name('projects.close-project.create'); 
 
       Route::post('{id}/close-project', [App\Http\Controllers\CloseProjectController::class,'store'])->name('projects.close-project.store'); 
+      Route::get('{id}/close-project-undo', [App\Http\Controllers\CloseProjectController::class,'undo'])->name('projects.close-project.undo'); 
 
     
 

@@ -125,6 +125,46 @@ class CloseProjectController extends Controller
            ]
         );
         
+    }  
+
+    public function undo(Request $request, $id)
+    {
+        // if(Gate::denies('add')) {
+        //      return abort('401');
+        // } 
+        
+        $project  = Project::find($id);  
+
+        $application_id = null;
+         
+        $msg = 'Fianl Undo Successfully!';
+
+        $closeProject = $project->closeProject();
+
+        $data = $request->all();
+
+        if(!$closeProject->exists()){
+
+             return response()->json(
+             [
+              'status' => 200,
+              'error' => true,
+              'message' => 'Closed Project Not exists!'
+             ]
+          );
+        }
+
+        $closeProject->delete();
+
+        $project->update(['status' => '']);
+
+        return response()->json(
+           [
+            'status' => 200,
+            'message' => $msg
+           ]
+        );
+        
     }
 
  

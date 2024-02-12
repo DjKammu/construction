@@ -177,7 +177,13 @@
                 </span>
 
                 <span v-else>
-                  <h5> Project Closed </h5>
+                 <h5 class="col-6 pull-left"> Project Closed </h5>
+
+                  <button v-if="closeProject==true" type="button" class="col-5 pull-right btn btn-warning mt-0"
+                   @click="undoFinal" >
+                           Undo Final
+                  </button> 
+              
                 </span>
 
                 <table class="table table-bordered text-center">
@@ -686,6 +692,34 @@
                            }
 
                            setTimeout(()=>{
+                             _vm.clearMsg()
+                          },2000);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+            },
+            async undoFinal(){
+             
+               if (!confirm("Are you sure to undo fianl!")) {
+                  return;
+                }
+
+                  let _vm = this;
+
+                await axios.get('/projects/'+_vm.projectid+'/close-project-undo')
+                .then(function (response) {
+                           let res = response.data
+                          if(res.error){
+                                _vm.error = true
+                                _vm.errorMsg = res.message
+                           }else{
+                              _vm.success = true
+                              _vm.successMsg = res.message
+                               _vm.loadLines();
+                           }
+                          setTimeout(()=>{
                              _vm.clearMsg()
                           },2000);
                     })

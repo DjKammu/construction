@@ -276,8 +276,11 @@ class ProjectApplicationController extends Controller
                         $percentage = 0;
                         if(@$line->project_line->value != 0){
                           $percentage = @number_format(@$totalBilled / @$line->project_line->value*100, 1);
+                        } 
+                        else if(@$line->project_line->value == 0){
+                          $percentage = @number_format(100, 1);
                         }
-
+                       
                       if( ($percentage < 100) && ($closeProject)){
                           $closeProject = false;
                       }
@@ -332,6 +335,8 @@ class ProjectApplicationController extends Controller
                          $percentage = 0;
                         if(@$changeOrder->value != 0){
                           $percentage = number_format($totalBilled / $changeOrder->value*100, 1);
+                        }else if(@$changeOrder->value == 0){
+                          $percentage = number_format(100, 1);
                         }
                       if( ((float) $percentage >= 100) && (!$changeOrdercloseProject)){
                           $changeOrdercloseProject = true;
@@ -440,6 +445,8 @@ class ProjectApplicationController extends Controller
                 $app->total_percentage = 0;
                 if(@$app->value != 0){
                    $app->total_percentage = number_format($total/ $app->value*100, 1);
+                }else if(@$app->value == 0){
+                   $app->total_percentage = number_format(100,1);
                 }
                  if($edit == false){
                   $app->billed_to_date = $total;
@@ -503,6 +510,8 @@ class ProjectApplicationController extends Controller
                 $changeOrder->total_percentage = 0;
                 if(@$changeOrder->value != 0){
                   $changeOrder->total_percentage = number_format($total/ $changeOrder->value*100, 1);
+                }else if(@$changeOrder->value == 0){
+                  $changeOrder->total_percentage = number_format(100,1);
                 }
                 $changeOrder->billed_to_date =  @$line->billed_to_date ?? 0;
                 $changeOrder->stored_to_date =  @$line->stored_to_date ?? 0;
