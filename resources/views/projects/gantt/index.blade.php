@@ -39,6 +39,10 @@
               </div>
             @endif
 
+@php
+$autoScheduling = true;
+@endphp
+
             <div class="card-body">
                <div class="row">
                         <div class="col-md-12">
@@ -500,7 +504,7 @@
 
                                   <div class="demo-actions__col">
                                       <div class="dhx_demo_checkbox">
-                                          <div id="auto-scheduling" class="status-control">
+                                          <div id="auto-scheduling" class="status-control {{ $autoScheduling ? 'checked' : ''}}">
                                               <div class="status">
                                                   <div class="dhx_checkbox_grip"></div>
                                               </div>
@@ -599,6 +603,8 @@
                                   z-index: 1111 !important;
                                 }
                               </style>
+
+                              
 
                               <script type="text/javascript">
 
@@ -1175,7 +1181,8 @@ gantt.config.order_branch = "marker";
 gantt.config.order_branch_free = true;
 gantt.config.grid_resize = true;
 gantt.ext.zoom.setLevel("days");
-gantt.config.auto_scheduling_strict = true;
+gantt.config.auto_scheduling = '{{ $autoScheduling}}';
+// gantt.config.auto_scheduling_strict = true;
 
   gantt.init("gantt_here");
 
@@ -1199,7 +1206,7 @@ gantt.config.auto_scheduling_strict = true;
 
     let config = {
         collapse: false,
-        auto_scheduling: false,
+        auto_scheduling: true,
         critical_path: false,
         zoom_to_fit: false
     };

@@ -15806,7 +15806,7 @@ This software is covered by DHTMLX Evaluation License. Contact sales@dhtmlx.com 
                     "1HigrcX",
                     "182694iSdWvz",
                     "https://dhtmlx.com/docs/products/dhtmlxGantt in order to obtain a license.",
-                    "alert",
+                    "",
                 ],
                 r = function (t, e) {
                     return i[(t -= 443)];
