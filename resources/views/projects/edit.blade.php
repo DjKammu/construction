@@ -621,6 +621,11 @@ function proposalPage(id){
         var fullUrl = window.location.href.split("?")[0];
         fullUrl = fullUrl.split("#")[0];
         url = fullUrl+'?trade='+id+'#proposals';
+        let tradeId = '{{ request()->trade}}';
+        if(tradeId == id){
+           window.location = url;
+           location.reload(true);
+        }
         window.location.href = url;
 }
    
