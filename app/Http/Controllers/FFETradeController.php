@@ -245,7 +245,9 @@ class FFETradeController extends Controller
             return redirect()->back();
         }          
         
-        $project->ffe_trades()->attach($request->trade_id); 
+        // $project->ffe_trades()->attach($request->trade_id); 
+
+        $project->ffe_trades()->sync($request->trade_id,false); 
 
         return redirect(route('ffe.index',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
     }

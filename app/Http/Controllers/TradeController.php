@@ -243,7 +243,7 @@ class TradeController extends Controller
         $request->validate([
               'trade_id' => 'required|exists:trades,id'
         ]);
-            
+     
         $project = Project::find($id);
 
         
@@ -251,7 +251,8 @@ class TradeController extends Controller
             return redirect()->back();
         }          
         
-        $project->trades()->attach($request->trade_id); 
+        // $project->trades()->attach($request->trade_id); 
+        $project->trades()->sync($request->trade_id,false); 
 
         return redirect(route('projects.show',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
     }

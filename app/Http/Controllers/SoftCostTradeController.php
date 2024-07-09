@@ -241,7 +241,9 @@ class SoftCostTradeController extends Controller
             return redirect()->back();
         }          
         
-        $project->sc_trades()->attach($request->trade_id); 
+        // $project->sc_trades()->attach($request->trade_id); 
+
+        $project->sc_trades()->sync($request->trade_id,false); 
 
         return redirect(route('projects.soft-cost.index',['project' => $id]).'#trades')->with('message', 'Trade Assigned Successfully!');
     }

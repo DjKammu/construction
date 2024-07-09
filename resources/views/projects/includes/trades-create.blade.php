@@ -46,15 +46,32 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-6 mx-auto">
                                             <div class="form-group">
-                                                <label class="text-dark" for="password">Trades
+                                                <label class="text-dark" for="password">Select Trades
                                                 </label>
-                                                <select class="form-control" name="trade_id"> 
+                                                <!-- <select class="form-control" name="trade_id"> 
                                                   <option value=""> Select Trade</option>
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                    </option>
                                                   @endforeach
-                                                </select>
+                                                </select> -->
+
+                                                 
+                                                  <div class="form-group">
+                                                  @forelse($trades as $trade)
+                                                  <div class="form-check-inline">
+                                                    <label class="form-check-label">
+                                                      <input type="checkbox"
+                                                       name="trade_id[]" value="{{ $trade->id }}">
+                                                      {{ $trade->name}}
+                                                    </label>
+                                                  </div>
+                                                  @empty 
+                                                    <label class="text-dark" for="No Pending">
+                                                    <b>No Pending Trades</b>
+                                                    </label>
+                                                  @endforelse
+                                                   </div>
                                             </div>
                                         </div>
                                     </div> 
