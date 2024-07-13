@@ -62,7 +62,7 @@ class FFETradeController extends Controller
                return abort('401');
          } 
 
-        $categories =  FFECategory::all();
+        $categories =  FFECategory::orderBy('name')->get();
 
         return view('ffe_trades.create',compact('categories'));
     }  
@@ -117,7 +117,7 @@ class FFETradeController extends Controller
           } 
 
          $trade = FFETrade::find($id);
-         $categories =  FFECategory::all();
+         $categories =  FFECategory::orderBy('name')->get();
          
          return view('ffe_trades.edit',compact('trade','categories'));
     }

@@ -50,7 +50,7 @@ class FFEVendorController extends Controller
 
          $vendors = $vendors->paginate($perPage);
 
-        $trades = FFETrade::all();
+        $trades = FFETrade::orderBy('name')->get();
 
          return view('ffe_vendors.index',compact('vendors','trades'));
     }
@@ -65,7 +65,7 @@ class FFEVendorController extends Controller
         if(Gate::denies('add')) {
                return abort('401');
          } 
-        $trades = FFETrade::all();
+        $trades = FFETrade::orderBy('name')->get();
         return view('ffe_vendors.create',compact('trades'));
     }
 
@@ -121,7 +121,7 @@ class FFEVendorController extends Controller
           } 
 
          $vendor = FFEVendor::find($id);
-          $trades = FFETrade::all();
+          $trades = FFETrade::orderBy('name')->get();
          return view('ffe_vendors.edit',compact('vendor','trades'));
     }
 

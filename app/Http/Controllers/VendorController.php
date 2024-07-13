@@ -210,7 +210,7 @@ class VendorController extends Controller
    public function getMaterials(Request $request){
         $vendor_id = $request->vendor_id;
         $all = VendorMaterial::where('vendor_id',$vendor_id)
-              ->get();
+              ->orderBy('name')->get();
         
         return response()->json($all); 
 

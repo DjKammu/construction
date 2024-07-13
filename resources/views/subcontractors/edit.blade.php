@@ -153,7 +153,7 @@
 
                                                      <select class="form-control" id="what" name="what"> 
                                                       <option value="">Select What</option>
-                                                      @foreach(@$subcontractor->trades as $trade)
+                                                      @foreach(@$subcontractor->trades->sort() as $trade)
                                                        <option value="{{ $trade->id }}" 
                                                         >{{ $trade->name}}
                                                        </option>

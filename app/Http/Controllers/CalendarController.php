@@ -168,7 +168,7 @@ class CalendarController extends Controller
 
     public function getProjects(){
 
-        $all = Project::all();
+        $all = Project::orderBy('name')->get();
         
         return response()->json($all); 
 

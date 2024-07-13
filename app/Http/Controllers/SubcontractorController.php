@@ -69,7 +69,7 @@ class SubcontractorController extends Controller
 
          $subcontractors = $subcontractors->paginate($perPage);
 
-         $trades = Trade::all();
+         $trades = Trade::orderBy('name')->get();
 
          return view('subcontractors.index',compact('subcontractors','trades'));
     }
@@ -85,7 +85,7 @@ class SubcontractorController extends Controller
                return abort('401');
          } 
 
-        $trades = Trade::all(); 
+        $trades = Trade::orderBy('name')->get(); 
 
         return view('subcontractors.create',compact('trades'));
     }
@@ -146,7 +146,7 @@ class SubcontractorController extends Controller
           } 
 
          $subcontractor = Subcontractor::with('trades')->find($id);
-         $trades = Trade::all();   
+         $trades = Trade::orderBy('name')->get();   
         
          return view('subcontractors.edit',compact('subcontractor','trades'));
     }

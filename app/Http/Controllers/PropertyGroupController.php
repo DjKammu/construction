@@ -73,7 +73,7 @@ class PropertyGroupController extends Controller
                return abort('401');
          } 
 
-        $properties = PropertyType::whereNull('property_group_id')->get(); 
+        $properties = PropertyType::whereNull('property_group_id')->orderBy('name')->get(); 
 
         return view('property_groups.create',compact('properties'));
     }
@@ -124,7 +124,7 @@ class PropertyGroupController extends Controller
 
          $propertyGroup = PropertyGroup::find($id);
          $properties = PropertyType::whereNull('property_group_id')
-                        ->orWhere('property_group_id', $id)->get();             
+                        ->orWhere('property_group_id', $id)->orderBy('name')->get();              
         
          return view('property_groups.edit',compact('propertyGroup','properties'));
     }

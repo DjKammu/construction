@@ -70,7 +70,7 @@ class FFEPaymentController extends Controller
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
-        });
+        })->unique()->sortBy('name');
 
         //if(!@$project->proposals()->exists()){
              $allTrades = FFETrade::orderBy('name')->get();
@@ -449,7 +449,7 @@ class FFEPaymentController extends Controller
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
-        });
+        })->unique()->sortBy('name');
 
         $allTrades = FFETrade::orderBy('name')->get();
          

@@ -73,7 +73,7 @@ class PaymentController extends Controller
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
-        });
+        })->unique()->sortBy('name');
 
         //if(!@$project->proposals()->exists()){
              $allTrades = Trade::orderBy('name')->get();
@@ -496,7 +496,7 @@ class PaymentController extends Controller
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
-        });
+        })->unique()->sortBy('name');
 
         $allTrades = Trade::orderBy('name')->get();
          

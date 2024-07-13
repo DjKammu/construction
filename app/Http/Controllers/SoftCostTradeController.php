@@ -62,7 +62,7 @@ class SoftCostTradeController extends Controller
                return abort('401');
          } 
 
-        $categories =  SoftCostCategory::all();
+        $categories =  SoftCostCategory::orderBy('name')->get();
 
         return view('soft_cost_trades.create',compact('categories'));
     }  

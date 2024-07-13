@@ -1,6 +1,6 @@
 @extends('layouts.admin-app')
 
-@section('title', 'FFE Trade')
+@section('title', 'Soft Cost Trade')
 
 @section('content')
 

@@ -183,7 +183,7 @@ class FFEController extends Controller
 
          $paymentTrades = @$awardedProposals->map(function($prpsl){
                  return $prpsl->trade;
-         })->unique()->sortByDesc('name');
+         })->unique()->sortBy('name');
 
          if(!@$project->ffe_proposals()->exists()){
              $paymentTrades = FFETrade::orderBy('name')->get();
@@ -191,15 +191,15 @@ class FFEController extends Controller
 
          $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
                  return $prpsl->subcontractor;
-         })->unique()->sortByDesc('name');
+         })->unique()->sortBy('name');
          
-         if(request()->filled('proposal_trade')){
-                $proposal_trade = request()->proposal_trade;
-                $proposalsIds = @$project->proposals()->trade($proposal_trade)->pluck('id');
-                $documents->whereIn('proposal_id', $proposalsIds);
-         }
+         // if(request()->filled('proposal_trade')){
+         //        $proposal_trade = request()->proposal_trade;
+         //        $proposalsIds = @$project->proposals()->trade($proposal_trade)->pluck('id');
+         //        $documents->whereIn('proposal_id', $proposalsIds);
+         // }
     
-         $allProposals = @$project->proposals()->get();
+         $allProposals = @$project->ffe_proposals()->get();
 
          $proposals = @$project->ffe_proposals()->trade($trade)->get();
       

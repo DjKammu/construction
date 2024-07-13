@@ -69,7 +69,7 @@ class TradeController extends Controller
                return abort('401');
          } 
 
-        $categories =  Category::all();
+        $categories =  Category::orderBy('name')->get();
 
         return view('trades.create',compact('categories'));
     }  
@@ -124,7 +124,7 @@ class TradeController extends Controller
           } 
 
          $trade = Trade::find($id);
-         $categories =  Category::all();
+         $categories =  Category::orderBy('name')->get();
          
          return view('trades.edit',compact('trade','categories'));
     }

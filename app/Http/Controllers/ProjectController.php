@@ -418,7 +418,7 @@ class ProjectController extends Controller
 
          $paymentTrades = @$awardedProposals->map(function($prpsl){
                  return $prpsl->trade;
-         })->unique()->sortByDesc('name');
+         })->unique()->sortBy('name');
 
          if(!@$project->proposals()->exists()){
              $paymentTrades = Trade::orderBy('name')->get();
@@ -426,7 +426,7 @@ class ProjectController extends Controller
 
          $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
                  return $prpsl->subcontractor;
-         })->unique()->sortByDesc('name');
+         })->unique()->sortBy('name');
 
          
          if(request()->filled('proposal_trade')){

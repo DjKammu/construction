@@ -183,7 +183,7 @@ class SoftCostController extends Controller
 
          $paymentTrades = @$awardedProposals->map(function($prpsl){
                  return $prpsl->trade;
-         })->unique()->sortByDesc('name');
+         })->unique()->sortBy('name');
 
          if(!@$project->sc_proposals()->exists()){
              $paymentTrades = SoftCostTrade::orderBy('name')->get();
@@ -191,7 +191,7 @@ class SoftCostController extends Controller
 
          // $paymentSubcontractors = @$awardedProposals->map(function($prpsl){
          //         return $prpsl->subcontractor;
-         // })->unique()->sortByDesc('name');
+         // })->unique()->sortBy('name');
          
          // if(request()->filled('proposal_trade')){
          //        $proposal_trade = request()->proposal_trade;

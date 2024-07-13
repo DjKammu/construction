@@ -70,7 +70,7 @@ class SoftCostPaymentController extends Controller
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
-        });
+        })->unique()->sortBy('name');
 
         //if(!@$project->proposals()->exists()){
              $allTrades = SoftCostTrade::orderBy('name')->get();
@@ -457,7 +457,7 @@ class SoftCostPaymentController extends Controller
 
         $trades = $proposals->map(function($prpsl){
              return $prpsl->trade;
-        });
+        })->unique()->sortBy('name');
 
         $allTrades = SoftCostTrade::orderBy('name')->get();
          

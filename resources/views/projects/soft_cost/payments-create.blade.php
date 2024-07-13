@@ -31,7 +31,7 @@
             <div class="card-body">
               <div class="row mb-2">
                     <div class="col-6">
-                        <h4 class="mt-0 text-left"> {{ @$proposal->project->name }} -  Make FEE Payment </h4>
+                        <h4 class="mt-0 text-left"> {{ @$proposal->project->name }} -  Make Soft Cost Payment </h4>
                     </div>
                 </div>
 

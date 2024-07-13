@@ -68,7 +68,7 @@ class DocumentController extends Controller
             });
          } 
          
-         $projectTypes = ProjectType::all(); 
+         $projectTypes = ProjectType::orderBy('name')->get();
 
          $projects = $projects->paginate((new Project())->perPage);
 
@@ -89,9 +89,9 @@ class DocumentController extends Controller
          $id = request()->id;
         
         $project = Project::find($id); 
-        $documentsTypes = DocumentType::all(); 
-        $subcontractors = Subcontractor::all();
-        $vendors = Vendor::all();
+        $documentsTypes = DocumentType::orderBy('name')->get();
+        $subcontractors = Subcontractor::orderBy('name')->get();
+        $vendors = Vendor::orderBy('name')->get();
 
         return view('projects.includes.documents-create',compact('project','documentsTypes','subcontractors','vendors'));
     }
@@ -192,13 +192,13 @@ class DocumentController extends Controller
 
         $document = Document::with('files')->find($doc);
 
-        $documentsTypes = DocumentType::all(); 
+        $documentsTypes = DocumentType::orderBy('name')->get();
 
         $project = @$document->project;
         
-        $subcontractors = Subcontractor::all();
+        $subcontractors = Subcontractor::orderBy('name')->get();
 
-        $vendors = Vendor::all();
+        $vendors = Vendor::orderBy('name')->get();
         
         $project_slug = \Str::slug($project->name);
 

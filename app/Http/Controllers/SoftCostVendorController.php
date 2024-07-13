@@ -50,7 +50,7 @@ class SoftCostVendorController extends Controller
 
          $vendors = $vendors->paginate($perPage);
 
-        $trades = SoftCostTrade::all();
+        $trades = SoftCostTrade::orderBy('name')->get();
 
          return view('soft_cost_vendors.index',compact('vendors','trades'));
     }
@@ -65,7 +65,7 @@ class SoftCostVendorController extends Controller
         if(Gate::denies('add')) {
                return abort('401');
          } 
-        $trades = SoftCostTrade::all();
+        $trades = SoftCostTrade::orderBy('name')->get();
         return view('soft_cost_vendors.create',compact('trades'));
     }
 
@@ -121,7 +121,7 @@ class SoftCostVendorController extends Controller
           } 
 
           $vendor = SoftCostVendor::find($id);
-          $trades = SoftCostTrade::all();
+          $trades = SoftCostTrade::orderBy('name')->get();
          return view('soft_cost_vendors.edit',compact('vendor','trades'));
     }
 
