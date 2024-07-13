@@ -47,15 +47,16 @@
                                             <div class="form-group">
                                                 <label class="text-dark" for="password">Trades
                                                 </label>
-                                                <!-- <select class="form-control" name="trade_id"> 
-                                                  <option value=""> Select Trade</option>
+                                                <select class="form-control" id="trades" name="trade_id[]"multiple="">
+                                                  <option value=""> Select Trades</option>
                                                   @foreach($trades as $trade)
                                                    <option value="{{ $trade->id }}" >{{ $trade->name}}
                                                    </option>
                                                   @endforeach
                                                 </select>
- -->
-                                                <div class="form-group">
+
+
+                                               <!--  <div class="form-group">
                                                   @forelse($trades as $trade)
                                                  <div class="form-check-inline">
                                                     <label class="form-check-label">
@@ -69,7 +70,8 @@
                                                     <b>No Pending Trades</b>
                                                     </label>
                                                   @endforelse
-                                                   </div>
+                                                   </div> -->
+
 
                                                    
                                             </div>
@@ -90,5 +92,17 @@
         </div>
     </div>
 </div>
+
+@endsection
+
+
+@section('pagescript')
+  <script>
+
+  $("#trades").select2({
+      placeholder: "Select Trades",
+      allowClear: true
+  });
+</script>
 
 @endsection

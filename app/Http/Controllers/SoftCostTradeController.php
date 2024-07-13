@@ -210,7 +210,7 @@ class SoftCostTradeController extends Controller
 
         $trades =  SoftCostTrade::whereDoesntHave("projects", function($q) use($id){
             $q->where("project_id",$id);
-          })->get();
+          })->orderBy('name')->get();
 
         return view('projects.soft_cost.trades-create',compact('trades','project'));
     }

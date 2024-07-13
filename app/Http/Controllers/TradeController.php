@@ -221,7 +221,7 @@ class TradeController extends Controller
 
         $trades =  Trade::whereDoesntHave("projects", function($q) use($id){
             $q->where("project_id",$id);
-          })->get();
+         })->orderBy('name')->get();
 
         return view('projects.includes.trades-create',compact('trades','project'));
     }

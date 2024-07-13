@@ -214,7 +214,7 @@ class FFETradeController extends Controller
 
         $trades =  FFETrade::whereDoesntHave("projects", function($q) use($id){
             $q->where("project_id",$id);
-          })->get();
+          })->orderBy('name')->get();
 
         return view('projects.ffe.trades-create',compact('trades','project'));
     }
