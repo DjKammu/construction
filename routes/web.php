@@ -110,6 +110,8 @@ Route::resource('payment-statuses', App\Http\Controllers\PaymentStatusController
 
 Route::resource('procurement-statuses', App\Http\Controllers\ProcurementStatusController::class);
 
+Route::resource('inspection-categories', App\Http\Controllers\InspectionCategoryController::class);
+
 Route::resource('rfi-submittal/statuses', App\Http\Controllers\RFISubmittalStatusController::class,
   ['names' => 'rfi-submittal.statuses']);
 
@@ -324,6 +326,22 @@ Route::prefix('projects')->group(function(){
      Route::delete('submittal/{id}/file', [App\Http\Controllers\SubmittalController::class,'destroyFile'])->name('projects.submittal.file.destroy');
 
      Route::post('submittal/{id}/send-mail', [App\Http\Controllers\SubmittalController::class,'sendMail'])->name('submittal.send.mail');
+
+
+ // Inspection Routes 
+    Route::get('{id}/inspection',[App\Http\Controllers\InspectionController::class,'create'])->name('projects.inspection');
+
+    Route::post('{id?}/inspection',[App\Http\Controllers\InspectionController::class,'store'])->name('projects.inspection');
+
+    Route::get('inspection/{id}',[App\Http\Controllers\InspectionController::class,'show'])->name('projects.inspection.edit');
+
+    Route::post('inspection/{id}',[App\Http\Controllers\InspectionController::class,'update'])->name('projects.inspection.update');
+
+     Route::delete('inspection/{id}', [App\Http\Controllers\InspectionController::class,'destroy'])->name('projects.inspection.destroy');
+
+     Route::delete('inspection/{id}/file', [App\Http\Controllers\InspectionController::class,'destroyFile'])->name('projects.inspection.file.destroy');
+
+     Route::post('inspection/{id}/send-mail', [App\Http\Controllers\InspectionController::class,'sendMail'])->name('inspection.send.mail');
 
 
    //Attachment Routes

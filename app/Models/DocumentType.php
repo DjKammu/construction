@@ -15,10 +15,11 @@ class DocumentType extends Model
     CONST LIEN_RELEASE  = 'Lien Release';
     CONST RFI           = 'RFI';
     CONST SUBMITTAL     = 'Submittal';
+    CONST INSPECTION    = 'Inspection';
     CONST RECEIVED_SHIPMENT  = 'Received Shipment';
     CONST PROJECT_BUDGET     = 'Project Budget';
     CONST PURCHASE_ORDER     = 'Purchase Order';
-    CONST ARCHT_REPORTS     = 'Archt. Reports';
+    CONST ARCHT_REPORTS      = 'Archt. Reports';
 
     protected $perPage = 20;
 
@@ -31,7 +32,8 @@ class DocumentType extends Model
       self::LIEN_RELEASE, self::RFI, 
       self::SUBMITTAL, self::PROJECT_BUDGET,
       self::BILL,self::RECEIVED_SHIPMENT,
-      self::PURCHASE_ORDER, self::ARCHT_REPORTS
+      self::PURCHASE_ORDER, self::ARCHT_REPORTS,
+      self::INSPECTION
     ];
 
      public function documents(){

@@ -129,6 +129,11 @@
                                               </li>
 
                                               <li class="nav-item">
+                                                   <a class="nav-link text-dark"  data-toggle="tab" href="#inspection" role="tab"
+                                                     aria-expanded="false">Inspection</a>
+                                              </li>
+
+                                              <li class="nav-item">
                                                   <a class="nav-link text-dark" href="{{ url('projects/'.$project->id.'/ffe') }}"  role="tab"
                                                      aria-expanded="false">FFE </a>
                                               </li>
@@ -163,6 +168,7 @@
                                     @include('projects.includes.rfi')
                                     @include('projects.includes.submittal')
                                     @include('projects.includes.logs')
+                                    @include('projects.includes.inspection')
                                     @include('projects.includes.tracker')
                               </div>
 
@@ -599,6 +605,26 @@ var end =  '{{ Request::input("end")}}';
          url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderByLog='+orderBy+'&orderLog='+order
       }
        url = url+'#logs';
+       window.location.href = url;
+
+ } 
+
+ function sortOrderByInspection(orderBy,order){
+       
+      var fullUrl = window.location.href.split("#")[0];
+      let isOrderBy = fullUrl.includes('orderByInspection') ;
+      let isSort = fullUrl.includes('orderInspection') ;
+      
+      var url = '/';
+      if(isOrderBy || isSort){ 
+          fullUrl = replaceUrlParam(fullUrl,'orderByInspection',orderBy);
+          fullUrl = replaceUrlParam(fullUrl,'orderInspection',order);
+          url = fullUrl;
+      }
+      else{
+         url = fullUrl+(fullUrl.includes('?')?'&':'?')+'orderByInspection='+orderBy+'&orderInspection='+order
+      }
+       url = url+'#inspection';
        window.location.href = url;
 
  }

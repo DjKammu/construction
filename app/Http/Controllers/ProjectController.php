@@ -204,6 +204,7 @@ class ProjectController extends Controller
          $bills = $project->bills();
          $rfis = $project->rfis();
          $submittals = $project->submittals();
+         $inspections = $project->inspections();
          $logs = $project->logs();
 
          if(request()->filled('log_vendor')){
@@ -323,10 +324,13 @@ class ProjectController extends Controller
          $orderBy = 'created_at';  
          $orderByRFI = 'created_at';  
          $orderBySubmittal = 'created_at';  
+         $orderByInspection = 'created_at';
+         $orderByLog = 'created_at'; 
+
          $order ='DESC' ;
          $orderRFI ='DESC' ;
          $orderSubmittal ='DESC' ;
-         $orderByLog = 'created_at';  
+         $orderInspection ='DESC' ; 
          $orderLog ='DESC';
                     
         if(request()->filled('order')){
@@ -359,6 +363,12 @@ class ProjectController extends Controller
              : request()->orderLog;
         }
 
+        if(request()->filled('orderInspection')){
+            $orderByInspection = request()->filled('orderByInspection') ? ( !in_array(request()->orderByInspection, ['date'] ) ? 'created_at' : request()->orderByInspection ) : 'created_at';
+            $orderInspection = !in_array(\Str::lower(request()->orderInspection), ['desc','asc'])  ? 'ASC' 
+             : request()->orderInspection;
+        }
+
          $logs     = $logs->orderBy($orderByLog, $orderLog)->get();
 
          if($orderBy == 'sc' ){
@@ -378,6 +388,7 @@ class ProjectController extends Controller
 
          $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
          $submittals = $submittals->orderBy($orderBySubmittal, $orderSubmittal)->get();
+         $inspections = $inspections->orderBy($orderByInspection, $orderInspection)->get();
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -767,6 +778,34 @@ class ProjectController extends Controller
          });
 
 
+         $inspections->filter(function($inspection){
+
+            $project = @$inspection->project;
+
+            $project_slug = \Str::slug(@$project->name);
+
+            $folderPath = Document::INSPECTIONS."/";
+
+            $folderPath .= "$project_slug/";
+
+            $files = $inspection->files;
+
+            $files = @array_filter(explode(',',$files));
+
+            $filesArr = [];
+            
+            if(!empty($files)){
+               foreach (@$files as $key => $file) {
+                   $filesArr[] = asset($folderPath.$file);
+                }  
+            } 
+
+            $inspection->files = @($filesArr) ? @implode(',',$filesArr) : '' ;
+
+            return $inspection->files;
+           
+         });
+
           $logs->filter(function($log){
 
             $project = @$log->project;
@@ -877,7 +916,7 @@ class ProjectController extends Controller
                                   ->pluck('subcontractor_count')->max(); 
         $paymentStatuses = PaymentStatus::orderBy('name')->get();
 
-         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals',
+         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','inspections',
             'awarded','categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
             'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',

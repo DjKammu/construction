@@ -278,7 +278,6 @@
                                             <div class="form-group">
                                                 <input type="checkbox" 
                                                 {{ $bill->bill_status == \App\Models\Bill::PAID_BILL_STATUS ? 'checked' : ''}} 
-
                                                  name="bill_status" 
                                                 onclick="return window.location.href='{{ $bill->id }}/bill-stattus?bill_status='+this.checked">
                                                 <label class="text-dark" for="password">

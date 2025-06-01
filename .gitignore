@@ -16,7 +16,7 @@
 /public/bills-purchase-orders/*
 /public/soft-cost-proposals/*
 /public/archt-reports/*
-/public/storage
+/public/inspections/*
 /public/images
 /storage/*.key
 /vendor

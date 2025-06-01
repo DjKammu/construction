@@ -101,6 +101,10 @@ class Project extends Model
         return $this->hasMany(Submittal::class);
     } 
 
+    public function inspections(){
+        return $this->hasMany(Inspection::class);
+    } 
+
     public function project_lines(){
         return $this->hasMany(ProjectLine::class);
     }

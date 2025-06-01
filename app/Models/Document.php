@@ -18,6 +18,7 @@ class Document extends Model
      CONST PROJECT   = 'project';
      CONST RFIS          = 'rfis';
      CONST SUBMITTALS    = 'submittals';
+     CONST INSPECTIONS   = 'inspections';
      CONST ATTACHMENTS   = 'attachments';
      CONST LIEN_RELEASES = 'lien-releases';
      CONST FFE_PROPOSALS = 'ffe-proposals';
@@ -37,7 +38,7 @@ class Document extends Model
      'payment_id','rfi_id','submittal_id',
      'ffe_proposal_id','bill_id','ffe_bill_id',
      'log_id','ffe_log_id','ffe_payment_id','soft_cost_proposal_id',
-     'soft_cost_payment_id','soft_cost_bill_id','soft_cost_log_id'
+     'soft_cost_payment_id','soft_cost_bill_id','soft_cost_log_id','inspection_id'
     ];
 
     public function document_type(){
