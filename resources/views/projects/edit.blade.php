@@ -243,8 +243,11 @@ var end =  '{{ Request::input("end")}}';
        window.location.href = url;
   }); 
    
-   var submittal_start =  '{{ Request::input("submittal_start")}}';
+  var submittal_start =  '{{ Request::input("submittal_start")}}';
   var submittal_end =  '{{ Request::input("submittal_end")}}';
+
+  var inspection_start =  '{{ Request::input("inspection_start")}}';
+  var inspection_end =  '{{ Request::input("inspection_end")}}';
 
 
   $('input[name="daterange-submittal"]').daterangepicker({
@@ -270,6 +273,33 @@ var end =  '{{ Request::input("end")}}';
       }
 
       url = url+'#submittal';
+       window.location.href = url;
+  });
+
+
+ $('input[name="daterange-inspection"]').daterangepicker({
+
+    startDate: (inspection_start) ? inspection_start :   moment().startOf('month'),
+    endDate: (inspection_end) ? inspection_end :  moment().startOf('day'),
+    locale: {
+      format: 'YYYY-MM-DD'
+    }
+  }).on('apply.daterangepicker', function(ev, picker) {
+      var fullUrl = window.location.href.split("#")[0];
+      let isStart = fullUrl.includes('inspection_start') ;
+      let isEnd = fullUrl.includes('inspection_end') ;
+      
+      var url = '/';
+      if(isStart || isEnd){ 
+          fullUrl = replaceUrlParam(fullUrl,'inspection_start',picker.startDate.format('YYYY-MM-DD'));
+          fullUrl = replaceUrlParam(fullUrl,'inspection_end',picker.endDate.format('YYYY-MM-DD'));
+          url = fullUrl;
+      }
+      else{
+        url = fullUrl+(fullUrl.includes('?')?'&':'?')+'inspection_start='+picker.startDate.format('YYYY-MM-DD')+'&inspection_end='+picker.endDate.format('YYYY-MM-DD')
+      }
+
+      url = url+'#inspection';
        window.location.href = url;
   });
 

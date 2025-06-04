@@ -361,6 +361,12 @@ class DocumentController extends Controller
                  $folderPath = Document::SUBMITTALS."/";
                  $folderPath .= "$project_slug/";
           }
+
+           else if($document->document_type->name == DocumentType::INSPECTION ){
+                 $folderPath = Document::INSPECTIONS."/";
+                 $folderPath .= "$project_slug/";
+            } 
+
           else if($document->document_type->name == DocumentType::PROJECT_BUDGET ){
                  $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
           }
@@ -891,7 +897,10 @@ class DocumentController extends Controller
                  $folderPath = Document::SUBMITTALS."/";
                  $folderPath .= "$project_slug/";
           }
-
+          else if($doc->document->document_type->name == DocumentType::INSPECTION ){
+                 $folderPath = Document::INSPECTIONS."/";
+                 $folderPath .= "$project_slug/";
+          }
            else if($doc->document->document_type->name == DocumentType::PROJECT_BUDGET ){
                  $folderPath = \Storage::url(Document::PROJECTS.'/'.Document::ATTACHMENTS).'/';
             }

@@ -236,7 +236,7 @@ class InspectionController extends Controller
         $data = $request->except('_token','files');
 
         $data['date'] = ($request->filled('date')) ? Carbon::createFromFormat('m-d-Y',$request->date)->format('Y-m-d') : null;
-        $data['passed'] = ($request->filled('passed')) ? $request->passed : null;
+        $data['passed'] = ($request->filled('passed')) ? $request->passed : 0;
         
          $project = @$inspection->project;
 

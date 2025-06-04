@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\RFISubmittalStatus;
+use App\Models\InspectionCategory;
 use App\Models\SoftCostCategory;
 use App\Models\SoftCostProposal;
 use App\Models\SoftCostPayment;
+use App\Models\InspectionType;
 use App\Models\SoftCostBill;
 use App\Models\SoftCostTrade;
 use Illuminate\Http\Request;
@@ -199,6 +201,8 @@ class ProjectController extends Controller
          $ffe_trades = $project->ffe_trades()->orderBy('name')->get();
          $sc_trades = $project->sc_trades()->orderBy('name')->get();
          $users = User::orderBy('name')->get();
+         $inspectionTypes = InspectionType::orderBy('name')->get();
+         $inspectionCategories = InspectionCategory::orderBy('name')->get();
 
          $payments = $project->payments();
          $bills = $project->bills();
@@ -321,6 +325,27 @@ class ProjectController extends Controller
                 
          } 
 
+        $inspection_category_id = request()->inspection_category_id;
+        $inspection_type_id = request()->inspection_type_id;
+        $passed = request()->passed;
+
+
+        $inspections->when($inspection_category_id, function($q) use ($inspection_category_id){
+             $q->where('inspection_category_id', $inspection_category_id);
+        })->when($inspection_type_id, function($q) use ($inspection_type_id){
+             $q->where('inspection_type_id', $inspection_type_id);
+        })->when($passed, function($q) use ($passed){
+             $q->where('passed',($passed == 1) ? $passed : 0);
+        }); 
+
+         if(request()->filled('inspection_start') && request()->filled('inspection_end')){
+                 $start = Carbon::parse(request()->inspection_start)->format('Y-m-d'); 
+                 $end = Carbon::parse(request()->inspection_end)->format('Y-m-d'); 
+                 $inspections->whereRaw("date >=  date('$start')")
+                      ->whereRaw("date <=  date('$end')");
+                
+         }
+
          $orderBy = 'created_at';  
          $orderByRFI = 'created_at';  
          $orderBySubmittal = 'created_at';  
@@ -364,7 +389,7 @@ class ProjectController extends Controller
         }
 
         if(request()->filled('orderInspection')){
-            $orderByInspection = request()->filled('orderByInspection') ? ( !in_array(request()->orderByInspection, ['date'] ) ? 'created_at' : request()->orderByInspection ) : 'created_at';
+            $orderByInspection = request()->filled('orderByInspection') ? ( !in_array(request()->orderByInspection, ['date','inspection_category_id','inspection_type_id','passed'] ) ? 'created_at' : request()->orderByInspection ) : 'created_at';
             $orderInspection = !in_array(\Str::lower(request()->orderInspection), ['desc','asc'])  ? 'ASC' 
              : request()->orderInspection;
         }
@@ -623,6 +648,9 @@ class ProjectController extends Controller
             }
              else if($doc->document_type->name == DocumentType::SUBMITTAL ){
                  $folderPath = Document::SUBMITTALS."/";
+                 $folderPath .= "$project_slug/";
+            }  else if($doc->document_type->name == DocumentType::INSPECTION ){
+                 $folderPath = Document::INSPECTIONS."/";
                  $folderPath .= "$project_slug/";
             } 
             else if($doc->document_type->name == DocumentType::PROJECT_BUDGET ){
@@ -916,7 +944,7 @@ class ProjectController extends Controller
                                   ->pluck('subcontractor_count')->max(); 
         $paymentStatuses = PaymentStatus::orderBy('name')->get();
 
-         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','inspections',
+         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','inspections','inspectionTypes','inspectionCategories',
             'awarded','categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
             'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',
