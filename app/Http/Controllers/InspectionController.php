@@ -429,4 +429,106 @@ class InspectionController extends Controller
        );
 
     }
+
+     public function otherAssign(Request $request, $id)
+    {
+          if(Gate::denies('edit')) {
+               return abort('401');
+          } 
+
+        $project  = Project::find($request->project_id);  
+        $assignToproject  = Project::find($id); 
+
+         if(!@$project || !@$assignToproject){
+            return redirect()->back();
+        }
+         
+        $inspections = $project->inspections()->get();
+        if(@$inspections->count() == 0){
+            return redirect()->back()->withErrors(['No Inspection exists for selected Project!']);
+        }
+
+        $project_slug = \Str::slug($assignToproject->name);
+
+        $public_path = public_path().'/';
+
+        $folderPath = Document::INSPECTIONS."/";
+
+        $folderPath .= $project_slug;
+
+        \File::makeDirectory($public_path.$folderPath, $mode = 0777, true, true);
+
+        $document_type = DocumentType::where('name', DocumentType::INSPECTION)
+                         ->first();         
+
+        foreach ($inspections as $key => $value) {
+             
+           // $slug = @\Str::slug($assignToproject->name);
+           $name = @$assignToproject->name.' '.DocumentType::INSPECTION;    
+           
+           // $where = ['text' => $value['text'],'sortorder' => $value['sortorder']];
+
+           $data = ['date' => $value['date'],
+                      'inspection_category_id' => $value['inspection_category_id'],
+                      'inspection_type_id' => $value['inspection_type_id'],
+                      'files' => $value['files'],
+                      'passed'   => $value['passed'],
+                      'notes'   => $value['notes']
+          ];
+            
+           $inspection = $assignToproject->inspections()->create($data);
+
+           $document = $assignToproject->documents()
+                   ->firstOrCreate(['project_id' => $assignToproject->id,
+                    'document_type_id' => $document_type->id,
+                    'inspection_id'  => $inspection->id
+                     ],
+                     ['name' => $name, 'slug' => $project_slug,
+                      'inspection_id'  => $inspection->id,
+                     'project_id'       => $assignToproject->id,
+                     'document_type_id' => $document_type->id
+                     ]
+                 );
+         
+             $filesArr = $fileArr = [];
+             
+             $files = @array_filter(explode(',',$value['files']));
+             $date  = date('d');
+             $month = date('m');
+             $year  = date('Y');
+
+             // dd($project);
+            
+
+             foreach ($files as $key => $file) {
+
+                     $ext = pathinfo($file, PATHINFO_EXTENSION);
+                     $fileName = $project_slug.'-'.@\Str::slug(DocumentType::INSPECTION).'-'.time().$key.'.'. $ext;
+                     \File::copy($public_path.Document::INSPECTIONS."/".\Str::slug($project->name).'/'.$file, $folderPath.'/'.$fileName);
+
+                     $filesArr[] = $fileName; 
+                     $fileArr[] = ['file' => $fileName,
+                                  'name' => $name,
+                                  'date' => $date,'month' => $month,
+                                  'year' => $year
+                                  ];
+               }
+            $document->files()->createMany($fileArr);
+            $inspection->update(['files' => implode(',',$filesArr)]);
+        }
+
+        return redirect()->back()->with('message','Inspection added Successfully!');
+
+    }
+
+   public function complete(Request $request, $project,$id)
+   {
+       $complete = $request->complete;
+       $inspection = Inspection::find($id);
+       $inspection->complete = ($complete == 'true') ? 1 : 0;
+       $inspection->save();
+       $msg = ($complete == 'true') ? 'C' : 'Inc';
+
+       return redirect(route('projects.show',['project' => $project]).'#inspection')->with('message', 'Inspection  '.$msg.'ompleted Successfully!');
+   }
 }

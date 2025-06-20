@@ -341,7 +341,11 @@ Route::prefix('projects')->group(function(){
 
      Route::delete('inspection/{id}/file', [App\Http\Controllers\InspectionController::class,'destroyFile'])->name('projects.inspection.file.destroy');
 
-     Route::post('inspection/{id}/send-mail', [App\Http\Controllers\InspectionController::class,'sendMail'])->name('inspection.send.mail');
+     Route::post('inspection/{id}/send-mail', [App\Http\Controllers\InspectionController::class,'sendMail'])->name('projects.inspection.send.mail');
+
+     Route::post('inspection/other-assign/{project}',[App\Http\Controllers\InspectionController::class,'otherAssign'])->name('projects.inspection.other.assign');
+
+     Route::get('{project}/inspection/{id}/complete',[App\Http\Controllers\InspectionController::class,'complete'])->name('projects.inspection.complete');
 
 
    //Attachment Routes

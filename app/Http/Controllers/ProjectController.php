@@ -187,12 +187,15 @@ class ProjectController extends Controller
          if(Gate::denies('edit')) {
                return abort('401');
          } 
+         $project_type = request()->project_type;
          $rfi_statuses = RFISubmittalStatus::orderBy('name')->get(); 
          $statuses = Status::orderBy('name')->get(); 
          $propertyTypes = PropertyType::orderBy('name')->get();
          $projectTypes = ProjectType::orderBy('name')->get();
-         $projects = Project::orderBy('name')->get()->except($id);
-         $project = Project::find($id);
+         $projects = Project::when($project_type, function($q) use ($project_type){
+                         $q->where('project_type_id',$project_type);
+                    })->orderBy('name')->get()->except($id);
+        $project = Project::find($id);
          $documentTypes = DocumentType::orderBy('name')->get();
          $subcontractors = Subcontractor::orderBy('name')->get();
          $vendors = Vendor::orderBy('name')->get();
@@ -414,6 +417,10 @@ class ProjectController extends Controller
          $rfis = $rfis->orderBy($orderByRFI, $orderRFI)->get();
          $submittals = $submittals->orderBy($orderBySubmittal, $orderSubmittal)->get();
          $inspections = $inspections->orderBy($orderByInspection, $orderInspection)->get();
+
+         
+
+         // dd($incompleteInspections);
 
          if(request()->filled('s')){
             $searchTerm = request()->s;
@@ -944,7 +951,10 @@ class ProjectController extends Controller
                                   ->pluck('subcontractor_count')->max(); 
         $paymentStatuses = PaymentStatus::orderBy('name')->get();
 
-         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','inspections','inspectionTypes','inspectionCategories',
+        $completeInspections = @$inspections->where('complete',1);
+        $incompleteInspections = @$inspections->where('complete',0);
+
+         return view('projects.edit',compact('projectTypes','propertyTypes','project','documentTypes','documents','subcontractors','vendors','trades','projects','trade','proposals','inspections','inspectionTypes','inspectionCategories','completeInspections','incompleteInspections',
             'awarded','categories','subcontractorsCount','allProposals','payments','paymentTrades',
             'paymentSubcontractors','paymentCategories','pTrades','prTrades','statuses','rfis',
             'submittals','rfi_statuses','users','bills','ffe_categories','ffePaymentCategories',

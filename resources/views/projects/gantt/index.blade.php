@@ -84,9 +84,6 @@ $autoScheduling = true;
                                     <button >Add Gantt from other projects</button>
                                   </form>
                                 </div>
-                                <div class="col-4">
-                                  
-                                </div>
                             </div>
 
                        <style>
@@ -99,32 +96,24 @@ $autoScheduling = true;
                           -webkit-flex-direction: column;
                           -ms-flex-direction: column;
                           flex-direction: column;
-
                           height: 90%;
                           min-height: 641px;
-
                           background-color: #fff;
-
                           z-index: 4;
                       }
 
                       .demo-main-content {
                           position: relative;
-
                           height: 100%;
                           margin: 10px 10px 0;
-
                           background-color: #fff;
                       }
 
                       #gantt_here {
                           position: absolute;
-
                           width: 100%;
                           height: 100%;
-
                           background-color: #fff;
-
                           overflow: auto;
                       }
 
@@ -345,29 +334,22 @@ $autoScheduling = true;
 
                       .demo-btn{
                           position: relative;
-
                           display: inline-block;
                           vertical-align: middle;
-
                           color: #0288d1;
                           font: 500 12px/20px "Roboto", Arial, sans-serif;
                           text-align: center;
                           text-transform: uppercase;
                           text-decoration: none;
                           white-space: nowrap;
-
                           margin-left: 10px;
                           padding: 7px 16px 5px;
-
                           border-radius: 32px;
                           border: 1px solid #0288d1;
                           background-color: transparent;
-
                           transition: background-color 0.2s ease-in, box-shadow 0.2s ease-in;
-
                           outline: none;
                           user-select: none;
-
                           cursor: pointer;
                       }
 
@@ -385,7 +367,6 @@ $autoScheduling = true;
 
                       .demo-btn.outline-btn{
                           color: #fff;
-
                           border: none;
                           background-color: #0288d1;
                       }
@@ -400,57 +381,44 @@ $autoScheduling = true;
 
                       .scale-combo{
                           display: block;
-
                           color: #5f5f5f;
                           font: 500 12px/32px "Roboto", Arial, sans-serif;
-
                           width: 120px;
                           padding: 0 20px 0 16px;
-
                           border-radius: 0;
                           border: 1px solid #ededed;
-
                           background: url('/images/arrow.png') 96% / 15% no-repeat #fbfbfb;
-
                           -webkit-appearance: none;
                           appearance: none;
-
                           outline: none;
                       }
 
                       .scale-combo:active,
                       .scale-combo:focus{
                           border-color: #2095F3;
-
                           outline: none;
                       }
 
                       .icon-btn{
                           display: block;
-
                           color: #5f5f5f;
                           font: 500 14px/32px "Roboto", Arial, sans-serif;
                           text-align: center;
                           text-decoration: none;
-
                           padding: 0;
-
                           cursor: pointer;
                       }
 
                       .icon-btn.disabled{
                           opacity: 0.6;
-
                           pointer-events: none;
                       }
 
                       .icon-btn img{
                           position: relative;
                           top: -1px;
-
                           display: inline-block;
                           vertical-align: middle;
-
                           width: 24px;
                           margin-right: 5px;
                       }
